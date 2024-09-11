@@ -17,7 +17,8 @@ import { functionTypes } from "../../components/common/functionType";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import './page.scss'
-import { getOrgId } from "../../components/common/utility";
+import { getOrgId, msgText } from "../../components/common/utility";
+import ConfirmationModal from "../../components/common/confirmationModal";
 
 const Page = () => {
 
@@ -39,6 +40,8 @@ const Page = () => {
 
     const [sidebar, setSidebar] = useState(false);
     const [pageName, setPageName] = useState(page?.name);
+    const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
+    const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
 
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
@@ -75,7 +78,7 @@ const Page = () => {
         local: import.meta.env.VITE_RTC_URL_LOCAL,
         test: import.meta.env.VITE_RTC_URL_TEST,
         prod: import.meta.env.VITE_RTC_URL_PROD,
-      };
+    };
 
     const { ydoc, provider } = useMemo(() => {
         const ydoc = new Y.Doc();
@@ -137,6 +140,44 @@ const Page = () => {
         setPageName(element.textContent)
     };
 
+    const publishClick = () => {
+        setOpenPublishConfirmationModal(true)
+    }
+
+    const unpublishClick = () => {
+        setOpenUnpublishConfirmationModal(true)
+    }
+
+    const renderPublishConfirmationModal = () => {
+        return (
+         openPublishConfirmationModal && (
+            <ConfirmationModal
+              show={openPublishConfirmationModal}
+              onHide={() => setOpenPublishConfirmationModal(false)}
+              proceed_button_callback={handlePublish}
+              title={msgText.publishPage}
+              submitButton='Publish'
+              rejectButton='Discard'
+            />
+          )
+        )
+      }
+
+     const renderUnPublishConfirmationModal = () => {
+        return (
+            openUnpublishConfirmationModal && (
+            <ConfirmationModal
+              show={openUnpublishConfirmationModal}
+              onHide={() =>setOpenUnpublishConfirmationModal(false)}
+              proceed_button_callback={handleUnPublish}
+              title={msgText.unpublishPage}
+              submitButton='UnPublish'
+              rejectButton='Discard'
+            />
+          )
+        )
+      }
+
     const handlePublish = async () => {
         dispatch(approvePage(pages[pageId]))
     };
@@ -170,7 +211,7 @@ const Page = () => {
                     </Tooltip>
                 )
             case "Live":
-                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary"><span className="live-tooltip">Live</span></Tooltip>
+                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary live-tooltip">Live</Tooltip>
             case "shortcut":
                 return (
                     <Tooltip id='edited-by-tooltip'>
@@ -258,15 +299,11 @@ const Page = () => {
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     }
-                    <IconButton>
-                        {tabs[activeTabId]?.status === "NEW" ? (
-                            <button className="btn p-0 text-black-60 disabled">
-                                Unsaved
-                            </button>
-                        ) : (
-                            <></>
-                        )}
-                    </IconButton>
+                    {tabs[activeTabId]?.status === "NEW" && <IconButton>
+                        <button className="btn p-0 text-black-60 disabled">
+                            Unsaved
+                        </button>
+                    </IconButton>}
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
                             <Dropdown>
@@ -274,12 +311,14 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={handlePublish}>Publish</Dropdown.Item>
-                                    <Dropdown.Item onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
+                                    <Dropdown.Item onClick={publishClick}>Publish</Dropdown.Item>
+                                    <Dropdown.Item onClick={unpublishClick} disabled={!isPublished}>Unpublish</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
                     }
+                    {renderPublishConfirmationModal()}
+                    {renderUnPublishConfirmationModal()}
                 </div>
             </div>
 

@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb } from '../common/utility'
+import React, { Component, createRef } from 'react'
+import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb, isOnPublishedPage } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
@@ -9,12 +9,28 @@ import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
 import { RiDeleteBinLine } from 'react-icons/ri'
+import { connect } from 'react-redux'
+import GenericTableAutoSuggest from './genericTableAutoSuggest.jsx'
+import { convertToHTML, getInnerText } from '../../utilities/htmlConverter.js'
+import AutoSuggest from 'env-autosuggest'
+
+const mapStateToProps = (state) => {
+  return {
+    currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {},
+    publicEnv: state?.publicEnv || {},
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {}
+}
 
 const autoCompleterDefaultProps = {
   Component: 'input',
   autoComplete: 'off',
   trigger: ['{{']
 }
+
 
 class GenericTable extends Component {
   constructor(props) {
@@ -27,7 +43,7 @@ class GenericTable extends Component {
       originalHeaders: [],
       theme: ''
     }
-
+    this.keyAutoSuggestRef = createRef();
     this.checkboxFlags = []
     this.textAreaValue = ''
     this.textAreaValueFlag = true
@@ -76,7 +92,7 @@ class GenericTable extends Component {
     const target = inpTarget || e.currentTarget
     let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
-    const name = target.name.split('.')
+    const name = target?.name?.split('.')
     const value = target.value
     if (name[1] === 'checkbox') {
       this.checkboxFlags[name[0]] = true
@@ -103,7 +119,7 @@ class GenericTable extends Component {
       else dataArray[name[0]].value = ''
     }
 
-    if (dataArray[name[0]][name[1]].length !== 0 && !this.checkboxFlags[name[0]] && title !== 'Path Variables') {
+    if (dataArray[name[0]][name[1]].length !== 0 && dataArray[name[0]].checked === "notApplicable" && title !== 'Path Variables') {
       dataArray[name[0]].checked = 'true'
     }
 
@@ -112,7 +128,7 @@ class GenericTable extends Component {
     }
 
     if (title === 'Headers' || title === 'Params' || title === 'Path Variables') {
-      this.props.props_from_parent(title, dataArray)
+      this.props.props_from_parent(title, dataArray, target?.name)
     }
     if (title === 'formData' || title === 'x-www-form-urlencoded') {
       this.props.handle_change_body_data(title, dataArray)
@@ -147,17 +163,21 @@ class GenericTable extends Component {
       dataArray[j.toString()] = obj
       j++
     }
-    dataArray[j.toString()] = {
+    const obj = [];
+    dataArray.forEach((params, index) => {
+      obj[index] = { ...params, key: convertToHTML(params.key), value: convertToHTML(params.value) }
+    })
+    obj[j.toString()] = {
       checked: 'notApplicable',
       key: '',
       value: '',
       description: ''
     }
     if (title === 'Params' || title === 'Headers') {
-      this.props.props_from_parent(title, dataArray)
+      this.props.props_from_parent(title, obj)
     }
     if (title === 'formData' || title === 'x-www-form-urlencoded') {
-      this.props.handle_change_body_data(title, [...dataArrayOfFileType, ...dataArray])
+      this.props.handle_change_body_data(title, [...dataArrayOfFileType, ...obj])
     }
   }
 
@@ -187,7 +207,7 @@ class GenericTable extends Component {
     dataArray = newDataArray
     this.checkboxFlags[index] = undefined
     if (title === 'Headers' || title === 'Params') {
-      this.props.props_from_parent(title, dataArray)
+      this.props.props_from_parent(title, dataArray, null, index)
     }
     if (title === 'formData' || title === 'x-www-form-urlencoded') {
       this.props.handle_change_body_data(title, dataArray)
@@ -225,9 +245,9 @@ class GenericTable extends Component {
           if (checked === 'notApplicable') continue
           if (type === 'file') continue
           if (checked === 'true') {
-            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           } else {
-            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += '//' + getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           }
         }
         this.textAreaValue = textAreaValue
@@ -240,9 +260,9 @@ class GenericTable extends Component {
           if (checked === 'notApplicable') continue
           if (type === 'file') continue
           if (checked === 'true') {
-            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           } else {
-            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += '//' + getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           }
         }
         this.textAreaValue = textAreaValue
@@ -276,7 +296,7 @@ class GenericTable extends Component {
 
     return (
       <tr key={currentItem.key} id='generic-table-row' className={getHighlightsData(this.props, title, [currentItem.key]) ? 'active' : ''}>
-        <td className='custom-td' id='generic-table-key-cell'>
+        <td className='custom-td custom-checkbox-public' id='generic-table-key-cell'>
           {isNotApplicable ? null : (
             <label className='customCheckbox'>
               <input
@@ -297,23 +317,16 @@ class GenericTable extends Component {
           )}
         </td>
         <td className='custom-td keyWrapper'>
-          {currentItem.key}
-          <p className='text-muted small'>{isChecked || isNotApplicable ? '' : '(Optional)'}</p>
+          <GenericTableAutoSuggest suggestions={this.props.publicEnv} htmlValue={currentItem.key} disable={true} />
         </td>
         <td className='custom-td valueWrapper'>
           <div className='d-flex align-items-center'>
-            <input
-              name={`${index}.value`}
-              value={currentItem.type === 'file' ? '' : currentItem.value}
-              key={`${index}${this.state.randomId}`}
-              onChange={this.handleChange}
-              type='text'
-              placeholder={`Enter ${currentItem.key}`}
-              className={`form-control ${isEmpty ? 'empty-params' : ''}`}
-            />
-            {isEmpty && <div className='small mandatory-field-text'>*This field is mandatory</div>}
+            <GenericTableAutoSuggest suggestions={this.props?.publicEnv || {}} URL={this.props?.endpointContent?.data?.URL} valueKey={`${index}.value`} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
+            {isEmpty && <div className='mandatory-field-text'>*This field is mandatory</div>}
           </div>
-          {currentItem.description && <p className='small text-muted'>{`${currentItem.description}`}</p>}
+          {currentItem.description && <div className='public-description ml-1'>
+            <span className='text-secondary'>{`${currentItem.description}`}</span>
+          </div>}
         </td>
       </tr>
     )
@@ -342,19 +355,7 @@ class GenericTable extends Component {
     const key = `${index}.key`
     return (
       <div className='position-relative fileInput'>
-        <TextField
-          {...autoCompleterDefaultProps}
-          name={key}
-          key={key}
-          value={dataArray[index].key}
-          onChange={(e) => this.handleChange(e, { name: key, value: e })}
-          onSelect={(selectedOption) => this.handleSelect(selectedOption, key)}
-          type='text'
-          placeholder='Key'
-          className='form-control'
-          disabled={dataArray[index]?.type === 'disable' ? true : false}
-          options={{ '{{': _.keys(this.props.environment.variables) }}
-        />
+        <GenericTableAutoSuggest suggestions={this.props?.currentEnvironment} URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={key} handleChange={this.handleChange} htmlValue={dataArray[index].key} disable={(title === 'Path Variables' && key.split('.')[1] === 'key') ? true : false} />
         {title === 'formData' && (
           <select
             className='transition cursor-pointer'
@@ -433,34 +434,23 @@ class GenericTable extends Component {
             </label>
           )}
         </td>
-        <td className='custom-td' style={{ width: '435px' }}>
+        <td className='custom-td' style={{ maxWidth: '435px', width: '435px' }}>
           {isDashboardRoute(this.props) ? this.renderTextOrFileInput(dataArray, index) : dataArray[index].key}
         </td>
-        <td className='custom-td' style={{ width: '435px' }}>
+        <td className='custom-td' style={{ maxWidth: '435px', width: '435px' }}>
           {dataArray[index].type === 'file' ? (
             this.renderSelectFiles(dataArray, index)
           ) : (
             <div className='position-relative'>
-              <TextField
-                {...autoCompleterDefaultProps}
-                name={valueKey}
-                key={valueKey}
-                value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
-                onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
-                className='form-control'
-                placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
-                disabled={dataArray[index]?.type === 'disable' ? true : false}
-                options={{ '{{': _.keys(this.props.environment.variables) }}
-                type={dataArray[index].type}
-              />
+              <GenericTableAutoSuggest suggestions={this.props?.currentEnvironment} URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={valueKey} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
             </div>
           )}
         </td>
         <td className='custom-td' style={{ width: '435px' }} id='generic-table-description-cell'>
           {isDashboardRoute(this.props) ? (
             <div>
-              {/* params description is rendered here */}
               <input
+                key={index}
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
                 value={dataArray[index].description}
@@ -586,8 +576,18 @@ class GenericTable extends Component {
     }
     const isDocView = !isDashboardRoute(this.props) || !isDashboardAndTestingView(this.props, this.props.currentView)
     this.autoFillBulkEdit()
+
+    const getTitleHeading = () => {
+      if (title === 'formData') return <> Body <small className='text-muted'>(Form Data)</small></>
+      if (title === 'x-www-form-urlencoded') return <> Body <small className='text-muted'>(x-www-form-urlencoded)</small></>
+      else return title
+    }
+
     return (
       <div className='hm-public-table position-relative mb-2'>
+        {isOnPublishedPage() && <div className='public-generic-table-title-container mt-2'>
+          {getTitleHeading()}
+        </div>}
         {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) && <div className='fs-4 fw-500 my-1 text-secondary'>{title}</div>}
         {title === 'Params' && isDashboardAndTestingView(this.props, this.props.currentView) && <div className='fs-4 fw-500 my-1 text-secondary'>Query Params</div>}
         {!this.state.bulkEdit && dataArray.length > 0 ? (
@@ -645,7 +645,7 @@ class GenericTable extends Component {
 
         {title === 'Path Variables' || !isDashboardRoute(this.props) ? null : (
           <div className='generic-table-title-container'>
-            <button className={`adddescLink mt-2 ${title === 'Params'? 'addBulk-params' : 'addBulk'} icon-button px-2`} onClick={() => this.displayEditButton()}>
+            <button className={`adddescLink mt-2 ${title === 'Params' ? 'addBulk-params' : 'addBulk'} icon-button px-2`} onClick={() => this.displayEditButton()}>
               {this.state.editButtonName}
             </button>
           </div>
@@ -655,4 +655,5 @@ class GenericTable extends Component {
   }
 }
 
-export default withRouter(GenericTable)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(GenericTable))
+

@@ -127,22 +127,6 @@
   bottom: 0;
 }
 
-.mobile-warning {
-  position: sticky;
-  z-index: 1200;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #fde073;
-  text-align: center;
-  line-height: 2.5;
-  overflow: hidden;
-  -webkit-box-shadow: 0 0 5px black;
-  -moz-box-shadow: 0 0 5px black;
-  box-shadow: 0 0 5px black;
-}
-
-
 // Global Styles
 
 html body {
@@ -1281,7 +1265,7 @@ body .form-group {
 }
 
 body .form-control {
-  height: 36px;
+  height: 35px;
   border: 1px solid $lightblackborder;
   font-size: $font-medium;
   font-weight: 400;
@@ -1554,7 +1538,7 @@ button.editBtn {
 body .btn {
   border-radius: $border-radius;
   font-size: $font-normal ;
-  font-weight: normal !important;
+  font-weight: normal;
 
   &.btn-primary {
     background-color: $theme-color;
@@ -2038,7 +2022,6 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
 }
 
 .footerWrapper {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-top: 0;
 
   span {
@@ -2569,6 +2552,8 @@ span.endpointNameWrapper {
 }
 
 .dashboard-url {
+  width: calc(100% - 78px);
+
   .host-field-container {
     margin-right: 0px !important;
 
@@ -4301,75 +4286,5 @@ body .tox {
   &:after {
     content: "";
     all: unset;
-  }
-}
-
-.tiptap {
-  :first-child {
-    margin-top: 0;
-  }
-
-  pre {
-    background: black;
-    border-radius: 0.5rem;
-    color: white;
-    font-family: 'JetBrainsMono', monospace;
-    margin: 1.5rem 0;
-    padding: 0.75rem 1rem;
-
-    code {
-      background: none;
-      color: inherit;
-      font-size: 0.8rem;
-      padding: 0;
-    }
-  }
-
-  blockquote {
-    border-left: 3px solid gray;
-    margin: 1.5rem 0;
-    padding-left: 1rem;
-  }
-
-  /* List styles */
-  ul,
-  ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
-
-    li p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
-    }
-  }
-
-  /* Task list specific styles */
-  ul[data-type="taskList"] {
-    list-style: none;
-    margin-left: 0;
-    padding: 0;
-
-    li {
-      align-items: flex-start;
-      display: flex;
-
-      >label {
-        flex: 0 0 auto;
-        margin-right: 0.5rem;
-        user-select: none;
-      }
-
-      >div {
-        flex: 1 1 auto;
-      }
-    }
-
-    input[type="checkbox"] {
-      cursor: pointer;
-    }
-
-    ul[data-type="taskList"] {
-      margin: 0;
-    }
   }
 }

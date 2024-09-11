@@ -4,48 +4,89 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import './endpoints.scss'
 import { connect } from 'react-redux'
+import AutoSuggest from 'env-autosuggest'
 import _, { cloneDeep } from 'lodash'
 import { getParseCurlData } from '../common/apiUtility'
 import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import { getInnerText } from '../../utilities/htmlConverter'
 
 const mapStateToProps = (state) => {
   return {
     modals: state.modals,
-    tabs: state?.tabs
+    tabs: state?.tabs,
+    currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {},
+    publicEnv: state?.publicEnv || {},
+    activeTabId: state?.tabs?.activeTabId
   }
 }
 class HostContainer extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       datalistHost: this.props?.endpointContent?.host?.BASE_URL,
       datalistUri: '',
       showIcon: true,
+    };
+    this.wrapperRef = React.createRef();
+    this.hostcontainerRef = React.createRef();
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.handleValueChange = this.handleValueChange.bind(this);
+    this.handleInputHostChange = this.handleInputHostChange.bind(this);
+    this.observer = null;
+    this.initalUrlValue = null;
+  }
+
+  componentDidMount() {
+    this.setHosts();
+    this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
+
+    if (this.hostcontainerRef.current) {
+      // Set up a MutationObserver to watch for changes to the innerText
+      this.observer = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+          if (mutation.type === 'characterData' || mutation.type === 'childList') {
+            this.handleInputHostChange();
+          }
+        }
+      });
+
+      // Configure the observer to watch for changes in the content
+      this.observer.observe(this.hostcontainerRef.current, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
     }
-    this.wrapperRef = React.createRef()
-    this.handleClickOutside = this.handleClickOutside.bind(this)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.activeTabId !== this.props?.activeTabId) {
+      this.setState({ initalUrlValue: this.props?.URL })
+    }
+    if (!_.isEqual(prevProps.updatedUri, this.props?.updatedUri)) {
+      this.setState({ datalistUri: this.props?.updatedUri });
+    }
+    if (!_.isEqual(prevProps.URL, this.props?.URL)) {
+      if (document.activeElement !== this.hostcontainerRef?.current) this.setState({ initalUrlValue: this.props?.URL })
+    }
+    if (!_.isEqual(prevProps?.endpointContent?.host?.BASE_URL, this.props?.endpointContent?.host?.BASE_URL)) {
+      this.setState({ datalistHost: this.props?.endpointContent?.host?.BASE_URL });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 
   handleClickOutside(event) {
     if ((this.state.showDatalist || this.state.showInputHost) && this.wrapperRef && !this.wrapperRef.current?.contains(event.target)) {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
-    }
-  }
-
-  componentDidMount() {
-    this.setHosts()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
-      this.setState({ datalistUri: this.props.updatedUri })
-    }
-    if (!_.isEqual(prevProps?.endpointContent?.host?.BASE_URL, this.props?.endpointContent?.host?.BASE_URL)) {
-      this.setState({ datalistHost: this.props?.endpointContent?.host?.BASE_URL })
     }
   }
 
@@ -56,7 +97,7 @@ class HostContainer extends Component {
   }
 
   setParentHostAndUri() {
-    this.props.set_host_uri(this.state.datalistHost, this.state.datalistUri)
+    this.props.set_host_uri(this.hostcontainerRef?.current?.innerHTML)
   }
 
   fetchPublicEndpointHost() {
@@ -204,41 +245,46 @@ class HostContainer extends Component {
     tabService.markTabAsModified(this.props.tabs.activeTabId)
   }
 
-  async handleInputHostChange(e) {
-    let inputValue = e.target.value
+  async handleInputHostChange() {
+    if (!this.hostcontainerRef || !this.hostcontainerRef.current) {
+      console.error('hostcontainerRef is not set or does not have a current value');
+      return;
+    }
 
+    let inputValue = this.hostcontainerRef.current.innerText;
     if (inputValue.trim().startsWith('curl')) {
       try {
-        let modifiedCurlCommand = inputValue
+        let modifiedCurlCommand = inputValue;
         if (modifiedCurlCommand.includes('--url')) {
-          modifiedCurlCommand = modifiedCurlCommand.replace('--url', ' ')
+          modifiedCurlCommand = modifiedCurlCommand.replace('--url', ' ');
         }
-        let parsedData = await getParseCurlData(modifiedCurlCommand)
-        parsedData = JSON.parse(parsedData.data)
+        let parsedData = await getParseCurlData(modifiedCurlCommand);
+        parsedData = JSON.parse(parsedData.data);
         // Remove any occurrence of 'http://' followed by a space
-        parsedData.url = parsedData.url.replace(/^http:\/\/\s/, '')
+        parsedData.url = parsedData.url.replace(/^http:\/\/\s/, '');
         // Check if 'http://' or 'https://' appears twice and correct it
-        parsedData.url = parsedData.url.replace(/^(http:\/\/https?:\/\/)/, '$2')
-        parsedData.raw_url = parsedData.raw_url.replace(/^http:\/\/\s/, '')
-        parsedData.raw_url = parsedData.raw_url.replace(/^(http:\/\/https?:\/\/)/, '$2')
-        this.getDataFromParsedData(this.props.untitledEndpointData, parsedData)
-        return
+        parsedData.url = parsedData.url.replace(/^(http:\/\/https?:\/\/)/, '$2');
+        parsedData.raw_url = parsedData.raw_url.replace(/^http:\/\/\s/, '');
+        parsedData.raw_url = parsedData.raw_url.replace(/^(http:\/\/https?:\/\/)/, '$2');
+        this.getDataFromParsedData(this.props.untitledEndpointData, parsedData);
+        return;
       } catch (e) {
-        toast.error('could not parse the curl')
+        toast.error('could not parse the curl');
       }
     }
-    const data = this.splitUrlHelper(e)
+
+    const data = this.splitUrlHelper({ target: { value: inputValue } });
     this.setState(
       {
         ...data,
-        showDatalist: e.target.value === ''
+        showDatalist: inputValue === ''
       },
       () => {
-        this.props.props_from_parent('HostAndUri')
-        this.setParentHostAndUri()
+        this.setParentHostAndUri();
       }
-    )
+    );
   }
+
 
   handleClickHostOptions(host, type) {
     this.setState(
@@ -293,25 +339,21 @@ class HostContainer extends Component {
     })
   }
 
+  handleValueChange() {
+    this.setParentHostAndUri()
+    this.props.props_from_parent('HostAndUri');
+  }
+
   renderHostDatalist() {
     const endpointId = this.props.endpointId
     const { showIcon } = this.state;
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
-        <input
-          id='host-container-input'
-          className='form-control'
-          value={`${this.state?.datalistHost ?? ''}${this.state?.datalistUri ?? ''}`}
-          name={`${endpointId}_hosts`}
-          placeholder='Enter URL or paste cURL'
-          onChange={(e) => this.handleInputHostChange(e)}
-          autoComplete='off'
-          onFocus={() =>
-            this.setState({ showDatalist: true, showIcon: false }, () => {
-              document.addEventListener('mousedown', this.handleClickOutside);
-            })
-          }
-          onBlur={() => this.setState({ showIcon: true })}
+        <AutoSuggest
+          handleValueChange={this.handleValueChange}
+          contentEditableDivRef={this.hostcontainerRef}
+          suggestions={this.props?.currentEnvironment}
+          initial={this.state.initalUrlValue ?? ''}
         />
         {showIcon && <div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon' />
           <span className='position-absolute'>URL cannot be empty</span>
@@ -322,13 +364,15 @@ class HostContainer extends Component {
 
   renderPublicHost() {
     return (
-      <input
-      type='text'
-      aria-label='Search'
-      disabled
-      className='form-control'
-      value={`${this.props?.endpointContent?.host?.BASE_URL ?? ''}${this.props?.endpointContent?.data?.updatedUri ?? ''}`}
-    />   
+      <div className='flex-grow-1 autosuggest-hostcontainer'>
+        <AutoSuggest
+          disable={true}
+          handleValueChange={this.handleValueChange}
+          contentEditableDivRef={this.hostcontainerRef}
+          suggestions={this.props?.publicEnv}
+          initial={this.props?.URL ?? ''}
+        />
+      </div>
     )
   }
 
