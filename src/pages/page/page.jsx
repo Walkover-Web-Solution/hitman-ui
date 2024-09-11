@@ -87,13 +87,13 @@ const Page = () => {
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId,tabs, activeTabId]); 
+    }, [orgId, pageId]); 
 
     useEffect(() => {
         if (!provider || !ydoc) return;
         return () => {
-            provider.destroy();
-            ydoc.destroy();
+            if (provider) provider.destroy();
+            if (ydoc) ydoc.destroy();
         };
     }, [provider, ydoc]);
 
