@@ -19,6 +19,7 @@ import { ReactComponent as Logo } from '../../assets/web/favicon.svg'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Footer from './Footer'
+import { BsCommand } from 'react-icons/bs'
 
 const SideBar = () => {
   const collections = useSelector((state) => state.collections)
