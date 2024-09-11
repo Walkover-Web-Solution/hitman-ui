@@ -1607,8 +1607,8 @@ class DisplayEndpoint extends Component {
       for (let i = 0; i < Object.keys(params).length; i++) {
         if (params[Object.keys(params)[i]].checked === 'true') {
           processedParams.push({
-            name: this.HtmlUrlToString(params[Object.keys(params)[i]].key),
-            value: this.HtmlUrlToString(params[Object.keys(params)[i]].value),
+            name: getInnerText(params[Object.keys(params)[i]].key),
+            value: getInnerText(params[Object.keys(params)[i]].value),
             comment: params[Object.keys(params)[i]].description,
             type: params[Object.keys(params)[i]].type
           })
@@ -1626,10 +1626,10 @@ class DisplayEndpoint extends Component {
       paramsFlag = true
       let data = body[body.type]
       for (let i = 0; i < data.length; i++) {
-        if (data[i].checked === 'true' && data[i].key !== '') {
+        if (data[i].checked === 'true' && getInnerText(data[i].key) !== '') {
           params.push({
-            name: data[i].key,
-            value: data[i].value,
+            name: getInnerText(data[i].key),
+            value: getInnerText(data[i].value),
             fileName: null,
             contentType: null
           })

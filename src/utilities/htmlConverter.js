@@ -278,4 +278,24 @@ function convertToHTML(input) {
     return result;
 }
 
-export { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml, getInnerText, getIntoTextBlock, getIntoVariableBlock, convertToHTML, decodeHtmlEntities };
+const convertTextToHTML = (str) => {
+    if (str == null || typeof str !== 'string' || str.trim() === '') return str;
+
+    str = str.trim();
+
+    if (str.startsWith('<span')) {
+        return str; // Do nothing if the string starts with <span>
+    }
+    const regex = /(\{\{[^\}]+\}\})/g;
+    const parts = str.split(regex).filter(part => part !== '');
+
+    return parts.map(part => {
+        if (part.startsWith('{{') && part.endsWith('}}')) {
+            return `<span variable-block='true'>${part}</span>`;
+        } else {
+            return `<span text-block='true'>${part}</span>`;
+        }
+    }).join('');
+};
+
+export { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml, getInnerText, getIntoTextBlock, getIntoVariableBlock, convertToHTML, decodeHtmlEntities, convertTextToHTML };
