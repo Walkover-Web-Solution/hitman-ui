@@ -11,7 +11,7 @@ import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import { getInnerText } from '../../utilities/htmlConverter'
+import { convertTextToHTML, getInnerText } from '../../utilities/htmlConverter'
 
 const mapStateToProps = (state) => {
   return {
@@ -116,7 +116,7 @@ class HostContainer extends Component {
     // setting method, url and host
     untitledEndpointData.data.method = parsedData?.method.toUpperCase()
     untitledEndpointData.data.uri = data?.datalistUri
-    untitledEndpointData.data.URL = `<span text-block='true'>${parsedData.raw_url}</span>`
+    untitledEndpointData.data.URL = convertTextToHTML(parsedData.raw_url)
     untitledEndpointData.data.updatedUri = data?.datalistUri
     untitledEndpointData.host = {
       BASE_URL: data?.datalistHost
@@ -142,7 +142,7 @@ class HostContainer extends Component {
         checked: 'true',
         value: '',
         description: '',
-        key: pathVariableKeys[i]
+        key: convertTextToHTML(pathVariableKeys[i])
       }
       untitledEndpointData.pathVariables.push(eachData)
     }
@@ -198,8 +198,8 @@ class HostContainer extends Component {
             let [key, value] = pair.split('=');
             untitledEndpointData.data.body[bodyType].push({
               checked: 'true',
-              key: key,
-              value: decodeURIComponent(value),
+              key: convertTextToHTML(key),
+              value: convertTextToHTML(decodeURIComponent(value)),
               description: '',
               type: 'text'
             });
@@ -208,8 +208,8 @@ class HostContainer extends Component {
           Object.keys(parsedData.data).forEach(key => {
             untitledEndpointData.data.body[bodyType].push({
               checked: 'true',
-              key: key,
-              value: parsedData.data[key],
+              key: convertTextToHTML(key),
+              value: convertTextToHTML(parsedData.data[key]),
               description: '',
               type: 'text'
             });
@@ -223,9 +223,9 @@ class HostContainer extends Component {
     for (let key in parsedData?.headers) {
       let eachDataOriginal = {
         checked: 'true',
-        value: parsedData.headers[key],
+        value: convertTextToHTML(parsedData.headers[key]),
         description: '',
-        key: key
+        key: convertTextToHTML(key)
       }
       untitledEndpointData.originalHeaders.push(eachDataOriginal)
     }
@@ -235,9 +235,9 @@ class HostContainer extends Component {
     for (let key in queryParams) {
       let eachDataOriginal = {
         checked: 'true',
-        value: queryParams[key],
+        value: convertTextToHTML(queryParams[key]),
         description: '',
-        key: key
+        key: convertTextToHTML(key)
       }
       untitledEndpointData.originalParams.push(eachDataOriginal)
     }

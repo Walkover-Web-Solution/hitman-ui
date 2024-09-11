@@ -583,7 +583,7 @@ class GenericTable extends Component {
     const getTitleHeading = () => {
       if (title === 'formData') return <> Body <small className='text-muted'>(Form Data)</small></>
       if (title === 'x-www-form-urlencoded') return <> Body <small className='text-muted'>(x-www-form-urlencoded)</small></>
-      else return title
+      return title
     }
 
     return (
@@ -591,8 +591,8 @@ class GenericTable extends Component {
         {isOnPublishedPage() && <div className='public-generic-table-title-container mt-2'>
           {getTitleHeading()}
         </div>}
-        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) && <div className='fs-4 fw-500 my-1 text-secondary'>{title}</div>}
-        {title === 'Params' && isDashboardAndTestingView(this.props, this.props.currentView) && <div className='fs-4 fw-500 my-1 text-secondary'>Query Params</div>}
+        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) && this.props?.dataArray?.length > 0 && <div className='fs-4 fw-500 my-1 text-secondary'>{title}</div>}
+        {title === 'Params' && isDashboardAndTestingView(this.props, this.props.currentView) && this.props?.dataArray?.length > 0 && <div className='fs-4 fw-500 my-1 text-secondary'>Query Params</div>}
         {!this.state.bulkEdit && dataArray.length > 0 ? (
           <div className={`headParaWraper mb-1 p-0`} style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>
