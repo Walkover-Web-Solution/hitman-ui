@@ -280,7 +280,6 @@ class HostContainer extends Component {
         showDatalist: inputValue === ''
       },
       () => {
-        this.props.props_from_parent('HostAndUri');
         this.setParentHostAndUri();
       }
     );
@@ -342,6 +341,7 @@ class HostContainer extends Component {
 
   handleValueChange() {
     this.setParentHostAndUri()
+    this.props.props_from_parent('HostAndUri');
   }
 
   renderHostDatalist() {

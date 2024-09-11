@@ -37,7 +37,7 @@ export default function RenderPageContent(props) {
     return (
         <React.Fragment>
             {innerText?.length > 0 &&
-                <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-50'>
+                <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-50 tiptap'>
                     <div className='mb-4 page-text-render w-100 d-flex justify-content-between align-items-center'>
                         <span className='page-name fa-3x font-weight-bold mt-5 border-0 w-100 d-flex align-items-center'>{pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</span>
                     </div>

@@ -1494,7 +1494,9 @@ class DisplayEndpoint extends Component {
       this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
     }
 
-    if (name === 'HostAndUri') this.setModifiedTabData()
+    if (name === 'HostAndUri' ) {
+      this.setModifiedTabData()
+    }
   }
 
   setPublicBody(body) {
