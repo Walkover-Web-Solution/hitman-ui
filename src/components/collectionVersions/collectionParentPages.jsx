@@ -174,7 +174,6 @@ const CollectionParentPages = (props) => {
     if (!isOrgDocType()) {
       dispatch(addPage(pages[pageId].versionId, newPage))
       dispatch(addIsExpandedAction({ value: true, id: pageId }))
-      dispatch(openInNewTab({ type: 'page', previewMode: false, isModified: false, state: {} }))
     } else {
       setShowAddCollectionModal(true)
       setSelectedPage({ ...pages[pageId] })

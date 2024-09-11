@@ -55,7 +55,7 @@ import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
-export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, minHeight, initial, onChange, isEndpoint=false }) {
+export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false }) {
 
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser
@@ -82,7 +82,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, minH
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: minHeight ? 'textEditor minHeight' : 'textEditor'
+        class: 'textEditor'
       }
     },
     extensions: [
