@@ -19,6 +19,7 @@ import { MdDehaze, MdClose } from 'react-icons/md'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
 import PublicPage from '../../pages/publicPage/publicPage.jsx'
+import IconButton from '../common/iconButton.jsx'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -392,6 +393,14 @@ class PublicEndpoint extends Component {
         linear-gradient(to right, ${staticColor}, ${staticColor})
       `
     }
+    const staticColors = background['background_mainPage']
+
+    const backgroundStyles = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColors}, ${staticColors})
+      `
+    }
 
     return (
       <>
@@ -406,26 +415,27 @@ class PublicEndpoint extends Component {
           }
         `}
         </Style>
-        <nav className='public-endpoint-navbar'></nav>
         <main
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-          <span ref={this.iconRef} className={'hamberger-icon'}>
-            <MdDehaze
-              id='hamburgerIcon'
-              className='icon-active fw-bold'
-              onClick={() => {
-                this.handleShowSideBar()
-              }}
-            />
-            <MdClose
-              id='closeIcon'
-              className='icon-none'
-              onClick={() => {
-                this.handleShowSideBar()
-              }}
-            />
+          <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
+            <IconButton onClick={() => {
+                  this.handleShowSideBar()
+                }}>
+              <MdDehaze
+                id='hamburgerIcon'
+                className='icon-active fw-bold'
+              />
+            </IconButton>
+            <IconButton onClick={() => {
+                  this.handleShowSideBar()
+                }}>
+              <MdClose 
+                id='closeIcon'
+                className='icon-none'
+              />
+            </IconButton>
             {/* <span className='logo-name' id="logoName"> 
              {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
@@ -456,7 +466,7 @@ class PublicEndpoint extends Component {
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
               className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-              // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
+            // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
             >
               {idToRender ? (
                 <div
@@ -490,7 +500,7 @@ class PublicEndpoint extends Component {
                     />
                   )}
 
-                  {this.displayCTAandLink()}
+                  {/* {this.displayCTAandLink()} */}
                   {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>

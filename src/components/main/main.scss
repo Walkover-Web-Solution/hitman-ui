@@ -127,22 +127,6 @@
   bottom: 0;
 }
 
-.mobile-warning {
-  position: sticky;
-  z-index: 1200;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #fde073;
-  text-align: center;
-  line-height: 2.5;
-  overflow: hidden;
-  -webkit-box-shadow: 0 0 5px black;
-  -moz-box-shadow: 0 0 5px black;
-  box-shadow: 0 0 5px black;
-}
-
-
 // Global Styles
 
 html body {
@@ -209,7 +193,6 @@ html body {
 
     .dropdown-item {
       padding: auto 4px !important;
-      font-size: 10px !important;
     }
   }
 
@@ -1281,7 +1264,7 @@ body .form-group {
 }
 
 body .form-control {
-  height: 36px;
+  height: 35px;
   border: 1px solid $lightblackborder;
   font-size: $font-medium;
   font-weight: 400;
@@ -1469,13 +1452,6 @@ button.editBtn {
   border: 1px dashed #f4f4f4 !important;
 }
 
-.viewOptionals {
-  display: inline-block;
-  color: #e98a36;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 .small.text-muted {
   font-size: 10px;
   margin: 2px 0;
@@ -1488,9 +1464,14 @@ button.editBtn {
   #custom-generic-table {
     padding-left: 12px;
     padding-right: 12px;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
 
     &:has(.custom-th) {
       padding-bottom: 12px;
+      margin-bottom: 8px !important;
+      margin-top: 8px !important;
+
     }
   }
 
@@ -1554,7 +1535,7 @@ button.editBtn {
 body .btn {
   border-radius: $border-radius;
   font-size: $font-normal ;
-  font-weight: normal !important;
+  font-weight: normal;
 
   &.btn-primary {
     background-color: $theme-color;
@@ -1838,10 +1819,12 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   }
 
   @media screen and (max-width:767px) {
-    padding-top: 3rem;
+    padding-top: 2rem;
+    padding-right: 48px;
+    padding-left: 48px;
   }
 
-  @media screen and (max-width:568px) {
+  @media screen and (max-width:400px) {
     padding-right: 12px;
     padding-left: 12px;
   }
@@ -2038,7 +2021,6 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
 }
 
 .footerWrapper {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-top: 0;
 
   span {
@@ -2569,6 +2551,8 @@ span.endpointNameWrapper {
 }
 
 .dashboard-url {
+  width: calc(100% - 78px);
+
   .host-field-container {
     margin-right: 0px !important;
 
@@ -3283,6 +3267,11 @@ div#steve-parent-accordion {
 }
 
 .selectFile {
+  background-color: #fff;
+  height: 2.25rem;
+  border: 1px solid #e0e0e0;
+  padding: 0 0.7rem;
+
   span {
     font-size: 12px;
     line-height: 1;
@@ -3295,11 +3284,6 @@ div#steve-parent-accordion {
     padding: 2px 10px;
     background-color: whitesmoke;
   }
-
-  background-color: #fff;
-  height: 2.25rem;
-  border: 1px solid #e0e0e0;
-  padding: 0 0.7rem;
 }
 
 .fileName {
@@ -3692,6 +3676,9 @@ body .doc-secs-container {
 .mid-part {
   width: 100%;
   padding: 1.25rem 2.25rem;
+  @media screen and (max-width: 1160px) {
+    padding: 0;
+  }
 }
 
 .response-container-main {
@@ -3836,13 +3823,14 @@ body .doc-secs-container {
 }
 
 body .tox {
+  border-radius: $border-radius;
+
   .tox-dialog {
     &.tox-dialog--width-lg {
       max-height: 34rem;
       max-width: 50rem;
     }
 
-    border-radius: $border-radius;
 
     .tox-dialog__header {
       border-bottom: 1px solid $outline-color !important;
@@ -4297,75 +4285,5 @@ body .tox {
   &:after {
     content: "";
     all: unset;
-  }
-}
-
-.tiptap {
-  :first-child {
-      margin-top: 0;
-  }
-
-  pre {
-      background: black;
-      border-radius: 0.5rem;
-      color: white;
-      font-family: 'JetBrainsMono', monospace;
-      margin: 1.5rem 0;
-      padding: 0.75rem 1rem;
-
-      code {
-          background: none;
-          color: inherit;
-          font-size: 0.8rem;
-          padding: 0;
-      }
-  }
-
-  blockquote {
-      border-left: 3px solid gray;
-      margin: 1.5rem 0;
-      padding-left: 1rem;
-  }
-
-  /* List styles */
-  ul,
-  ol {
-      padding: 0 1rem;
-      margin: 1.25rem 1rem 1.25rem 0.4rem;
-
-      li p {
-          margin-top: 0.25em;
-          margin-bottom: 0.25em;
-      }
-  }
-
-  /* Task list specific styles */
-  ul[data-type="taskList"] {
-      list-style: none;
-      margin-left: 0;
-      padding: 0;
-
-      li {
-          align-items: flex-start;
-          display: flex;
-
-          >label {
-              flex: 0 0 auto;
-              margin-right: 0.5rem;
-              user-select: none;
-          }
-
-          >div {
-              flex: 1 1 auto;
-          }
-      }
-
-      input[type="checkbox"] {
-          cursor: pointer;
-      }
-
-      ul[data-type="taskList"] {
-          margin: 0;
-      }
   }
 }

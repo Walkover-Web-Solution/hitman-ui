@@ -271,7 +271,6 @@ const Collections = (props) => {
                     {collections[collectionId]?.importedFromMarketPlace ? <div className='marketplace-icon mr-1'> M </div> : null}
                     <span className={collections[collectionId].isPublic ? 'published' : ''}></span>
                   </div>
-                  {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
                 </div>
               )
             }

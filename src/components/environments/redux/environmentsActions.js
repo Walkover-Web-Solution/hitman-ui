@@ -13,6 +13,7 @@ export const fetchEnvironments = () => {
       })
       .catch((error) => {
         dispatch(OnEnvironmentsFetchedError(error.response ? error.response.data : error))
+        toast.error("Failed to fetch Environments!")
       })
   }
 }

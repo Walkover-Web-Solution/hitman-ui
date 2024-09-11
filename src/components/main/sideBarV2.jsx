@@ -52,8 +52,9 @@ const SideBar = () => {
   }, [])
 
   const handleShortcutKeys = (event) => {
+    const isContentEditable = event.target.getAttribute('contentEditable') === 'true'
     const isPageFocused = document.activeElement.closest('.parent-page-container')
-    if (!isPageFocused && event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+    if (!isPageFocused && event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && !isContentEditable) {
       event.preventDefault()
       inputRef.current.focus()
     }

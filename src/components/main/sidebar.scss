@@ -27,7 +27,7 @@
   background-color: $secondary-color;
 }
 
-.split-sidebar-public > div:first-child {
+.split-sidebar-public>div:first-child {
   max-width: 330px !important;
   width: unset;
   min-width: 260px !important;
@@ -106,6 +106,7 @@ body .sidebar {
 
   .collect-length {
     line-height: 1.5rem;
+    width: 196px;
   }
 
   .globe-img {
@@ -119,7 +120,7 @@ body .sidebar {
 
       .collection-box {
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 400;
         color: rgb(145, 145, 145);
       }
     }
@@ -150,7 +151,7 @@ body .sidebar {
     margin-top: auto;
     flex-direction: column;
 
-    > .plr-3 {
+    >.plr-3 {
       flex-shrink: 0;
       flex-grow: 0;
     }
@@ -387,10 +388,6 @@ body .sidebar {
               .text-truncate {
                 font-size: 14px;
                 padding-left: 0 !important;
-
-                @media screen and (max-width: 768px) {
-                  font-size: 16px;
-                }
               }
             }
           }
@@ -798,18 +795,6 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   width: calc(100% - 26px);
-
-  .api-label {
-    @media screen and (max-width: 768px) {
-      font-size: 12px;
-    }
-  }
-
-  .truncate {
-    @media screen and (max-width: 768px) {
-      font-size: 16px;
-    }
-  }
 }
 
 .side-bar,
@@ -1035,8 +1020,8 @@ input[type='text']:focus {
     }
 
     &.close-icon {
-      top: -10px;
-      left: 245px !important;
+      top: -5px;
+      left: 230px !important;
       position: fixed;
       background: transparent;
       padding-left: 10px;

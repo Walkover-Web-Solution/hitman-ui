@@ -9,21 +9,8 @@
       padding: 0px !important;
       margin: 0px !important;
 
-      span {
-        padding: 2px 3px;
-
-        &:hover {
-          background-color: $button-background-hover;
-        }
-
-        &:has(strong) {
-          &:hover {
-            background-color: unset;
-          }
-        }
-      }
-
       strong {
+        border-radius: 2px;
         &:not(:last-child) {
           max-width: 120px;
           overflow: hidden;
@@ -31,19 +18,14 @@
           text-overflow: ellipsis;
         }
 
-        border-radius: 2px;
-
         &:hover {
           background-color: $button-background-hover;
         }
 
         &:last-child {
-          border: 1px solid transparent;
-
           &:focus-visible {
-            outline: unset;
-            border-color: rgba(128, 128, 128, 0.356);
-            background-color: unset;
+            outline: 1px solid rgba(128, 128, 128, 0.356);
+            background-color: white;
           }
         }
       }
@@ -74,7 +56,7 @@
   }
 
   .page-container {
-    max-width: 900px;
+    max-width: 800px;
     margin-bottom: 30vh;
 
     textarea {

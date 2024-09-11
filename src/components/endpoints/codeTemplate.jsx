@@ -139,22 +139,14 @@ const CodeTemplate = (props) => {
 
   return (
     <>
-      <div className={`${isOnPublishedPage() ? 'd-flex position-relative' : 'sample-code-inner position-sticky top-0'}`}>
-        {isOnPublishedPage() && (
-          <button
-            onClick={handleButtonClick}
-            className={`pubCode-icon btn mt-4 position-absolute rounded-circle px-1 py-0 bg-white${curlSlider ? ' active' : ''}`}
-          >
-            <FaChevronRight size={12} />
-          </button>
-        )}
+      <div className={`${isOnPublishedPage() ? '' :'sample-code-inner position-sticky top-0'}`}>
         <div
           className={
             params.endpointId
               ? 'show-curl-endpoint h-100 pubCodeWrapper bg-white pb-1'
               : curlSlider
               ? 'pubCodeWrapper-hide pubCodeWrapper'
-              : 'pubCodeWrapper'
+              : 'pubCodeWrapper h-100'
           }
           style={{
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')

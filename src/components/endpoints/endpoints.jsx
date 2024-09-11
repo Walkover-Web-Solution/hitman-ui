@@ -87,7 +87,7 @@ const Endpoints = (props) => {
             {endpoints[endpointId].requestType}
           </div>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='ml-1 graphql-icon' size={14} />}
+        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='ml-1 graphql-icon' size={16} />}
         <div className={`end-point-name truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{endpoints[endpointId].name}</div>
       </div>
     )

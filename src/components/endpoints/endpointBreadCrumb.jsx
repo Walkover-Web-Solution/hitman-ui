@@ -150,6 +150,7 @@ class EndpointBreadCrumb extends Component {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.textContent
       this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props?.params?.endpointId, name: e.currentTarget.value })
     }
   }
 
@@ -305,7 +306,7 @@ class EndpointBreadCrumb extends Component {
                 {this.renderPathLinks()}
                 </div>
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
-                <OverlayTrigger placement="right" overlay={<Tooltip id="tooltip-right">Live</Tooltip>} trigger={['hover', 'focus']}>
+                <OverlayTrigger placement="right" overlay={<Tooltip className="fs-4 text-secondary live-tooltip" id="tooltip-right">Live</Tooltip>} trigger={['hover', 'focus']}>
                   <GoDotFill size={14} color="green" />
                 </OverlayTrigger>
               )}
