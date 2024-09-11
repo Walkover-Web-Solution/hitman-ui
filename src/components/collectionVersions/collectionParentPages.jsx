@@ -52,6 +52,7 @@ const CollectionParentPages = (props) => {
   const [isHovered, setIsHovered] = useState(false)
   const [theme, setTheme] = useState('')
   const [showPageForm, setShowPageForm] = useState({ edit: false })
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
     if (!theme) setTheme(collections[props.collection_id]?.theme)
@@ -158,7 +159,13 @@ const CollectionParentPages = (props) => {
   const versionDropDown = (rootId) => {
     if (isOrgDocType()) {
       return (
-        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
+        <DropdownButton
+          className='version-dropdown'
+          ref={versionDropDownRef}
+          id='dropdown-basic-button'
+          title={versionName()}
+          onClick={(e) => e.stopPropagation()}
+        >
           {pages[rootId].child.map((childId, index) => (
             <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
               {pages[childId]?.name}
@@ -230,11 +237,11 @@ const CollectionParentPages = (props) => {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
+              <div className={`d-flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex td-name ml-1 align-items-center'>
-                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, props.rootParentId)}>
+                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
                     <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
-                    <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
+                    <IoDocumentTextOutline size={18} className='collection-icons' />
                   </span>
                   <div
                     className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? 'text-truncate' : ''}`}
@@ -275,7 +282,15 @@ const CollectionParentPages = (props) => {
                     {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
                       <SlSettings color='gray' /> Manage Version
                     </div>}
-                    <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeletePageModal(pageId)}>
+                    <div className='dropdown-item d-flex align-items-center'
+                      onClick={() => openDeletePageModal(pageId)}
+                      onMouseEnter={() => setHover(true)}
+                      onMouseLeave={() => setHover(false)}
+                      style={{
+                        color: hover ? 'white' : '#8e1a10',
+                        backgroundColor: hover ? '#CC0000' : 'transparent',
+                        transition: 'background-color 0.3s, color 0.3s'
+                      }}>
                       <RiDeleteBin6Line size={15} /> Delete
                     </div>
                   </div>

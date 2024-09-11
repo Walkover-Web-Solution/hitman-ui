@@ -1,3 +1,5 @@
+@import '../main/variables.scss';
+
 .org-listing-container {
   display: flex;
   height: auto;
@@ -42,16 +44,17 @@
 
 .leave-icon {
   visibility: hidden;
-  padding-right: 10px;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
   cursor: pointer;
-  color: rgb(206 0 0 / 68%);
+  color: rgba(55, 53, 47, 0.65);
 
   &:hover {
-    color: rgb(224 9 9);
+     color: $alert-color;
+
   }
+}
+
+.org-leave{
+  font-size: 8px;
 }
 
 .name-list {
@@ -69,12 +72,6 @@
   &:hover .leave-icon {
     visibility: visible;
   }
-}
-
-.check {
-  margin-left: auto;
-  display: block;
-  padding-right: 10px;
 }
 
 .invite-user {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import exportCollectionApi from '../../../services/api/colection/exportCollectionApi';
 import ExportModal from './exportCollectionModal';
+import { toast } from 'react-toastify';
 
 const ExportButton = ({ orgId, collectionId, collectionName }) => {
     const [isModalOpen, setModalOpen] = useState(false)
@@ -16,8 +17,10 @@ const ExportButton = ({ orgId, collectionId, collectionName }) => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            toast.success('Exported successfully!');
         } catch (error) {
             console.error('Error exporting data:', error);
+            toast.error(error);
         }
     };
 

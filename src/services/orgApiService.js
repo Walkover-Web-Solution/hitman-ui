@@ -30,8 +30,10 @@ export async function leaveOrganization(orgId) {
     if (response.status === 200) {
       store.dispatch(removeOrganizationById(orgId));
     }
+    toast.success("Organization removed successfully!")
   } catch (error) {
     console.error("Leaving organization failed:", error);
+    toast.error("Error in leaving organization")
   }
 }
 

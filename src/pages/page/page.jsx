@@ -6,7 +6,7 @@ import { approvePage, draftPage } from "../../components/publicEndpoint/redux/pu
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
 import { updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
@@ -17,7 +17,8 @@ import { functionTypes } from "../../components/common/functionType";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import './page.scss'
-import { getOrgId } from "../../components/common/utility";
+import { getOrgId, msgText } from "../../components/common/utility";
+import ConfirmationModal from "../../components/common/confirmationModal";
 
 const Page = () => {
 
@@ -39,6 +40,11 @@ const Page = () => {
 
     const [sidebar, setSidebar] = useState(false);
     const [pageName, setPageName] = useState(page?.name);
+    const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
+    const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [published, setPublished] = useState(false);
 
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
@@ -62,7 +68,9 @@ const Page = () => {
     useEffect(() => {
         window.addEventListener('keydown', handleSaveKeydown);
 
-        return () => window.removeEventListener('keydown', handleSaveKeydown);
+        return () => {
+            window.removeEventListener('keydown', handleSaveKeydown);
+        }
     }, [pageId]);
 
     useEffect(() => {
@@ -75,7 +83,7 @@ const Page = () => {
         local: import.meta.env.VITE_RTC_URL_LOCAL,
         test: import.meta.env.VITE_RTC_URL_TEST,
         prod: import.meta.env.VITE_RTC_URL_PROD,
-      };
+    };
 
     const { ydoc, provider } = useMemo(() => {
         const ydoc = new Y.Doc();
@@ -96,9 +104,18 @@ const Page = () => {
     }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
             event.preventDefault();
             handleSavePage();
+        }
+        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+            event.preventDefault();
+            publishClick();
+        }
+        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
+            event.preventDefault();
+            unpublishClick();
         }
     };
 
@@ -137,7 +154,52 @@ const Page = () => {
         setPageName(element.textContent)
     };
 
+    const publishClick = () => {
+        setOpenPublishConfirmationModal(true)
+    }
+
+    const unpublishClick = () => {
+        setOpenUnpublishConfirmationModal(true)
+    }
+
+    const renderPublishConfirmationModal = () => {
+        return (
+            openPublishConfirmationModal && (
+                <ConfirmationModal
+                    show={openPublishConfirmationModal}
+                    onHide={() => setOpenPublishConfirmationModal(false)}
+                    proceed_button_callback={handlePublish}
+                    title={msgText.publishPage}
+                    submitButton='Publish'
+                    rejectButton='Discard'
+                />
+            )
+        )
+    }
+
+    const renderUnPublishConfirmationModal = () => {
+        return (
+            openUnpublishConfirmationModal && (
+                <ConfirmationModal
+                    show={openUnpublishConfirmationModal}
+                    onHide={() => setOpenUnpublishConfirmationModal(false)}
+                    proceed_button_callback={handleUnPublish}
+                    title={msgText.unpublishPage}
+                    submitButton='UnPublish'
+                    rejectButton='Discard'
+                />
+            )
+        )
+    }
+
     const handlePublish = async () => {
+        setLoading(true);
+        setPublished(false);
+
+        setTimeout(() => {
+            setLoading(false);
+            setPublished(true);
+        }, 2000);
         dispatch(approvePage(pages[pageId]))
     };
 
@@ -170,12 +232,12 @@ const Page = () => {
                     </Tooltip>
                 )
             case "Live":
-                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary"><span className="live-tooltip">Live</span></Tooltip>
+                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary live-tooltip">Live</Tooltip>
             case "shortcut":
                 return (
                     <Tooltip id='edited-by-tooltip'>
                         <div className="fs-4 text-secondary">
-                            {window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}
+                            {window.navigator.platform.toLowerCase().includes("mac") ? <span>CMD + S</span> : <span>CTRL + S</span>}
                         </div>
                     </Tooltip>
                 )
@@ -246,10 +308,21 @@ const Page = () => {
                     <div className="header-page-name d-flex align-items-center fa-1x text-truncate">
                         {renderPathLinks()}
                     </div>
-                    {pages?.[pageId]?.isPublished &&
-                        <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
+                    {
+                        loading &&
+                            <div>
+                                <div class="spinner-border spinner-border-sm ml-2" role="status"  style={{ color: '#6c757d ', width: '1rem', height: '1rem'  }}>
+                                    <span class="sr-only ">Publishing...</span>
+                                </div>
+                                <span className="ml-1" style={{ color: '#6c757d ', fontSize: '0.8rem' }}>Publishing...</span>
+                            </div>
+                    }
+                    {pages?.[pageId]?.isPublished && !loading &&
+                        <div className="">
+                            <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />
                         </OverlayTrigger>
+                        </div>
                     }
                 </div>
                 <div className='header-operations d-flex align-items-center gap-2'>
@@ -258,15 +331,11 @@ const Page = () => {
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     }
-                    <IconButton>
-                        {tabs[activeTabId]?.status === "NEW" ? (
-                            <button className="btn p-0 text-black-60 disabled">
-                                Unsaved
-                            </button>
-                        ) : (
-                            <></>
-                        )}
-                    </IconButton>
+                    {tabs[activeTabId]?.status === "NEW" && <IconButton>
+                        <button className="btn p-0 text-black-60 disabled">
+                            Unsaved
+                        </button>
+                    </IconButton>}
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
                             <Dropdown>
@@ -274,12 +343,30 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={handlePublish}>Publish</Dropdown.Item>
-                                    <Dropdown.Item onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
+                                    <Dropdown.Item className="p-1 d-flex justify-content-between align-items-center " onClick={publishClick}>
+                                        <span>Publish</span>
+                                        <span className="text-grey" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
+                                    </Dropdown.Item>
+                                    {isPublished && <Dropdown.Item
+                                        onClick={unpublishClick}
+                                        className="p-1 d-flex justify-content-between align-items-center"
+                                        onMouseEnter={() => setIsHovered(true)}
+                                        onMouseLeave={() => setIsHovered(false)}
+                                        style={{
+                                            color: isHovered ? 'white' : '#CC0000',
+                                            backgroundColor: isHovered ? '#CC0000' : 'transparent',
+                                            transition: 'background-color 0.3s, color 0.3s'
+                                        }}
+                                    >
+                                        <span>Unpublish</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
+                                        </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
                     }
+                    {renderPublishConfirmationModal()}
+                    {renderUnPublishConfirmationModal()}
                 </div>
             </div>
 

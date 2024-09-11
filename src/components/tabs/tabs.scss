@@ -31,6 +31,12 @@
       height: 100%;
       overflow-x: auto;
 
+      &:hover {
+        ::-webkit-scrollbar {
+          display: block !important;
+        }
+      }
+
       .nav-item {
         height: 42px;
         position: relative;
@@ -81,6 +87,7 @@
 
               svg {
                 color: $text-color !important;
+
                 &.graphql-icon {
                   color: rgb(170, 51, 106) !important;
                 }
@@ -110,7 +117,7 @@
             text-align: left;
             display: flex;
             flex-direction: column;
-            line-height: 1.25;
+            line-height: 1;
             justify-content: center;
             height: 100%;
 

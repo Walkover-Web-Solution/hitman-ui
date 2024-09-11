@@ -23,13 +23,16 @@ import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
 import EditRuns from './components/collections/showRuns/editRuns.jsx'
+import { MdClose } from 'react-icons/md'
+import IconButton from './components/common/iconButton.jsx'
+import './index.scss'
 
 const App = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    
+
     const scriptId = "chatbot-main-script"
     const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
     const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"
@@ -90,17 +93,19 @@ const App = () => {
     return (
       <>
         <ToastContainer
-          position='bottom-right'
-          autoClose={5000}
-          hideProgressBar={false}
+          position='bottom-left'
+          autoClose={1500}
+          hideProgressBar={true}
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          pauseOnFocusLoss
+          pauseOnFocusLoss={false}
           draggable
           pauseOnHover
-          theme='light'
+          theme='dark'
           transition={Slide}
+          toastClassName='custom-class'
+          closeButton={<IconButton variant='sm'><MdClose size={18} /></IconButton>}
         />
         <NavigationSetter />
         <Routes>

@@ -27,37 +27,6 @@ $border-color: rgba(227, 228, 230, 0.7);
   font-size: 10px;
 }
 
-.public-endpoint-navbar {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  padding: 0;
-  left: 0;
-  width: 350px;
-  background: #1f2628;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  z-index: 99;
-  .user-dropdown-btn {
-    .user-info {
-      padding: 12px 30px;
-      .user-details-heading {
-        &:after {
-          content: '\f0d8'; // UP caret
-        }
-      }
-    }
-  }
-  .user-dropdown {
-    .dropdown-menu.show {
-      left: 100% !important;
-      margin: 0 !important;
-      bottom: 0;
-      top: auto !important;
-      transform: translate(0px, 0px) !important;
-    }
-  }
-}
-
 .primitive-datatype-wrapper {
   display: flex;
   flex-direction: row;

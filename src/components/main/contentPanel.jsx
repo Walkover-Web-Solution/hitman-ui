@@ -247,7 +247,7 @@ const ContentPanel = () => {
                 />
                 <div className='d-flex'>
                   <Environments />
-                  {params.endpointId && (
+                  {params.endpointId && tabs.tabs.length !==0 && (
                     <div
                       className='d-flex justify-content-center align-items-center code-curl-icon'
                       onClick={handleCodeCurlClick}

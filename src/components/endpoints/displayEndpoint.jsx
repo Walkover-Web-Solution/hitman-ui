@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
+
 import {
   isDashboardRoute,
   isElectron,
@@ -44,7 +45,7 @@ import { updateEnvironment } from '../environments/redux/environmentsActions'
 import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 import * as _ from 'lodash'
-import { openModal, updateStateOfCurlSlider } from '../modals/redux/modalsActions'
+import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-18-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
@@ -72,10 +73,13 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
 import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 import { MdExpandMore } from 'react-icons/md'
+import { fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
+import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
+
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -98,6 +102,7 @@ const mapStateToProps = (state) => {
     endpoints: state.pages,
     environment: state.environment.environments[state.environment.currentEnvironmentId] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
+    currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {},
     environments: state.environment.environments,
     historySnapshots: state.history,
     collections: state.collections,
@@ -108,7 +113,8 @@ const mapStateToProps = (state) => {
     tokenDetails: state?.tokenData?.tokenDetails,
     curlSlider: state.modals?.curlSlider || false,
     users: state.users.usersList,
-    pages: state.pages
+    pages: state.pages,
+    publicEnv: state.publicEnv,
   }
 }
 
@@ -124,12 +130,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_modal: (modal, data) => dispatch(openModal(modal, data)),
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
-    // set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId)),
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
     update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
-    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData))
+    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData)),
+    update_public_env: (key, value) => dispatch(updatePublicEnv(key, value))
   }
 }
 
@@ -146,7 +152,8 @@ const untitledEndpointData = {
       [bodyTypesEnums['multipart/form-data']]: [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }]
     },
     uri: '',
-    updatedUri: ''
+    updatedUri: '',
+    URL: '',
   },
   pathVariables: [],
   environment: {},
@@ -245,7 +252,6 @@ const getEndpointContent = async (props) => {
     let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     return utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
   }
-
   return _.cloneDeep(untitledEndpointData)
 }
 
@@ -260,7 +266,7 @@ const fetchHistory = (historyId, props) => {
   return { ...utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData)), flagResponse: true }
 }
 
-const withQuery = (WrappedComponent) => {  
+const withQuery = (WrappedComponent) => {
   return (props) => {
     const params = useParams()
     const queryClient = useQueryClient()
@@ -276,9 +282,10 @@ const withQuery = (WrappedComponent) => {
       }
     } else {
       queryKey = ['endpoint', endpointId]
-      fetchFunction = () => getEndpointContent(props)
+      fetchFunction = async () => {
+        return getEndpointContent(props)
+      };
     }
-
     const data = useQuery(queryKey, fetchFunction, {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,
@@ -291,7 +298,6 @@ const withQuery = (WrappedComponent) => {
       let endpoint = _.cloneDeep(data.data)
       const bodyType = endpoint.body.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
-
       if (
         [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
         endpoint.body.raw
@@ -321,6 +327,7 @@ const withQuery = (WrappedComponent) => {
       delete endpoint.body?.value
 
       untitled.uri = endpoint.uri
+      untitled.URL = endpoint.URL
       untitled.updatedUri = endpoint.updatedUri
       untitled.method = endpoint.method
       untitled.name = endpoint.name
@@ -344,7 +351,6 @@ const withQuery = (WrappedComponent) => {
     const getDataFromReactQuery = (id) => {
       return queryClient.getQueryData(id)
     }
-
     return (
       <WrappedComponent
         {...props}
@@ -406,7 +412,11 @@ class DisplayEndpoint extends Component {
       activeTab: 'default',
       addUrlClass: false,
       fileDownloaded: false,
-      sendClickec: false
+      sendClickec: false,
+      showPublicEnvironments: false,
+      isHovered: false,
+      loading: false,
+      errorFound: true,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -536,6 +546,7 @@ class DisplayEndpoint extends Component {
     }
   }
   handleKeyDown = (event) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     const activeTabId = this.props.activeTabId
     const status = this.props.tabs?.[activeTabId]?.status
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
@@ -552,6 +563,14 @@ class DisplayEndpoint extends Component {
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
     }
+    if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+      this.setState({ openPublishConfirmationModal: true })
+    }
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
+      event.preventDefault();
+      this.setState({ openUnPublishConfirmationModal: true })
+    }
+
   }
 
   updateDimensions = () => {
@@ -591,25 +610,23 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    // if(!e?.target?.value) return;
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
-    data.uri = e.currentTarget.value
     let tempData = this.props?.endpointContent || {}
-    if (e.currentTarget.name === 'updatedUri') {
+    if (e.currentTarget.name === 'URL') {
       const keys = []
       const values = []
       const description = []
       let originalParams = this.props?.endpointContent?.originalParams || {}
       const updatedUri = e.currentTarget.value?.split('?')[1]
-      let path = new URI(e.currentTarget.value)
+      let path = new URI(e?.currentTarget?.value || '')
       path = path.pathname()
       const pathVariableKeys = path.split('/')
       const pathVariableKeysObject = {}
       for (let i = 0; i < pathVariableKeys.length; i++) {
         pathVariableKeysObject[pathVariableKeys[i]] = false
       }
-      this.setPathVariables(pathVariableKeys, pathVariableKeysObject)
+      this.setPathVariables(pathVariableKeys, pathVariableKeysObject, e.currentTarget.value)
       const result = URI.parseQuery(updatedUri)
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i])
@@ -627,7 +644,7 @@ class DisplayEndpoint extends Component {
           }
         }
       }
-      originalParams = this.makeOriginalParams(keys, values, description)
+      originalParams = this.makeOriginalParams(keys, values, description, e.currentTarget.value)
       tempData.originalParams = originalParams
     }
     tempData.data = data
@@ -658,41 +675,45 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
+  setPathVariables(pathVariableKeys, pathVariableKeysObject, value) {
+    const pathVariablesHtmlData = getPathVariableHTML(value);
     const pathVariables = []
     let counter = 0
-    for (let i = 0; i < pathVariableKeys.length; i++) {
-      if (pathVariableKeys[i][0] === ':' && pathVariableKeysObject[pathVariableKeys[i]] === false) {
-        pathVariableKeysObject[pathVariableKeys[i]] = true
-        let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim()
-        if (pathVariableKeyWithoutColon !== '') {
-          pathVariables.push({
-            checked: 'notApplicable',
-            key: pathVariableKeyWithoutColon,
-            value: this.props.endpointContent.pathVariables[counter] // TODO :: correct this index and assign correct value
-              ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
-                ? this.props.endpointContent.pathVariables[counter].value
-                : ''
-              : '',
-            description: this.props.endpointContent.pathVariables[counter]
-              ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
-                ? this.props.endpointContent.pathVariables[counter].description
-                : ''
-              : ''
-          })
-          counter++
-        }
-      }
+    for (let i = 0; i < pathVariablesHtmlData.length; i++) {
+      // if (pathVariableKeys[i][0] === ':' && pathVariableKeysObject[pathVariableKeys[i]] === false) {
+      //   pathVariableKeysObject[pathVariableKeys[i]] = true
+      let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim()
+      //   if (pathVariableKeyWithoutColon !== '') {
+
+      pathVariables.push({
+        checked: 'notApplicable',
+        key: pathVariablesHtmlData[i],
+        value: this.props.endpointContent.pathVariables[counter]
+          ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
+            ? this.props.endpointContent.pathVariables[counter].value
+            : ''
+          : '',
+        description: this.props.endpointContent.pathVariables[counter]
+          ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
+            ? this.props.endpointContent.pathVariables[counter].description
+            : ''
+          : ''
+      })
+      //   counter++
+      // }
+      // }
     }
     const dummyData = this.props?.endpointContent
     dummyData.pathVariables = pathVariables
     this.props.setQueryUpdatedData(dummyData)
   }
 
-  makeOriginalParams(keys, values, description, type) {
+  makeOriginalParams(keys, values, description, value) {
     const originalParams = []
+    let trueCounter = 0;
+    const queryParamsHtmlData = getQueryParamsHTML(value);
     for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
-      if (this.props?.endpointContent?.originalParams[i].checked === 'false') {
+      if (this.props?.endpointContent?.originalParams[i].checked === "false" || this.props?.endpointContent?.originalParams[i].checked === 'false') {
         originalParams.push({
           checked: this.props?.endpointContent?.originalParams[i].checked,
           key: this.props?.endpointContent?.originalParams[i].key,
@@ -701,14 +722,25 @@ class DisplayEndpoint extends Component {
           type: this.props?.endpointContent?.originalParams[i].type
         })
       }
+      else if (this.props?.endpointContent?.originalParams[i].checked === "true" || this.props?.endpointContent?.originalParams[i].checked === 'true') {
+        if (trueCounter > queryParamsHtmlData.length) break;
+        originalParams.push({
+          checked: "true",
+          key: fixSpanTags(queryParamsHtmlData?.[trueCounter]?.key?.html),
+          value: fixSpanTags(queryParamsHtmlData?.[trueCounter]?.value?.html),
+          description: this.props?.endpointContent?.originalParams[i]?.description,
+        })
+        trueCounter++;
+      }
     }
-    for (let i = 0; i < keys.length; i++) {
+    while (trueCounter < queryParamsHtmlData.length) {
       originalParams.push({
         checked: 'true',
-        key: keys[i],
-        value: values[i],
-        description: description[i]
+        key: fixSpanTags(queryParamsHtmlData[trueCounter].key.html),
+        value: fixSpanTags(queryParamsHtmlData[trueCounter].value.html),
+        description: description[trueCounter] || '',
       })
+      trueCounter++;
     }
     originalParams.push({
       checked: 'notApplicable',
@@ -959,16 +991,13 @@ class DisplayEndpoint extends Component {
         param.empty = false
       }
     })
-    // const endpoint = { ...this.props?.endpointContent }
-    // endpoint.params = { ...params }
-    // this.props.setQueryUpdatedData(endpoint)
     this.setState({ params })
     return isEmpty
   }
 
   addhttps(url) {
     if (url) {
-      if (this.props?.endpointContent?.data?.updatedUri.includes('localhost') && !url.includes('localhost')) {
+      if (this.props?.endpointContent?.data?.updatedUri?.includes('localhost') && !url?.includes('localhost')) {
         url = 'localhost:' + url
       }
       if (!/^(?:f|ht)tps?:\/\//.test(url)) {
@@ -1072,6 +1101,27 @@ class DisplayEndpoint extends Component {
     return base64Pattern.test(response)
   }
 
+  HtmlUrlToString(htmlString) {
+    const str = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
+    const regex = /{{(.*?)}}/g;
+    let matches = [];
+    let match;
+    while ((match = regex.exec(str)) !== null) {
+      matches.push(match[0]);
+    }
+    let finalString = str;
+    const suggestions = this.props.currentEnvironment;
+    matches.forEach(match => {
+      const variableName = match.slice(2, -2);
+      const suggestion = suggestions[variableName];
+      if (suggestion) {
+        const valueToReplace = suggestion.currentValue || suggestion.initialValue;
+        finalString = finalString.replace(match, valueToReplace);
+      }
+    });
+    return finalString;
+  }
+
   handleSend = async () => {
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
@@ -1099,7 +1149,7 @@ class DisplayEndpoint extends Component {
     const headersData = this.doSubmitHeader('send')
     const headerJson = {}
     Object.keys(headersData).forEach((header) => {
-      headerJson[header] = headersData[header].value
+      headerJson[getInnerText(header)] = getInnerText(headersData[header].value)
     })
 
     /** Prepare URL */
@@ -1107,7 +1157,8 @@ class DisplayEndpoint extends Component {
     const uri = new URI(this.props.endpointContent.data.updatedUri || '')
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
-    const url = BASE_URL + path + queryparams
+    let url = this.props.endpointContent.data.URL;
+    url = this.HtmlUrlToString(url);
     if (!url) {
       this.setState({ addUrlClass: true })
       setTimeout(() => {
@@ -1273,73 +1324,55 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, slug) => {    
-    const { endpointName, endpointDescription } = endpointObject || {}
-    let currentTabId = this.props.tab.id
-    let parentId = id
-    if (
-      (currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) ||
-      (this.props?.params?.historyId && slug !== 'isHistory')
-    ) {
-      this.openEndpointFormModal()
-    } else {
-      let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
-      const body = this.prepareBodyForSaving(endpointContent?.data?.body)
-      const bodyDescription = bodyDescriptionService.handleUpdate(false, {
-        body_description: endpointContent?.bodyDescription,
-        body: body?.value
-      })
-      if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
-        body.value = this.parseBody(body.value)
-      }
-      const headersData = this.doSubmitHeader('save')
-      const updatedParams = this.doSubmitParam()
-      let updatedPathVariables = this.doSubmitPathVariables()
-      updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
-        obj[key] = updatedPathVariables[key]
-        return obj
-      }, {})
-      let endpoint = {
-        id: slug === 'isHistory' ? this.props?.params?.historyId : currentTabId,
-        uri: endpointContent?.data.updatedUri,
-        name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
-        requestType: endpointContent?.data?.method,
-        body: body,
-        headers: headersData,
-        params: updatedParams,
-        pathVariables: updatedPathVariables,
-        BASE_URL: endpointContent?.host?.BASE_URL || null,
-        bodyDescription: endpointContent?.bodyDescription,
-        authorizationData: endpointContent?.authorizationData,
-        notes: endpointContent?.endpoint.notes,
-        preScript: endpointContent?.preScriptText,
-        postScript: endpointContent?.postScriptText,
-        docViewData: endpointContent?.docViewData,
-        protocolType: endpointContent?.protocolType || null,
-        description: endpointContent?.description || "",
-        sampleResponse : endpointContent?.sampleResponseArray || []
-      }
-      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
-        return toast.error('Please enter Endpoint name')
-      else if (currentTabId && !this.props.pages[currentTabId]) {
-        endpoint.requestId = currentTabId
-        this.setState({ saveAsLoader: true })
-        this.props.add_endpoint(
-          endpoint,
-          parentId,
-          ({ closeForm, stopLoader }) => {
-            if (closeForm) this.closeEndpointFormModal()
-            if (stopLoader) this.setState({ saveAsLoader: false })
-          },
-          this.props
-        )
-        moveToNextStep(4)
+  handleSave = async (id, endpointObject, slug) => {
+      const { endpointName, endpointDescription } = endpointObject || {}
+      let currentTabId = this.props.tab.id
+      let parentId = id
+      if (
+        (currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) ||
+        (this.props?.params?.historyId && slug !== 'isHistory')
+      ) {
+        this.openEndpointFormModal()
       } else {
-        if (this.state.saveAsFlag || slug === 'isHistory') {
-          endpoint.description = endpointDescription || ''
-          // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
-          delete endpoint.state
-          delete endpoint.isPublished
+        let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
+        const body = this.prepareBodyForSaving(endpointContent?.data?.body)
+        const bodyDescription = bodyDescriptionService.handleUpdate(false, {
+          body_description: endpointContent?.bodyDescription,
+          body: body?.value
+        })
+        if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
+          body.value = this.parseBody(body.value)
+        }
+        const headersData = this.doSubmitHeader('save')
+        const updatedParams = this.doSubmitParam()
+        let updatedPathVariables = this.doSubmitPathVariables()
+        updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
+          obj[key] = updatedPathVariables[key]
+          return obj
+        }, {})
+        let endpoint = {
+          id: slug === 'isHistory' ? this.props?.params?.historyId : currentTabId,
+          URL: endpointContent?.data?.URL,
+          name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
+          requestType: endpointContent?.data?.method,
+          body: body,
+          headers: headersData,
+          params: updatedParams,
+          pathVariables: updatedPathVariables,
+          bodyDescription: endpointContent?.bodyDescription,
+          authorizationData: endpointContent?.authorizationData,
+          notes: endpointContent?.endpoint.notes,
+          preScript: endpointContent?.preScriptText,
+          postScript: endpointContent?.postScriptText,
+          docViewData: endpointContent?.docViewData,
+          protocolType: endpointContent?.protocolType || null,
+          description: endpointContent?.description || "",
+          sampleResponse: endpointContent?.sampleResponseArray || []
+        }
+        if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
+          return toast.error('Please enter Endpoint name')
+        else if (currentTabId && !this.props.pages[currentTabId]) {
+          // endpoint.requestId = currentTabId
           this.setState({ saveAsLoader: true })
           this.props.add_endpoint(
             endpoint,
@@ -1348,33 +1381,50 @@ class DisplayEndpoint extends Component {
               if (closeForm) this.closeEndpointFormModal()
               if (stopLoader) this.setState({ saveAsLoader: false })
             },
-            this.state.saveAsFlag
+            this.props
           )
           moveToNextStep(4)
         } else {
-          // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
-          // not sending isPublished during put method
-          // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
-          endpoint.state = statesEnum.DRAFT_STATE
-          this.setState({ saveLoader: true })
-          this.props.update_endpoint(
-            {
-              ...endpoint,
-              id: currentTabId
-            },
-            () => {
-              this.setState({ saveLoader: false })
-            }
-          )
-          if (endpoint.description !== '') {
-            this.props.endpoints[currentTabId].description = true
+          if (this.state.saveAsFlag || slug === 'isHistory') {
+            endpoint.description = endpointDescription || ''
+            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+            delete endpoint.state
+            delete endpoint.isPublished
+            this.setState({ saveAsLoader: true })
+            this.props.add_endpoint(
+              endpoint,
+              parentId,
+              ({ closeForm, stopLoader }) => {
+                if (closeForm) this.closeEndpointFormModal()
+                if (stopLoader) this.setState({ saveAsLoader: false })
+              },
+              this.state.saveAsFlag
+            )
+            moveToNextStep(4)
           } else {
-            this.props.endpoints[currentTabId].description = false
+            // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
+            // not sending isPublished during put method
+            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+            endpoint.state = statesEnum.DRAFT_STATE
+            this.setState({ saveLoader: true })
+            this.props.update_endpoint(
+              {
+                ...endpoint,
+                id: currentTabId
+              },
+              () => {
+                this.setState({ saveLoader: false })
+              }
+            )
+            if (endpoint.description !== '') {
+              this.props.endpoints[currentTabId].description = true
+            } else {
+              this.props.endpoints[currentTabId].description = false
+            }
+            tabService.markTabAsSaved(currentTabId)
           }
-          tabService.markTabAsSaved(currentTabId)
         }
       }
-    }
   }
 
   doSubmitPathVariables() {
@@ -1428,9 +1478,9 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  propsFromChild(name, value) {
+  propsFromChild(name, value, targetName, index) {
     if (name === 'Params') {
-      this.handleUpdateUri(value)
+      this.handleUpdateUri(value, targetName, index)
       this.setModifiedTabData()
       const dummyData = this?.props?.endpointContent
       dummyData.originalParams = [...value]
@@ -1467,32 +1517,49 @@ class DisplayEndpoint extends Component {
   }
 
   handleUpdateUri(originalParams) {
-    const tempdata = this.props.endpointContent
-    if (originalParams.length === 0) {
-      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
-      const data = { ...this.props?.endpointContent.data }
-      data.updatedUri = updatedUri
-      tempdata.data = data
-      this.props.setQueryUpdatedData(tempdata)
-      return
+    const tempdata = this.props.endpointContent;
+    let newHTML = tempdata.data.URL;
+    let queryParamsHtmlData = getQueryParamsHTML(tempdata.data.URL);
+    if (queryParamsHtmlData.length != 0 && queryParamsHtmlData[0]?.key?.startIndex) {
+      newHTML = newHTML.substring(0, queryParamsHtmlData[0].key.startIndex);
+      if (!newHTML.endsWith('</span>')) newHTML = newHTML + '</span>';
     }
-    const originalUri = this.props?.endpointContent.data.updatedUri.split('?')[0] + '?'
-    const parts = {}
-    for (let i = 0; i < originalParams.length; i++) {
-      if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
-        parts[originalParams[i].key] = originalParams[i].value
+    let count = 0, paramsHTML = '';
+    originalParams.forEach((params) => {
+      if (params.checked == "true") {
+        if (count >= 1) paramsHTML += getIntoTextBlock('&')
+        paramsHTML = paramsHTML + `${params.key}${getIntoTextBlock('=')}${params.value}`;
+        count++;
+      }
+    });
+    let counter = newHTML.length
+    while (counter > -1) {
+      if (newHTML[counter] === '?') break;
+      counter--;
+    }
+    if (count === 0) {
+      if (counter === -1 || counter === 0) {
+        tempdata.data.URL = newHTML;
+      }
+      else {
+        newHTML = newHTML.substring(0, counter);
+        if (newHTML.endsWith("<span text-block='true'>") || newHTML.endsWith('<span text-block="true">')) {
+          newHTML = newHTML?.slice(0, -24);
+        }
+        else if (!newHTML.endsWith('</span>')) {
+          newHTML = newHTML + '</span>';
+        }
+        tempdata.data.URL = newHTML;
       }
     }
-    URI.escapeQuerySpace = false
-    let updatedUri = URI.buildQuery(parts)
-    updatedUri = originalUri + URI.decode(updatedUri)
-    const data = { ...this.props?.endpointContent.data }
-    if (Object.keys(parts).length === 0) {
-      data.updatedUri = updatedUri.split('?')[0]
-    } else {
-      data.updatedUri = updatedUri
+    else {
+      if (counter === -1 || counter === 0) {
+        tempdata.data.URL = newHTML + getIntoTextBlock('?') + paramsHTML;
+      }
+      else {
+        tempdata.data.URL = newHTML + paramsHTML;
+      }
     }
-    tempdata.data = data
     this.props.setQueryUpdatedData(tempdata)
   }
 
@@ -1754,7 +1821,12 @@ class DisplayEndpoint extends Component {
       description: '',
       type: 'enable'
     }
+    let accessTokenIndex = -1
     for (let i = 0; i < originalParams.length; i++) {
+      if (getInnerText(originalParams[i].key) === 'access_token') {
+        authorizationFlag = true;
+        accessTokenIndex = i
+      }
       if (originalParams[i].key === title || originalParams[i].key === '') {
         continue
       } else {
@@ -1764,11 +1836,14 @@ class DisplayEndpoint extends Component {
     if (title === 'access_token' && !authorizationFlag) {
       updatedParams.push({
         checked: 'true',
-        key: title,
-        value: value,
+        key: getIntoTextBlock(title),
+        value: getIntoTextBlock(value),
         description: '',
         type: 'disable'
       })
+    }
+    if (title === 'access_token' && authorizationFlag && accessTokenIndex > -1) {
+      updatedParams[accessTokenIndex].value = getIntoTextBlock(value)
     }
     updatedParams.push(emptyParam)
     const dummyData = this.props.endpointContent
@@ -1799,11 +1874,18 @@ class DisplayEndpoint extends Component {
       description: '',
       type: 'enable'
     }
+    let authorizationIndex = -1;
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
+      if (getInnerText(originalHeaders[i].key) === 'Authorization') {
+        authorizationIndex = i;
+        authorizationFlag = true;
+        updatedHeaders.push(originalHeaders[i])
+        continue;
+      }
+      if (getInnerText(originalHeaders[i].key) === '') {
         continue
-      } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
-        originalHeaders[i].value = this.identifyBodyType(value)
+      } else if (getInnerText(originalHeaders[i].key).toLowerCase() === title.split('.')[0]) {
+        originalHeaders[i].value = getIntoTextBlock(this.identifyBodyType(value))
         const dummyData = this.props.endpointContent
         dummyData.originalHeaders = originalHeaders
         this.props.setQueryUpdatedData(dummyData)
@@ -1822,14 +1904,17 @@ class DisplayEndpoint extends Component {
     if (value !== 'noAuth' && !authorizationFlag) {
       updatedHeaders.push({
         checked: 'true',
-        key: title === 'content-type' ? 'content-type' : 'Authorization',
-        value: title.split('.')[0] === 'Authorization' ? (title.split('.')[1] === 'oauth_2' ? 'Bearer ' + value : 'Basic ' + value) : '',
+        key: title === 'content-type' ? getIntoTextBlock('content-type') : getIntoTextBlock('Authorization'),
+        value: title.split('.')[0] === 'Authorization' ? (title.split('.')[1] === 'oauth_2' ? getIntoTextBlock('Bearer') + getIntoTextBlock('&nbsp;') + getIntoTextBlock(value) : getIntoTextBlock('Basic') + getIntoTextBlock('&nbsp;') + getIntoTextBlock(value)) : '',
         description: '',
-        type: 'disable'
+        type: 'enable'
       })
     }
     if (title === 'content-type') {
-      updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(value)
+      updatedHeaders[updatedHeaders.length - 1].value = getIntoTextBlock(this.identifyBodyType(value))
+    }
+    if (title.split('.')[0] === 'basicAuth' && authorizationIndex > -1) {
+      updatedHeaders[authorizationIndex].value = getIntoTextBlock('Basic') + getIntoTextBlock('&nbsp;') + getIntoTextBlock(value)
     }
     updatedHeaders.push(emptyHeader)
     const dummyData = this.props.endpointContent
@@ -1838,11 +1923,12 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    } else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+    }
+    if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
-        dummyData.authorizationData.authorization.user = basicAuth.username
-        dummyData.authorizationData.authorization.password = basicAuth.password
+        dummyData.authorizationData.authorization.basicAuth.username = basicAuth.username
+        dummyData.authorizationData.authorization.basicAuth.password = basicAuth.password
       }
     } else {
       dummyData.authorizationData.authorization = { oauth2: {} }
@@ -1851,8 +1937,8 @@ class DisplayEndpoint extends Component {
         selectedTokenId: tokenIdToSave
       }
     }
-    dummyData.originalHeaders = updatedHeaders
-    this.props.setQueryUpdatedData(dummyData)
+    dummyData.originalHeaders = [...updatedHeaders]
+    this.props.setQueryUpdatedData({ ...dummyData })
   }
 
   deleteHeader() {
@@ -1944,11 +2030,11 @@ class DisplayEndpoint extends Component {
   makeFormData(body) {
     const formData = {}
     for (let i = 0; i < body.length; i++) {
-      if (body[i].key.length !== 0 && body[i].checked === 'true') {
+      if (getInnerText(body[i].key).length !== 0 && body[i].checked === 'true') {
         if (!isElectron() && body[i].type === 'file') {
           continue
         }
-        formData[body[i].key] = body[i].value
+        formData[getInnerText(body[i].key)] = getInnerText(body[i].value)
       }
     }
     return formData
@@ -1968,12 +2054,10 @@ class DisplayEndpoint extends Component {
       case bodyTypesEnums['application/x-www-form-urlencoded']: {
         const urlEncodedData = {}
         for (let i = 0; i < body?.[bodyTypesEnums['application/x-www-form-urlencoded']].length; i++) {
-          if (
-            body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key.length !== 0 &&
-            body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].checked === 'true'
-          ) {
-            urlEncodedData[body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key] =
-              body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].value
+          let innerTextKey = getInnerText(body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key)
+          let innerTextValue = getInnerText(body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].value)
+          if (innerTextKey.length !== 0 && body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].checked === 'true') {
+            urlEncodedData[innerTextKey] = innerTextValue
           }
         }
         return { body: urlEncodedData, headers }
@@ -2239,9 +2323,8 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  setHostUri(host, uri, selectedHost) {
-    if (uri !== this.props?.endpointContent?.data?.uri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
-    this.setBaseUrl(host, selectedHost)
+  setHostUri(innerHTML) {
+    this.handleChange({ currentTarget: { name: 'URL', value: innerHTML } })
   }
 
   alterEndpointName(name) {
@@ -2322,7 +2405,7 @@ class DisplayEndpoint extends Component {
     return (
       showRemoveButton && (
         <div className='' onClick={handleOnClick.bind(this)}>
-         <RiDeleteBinLine/>
+          <RiDeleteBinLine />
         </div>
       )
     )
@@ -2402,7 +2485,6 @@ class DisplayEndpoint extends Component {
       />
     )
   }
-
   renderPublicItem = (item, index) => {
     switch (item.type) {
       case 'textArea': {
@@ -2481,7 +2563,7 @@ class DisplayEndpoint extends Component {
         <div>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
-              <FaPlus className='mr-2 cursor-pointer text-grey' size={14} onClick={() => this.showDocOptions()} />
+              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()} />
             </Dropdown.Toggle>
             <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
@@ -2514,9 +2596,7 @@ class DisplayEndpoint extends Component {
 
   renderPublicBodyContainer() {
     return (
-      this.props?.endpointContent?.data?.body &&
-      // this.props?.endpointContent?.originalBody &&
-      this.props?.endpointContent?.data?.body?.value !== null && (
+      this.props?.endpointContent?.data?.body && (
         <PublicBodyContainer
           {...this.props}
           set_body={this.setBody.bind(this)}
@@ -2625,17 +2705,79 @@ class DisplayEndpoint extends Component {
       )
     )
   }
+  handleInputChange(key, event) {
+    const newValue = event.target.value;
+    this.props.update_public_env(key, newValue);
+  }
+
+  renderPublicEnvironments() {
+    return (
+      <div>
+        {this.state.showPublicEnvironments && (
+          <div>
+            <span>Public Environments</span>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th >
+                    KEY
+                  </th>
+                  <th>VALUE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.props.publicEnv && (
+                  Object.keys(this.props.publicEnv).map((key, Index) => {
+                    const env = this.props.publicEnv[key]
+                    if (env && typeof env.Checked !== "undefined" && env.Checked) {
+
+                      return (
+                        <tr key={Index}>
+                          <td>
+                            <input
+                              type="text"
+                              value={key}
+                              disabled
+                              className="form-control"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={env.DefaultValue}
+                              disabled={!env.IsEditable}
+                              onChange={(event) => this.handleInputChange(key, event)}
+                              className="form-control"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return null;
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <button
+          className="btn btn-primary"
+          onClick={() => this.setState({ showPublicEnvironments: !this.state.showPublicEnvironments })}
+        >
+          {this.state.showPublicEnvironments ? 'Hide Public Environments' : 'Show Public Environments'}
+        </button>
+      </div>
+    );
+  }
 
   renderPublicHost() {
     return (
       <div>
-        {/* do not remove this code */}
-        {/* <h3 className='heading-2'>Endpoint Name</h3> */}
-        <div className='hm-endpoint-header'>
-          <div className='input-group'>
+        <div className='hm-endpoint-header mb-2'>
+          <div className='d-flex'>
             {this.checkProtocolType(1) && (
               <div className='input-group-prepend'>
-                <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent?.data?.method}`}>
+                <span className={`api-label api-label-lg input-group-text m-0 p-0 ${this.props?.endpointContent?.data?.method}`}>
                   {this.props?.endpointContent?.data?.method}
                 </span>
               </div>
@@ -2647,6 +2789,7 @@ class DisplayEndpoint extends Component {
                 this.props?.environment?.variables?.BASE_URL?.initialValue ||
                 ''
               }
+              URL={this.props.endpointContent?.data?.URL}
               updatedUri={_.cloneDeep(this.props?.endpointContent?.data?.updatedUri)}
               set_base_url={this.setBaseUrl.bind(this)}
               // customHost={this.props?.endpointContent?.host.BASE_URL || ''}
@@ -2660,6 +2803,7 @@ class DisplayEndpoint extends Component {
           {this.props?.highlights?.uri ? <i className='fas fa-circle' /> : null}
         </div>
         <input ref={this.uri} type='hidden' value={this.props?.endpointContent?.data?.updatedUri} name='updatedUri' />
+        {(!isDashboardRoute(this.props)) && Object.keys(this.props.publicEnv).length !== 0 && this.renderPublicEnvironments()}
       </div>
     )
   }
@@ -2700,7 +2844,7 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         )}
-        <div className={`d-flex w-100 dashboard-url ${this.state.addUrlClass ? 'Url-invalid' : ''}`}>
+        <div className={`d-flex dashboard-url ${this.state.addUrlClass ? 'Url-invalid' : ''}`}>
           <HostContainer
             {...this.props}
             endpointId={this.state.endpoint.id}
@@ -2709,6 +2853,7 @@ class DisplayEndpoint extends Component {
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
             updatedUri={this.props.endpointContent?.data?.updatedUri}
+            URL={this.props.endpointContent?.data?.URL}
             set_host_uri={this.setHostUri.bind(this)}
             set_base_url={this.setBaseUrl.bind(this)}
             props_from_parent={this.propsFromChild.bind(this)}
@@ -2738,6 +2883,7 @@ class DisplayEndpoint extends Component {
         entityId={endpointId}
         onUnpublish={() => this.handleRemovePublicEndpoint(endpointId)}
         entityName='Endpoint'
+        hovered={this.state.isHovered}
       />
     )
   }
@@ -2763,8 +2909,8 @@ class DisplayEndpoint extends Component {
 
   renderSwitchBtn() {
     return (
-      <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
-        <button className='btn text-grey btn-sm fs-4'>DOC</button>
+      <div onClick={this.handleToggle} className='p-1 d-flex justify-content-between align-items-center cursor-pointer'>
+        <button className='btn btn-sm fs-4'>DOC</button>
         <SwitchBtn isOn={this.props?.endpointContent?.currentView === 'doc'} handleToggle={this.handleToggle} />
       </div>
     )
@@ -2803,6 +2949,10 @@ class DisplayEndpoint extends Component {
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
+    this.setState({ loading: true })
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, 2000);
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
@@ -2982,6 +3132,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    const { isHovered } = this.state;
     if (this.props?.endpointContentLoading) {
       return (
         <>
@@ -3041,15 +3192,15 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container px-3 mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              className={`hm-endpoint-container px-3 mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3 px-5' : 'pt-0'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
                 }`}
             >
               {this.renderCookiesModal()}
@@ -3066,6 +3217,7 @@ class DisplayEndpoint extends Component {
                           setActiveTab={this.setActiveTab}
                           {...this.props}
                           isEndpoint
+                          publishLoader={this.state.loading}
                         />
                         <div className='d-flex gap-1 align-items-center'>
                           {this.state.showEndpointFormModal && (
@@ -3090,20 +3242,31 @@ class DisplayEndpoint extends Component {
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item className='p-1 d-flex justify-content-between align-items-center'>
                                   <span>
                                     {approvedOrRejected
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span className='text-grey'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item
+                                  className='p-1 d-flex justify-content-between align-items-center'
+                                  onMouseEnter={() => this.setState({ isHovered: true })}
+                                  onMouseLeave={() => this.setState({ isHovered: false })}
+                                  style={{
+                                    color: isHovered ? 'white' : '#CC0000',
+                                    backgroundColor: isHovered ? '#CC0000' : 'transparent',
+                                    transition: 'background-color 0.3s, color 0.3s',
+                                  }}
+                                >
                                   <span>
                                     {isStateApproved(endpointId, endpointss)
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button
@@ -3114,7 +3277,6 @@ class DisplayEndpoint extends Component {
                                   {getEntityState(endpointId, endpointss)}
                                 </button>
                               </Dropdown.Item>)}
-
                             </Dropdown.Menu>
                           </Dropdown>
                         </div>
@@ -3655,16 +3817,6 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-                {isOnPublishedPage() && (
-                  <span className='Modified-at upper-modified-at'>
-                    <DisplayUserAndModifiedData
-                      isOnPublishedPage={true}
-                      pages={this.props.pages}
-                      currentPage={this.props.currentEndpointId}
-                      users={this.props.users}
-                    />
-                  </span>
-                )}
               </div>
               {isOnPublishedPage() && (
                 <div className='w-100'>
@@ -3685,7 +3837,7 @@ class DisplayEndpoint extends Component {
               </div>
             ) : null}
             {isOnPublishedPage() && (this.renderCodeTemplate())}
-            {isOnPublishedPage() && (
+            {/* {isOnPublishedPage() && (
               <span className='Modified-at mt-2 lower-modified-at'>
                 <DisplayUserAndModifiedData
                   isOnPublishedPage={isOnPublishedPage()}
@@ -3694,7 +3846,7 @@ class DisplayEndpoint extends Component {
                   users={this.props.users}
                 />
               </span>
-            )}
+            )} */}
           </div>
           {!isOnPublishedPage() && (this.renderCodeTemplate())}
         </div>

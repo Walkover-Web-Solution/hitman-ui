@@ -15,8 +15,6 @@ import { background } from '../backgroundColor'
 import classNames from 'classnames';
 import { FaPlus } from 'react-icons/fa'
 import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
-
-
 import JSONPrettyMon from 'react-json-pretty/dist/monikai'
 
 

@@ -55,6 +55,7 @@ export const addCollection = (newCollection, customCallback) => {
         .saveCollection(newCollection)
         .then((response) => {
           dispatch(onCollectionAdded(response.data));
+          toast.success("Collection added successfully")
           const invisiblePageData = {
             page: {
               id: response.data.rootParentId,
@@ -70,6 +71,7 @@ export const addCollection = (newCollection, customCallback) => {
           resolve(response.data);
         })
         .catch((error) => {
+          toast.error(error.response ? error.response.data : 'Error adding collection');
           dispatch(onCollectionAddedError(error.response ? error.response.data : error, newCollection));
           if (customCallback) {
             customCallback({ success: false });
@@ -111,6 +113,9 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
     delete editedCollection.id
     delete editedCollection.requestId
     delete editedCollection.rootParentId
+    delete editedCollection.createdAt
+    delete editedCollection.cta
+    delete editedCollection.updatedAt
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {

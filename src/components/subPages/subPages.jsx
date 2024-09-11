@@ -40,6 +40,7 @@ const SubPage = (props) => {
   const [isHovered, setIsHovered] = useState(false)
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
   const [isHover, setIsHover] = useState(false)
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
     if (!theme) {
@@ -173,18 +174,15 @@ const SubPage = (props) => {
               className={`d-flex justify-content-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
               onClick={(e) => {
                 handleRedirect(subPageId)
-                if (!expanded) {
-                  handleToggle(e, subPageId)
-                }
               }}
             >
-              <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, subPageId)}>
+              <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, subPageId)}>
                 <IconButtons variant='sm'>
                   <MdExpandMore
                     size={13}
                     className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
                   /></IconButtons>
-                <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
+                <IoDocumentTextOutline size={18} className='collection-icons d-inline' />
               </span>
               <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
             </div>
@@ -205,7 +203,15 @@ const SubPage = (props) => {
                   <div className='dropdown-item d-flex align-items-center' onClick={() => openEditSubPageForm(pages[subPageId])}>
                     <FiEdit2 color='gray' /> Rename
                   </div>
-                  <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeleteSubPageModal(subPageId)}>
+                  <div className='dropdown-item d-flex align-items-center'
+                    onClick={() => openDeleteSubPageModal(subPageId)}
+                    onMouseEnter={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}
+                    style={{
+                      color: hover ? 'white' : '#8e1a10',
+                      backgroundColor: hover ? '#CC0000' : 'transparent',
+                      transition: 'background-color 0.3s, color 0.3s'
+                    }}>
                     <RiDeleteBin6Line size={15} /> Delete
                   </div>
                 </div>
