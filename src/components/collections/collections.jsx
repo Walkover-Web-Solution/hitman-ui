@@ -260,7 +260,7 @@ const Collections = (props) => {
                             onMouseLeave={() => setIsHovered(false)}
                             style={{
                               color: isHovered ? 'white' : '#8e1a10',
-                              backgroundColor: isHovered ? 'red' : 'transparent',
+                              backgroundColor: isHovered ? '#CC0000' : 'transparent',
                               transition: 'background-color 0.3s, color 0.3s'
                             }}
                           >

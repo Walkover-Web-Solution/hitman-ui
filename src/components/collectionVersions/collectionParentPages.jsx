@@ -288,7 +288,7 @@ const CollectionParentPages = (props) => {
                       onMouseLeave={() => setHover(false)}
                       style={{
                         color: hover ? 'white' : '#8e1a10',
-                        backgroundColor: hover ? 'red' : 'transparent',
+                        backgroundColor: hover ? '#CC0000' : 'transparent',
                         transition: 'background-color 0.3s, color 0.3s'
                       }}>
                       <RiDeleteBin6Line size={15} /> Delete

@@ -17,6 +17,7 @@ import { isOrgDocType } from '../common/utility'
 import { FaCheck } from "react-icons/fa6";
 import { IoExit } from 'react-icons/io5'
 import './userProfile.scss'
+import IconButton from '../common/iconButton'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -146,7 +147,7 @@ const UserProfile = () => {
   }
 
   const showTooltips = () => {
-    return <Tooltip className="fs-4 text-secondary"><span >Leave</span></Tooltip>
+    return <Tooltip className="fs-4 text-secondary org-leave"><span >Leave</span></Tooltip>
   }
 
   const renderOrgListDropdown = () => {
@@ -168,10 +169,14 @@ const UserProfile = () => {
               </div>
               {org?.id !== selectedOrg?.id && (
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
-                  <span className='leave-icon' onClick={() => leaveOrganization(org.id)}><IoExit size={20} /></span>
+                  <span className='leave-icon' onClick={() => leaveOrganization(org.id)}>
+                    <IconButton>
+                      <IoExit size={20} />
+                    </IconButton>
+                  </span>
                 </OverlayTrigger>
               )}
-              {org.id === selectedOrg?.id && <span className='check' ><FaCheck size={16}/></span>}
+              {org.id === selectedOrg?.id && <span className='check' ><FaCheck size={16} /></span>}
             </div>
           ))}
         </div>

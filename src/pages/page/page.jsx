@@ -6,7 +6,7 @@ import { approvePage, draftPage } from "../../components/publicEndpoint/redux/pu
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
 import { updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
@@ -342,9 +342,9 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item className="p-1 d-flex justify-content-between align-items-center" onClick={publishClick}>
+                                    <Dropdown.Item className="p-1 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + B" : "Ctrl + B"}</span>
+                                        <span className="text-grey" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + B</>  : <span>Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
@@ -352,13 +352,13 @@ const Page = () => {
                                         onMouseEnter={() => setIsHovered(true)}
                                         onMouseLeave={() => setIsHovered(false)}
                                         style={{
-                                            color: isHovered ? 'white' : 'red',
-                                            backgroundColor: isHovered ? 'red' : 'transparent',
+                                            color: isHovered ? 'white' : '#CC0000',
+                                            backgroundColor: isHovered ? '#CC0000' : 'transparent',
                                             transition: 'background-color 0.3s, color 0.3s'
                                         }}
                                     >
                                         <span>Unpublish</span>
-                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + U" : "Ctrl + U"}</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + U</>  : <span>Ctrl + U</span>}</span>
                                         </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>

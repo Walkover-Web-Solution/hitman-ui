@@ -1,3 +1,5 @@
+@import '../main/variables.scss';
+
 .org-listing-container {
   display: flex;
   height: auto;
@@ -50,8 +52,13 @@
   color: rgba(55, 53, 47, 0.65);
 
   &:hover {
-    color: rgb(224 9 9);
+     color: $alert-color;
+
   }
+}
+
+.org-leave{
+  font-size: 8px;
 }
 
 .name-list {

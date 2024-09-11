@@ -73,7 +73,7 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
 import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 import { MdExpandMore } from 'react-icons/md'
@@ -2882,6 +2882,7 @@ class DisplayEndpoint extends Component {
         entityId={endpointId}
         onUnpublish={() => this.handleRemovePublicEndpoint(endpointId)}
         entityName='Endpoint'
+        hovered={this.state.isHovered}
       />
     )
   }
@@ -2908,7 +2909,7 @@ class DisplayEndpoint extends Component {
   renderSwitchBtn() {
     return (
       <div onClick={this.handleToggle} className='p-1 d-flex justify-content-between align-items-center cursor-pointer'>
-        <button className='btn text-grey btn-sm fs-4'>DOC</button>
+        <button className='btn btn-sm fs-4'>DOC</button>
         <SwitchBtn isOn={this.props?.endpointContent?.currentView === 'doc'} handleToggle={this.handleToggle} />
       </div>
     )
@@ -3246,7 +3247,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span>{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + b" : "Ctrl + b"}</span>
+                                  <span className='text-grey'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + B</>  : <span>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item
@@ -3254,8 +3255,8 @@ class DisplayEndpoint extends Component {
                                   onMouseEnter={() => this.setState({ isHovered: true })}
                                   onMouseLeave={() => this.setState({ isHovered: false })}
                                   style={{
-                                    color: isHovered ? 'white' : 'red',
-                                    backgroundColor: isHovered ? 'red' : 'transparent',
+                                    color: isHovered ? 'white' : '#CC0000',
+                                    backgroundColor: isHovered ? '#CC0000' : 'transparent',
                                     transition: 'background-color 0.3s, color 0.3s',
                                   }}
                                 >
@@ -3264,7 +3265,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span>{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + u" : "Ctrl + u"}</span>
+                                  <span>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + U</>  : <span>Ctrl + U</span>}</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button

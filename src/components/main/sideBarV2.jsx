@@ -146,7 +146,7 @@ const SideBar = () => {
           ref={inputRef}
           value={searchData.filter}
           className='search-input'
-          placeholder= {isMac ? 'Press Cmd + K to search' : 'Press Ctrl + K to search'}
+          placeholder= {isMac ? <>Press <BsCommand /> + K to search</> : 'Press Ctrl + K to search'}
           autoComplete='off'
           type='text'
           name='filter'

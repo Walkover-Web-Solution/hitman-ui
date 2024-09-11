@@ -70,7 +70,8 @@ const MainV2 = () => {
   }
 
   const addShortCutForShortcutModal = async () => {
-    if (event.ctrlKey && event.key === "/") {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0; 
+    if ((isMac && event.metaKey && event.key === "/") || (!isMac && event.ctrlKey && event.key === "/")) { 
       event.preventDefault();
       handleShortcutModal();
     }
@@ -150,7 +151,7 @@ const MainV2 = () => {
       <CustomModal size='sm' modalShow={showAddCollectionModal} hideModal={handleAddNewClick}>
         <CollectionForm title='Add new Collection' onHide={handleAddNewClick} />
       </CustomModal>
-      <CustomModal size='sm' modalShow={showShortcutModal} hideModal={handleShortcutModal}>
+      <CustomModal size='sm' modalShow={showShortcutModal} onHide={handleShortcutModal}>
         <ShortcutModal hideModal={handleShortcutModal} />
       </CustomModal>
     </>
