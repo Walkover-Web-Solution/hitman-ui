@@ -236,7 +236,7 @@ const Page = () => {
                 return (
                     <Tooltip id='edited-by-tooltip'>
                         <div className="fs-4 text-secondary">
-                            {window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}
+                            {window.navigator.platform.toLowerCase().includes("mac") ? <span>CMD + S</span> : <span>CTRL + S</span>}
                         </div>
                     </Tooltip>
                 )
@@ -344,7 +344,7 @@ const Page = () => {
                                 <Dropdown.Menu>
                                     <Dropdown.Item className="p-1 d-flex justify-content-between align-items-center" onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + b" : "Ctrl + b"}</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + B" : "Ctrl + B"}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
@@ -358,7 +358,7 @@ const Page = () => {
                                         }}
                                     >
                                         <span>Unpublish</span>
-                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + u" : "Ctrl + u"}</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + U" : "Ctrl + U"}</span>
                                         </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>

@@ -54,7 +54,6 @@ const Endpoints = (props) => {
   }
 
   const handleDisplay = (endpoint, groupId, collectionId, previewMode) => {
-    debugger
     window.scroll(0, 0)
     if (isDashboardRoute({ location, navigate }, true)) {
       if (!tabs.tabs[endpoint.id]) {

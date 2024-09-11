@@ -56,7 +56,6 @@ const CustomTabs = (props) => {
   })
 
   useEffect(() => {
-    debugger
     const newRef = scrollRef.current[tabs.activeTabId] || null
     newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
 

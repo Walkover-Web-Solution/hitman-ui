@@ -3,8 +3,6 @@ import { Button, Modal } from 'react-bootstrap';
 import { RxCross2 } from "react-icons/rx";
 
 const ShortcutModal = ({ hideModal }) => {
-
-
     const modalStyle = {
         backgroundColor: '#ffffff',
         boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
@@ -46,19 +44,18 @@ const ShortcutModal = ({ hideModal }) => {
         display: 'inline-block',
         fontSize: '12px', 
     };
+
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
     const shortcuts = [
-        { name: 'Show Shortcuts', key: isMac ? 'Cmd + /' : 'Ctrl + /' },
-        { name: 'Open Tab', key: isMac ? 'Ctrl + N' : 'Alt + N' },
-        { name: 'Switch Tab', key: isMac ? 'Ctrl + T' : 'Alt + T' },
-        { name: 'Close Tab', key: isMac ? 'Ctrl + W' : 'Alt + W' },
+        { name: 'Save', key: isMac ? 'Cmd + S' : 'Ctrl + S' },
         { name: 'Publish', key: isMac ? 'Cmd + B' : 'Ctrl + B' },
         { name: 'Unpublish', key: isMac ? 'Cmd + U' : 'Ctrl + U' },
-        { name: 'Save', key: isMac ? 'Cmd + S' : 'Ctrl + S' },
+        { name: 'Open Tab', key: isMac ? 'Ctrl + N' : 'Alt + N' },
+        { name: 'Close Tab', key: isMac ? 'Ctrl + W' : 'Alt + W' },
+        { name: 'Switch Tab', key: isMac ? 'Ctrl + T' : 'Alt + T' },
+        { name: 'Show Shortcuts', key: isMac ? 'Cmd + /' : 'Ctrl + /' },
     ];
-
-    
 
     return (
         <div style={modalStyle}>
@@ -81,4 +78,3 @@ const ShortcutModal = ({ hideModal }) => {
 };
 
 export default ShortcutModal;
-
