@@ -3,17 +3,18 @@ import { Button, Modal } from 'react-bootstrap';
 import { RxCross2 } from "react-icons/rx";
 import IconButton from '../common/iconButton';
 import { BsCommand } from 'react-icons/bs';
+import { PiControlBold } from "react-icons/pi";
 
 const ShortcutModal = ({ hideModal }) => {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
     const shortcuts = [
         { name: 'Save', key: isMac ?  [<BsCommand key="cmd"/>, 'S'] : ['Ctrl', 'S'] }, 
-        { name: 'Open Tab', key: isMac ? ['Ctrl', 'N'] : ['Alt', 'N'] },
+        { name: 'Open Tab', key: isMac ? [<PiControlBold key="ctrl"/>, 'N'] : ['Alt', 'N'] },
         { name: 'Publish', key: isMac ? [<BsCommand  key="cmd"/>, 'B']  : ['Ctrl', 'B'] },
-        { name: 'Close Tab', key: isMac ? ['Ctrl', 'W'] : ['Alt', 'W'] },
+        { name: 'Close Tab', key: isMac ? [<PiControlBold key="ctrl"/>, 'W'] : ['Alt', 'W'] },
         { name: 'Unpublish', key: isMac ? [<BsCommand key="cmd"/>, 'U']  : ['Ctrl', 'U'] },
-        { name: 'Switch Tab', key: isMac ? ['Ctrl', 'T'] : ['Alt', 'T'] },
+        { name: 'Switch Tab', key: isMac ? [<PiControlBold key="ctrl"/>, 'T'] : ['Alt', 'T'] },
         { name: 'Show Shortcuts', key: isMac ? [<BsCommand key="cmd"/>, '/']  :['Ctrl', '/'] },
 
     ];

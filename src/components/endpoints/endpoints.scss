@@ -2019,3 +2019,9 @@ table#custom-generic-table {
     }
   }
 }
+.delete-endpoint-btn {
+  &:hover {
+    background-color: $alert-color !important;
+    color: white !important;
+  }
+}

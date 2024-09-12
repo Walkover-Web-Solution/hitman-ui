@@ -2091,7 +2091,24 @@ html body div#sokt-sso-modal {
 }
 
 .buttonLoader {
-  position: relative;
+  position: relative; 
+
+}
+.unpublishBtn {
+  &:hover {
+    background-color: $alert-color !important;
+    span{
+      color: white !important;
+    }
+    .button {
+      color: white !important;
+      transition: none !important;
+    }
+  }
+  .cmd-icon {
+    margin-right: 2px !important;
+  }
+  
 }
 
 @keyframes buttonLoader {

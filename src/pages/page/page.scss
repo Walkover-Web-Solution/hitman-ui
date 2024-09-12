@@ -50,6 +50,16 @@
         .disable-unpublish {
           color: rgb(235, 87, 87, 0.5);
         }
+
+        .unpublish-page{
+          &:hover{
+            background-color: $alert-color;
+            span{
+              color: white !important;
+            }
+
+          }
+        }
       }
 
     }
