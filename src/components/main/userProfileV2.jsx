@@ -157,7 +157,7 @@ const UserProfile = () => {
       <div className='org-listing-container'>
         <div className='org-listing-column d-flex flex-column gap-1 w-100'>
           {organizations.map((org, key) => (
-            <div key={key} className='d-flex name-list cursor-pointer'>
+            <div key={key} className='d-flex align-items-center justify-content- name-list cursor-pointer'>
               <div className='org-collection-name d-flex'>
                 <Avatar className='mr-2 avatar-org' name={org.name} size={32} />
                 <span
@@ -169,9 +169,7 @@ const UserProfile = () => {
               </div>
               {org?.id !== selectedOrg?.id && (
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
-                  <span className='leave-icon' onClick={() => leaveOrganization(org.id)}>
-                      <IoExit size={20} />
-                  </span>
+                  <IoExit className='leave-icon' onClick={() => leaveOrganization(org.id)} size={20} />
                 </OverlayTrigger>
               )}
               {org.id === selectedOrg?.id && <span className='check' ><FaCheck size={16} /></span>}
