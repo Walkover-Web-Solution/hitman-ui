@@ -108,9 +108,13 @@ const OnBoarding = () => {
         return orgName && regex.test(orgName) && orgName.length >= 3 && orgName.length <= 50
     }
 
+    const handleArrowClick = () => {
+        navigate(`/orgs/${getOrgId()}/dashboard`)
+    }
+
     return (
         <>
-        <button className='btn home-button position-absolute btn-dark btn-sm' onClick={() => redirectToDashboard(getOrgId())}><FaLongArrowAltLeft /></button>
+        <button className='btn home-button position-absolute btn-dark btn-sm' onClick={handleArrowClick}><FaLongArrowAltLeft /></button>
             <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
                 <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
                     <h2 className='mb-5'>
