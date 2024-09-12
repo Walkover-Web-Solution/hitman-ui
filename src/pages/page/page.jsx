@@ -6,7 +6,7 @@ import { approvePage, draftPage } from "../../components/publicEndpoint/redux/pu
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
 import { updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
@@ -42,6 +42,9 @@ const Page = () => {
     const [pageName, setPageName] = useState(page?.name);
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [published, setPublished] = useState(false);
 
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
@@ -65,7 +68,9 @@ const Page = () => {
     useEffect(() => {
         window.addEventListener('keydown', handleSaveKeydown);
 
-        return () => window.removeEventListener('keydown', handleSaveKeydown);
+        return () => {
+            window.removeEventListener('keydown', handleSaveKeydown);
+        }
     }, [pageId]);
 
     useEffect(() => {
@@ -99,9 +104,18 @@ const Page = () => {
     }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
             event.preventDefault();
             handleSavePage();
+        }
+        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+            event.preventDefault();
+            publishClick();
+        }
+        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
+            event.preventDefault();
+            unpublishClick();
         }
     };
 
@@ -150,35 +164,42 @@ const Page = () => {
 
     const renderPublishConfirmationModal = () => {
         return (
-         openPublishConfirmationModal && (
-            <ConfirmationModal
-              show={openPublishConfirmationModal}
-              onHide={() => setOpenPublishConfirmationModal(false)}
-              proceed_button_callback={handlePublish}
-              title={msgText.publishPage}
-              submitButton='Publish'
-              rejectButton='Discard'
-            />
-          )
+            openPublishConfirmationModal && (
+                <ConfirmationModal
+                    show={openPublishConfirmationModal}
+                    onHide={() => setOpenPublishConfirmationModal(false)}
+                    proceed_button_callback={handlePublish}
+                    title={msgText.publishPage}
+                    submitButton='Publish'
+                    rejectButton='Discard'
+                />
+            )
         )
-      }
+    }
 
-     const renderUnPublishConfirmationModal = () => {
+    const renderUnPublishConfirmationModal = () => {
         return (
             openUnpublishConfirmationModal && (
-            <ConfirmationModal
-              show={openUnpublishConfirmationModal}
-              onHide={() =>setOpenUnpublishConfirmationModal(false)}
-              proceed_button_callback={handleUnPublish}
-              title={msgText.unpublishPage}
-              submitButton='UnPublish'
-              rejectButton='Discard'
-            />
-          )
+                <ConfirmationModal
+                    show={openUnpublishConfirmationModal}
+                    onHide={() => setOpenUnpublishConfirmationModal(false)}
+                    proceed_button_callback={handleUnPublish}
+                    title={msgText.unpublishPage}
+                    submitButton='UnPublish'
+                    rejectButton='Discard'
+                />
+            )
         )
-      }
+    }
 
     const handlePublish = async () => {
+        setLoading(true);
+        setPublished(false);
+
+        setTimeout(() => {
+            setLoading(false);
+            setPublished(true);
+        }, 2000);
         dispatch(approvePage(pages[pageId]))
     };
 
@@ -216,7 +237,7 @@ const Page = () => {
                 return (
                     <Tooltip id='edited-by-tooltip'>
                         <div className="fs-4 text-secondary">
-                            {window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}
+                            {window.navigator.platform.toLowerCase().includes("mac") ? <span>CMD + S</span> : <span>CTRL + S</span>}
                         </div>
                     </Tooltip>
                 )
@@ -287,10 +308,21 @@ const Page = () => {
                     <div className="header-page-name d-flex align-items-center fa-1x text-truncate">
                         {renderPathLinks()}
                     </div>
-                    {pages?.[pageId]?.isPublished &&
-                        <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
+                    {
+                        loading &&
+                            <div>
+                                <div class="spinner-border spinner-border-sm ml-2" role="status"  style={{ color: '#6c757d ', width: '1rem', height: '1rem'  }}>
+                                    <span class="sr-only ">Publishing...</span>
+                                </div>
+                                <span className="ml-1" style={{ color: '#6c757d ', fontSize: '0.8rem' }}>Publishing...</span>
+                            </div>
+                    }
+                    {pages?.[pageId]?.isPublished && !loading &&
+                        <div className="">
+                            <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />
                         </OverlayTrigger>
+                        </div>
                     }
                 </div>
                 <div className='header-operations d-flex align-items-center gap-2'>
@@ -311,8 +343,24 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={publishClick}>Publish</Dropdown.Item>
-                                    <Dropdown.Item onClick={unpublishClick} disabled={!isPublished}>Unpublish</Dropdown.Item>
+                                    <Dropdown.Item className="p-1 d-flex justify-content-between align-items-center " onClick={publishClick}>
+                                        <span>Publish</span>
+                                        <span className="text-grey" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
+                                    </Dropdown.Item>
+                                    {isPublished && <Dropdown.Item
+                                        onClick={unpublishClick}
+                                        className="p-1 d-flex justify-content-between align-items-center"
+                                        onMouseEnter={() => setIsHovered(true)}
+                                        onMouseLeave={() => setIsHovered(false)}
+                                        style={{
+                                            color: isHovered ? 'white' : '#CC0000',
+                                            backgroundColor: isHovered ? '#CC0000' : 'transparent',
+                                            transition: 'background-color 0.3s, color 0.3s'
+                                        }}
+                                    >
+                                        <span>Unpublish</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
+                                        </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

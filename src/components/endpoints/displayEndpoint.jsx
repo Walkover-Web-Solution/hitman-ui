@@ -73,7 +73,7 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
 import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 import { MdExpandMore } from 'react-icons/md'
@@ -414,6 +414,9 @@ class DisplayEndpoint extends Component {
       fileDownloaded: false,
       sendClickec: false,
       showPublicEnvironments: false,
+      isHovered: false,
+      loading: false,
+      errorFound: true,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -543,6 +546,7 @@ class DisplayEndpoint extends Component {
     }
   }
   handleKeyDown = (event) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     const activeTabId = this.props.activeTabId
     const status = this.props.tabs?.[activeTabId]?.status
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
@@ -559,6 +563,14 @@ class DisplayEndpoint extends Component {
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
     }
+    if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+      this.setState({ openPublishConfirmationModal: true })
+    }
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
+      event.preventDefault();
+      this.setState({ openUnPublishConfirmationModal: true })
+    }
+
   }
 
   updateDimensions = () => {
@@ -1313,71 +1325,54 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (id, endpointObject, slug) => {
-    const { endpointName, endpointDescription } = endpointObject || {}
-    let currentTabId = this.props.tab.id
-    let parentId = id
-    if (
-      (currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) ||
-      (this.props?.params?.historyId && slug !== 'isHistory')
-    ) {
-      this.openEndpointFormModal()
-    } else {
-      let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
-      const body = this.prepareBodyForSaving(endpointContent?.data?.body)
-      const bodyDescription = bodyDescriptionService.handleUpdate(false, {
-        body_description: endpointContent?.bodyDescription,
-        body: body?.value
-      })
-      if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
-        body.value = this.parseBody(body.value)
-      }
-      const headersData = this.doSubmitHeader('save')
-      const updatedParams = this.doSubmitParam()
-      let updatedPathVariables = this.doSubmitPathVariables()
-      updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
-        obj[key] = updatedPathVariables[key]
-        return obj
-      }, {})
-      let endpoint = {
-        id: slug === 'isHistory' ? this.props?.params?.historyId : currentTabId,
-        URL: endpointContent?.data?.URL,
-        name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
-        requestType: endpointContent?.data?.method,
-        body: body,
-        headers: headersData,
-        params: updatedParams,
-        pathVariables: updatedPathVariables,
-        bodyDescription: endpointContent?.bodyDescription,
-        authorizationData: endpointContent?.authorizationData,
-        notes: endpointContent?.endpoint.notes,
-        preScript: endpointContent?.preScriptText,
-        postScript: endpointContent?.postScriptText,
-        docViewData: endpointContent?.docViewData,
-        protocolType: endpointContent?.protocolType || null,
-        description: endpointContent?.description || "",
-        sampleResponse: endpointContent?.sampleResponseArray || []
-      }
-      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
-        return toast.error('Please enter Endpoint name')
-      else if (currentTabId && !this.props.pages[currentTabId]) {
-        // endpoint.requestId = currentTabId
-        this.setState({ saveAsLoader: true })
-        this.props.add_endpoint(
-          endpoint,
-          parentId,
-          ({ closeForm, stopLoader }) => {
-            if (closeForm) this.closeEndpointFormModal()
-            if (stopLoader) this.setState({ saveAsLoader: false })
-          },
-          this.props
-        )
-        moveToNextStep(4)
+      const { endpointName, endpointDescription } = endpointObject || {}
+      let currentTabId = this.props.tab.id
+      let parentId = id
+      if (
+        (currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) ||
+        (this.props?.params?.historyId && slug !== 'isHistory')
+      ) {
+        this.openEndpointFormModal()
       } else {
-        if (this.state.saveAsFlag || slug === 'isHistory') {
-          endpoint.description = endpointDescription || ''
-          // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
-          delete endpoint.state
-          delete endpoint.isPublished
+        let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
+        const body = this.prepareBodyForSaving(endpointContent?.data?.body)
+        const bodyDescription = bodyDescriptionService.handleUpdate(false, {
+          body_description: endpointContent?.bodyDescription,
+          body: body?.value
+        })
+        if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
+          body.value = this.parseBody(body.value)
+        }
+        const headersData = this.doSubmitHeader('save')
+        const updatedParams = this.doSubmitParam()
+        let updatedPathVariables = this.doSubmitPathVariables()
+        updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
+          obj[key] = updatedPathVariables[key]
+          return obj
+        }, {})
+        let endpoint = {
+          id: slug === 'isHistory' ? this.props?.params?.historyId : currentTabId,
+          URL: endpointContent?.data?.URL,
+          name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
+          requestType: endpointContent?.data?.method,
+          body: body,
+          headers: headersData,
+          params: updatedParams,
+          pathVariables: updatedPathVariables,
+          bodyDescription: endpointContent?.bodyDescription,
+          authorizationData: endpointContent?.authorizationData,
+          notes: endpointContent?.endpoint.notes,
+          preScript: endpointContent?.preScriptText,
+          postScript: endpointContent?.postScriptText,
+          docViewData: endpointContent?.docViewData,
+          protocolType: endpointContent?.protocolType || null,
+          description: endpointContent?.description || "",
+          sampleResponse: endpointContent?.sampleResponseArray || []
+        }
+        if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
+          return toast.error('Please enter Endpoint name')
+        else if (currentTabId && !this.props.pages[currentTabId]) {
+          // endpoint.requestId = currentTabId
           this.setState({ saveAsLoader: true })
           this.props.add_endpoint(
             endpoint,
@@ -1386,33 +1381,50 @@ class DisplayEndpoint extends Component {
               if (closeForm) this.closeEndpointFormModal()
               if (stopLoader) this.setState({ saveAsLoader: false })
             },
-            this.state.saveAsFlag
+            this.props
           )
           moveToNextStep(4)
         } else {
-          // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
-          // not sending isPublished during put method
-          // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
-          endpoint.state = statesEnum.DRAFT_STATE
-          this.setState({ saveLoader: true })
-          this.props.update_endpoint(
-            {
-              ...endpoint,
-              id: currentTabId
-            },
-            () => {
-              this.setState({ saveLoader: false })
-            }
-          )
-          if (endpoint.description !== '') {
-            this.props.endpoints[currentTabId].description = true
+          if (this.state.saveAsFlag || slug === 'isHistory') {
+            endpoint.description = endpointDescription || ''
+            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+            delete endpoint.state
+            delete endpoint.isPublished
+            this.setState({ saveAsLoader: true })
+            this.props.add_endpoint(
+              endpoint,
+              parentId,
+              ({ closeForm, stopLoader }) => {
+                if (closeForm) this.closeEndpointFormModal()
+                if (stopLoader) this.setState({ saveAsLoader: false })
+              },
+              this.state.saveAsFlag
+            )
+            moveToNextStep(4)
           } else {
-            this.props.endpoints[currentTabId].description = false
+            // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
+            // not sending isPublished during put method
+            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+            endpoint.state = statesEnum.DRAFT_STATE
+            this.setState({ saveLoader: true })
+            this.props.update_endpoint(
+              {
+                ...endpoint,
+                id: currentTabId
+              },
+              () => {
+                this.setState({ saveLoader: false })
+              }
+            )
+            if (endpoint.description !== '') {
+              this.props.endpoints[currentTabId].description = true
+            } else {
+              this.props.endpoints[currentTabId].description = false
+            }
+            tabService.markTabAsSaved(currentTabId)
           }
-          tabService.markTabAsSaved(currentTabId)
         }
       }
-    }
   }
 
   doSubmitPathVariables() {
@@ -2871,6 +2883,7 @@ class DisplayEndpoint extends Component {
         entityId={endpointId}
         onUnpublish={() => this.handleRemovePublicEndpoint(endpointId)}
         entityName='Endpoint'
+        hovered={this.state.isHovered}
       />
     )
   }
@@ -2896,8 +2909,8 @@ class DisplayEndpoint extends Component {
 
   renderSwitchBtn() {
     return (
-      <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
-        <button className='btn text-grey btn-sm fs-4'>DOC</button>
+      <div onClick={this.handleToggle} className='p-1 d-flex justify-content-between align-items-center cursor-pointer'>
+        <button className='btn btn-sm fs-4'>DOC</button>
         <SwitchBtn isOn={this.props?.endpointContent?.currentView === 'doc'} handleToggle={this.handleToggle} />
       </div>
     )
@@ -2936,6 +2949,10 @@ class DisplayEndpoint extends Component {
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
+    this.setState({ loading: true })
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, 2000);
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
@@ -3115,6 +3132,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    const { isHovered } = this.state;
     if (this.props?.endpointContentLoading) {
       return (
         <>
@@ -3199,6 +3217,7 @@ class DisplayEndpoint extends Component {
                           setActiveTab={this.setActiveTab}
                           {...this.props}
                           isEndpoint
+                          publishLoader={this.state.loading}
                         />
                         <div className='d-flex gap-1 align-items-center'>
                           {this.state.showEndpointFormModal && (
@@ -3223,20 +3242,31 @@ class DisplayEndpoint extends Component {
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item className='p-1 d-flex justify-content-between align-items-center'>
                                   <span>
                                     {approvedOrRejected
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span className='text-grey'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item
+                                  className='p-1 d-flex justify-content-between align-items-center'
+                                  onMouseEnter={() => this.setState({ isHovered: true })}
+                                  onMouseLeave={() => this.setState({ isHovered: false })}
+                                  style={{
+                                    color: isHovered ? 'white' : '#CC0000',
+                                    backgroundColor: isHovered ? '#CC0000' : 'transparent',
+                                    transition: 'background-color 0.3s, color 0.3s',
+                                  }}
+                                >
                                   <span>
                                     {isStateApproved(endpointId, endpointss)
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button
@@ -3247,7 +3277,6 @@ class DisplayEndpoint extends Component {
                                   {getEntityState(endpointId, endpointss)}
                                 </button>
                               </Dropdown.Item>)}
-
                             </Dropdown.Menu>
                           </Dropdown>
                         </div>

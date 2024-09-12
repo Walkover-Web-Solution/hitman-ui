@@ -52,6 +52,7 @@ const CollectionParentPages = (props) => {
   const [isHovered, setIsHovered] = useState(false)
   const [theme, setTheme] = useState('')
   const [showPageForm, setShowPageForm] = useState({ edit: false })
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
     if (!theme) setTheme(collections[props.collection_id]?.theme)
@@ -158,7 +159,13 @@ const CollectionParentPages = (props) => {
   const versionDropDown = (rootId) => {
     if (isOrgDocType()) {
       return (
-        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
+        <DropdownButton
+          className='version-dropdown'
+          ref={versionDropDownRef}
+          id='dropdown-basic-button'
+          title={versionName()}
+          onClick={(e) => e.stopPropagation()}
+        >
           {pages[rootId].child.map((childId, index) => (
             <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
               {pages[childId]?.name}
@@ -258,7 +265,7 @@ const CollectionParentPages = (props) => {
 
               {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action align-items-center'>
-                  <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
+                  <div className='d-flex align-items-center pr-1' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
                     <IconButtons>
                       <FiPlus />
                     </IconButtons>
@@ -275,7 +282,15 @@ const CollectionParentPages = (props) => {
                     {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
                       <SlSettings color='gray' /> Manage Version
                     </div>}
-                    <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeletePageModal(pageId)}>
+                    <div className='dropdown-item d-flex align-items-center'
+                      onClick={() => openDeletePageModal(pageId)}
+                      onMouseEnter={() => setHover(true)}
+                      onMouseLeave={() => setHover(false)}
+                      style={{
+                        color: hover ? 'white' : '#8e1a10',
+                        backgroundColor: hover ? '#CC0000' : 'transparent',
+                        transition: 'background-color 0.3s, color 0.3s'
+                      }}>
                       <RiDeleteBin6Line size={15} /> Delete
                     </div>
                   </div>

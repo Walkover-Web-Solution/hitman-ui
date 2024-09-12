@@ -30,8 +30,10 @@ export async function leaveOrganization(orgId) {
     if (response.status === 200) {
       store.dispatch(removeOrganizationById(orgId));
     }
+    toast.success("Organization removed successfully!")
   } catch (error) {
     console.error("Leaving organization failed:", error);
+    toast.error("Error in leaving organization")
   }
 }
 
@@ -48,10 +50,6 @@ export async function switchOrg(orgId, redirect) {
   try {
     await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
-    if (redirect) {
-      redirectToDashboard(orgId)
-    }
-
   } catch (error) {
     console.error('Error while calling switchCompany API:', error)
   }

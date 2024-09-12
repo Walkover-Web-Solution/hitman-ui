@@ -22,6 +22,7 @@ const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
   const [isHovered, setIsHovered] = useState(false)
   const [selectedEndpoint, setSelectedEndpoint] = useState(null)
+  const [hover, setHover] = useState(false);
 
   const params = useParams()
   const location = useLocation()
@@ -76,12 +77,16 @@ const Endpoints = (props) => {
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       navigate(pathName)
     }
+    const selectedTab = document.getElementById(`tab-${endpoint.id}`);
+    if (selectedTab) {
+        selectedTab.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
+      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{ paddingLeft: `${props?.level * 8}px` }}>
         {endpoints[endpointId]?.protocolType === 1 && (
           <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
             {endpoints[endpointId].requestType}
@@ -101,9 +106,20 @@ const Endpoints = (props) => {
         </IconButtons>
       </div>
       <div className='dropdown-menu dropdown-menu-right'>
-        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2  className='text-grey'size={15} /> Rename </div>
-        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-grey'size={15} /> Duplicate </div>
-        <div className='dropdown-item d-flex text-danger font-14 align-items-center' onClick={() => handleModalActionType('delete', endpointId)}> <RiDeleteBin6Line size={15} /> Delete </div>
+        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2 className='text-grey' size={15} /> Rename </div>
+        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-grey' size={15} /> Duplicate </div>
+        <div
+          className='dropdown-item d-flex font-14 align-items-center'
+          onClick={() => handleModalActionType('delete', endpointId)}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          style={{
+            color: hover ? 'white' : '#8e1a10',
+            backgroundColor: hover ? '#CC0000' : 'transparent',
+            transition: 'background-color 0.3s, color 0.3s'
+          }}
+        >
+          <RiDeleteBin6Line size={15} /> Delete </div>
       </div>
     </div>
   )
@@ -130,7 +146,7 @@ const Endpoints = (props) => {
         onDrop={(e) => props.onDrop(e, endpointId)}
         onDragEnter={(e) => props.onDragEnter(e, endpointId)}
         onDragEnd={(e) => props.onDragEnd(e)}
-        style={props.draggingOverId === endpointId ? { borderTop: '3px solid red'} : null}
+        style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
       >
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button className='pl-0'>
