@@ -158,7 +158,7 @@ const CollectionParentPages = (props) => {
   const versionDropDown = (rootId) => {
     if (isOrgDocType()) {
       return (
-        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
+        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()} onClick={(e) => e.stopPropagation()}>
           {pages[rootId].child.map((childId, index) => (
             <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
               {pages[childId]?.name}

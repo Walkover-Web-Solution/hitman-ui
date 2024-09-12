@@ -54,7 +54,7 @@ const SideBar = () => {
   const handleShortcutKeys = (event) => {
     const isContentEditable = event.target.getAttribute('contentEditable') === 'true'
     const isPageFocused = document.activeElement.closest('.parent-page-container')
-    if (!isPageFocused && event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && !isContentEditable) {
+    if (!isPageFocused && event.ctrlKey && event.key === 'k' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && !isContentEditable) {
       event.preventDefault()
       inputRef.current.focus()
     }
@@ -138,6 +138,7 @@ const SideBar = () => {
   }
 
   const renderSearch = () => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     return (
       <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
@@ -145,7 +146,7 @@ const SideBar = () => {
           ref={inputRef}
           value={searchData.filter}
           className='search-input'
-          placeholder='Type / to search'
+          placeholder={isMac ? 'Press ⌘ + K to search' : 'Press Ctrl + K to search'}
           autoComplete='off'
           type='text'
           name='filter'

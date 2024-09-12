@@ -115,11 +115,11 @@ const Environments = () => {
               <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
               {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>
                 {environment.environments[environmentId]?.name}
-                {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck /></span>}
+                {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck size={16} /></span>}
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
                   <span className='export-icon' onClick={(event) => { event.stopPropagation();handleExport(environment?.environments[environmentId].id)}}><BiExport size={18} /></span>
                 </OverlayTrigger>
-                {environment?.environments[environmentId]?.userId === 0 && environment?.environments[environmentId]?.orgId !== null && environmentId !== currentEnvironmentId && <span className='global-icon'><FaGlobeAmericas /></span>}
+                {environment?.environments[environmentId]?.userId === 0 && environment?.environments[environmentId]?.orgId !== null && environmentId !== currentEnvironmentId && <span className='global-icon'><FaGlobeAmericas size={16} /></span>}
               </Dropdown.Item>)}
               <Dropdown.Divider />
               <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>

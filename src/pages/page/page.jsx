@@ -42,7 +42,6 @@ const Page = () => {
     const [pageName, setPageName] = useState(page?.name);
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
-
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
@@ -100,9 +99,18 @@ const Page = () => {
     }, [provider, ydoc]);
 
     const handleSaveKeydown = (event) => {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
             event.preventDefault();
             handleSavePage();
+        }
+        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+            event.preventDefault();
+            publishClick();
+        }
+        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
+            event.preventDefault();
+            unpublishClick();
         }
     };
 
