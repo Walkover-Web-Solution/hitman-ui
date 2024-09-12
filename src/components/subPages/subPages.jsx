@@ -199,7 +199,8 @@ const SubPage = (props) => {
                   <div className='dropdown-item d-flex align-items-center' onClick={() => openEditSubPageForm(pages[subPageId])}>
                     <FiEdit2 color='gray' /> Rename
                   </div>
-                  <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeleteSubPageModal(subPageId)}>
+                  <div className='dropdown-item d-flex align-items-center text-danger delete-subpage-btn'
+                    onClick={() => openDeleteSubPageModal(subPageId)}>
                     <RiDeleteBin6Line size={15} /> Delete
                   </div>
                 </div>

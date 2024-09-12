@@ -413,7 +413,8 @@ class DisplayEndpoint extends Component {
       fileDownloaded: false,
       sendClickec: false,
       showPublicEnvironments: false,
-      themes: ''
+      loading: false,
+      errorFound: true,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -2909,7 +2910,7 @@ class DisplayEndpoint extends Component {
 
   renderSwitchBtn() {
     return (
-      <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
+      <div onClick={this.handleToggle} className='p-0 d-flex justify-content-between align-items-center cursor-pointer'>
         <button className='btn text-grey btn-sm fs-4'>DOC</button>
         <Form>
           <Form.Check
@@ -3243,20 +3244,24 @@ class DisplayEndpoint extends Component {
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item className='p-0  d-flex justify-content-between align-items-center'>
                                   <span>
                                     {approvedOrRejected
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span className='text-black-50 fs-5 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item
+                                  className='p-0  d-flex justify-content-between align-items-center unpublishBtn'
+                                >
                                   <span>
                                     {isStateApproved(endpointId, endpointss)
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span className='text-black-50 fs-5 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand  className='cmd-icon'/>+ U</>  :<span>Ctrl + U</span> }</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button

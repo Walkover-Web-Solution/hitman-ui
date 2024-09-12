@@ -52,9 +52,10 @@ const SideBar = () => {
   }, [])
 
   const handleShortcutKeys = (event) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0; 
     const isContentEditable = event.target.getAttribute('contentEditable') === 'true'
     const isPageFocused = document.activeElement.closest('.parent-page-container')
-    if (!isPageFocused && event.ctrlKey && event.key === 'k' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && !isContentEditable) {
+    if (!isPageFocused && ((isMac && event.metaKey && event.key === "k") || (!isMac && event.ctrlKey && event.key === "k")) && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && !isContentEditable) {
       event.preventDefault()
       inputRef.current.focus()
     }

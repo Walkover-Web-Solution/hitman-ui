@@ -43,7 +43,6 @@ const Collections = (props) => {
   const [showOrgModal, setShowOrgModal] = useState(false)
   const [automationSelectedCollectionId, setAutomationSelectedCollectionId] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [gtmId, setGtmId] = useState('')
 
   const closeCollectionForm = () => {
     setShowCollectionForm(false)
@@ -247,7 +246,7 @@ const Collections = (props) => {
                             />
                           </div>}
                           <div
-                            className='dropdown-item delete-button-sb text-danger d-flex align-items-center'
+                            className='text-danger dropdown-item delete-button-sb d-flex align-items-center delete-collection-btn'
                             onClick={() => openDeleteCollectionModal(collectionId)}
                           >
                             <RiDeleteBin6Line size={12} /> Delete

@@ -42,6 +42,8 @@ const Page = () => {
     const [pageName, setPageName] = useState(page?.name);
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
@@ -324,8 +326,17 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={publishClick}>Publish</Dropdown.Item>
-                                    <Dropdown.Item onClick={unpublishClick} disabled={!isPublished}>Unpublish</Dropdown.Item>
+                                    <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
+                                        <span>Publish</span>
+                                        <span className="text-black-50 fs-5" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
+                                    </Dropdown.Item>
+                                    {isPublished && <Dropdown.Item
+                                        onClick={unpublishClick}
+                                        className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
+                                    >
+                                        <span className="text-danger">Unpublish</span>
+                                        <span className="text-black-50 fs-5">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
+                                        </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

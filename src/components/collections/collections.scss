@@ -1,6 +1,7 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
 $border-color: rgba(227, 228, 230, 0.7);
+$alert-color: #CC0000;
 
 .add-collection-btn-wrap {
   padding: 0;
@@ -249,3 +250,4 @@ div.fixed {
   background: #f2994a;
   font-size: 7px;
 }
+

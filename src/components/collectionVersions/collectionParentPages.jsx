@@ -274,7 +274,8 @@ const CollectionParentPages = (props) => {
                     {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
                       <SlSettings color='gray' /> Manage Version
                     </div>}
-                    <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeletePageModal(pageId)}>
+                    <div className='dropdown-item d-flex align-items-center text-danger delete-parent-btn'
+                      onClick={() => openDeletePageModal(pageId)}>
                       <RiDeleteBin6Line size={15} /> Delete
                     </div>
                   </div>
