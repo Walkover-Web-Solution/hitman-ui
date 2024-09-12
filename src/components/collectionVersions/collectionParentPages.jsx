@@ -265,7 +265,7 @@ const CollectionParentPages = (props) => {
 
               {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action align-items-center'>
-                  <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
+                  <div className='d-flex align-items-center pr-1' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
                     <IconButtons>
                       <FiPlus />
                     </IconButtons>

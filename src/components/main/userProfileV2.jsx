@@ -170,9 +170,7 @@ const UserProfile = () => {
               {org?.id !== selectedOrg?.id && (
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
                   <span className='leave-icon' onClick={() => leaveOrganization(org.id)}>
-                    <IconButton>
                       <IoExit size={20} />
-                    </IconButton>
                   </span>
                 </OverlayTrigger>
               )}

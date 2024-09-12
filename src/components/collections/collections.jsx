@@ -201,12 +201,12 @@ const Collections = (props) => {
               isOnDashboardPage && (
                 <div className='d-flex align-items-center justify-content-end' >
                   <div className='sidebar-item-action d-flex align-items-center justify-content-end pr-0'>
-                    <div className='d-flex align-items-center' onClick={() => openPublishSettings(collectionId)}>
+                    <div className='d-flex align-items-center pr-1' onClick={() => openPublishSettings(collectionId)}>
                       <IconButtons>
                         <IoIosSettings color='grey' />
                       </IconButtons>
                     </div>
-                    <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
+                    <div className='d-flex align-items-center pr-1' onClick={() => openAddPageEndpointModal(collectionId)}>
                       <IconButtons>
                         <FiPlus color='grey' />
                       </IconButtons>

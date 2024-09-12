@@ -189,7 +189,7 @@ const SubPage = (props) => {
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action align-items-center'>
-                <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
+                <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center pr-1'>
                   <IconButtons>
                     <FiPlus />
                   </IconButtons>
