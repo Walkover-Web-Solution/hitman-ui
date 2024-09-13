@@ -4,6 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 import IconButton from '../common/iconButton';
 import { BsCommand } from 'react-icons/bs';
 import { PiControlBold } from "react-icons/pi";
+import './shortcutModal.scss'
 
 const ShortcutModal = ({ hideModal }) => {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;

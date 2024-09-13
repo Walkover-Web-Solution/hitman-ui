@@ -22,7 +22,7 @@ import ConfirmationModal from "../../components/common/confirmationModal";
 
 const Page = () => {
 
-    const { draftContent, page, pages, users, activeTabId, tabs, collections, isPublished } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, collections, isPublished, publishLoader } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[state.tabs.activeTabId],
         pages: state.pages,
@@ -30,7 +30,8 @@ const Page = () => {
         activeTabId: state.tabs.activeTabId,
         tabs: state.tabs.tabs,
         isPublished: state?.pages[state.tabs.activeTabId]?.isPublished,
-        collections: state.collections
+        collections: state.collections,
+        publishLoader: state?.pages[state.tabs.activeTabId]?.publishLoader
     }));
 
     const dispatch = useDispatch();
@@ -81,17 +82,17 @@ const Page = () => {
         prod: import.meta.env.VITE_RTC_URL_PROD,
     };
 
-      const { ydoc, provider } = useMemo(() => {
+    const { ydoc, provider } = useMemo(() => {
         if (tabs[activeTabId].status !== "SAVED") return { ydoc: null, provider: null };
         const ydoc = new Y.Doc();
         const baseUrl = mapping[import.meta.env.VITE_ENV];
         const provider = new HocuspocusProvider({
             url: `${baseUrl}?orgId=${orgId}`,
-            name: `${pageId}`, 
+            name: `${pageId}`,
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId]); 
+    }, [orgId, pageId]);
 
     useEffect(() => {
         return () => {
@@ -165,33 +166,33 @@ const Page = () => {
 
     const renderPublishConfirmationModal = () => {
         return (
-         openPublishConfirmationModal && (
-            <ConfirmationModal
-              show={openPublishConfirmationModal}
-              onHide={() => setOpenPublishConfirmationModal(false)}
-              proceed_button_callback={handlePublish}
-              title={msgText.publishPage}
-              submitButton='Publish'
-              rejectButton='Discard'
-            />
-          )
+            openPublishConfirmationModal && (
+                <ConfirmationModal
+                    show={openPublishConfirmationModal}
+                    onHide={() => setOpenPublishConfirmationModal(false)}
+                    proceed_button_callback={handlePublish}
+                    title={msgText.publishPage}
+                    submitButton='Publish'
+                    rejectButton='Discard'
+                />
+            )
         )
-      }
+    }
 
-     const renderUnPublishConfirmationModal = () => {
+    const renderUnPublishConfirmationModal = () => {
         return (
             openUnpublishConfirmationModal && (
-            <ConfirmationModal
-              show={openUnpublishConfirmationModal}
-              onHide={() =>setOpenUnpublishConfirmationModal(false)}
-              proceed_button_callback={handleUnPublish}
-              title={msgText.unpublishPage}
-              submitButton='UnPublish'
-              rejectButton='Discard'
-            />
-          )
+                <ConfirmationModal
+                    show={openUnpublishConfirmationModal}
+                    onHide={() => setOpenUnpublishConfirmationModal(false)}
+                    proceed_button_callback={handleUnPublish}
+                    title={msgText.unpublishPage}
+                    submitButton='UnPublish'
+                    rejectButton='Discard'
+                />
+            )
         )
-      }
+    }
 
     const handlePublish = async () => {
         dispatch(approvePage(pages[pageId]))
@@ -302,7 +303,15 @@ const Page = () => {
                     <div className="header-page-name d-flex align-items-center fa-1x">
                         {renderPathLinks()}
                     </div>
-                    {pages?.[pageId]?.isPublished &&
+                    {
+                        publishLoader && <div>
+                            <div class="spinner-border spinner-border-sm ml-2" role="status" style={{ color: '#6c757d ', width: '1rem', height: '1rem' }}>
+                                <span class="sr-only ">Publishing...</span>
+                            </div>
+                            <span className="ml-1" style={{ color: '#6c757d ', fontSize: '0.8rem' }}>Publishing...</span>
+                        </div>
+                    }
+                    {pages?.[pageId]?.isPublished && !publishLoader &&
                         <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />
                         </OverlayTrigger>
@@ -328,15 +337,15 @@ const Page = () => {
                                 <Dropdown.Menu>
                                     <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-black-50 fs-5" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
+                                        <span className="text-black-50 fs-5" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</> : <span>Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
                                         className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50 fs-5">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
-                                        </Dropdown.Item>}
+                                        <span className="text-black-50 fs-5">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</> : <span>Ctrl + U</span>}</span>
+                                    </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
@@ -362,16 +371,16 @@ const Page = () => {
                     onBlur={handleSavePageName}
                 />
                 <div id='tiptap-editor' className='page-content '>
-                <Tiptap
-                provider={provider}
-                ydoc={ydoc}
-                isInlineEditor={false}
-                disabled={false}
-                initial={draftContent || false}
-                onChange={handleContentChange || false}
-                isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
-                key={activeTabId}
-                />
+                    <Tiptap
+                        provider={provider}
+                        ydoc={ydoc}
+                        isInlineEditor={false}
+                        disabled={false}
+                        initial={draftContent || false}
+                        onChange={handleContentChange || false}
+                        isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
+                        key={activeTabId}
+                    />
                 </div>
             </div>
             {sidebar &&

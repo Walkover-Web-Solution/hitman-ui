@@ -37,6 +37,15 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error)
       return { ...state }
 
+    case endpointsActionTypes.SET_PUBLISH_LOADER:
+      return {
+        ...state,
+        [action.payload.endpoint.id]: {
+          ...state[action.payload.endpoint.id],
+          publishLoader: action.payload.isLoading
+        }
+      }
+
     case collectionActionTypes.ON_COLLECTION_DELETED:
     case versionActionTypes.ON_VERSION_DELETED:
       endpoints = { ...state }
