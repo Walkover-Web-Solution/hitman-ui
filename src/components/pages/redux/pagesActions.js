@@ -325,12 +325,19 @@ export const addChildInParent = (payload) => {
   }
 }
 
-export const updateNameOfPages = (payload) => {
-  return {
-    type: pagesActionTypes.UPDATE_NAME_OF_PAGE,
-    payload
+export const updateNameOfPages = (id, name) => {
+  const dataToSend = { name: name }
+  return async (dispatch) => {
+    const res = await endpointApiService.updateEndpoint(id, dataToSend)
+    if (res) {
+      dispatch({
+        type: pagesActionTypes.UPDATE_NAME_OF_PAGE,
+        payload: { id, name }
+      })
+    }
   }
 }
+
 
 export const addOldUrlOfPage = (payload) => {
   return {
