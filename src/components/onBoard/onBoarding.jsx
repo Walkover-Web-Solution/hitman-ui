@@ -127,8 +127,8 @@ const OnBoarding = () => {
                 </IconButton>
             </button>
             { !isContinue && (
-                <button className='btn home-button btn-dark btn-sm' onClick={handleBackClick}>
-                        <FaLongArrowAltLeft/>
+                <button className='btn back-button btn-dark position-absolute px-2' onClick={handleBackClick}>
+                        <FaLongArrowAltLeft size={18} />
                 </button>
             )}
             <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
