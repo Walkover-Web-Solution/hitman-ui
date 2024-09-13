@@ -16,9 +16,8 @@ class PublicSampleResponse extends Component {
       },
       isExpanded: false,
       maxHeight: 300,
-      showExpandButton: false,
+      showExpandButton: true,
     };
-    this.contentRef = React.createRef();
     this.toggleExpand = this.toggleExpand.bind(this);
   }
 
@@ -34,14 +33,16 @@ class PublicSampleResponse extends Component {
   }
 
   checkContentHeight() {
-    if (this.contentRef.current) {
-      const contentHeight = this.contentRef.current.scrollHeight;
-      const { maxHeight } = this.state;
-      const shouldShowExpandButton = contentHeight > maxHeight;
+    const contentElement = document.querySelector('.sample-response .tab-pane'); 
+    if (contentElement) {
+        const contentHeight = contentElement.scrollHeight;
+        const { maxHeight } = this.state;
 
-      if (shouldShowExpandButton !== this.state.showExpandButton) {
-        this.setState({ showExpandButton: shouldShowExpandButton });
-      }
+        const shouldShowExpandButton = contentHeight > maxHeight;
+
+        if (shouldShowExpandButton !== this.state.showExpandButton) {
+            this.setState({ showExpandButton: shouldShowExpandButton });
+        }
     }
   }
 
@@ -90,7 +91,6 @@ class PublicSampleResponse extends Component {
     const contentStyle = {
       maxHeight: isExpanded ? 'none' : `${maxHeight}px`,
       overflow: 'hidden',
-      position: 'relative',
     };
     return (
       <>
@@ -108,36 +108,35 @@ class PublicSampleResponse extends Component {
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
           </div>
           <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
-          <Tabs id='uncontrolled-tab-example' aria-hidden="true" >
-            {this.props.sample_response_array.map((sampleResponse, key) => (
-              <Tab
-                key={key}
-                eventKey={sampleResponse.status}
-                title={
-                  getHighlightsData(this.props, 'sampleResponse', sampleResponse.status) ? (
-                    <span>
-                      {sampleResponse.status}
-                      <i className='fas fa-circle' />
-                    </span>
-                  ) : (
-                    sampleResponse.status
-                  )
-                }
-              >
-                
-                  <div ref={this.contentRef} style={contentStyle}>
+            <Tabs id='uncontrolled-tab-example' aria-hidden="true" >
+              {this.props.sample_response_array.map((sampleResponse, key) => (
+                <Tab
+                  key={key}
+                  eventKey={sampleResponse.status}
+                  title={
+                    getHighlightsData(this.props, 'sampleResponse', sampleResponse.status) ? (
+                      <span>
+                        {sampleResponse.status}
+                        <i className='fas fa-circle' />
+                      </span>
+                    ) : (
+                      sampleResponse.status
+                    )
+                  }
+                >
+
+                  <div style={contentStyle}>
                     <div>{sampleResponse.description}</div>
-                    <div>{this.showSampleResponseBody(sampleResponse.data)}</div>
+                    <div >{this.showSampleResponseBody(sampleResponse.data)}</div>
                   </div>
                   {showExpandButton && (
                     <div className="expand-btn " onClick={this.toggleExpand}>
                       {isExpanded ? 'Show Less' : 'Show More'}
                     </div>
                   )}
-                
-              </Tab>
-            ))}
-          </Tabs>
+                </Tab>
+              ))}
+            </Tabs>
           </div>
         </div>
       </>

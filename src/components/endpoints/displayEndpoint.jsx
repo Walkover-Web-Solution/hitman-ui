@@ -557,6 +557,7 @@ class DisplayEndpoint extends Component {
     }
   }
   handleKeyDown = (event) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     const activeTabId = this.props.activeTabId
     const status = this.props.tabs?.[activeTabId]?.status
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
@@ -572,6 +573,13 @@ class DisplayEndpoint extends Component {
       }
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
+    }
+     if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+      this.setState({ openPublishConfirmationModal: true })
+    }
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
+      event.preventDefault();
+      this.setState({ openUnPublishConfirmationModal: true })
     }
   }
 
@@ -2955,6 +2963,8 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApproveEndpointRequest() {
+    debugger
+    dispatch(setPublishLoader(endpoint, true)) 
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props?.endpointContent)) {

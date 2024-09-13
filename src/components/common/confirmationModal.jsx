@@ -3,8 +3,6 @@ import { Modal } from 'react-bootstrap'
 
 function ConfirmationModal(props) {
 
-  const [isFocused, setIsFocused] = useState(false);
-
   const handleSave = () => {
     props.proceed_button_callback()
     props.onHide()
@@ -15,10 +13,6 @@ function ConfirmationModal(props) {
       handleSave();
     }
   };
-  const buttonStyle = {
-    outline: isFocused ? '2px solid #007bff' : 'none',
-    outlineOffset: '0.5px',
-  };
 
   return (
     <Modal onHide={props.onHide} show={props.show} animation={false} aria-labelledby='contained-modal-title-vcenter' centered>
@@ -28,13 +22,10 @@ function ConfirmationModal(props) {
       <Modal.Body id='custom-delete-modal-body'>
         <div className='text-left mt-4 mb-2'>
           <button id='custom-delete-modal-delete'
-            className='btn btn-primary btn-sm fs-4'
+            className='btn btn-secondary btn-sm fs-4'
             onClick={() => handleSave()}
             onKeyDown={handleKeyDown}
             autoFocus
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            style={buttonStyle}
           >
             {props.submitButton || 'Yes'}
           </button>

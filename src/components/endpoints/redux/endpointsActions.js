@@ -159,6 +159,14 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   }
 }
 
+export const setPublishLoader = (endpoint, isLoading) => ({
+  type: endpointsActionTypes.SET_PUBLISH_LOADER,
+  payload: {
+    endpoint,
+    isLoading
+  }
+})
+
 export const deleteEndpointRequest = (endpoint) => {
   return {
     type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,

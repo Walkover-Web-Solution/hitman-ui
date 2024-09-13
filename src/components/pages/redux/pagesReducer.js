@@ -142,6 +142,15 @@ function pagesReducer(state = initialState, action) {
         [action.page.id]: action.page
       }
 
+      case pagesActionTypes.SET_PUBLISH_LOADER:
+        return {
+          ...state,
+            [action.payload.page.id]: {
+             ...state[action.payload.page.id],
+              publishLoader: action.payload.isLoading
+            }
+        }
+
     case pagesActionTypes.ON_PAGE_DUPLICATED:
       pages = { ...state }
       pages[action.response.id] = action.response
@@ -161,7 +170,7 @@ function pagesReducer(state = initialState, action) {
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
       return {
-        ...state, [action.data.id]: {...state[action.data.id], ...action.data}
+        ...state, [action.data.id]: { ...state[action.data.id], ...action.data }
       }
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:
