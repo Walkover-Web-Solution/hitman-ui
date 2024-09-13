@@ -4,7 +4,6 @@ import publicPageService from '../publicPageService'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
 import { navigateTo } from '../../../navigationService.js'
 import { toast } from 'react-toastify'
-import { setPublishLoader } from '../../pages/redux/pagesActions.js'
 
 export const fetchAllPublicEndpoints = (collectionIdentifier, domain) => {
   return (dispatch) => {
@@ -48,21 +47,19 @@ export const pendingPage = (page) => {
 }
 
 export const approvePage = (page, publishPageLoaderHandler) => {
-  return async (dispatch) => {
-    try {
-      dispatch(setPublishLoader(page, true))
-      const response = await publicPageService.approvePage(page)
-
-      dispatch(onPageStateSuccess(response.data))
-      publishPageLoaderHandler()
-      toast.success('Page published successfully')
-
-      dispatch(setPublishLoader(page, false)) 
-    } catch (error) {
-      console.error('API call failed:', error)
-      dispatch(onPageStateError(error.response ? error.response.data : error))
-      dispatch(setPublishLoader(page, false)) 
-    }
+  return (dispatch) => {
+    publicPageService
+      .approvePage(page)
+      .then((response) => {
+        dispatch(onPageStateSuccess(response.data))
+        toast.success('Page published successfully')
+        publishPageLoaderHandler()
+        
+      })
+      .catch((error) => {
+        dispatch(onPageStateError(error.response ? error.response.data : error))
+        toast.error(error)
+      })
   }
 }
 
@@ -122,42 +119,22 @@ export const pendingEndpoint = (endpoint) => {
 }
 
 export const approveEndpoint = (endpoint, publishLoaderHandler) => {
-  // debugger
-  dispatch(setPublishLoader(endpoint, true)) 
   const uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
-  return async (dispatch) => {
-    try {
-      const response = await publicEndpointsService.approveEndpoint(endpoint, uniqueTabId)
-      dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true, publishLoader: false }))
-    } catch (error) {
-      console.error('API call failed:', error)
-      dispatch(onEndpointStateError(error?.response ? error?.response?.data : error))
-      // publishLoaderHandler();
-    }
+  return (dispatch) => {
+    publicEndpointsService
+      .approveEndpoint(endpoint, uniqueTabId)
+      .then((response) => {
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true }))
+        publishLoaderHandler()
+        toast.success('Enpoint published successfully')
+      })
+      .catch((error) => {
+        dispatch(onEndpointStateError(error?.response ? error?.response?.data : error))
+        publishLoaderHandler()
+        toast.error(error)
+      })
   }
 }
-
-
-// export const approveEndpoint = (endpoint, publishLoaderHandler) => {
-//   const uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
-//   return (dispatch) => {
-//     // dispatch(setPublishLoader(endpoint, true))
-//     publicEndpointsService
-//       .approveEndpoint(endpoint, uniqueTabId)
-//       .then((response) => {
-//         dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true }))
-//         publishLoaderHandler()
-//         toast.success('Enpoint published successfully')
-//         // dispatch(setPublishLoader(endpoint, false)) 
-//       })
-//       .catch((error) => {
-//         dispatch(onEndpointStateError(error?.response ? error?.response?.data : error))
-//         publishLoaderHandler()
-//         toast.error(error)
-//         // dispatch(setPublishLoader(endpoint, false)) 
-//       })
-//   }
-// }
 
 export const draftEndpoint = (endpoint) => {
   return (dispatch) => {

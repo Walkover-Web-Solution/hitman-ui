@@ -317,14 +317,6 @@ export const updatePageData = (payload) => {
   }
 }
 
-export const setPublishLoader = (page, isLoading) => ({
-  type: pagesActionTypes.SET_PUBLISH_LOADER,
-  payload: {
-    page,
-    isLoading
-  }
-})
-
 
 export const addChildInParent = (payload) => {
   return {

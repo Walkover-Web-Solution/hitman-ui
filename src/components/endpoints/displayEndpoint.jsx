@@ -2963,16 +2963,14 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApproveEndpointRequest() {
-    debugger
-    dispatch(setPublishLoader(endpoint, true)) 
     const endpointId = this.endpointId
+    this.setState({loading:true})
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
-      this.props.approve_endpoint(endpointId, () => {
-        this.setState({ publishLoader: false })
-      })
+      await this.props.approve_endpoint(endpointId)
+      this.setState({loading:false})
     }
   }
 
@@ -3230,6 +3228,7 @@ class DisplayEndpoint extends Component {
                           setActiveTab={this.setActiveTab}
                           {...this.props}
                           isEndpoint
+                          publishLoader= {this.state.loading}
                         />
                         <div className='d-flex gap-1 align-items-center'>
                           {this.state.showEndpointFormModal && (
