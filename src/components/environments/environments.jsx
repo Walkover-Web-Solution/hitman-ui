@@ -65,20 +65,20 @@ const Environments = () => {
 
   const handleExport = async (Id) => {
     try {
-        const data = await exportEnvironmentApi(Id, organizations?.currentOrg.id);
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${data.name || 'environment'}.json`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+      const data = await exportEnvironmentApi(Id, organizations?.currentOrg.id);
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${data.name || 'environment'}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
-        console.error('Error exporting data:', error);
+      console.error('Error exporting data:', error);
     }
-};
+  };
 
 
   const handleEnv = (environmentId) => {
@@ -107,24 +107,24 @@ const Environments = () => {
 
         <div className='select-environment-dropdown border-radius-right-none align-content-center'>
           <Dropdown className='ml-1'>
-          <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1 fs-4' variant='default' id='dropdown-basic'>
+            <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1 fs-4' variant='default' id='dropdown-basic'>
               <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
               <IoIosArrowDown className='m-1' />
             </Dropdown.Toggle></IconButton>
             <Dropdown.Menu alignRight>
-              <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
-              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>
+              <Dropdown.Item className='px-2' onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
+              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item className='gap-2 px-2 align-items-end' onClick={() => handleEnv(environmentId)} key={environmentId}>
                 {environment.environments[environmentId]?.name}
                 {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck size={16} /></span>}
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
-                  <span className='export-icon' onClick={(event) => { event.stopPropagation();handleExport(environment?.environments[environmentId].id)}}><BiExport size={18} /></span>
+                  <IconButton><BiExport className='export-icon' size={18} onClick={(event) => { event.stopPropagation(); handleExport(environment?.environments[environmentId].id) }} /></IconButton>
                 </OverlayTrigger>
                 {environment?.environments[environmentId]?.userId === 0 && environment?.environments[environmentId]?.orgId !== null && environmentId !== currentEnvironmentId && <span className='global-icon'><FaGlobeAmericas size={16} /></span>}
               </Dropdown.Item>)}
               <Dropdown.Divider />
-              <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
-              <Dropdown.Item className='dropdown-item' onClick={() => setShowImportModal(true)}>Import Environment</Dropdown.Item>
-              <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Environment modal')}>Manage Environment</Dropdown.Item>
+              <Dropdown.Item className='dropdown-item px-2' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
+              <Dropdown.Item className='dropdown-item px-2' onClick={() => setShowImportModal(true)}>Import Environment</Dropdown.Item>
+              <Dropdown.Item className='dropdown-item px-2' onClick={() => handleEnvironmentModal('Environment modal')}>Manage Environment</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </div>

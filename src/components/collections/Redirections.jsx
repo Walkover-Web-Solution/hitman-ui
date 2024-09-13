@@ -26,6 +26,7 @@ import { addCollectionAndPages } from '../redux/generalActions'
 import './redirections.scss'
 import { FaLongArrowAltLeft } from 'react-icons/fa'
 import { getCurrentOrg } from '../auth/authServiceV2'
+import { FaArrowLeft } from 'react-icons/fa6'
 
 const Redirections = () => {
   const params = useParams()
@@ -311,8 +312,8 @@ const Redirections = () => {
     <div className='redirections d-flex h-100'>
       <div className='d-flex justify-content-start sidebar-pages-container mb-4' >
         <div className='p-4'>
-        <button className='btn home-button btn-dark btn-sm' onClick={handleBack}>
-          <FaLongArrowAltLeft />
+        <button className='btn position-absolute back-button-api-redirect btn-sm rounded-circle icon-button' onClick={handleBack}>
+          <FaArrowLeft />
         </button>
           {renderAllPagesOfParent(childIds)}
           </div>

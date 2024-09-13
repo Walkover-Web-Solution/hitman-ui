@@ -112,7 +112,7 @@ class SavePromptModal extends Component {
               Save
             </button>
 
-            <button id='custom-delete-modal-cancel' className='btn btn-danger btn-sm ml-2 fs-4' onClick={() => this.handleDontSave()}>
+            <button id='custom-delete-modal-cancel' className='btn btn-danger btn-sm ml-2 fs-4' onClick={() => this.handleDontSave()} autoFocus>
               Don't Save
             </button>
 

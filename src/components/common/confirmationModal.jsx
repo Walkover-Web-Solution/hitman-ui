@@ -17,7 +17,7 @@ function ConfirmationModal(props) {
   return (
     <Modal onHide={props.onHide} show={props.show} animation={false} aria-labelledby='contained-modal-title-vcenter' centered>
       <Modal.Header className='custom-collection-modal-container' closeButton>
-        <Modal.Title>{props.title}</Modal.Title>
+        <Modal.Title className='fs-3'>{props.title}</Modal.Title>
       </Modal.Header>
       <Modal.Body id='custom-delete-modal-body'>
         <div className='text-left mt-4 mb-2'>
