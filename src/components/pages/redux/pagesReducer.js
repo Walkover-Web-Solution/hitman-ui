@@ -142,15 +142,6 @@ function pagesReducer(state = initialState, action) {
         [action.page.id]: action.page
       }
 
-      case pagesActionTypes.SET_PUBLISH_LOADER:
-        return {
-          ...state,
-            [action.payload.page.id]: {
-             ...state[action.payload.page.id],
-              publishLoader: action.payload.isLoading
-            }
-        }
-
     case pagesActionTypes.ON_PAGE_DUPLICATED:
       pages = { ...state }
       pages[action.response.id] = action.response

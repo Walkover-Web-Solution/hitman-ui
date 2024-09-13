@@ -22,7 +22,7 @@ import ConfirmationModal from "../../components/common/confirmationModal";
 
 const Page = () => {
 
-    const { draftContent, page, pages, users, activeTabId, tabs, collections, isPublished, publishLoader } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, collections, isPublished } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[state.tabs.activeTabId],
         pages: state.pages,
@@ -31,7 +31,6 @@ const Page = () => {
         tabs: state.tabs.tabs,
         isPublished: state?.pages[state.tabs.activeTabId]?.isPublished,
         collections: state.collections,
-        publishLoader: state?.pages[state.tabs.activeTabId]?.publishLoader
     }));
 
     const dispatch = useDispatch();
@@ -195,7 +194,9 @@ const Page = () => {
     }
 
     const handlePublish = async () => {
-        dispatch(approvePage(pages[pageId]))
+        setLoading(true)
+        await dispatch(approvePage(pages[pageId]))
+        setLoading(false)
     };
 
     const handleUnPublish = async () => {
@@ -304,14 +305,14 @@ const Page = () => {
                         {renderPathLinks()}
                     </div>
                     {
-                        publishLoader && <div>
+                        loading && <div>
                             <div class="spinner-border spinner-border-sm ml-2" role="status" style={{ color: '#6c757d ', width: '1rem', height: '1rem' }}>
                                 <span class="sr-only ">Publishing...</span>
                             </div>
                             <span className="ml-1" style={{ color: '#6c757d ', fontSize: '0.8rem' }}>Publishing...</span>
                         </div>
                     }
-                    {pages?.[pageId]?.isPublished && !publishLoader &&
+                    {pages?.[pageId]?.isPublished && !loading &&
                         <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />
                         </OverlayTrigger>
