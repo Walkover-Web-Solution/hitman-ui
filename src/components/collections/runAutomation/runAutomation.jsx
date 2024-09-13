@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { IoIosPlay } from 'react-icons/io'
@@ -9,18 +9,21 @@ import './runAutomation.scss'
 import { addCron, addWebhook } from '../../../services/cronJobs'
 import { generateCronExpression } from '../../common/utility'
 import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
-import { FaExclamationCircle } from 'react-icons/fa'
+import { FaExclamationCircle, FaLongArrowAltLeft } from 'react-icons/fa'
 import { runAutomations, generateDescription } from './redux/runAutomationActions'
 import { FiCopy } from 'react-icons/fi'
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { FaMeta } from "react-icons/fa6";
 import { IoInformationCircle } from "react-icons/io5";
 import { updateEndpoint } from '../../endpoints/endpointApiService'
+import { getCurrentOrg } from '../../auth/authServiceV2'
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const params = useParams()
+  const orgId = getCurrentOrg()?.id
   const webhookURL = `${import.meta.env.VITE_API_URL}/call-webhook`
 
   const { allPages, collectionName, clientData, currentEnvironmentId, allEnviroments, currentUser, users } = useSelector((state) => {
@@ -229,6 +232,10 @@ export default function RunAutomation() {
     }
   }
 
+  const handleBack = () => {
+    navigate(`/orgs/${orgId}/dashboard`)
+  }
+
   const copyWebhookUrl = (text) => {
     navigator.clipboard.writeText(webhookURL)
     setwebhookUrlCopied(true);
@@ -245,6 +252,9 @@ export default function RunAutomation() {
     <div className='run-automation-container'>
       <div className='endpoints-container'>
         <div >
+        <button className='btn home-button btn-dark btn-sm' onClick={handleBack}>
+          <FaLongArrowAltLeft />
+        </button>
           <span className='mr-2'><IoInformationCircle size={15} color='#7fbaff' /></span>
           <span className='small-text'>If descriptions and sample responses are not provided, AI will not generate the order, and automation will fail.</span>
           {/* {showAiIcon && (

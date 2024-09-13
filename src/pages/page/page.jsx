@@ -128,12 +128,16 @@ const Page = () => {
 
     const handlePageNameChange = (event) => {
         const newName = event.target.value;
-        setPageName(newName);
-        if (tabs?.[activeTabId]?.status === "NEW") debounceUpdateName(activeTabId, newName);
+        if (newName !== pageName) {
+            setPageName(newName);
+            if (tabs?.[activeTabId]?.status === "NEW") debounceUpdateName(activeTabId, newName);
+        }
     };
 
     const handleSavePageName = () => {
-        if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName));
+        if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) { 
+            dispatch(updatePageName(page.id, pageName));
+        }
     };
 
     const handlePageNameKeyDown = (event) => {
