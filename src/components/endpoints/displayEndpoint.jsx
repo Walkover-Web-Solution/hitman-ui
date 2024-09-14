@@ -577,7 +577,7 @@ class DisplayEndpoint extends Component {
      if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       this.setState({ openPublishConfirmationModal: true })
     }
-    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  && this.props.pages[this.endpointId]?.isPublished)  {
       event.preventDefault();
       this.setState({ openUnPublishConfirmationModal: true })
     }
@@ -3259,7 +3259,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span className='text-black-50 fs-5 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
+                                  <span className='text-black-50 fs-5 mr-2'>{!window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand className='cmd-icon d-inline-block' />+ <span className='u-icon d-inline-block'>B</span></>  : <span>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item
@@ -3270,7 +3270,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span className='text-black-50 fs-5 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand  className='cmd-icon'/>+ U</>  :<span>Ctrl + U</span> }</span>
+                                  <span className='text-black-50 fs-5 mr-2'>{!window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand  className='cmd-icon'/>+ <span className='u-icon d-inline-block'>U</span></>  :<span>Ctrl + U</span> }</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button
