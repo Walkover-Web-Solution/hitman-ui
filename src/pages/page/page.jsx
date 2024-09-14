@@ -6,7 +6,7 @@ import { approvePage, draftPage } from "../../components/publicEndpoint/redux/pu
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
 import { updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
