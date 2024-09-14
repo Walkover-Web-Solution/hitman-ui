@@ -59,9 +59,6 @@ const Environments = () => {
     setShowDeleteModal(false)
   }
 
-  const showTooltips = () => {
-    return <Tooltip className="fs-4 text-secondary"><span >Export environment</span></Tooltip>
-  }
 
   const handleExport = async (Id) => {
     try {
@@ -116,9 +113,20 @@ const Environments = () => {
               {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item className='gap-2 px-2 align-items-end' onClick={() => handleEnv(environmentId)} key={environmentId}>
                 {environment.environments[environmentId]?.name}
                 {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck size={16} /></span>}
-                <OverlayTrigger placement="bottom" overlay={showTooltips()} >
-                  <IconButton><BiExport className='export-icon' size={18} onClick={(event) => { event.stopPropagation(); handleExport(environment?.environments[environmentId].id) }} /></IconButton>
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={<Tooltip className='fs-4' id="export-tooltip">Export environment</Tooltip>}
+                >
+                  <BiExport
+                    className='export-icon icon-button'
+                    size={18}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleExport(environment?.environments[environmentId].id);
+                    }}
+                  />
                 </OverlayTrigger>
+
                 {environment?.environments[environmentId]?.userId === 0 && environment?.environments[environmentId]?.orgId !== null && environmentId !== currentEnvironmentId && <span className='global-icon'><FaGlobeAmericas size={16} /></span>}
               </Dropdown.Item>)}
               <Dropdown.Divider />

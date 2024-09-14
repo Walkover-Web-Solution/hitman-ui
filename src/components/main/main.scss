@@ -2093,7 +2093,20 @@ html body div#sokt-sso-modal {
   position: relative; 
 
 }
+.cmd-icon {
+  margin-right: 2px !important;
+  margin-bottom: 1px;
+}
+.u-icon {
+  margin-top: 1px;
+}
+.b-icon {
+  margin-top: 2px;
+}
 .unpublishBtn {
+  .button {
+    transition: none !important;
+  }
   &:hover {
     background-color: $alert-color !important;
     span{
@@ -2104,9 +2117,7 @@ html body div#sokt-sso-modal {
       transition: none !important;
     }
   }
-  .cmd-icon {
-    margin-right: 2px !important;
-  }
+ 
   
 }
 
