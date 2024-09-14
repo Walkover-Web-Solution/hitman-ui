@@ -106,11 +106,11 @@ const Page = () => {
             event.preventDefault();
             handleSavePage();
         }
-        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && tabs[activeTabId]?.status !== "NEW") {
             event.preventDefault();
             publishClick();
         }
-        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && isPublished) {
+        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && tabs[activeTabId]?.status !== "NEW") {
             event.preventDefault();
             unpublishClick();
         }
@@ -135,7 +135,7 @@ const Page = () => {
     };
 
     const handleSavePageName = () => {
-        if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) { 
+        if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) {
             dispatch(updatePageName(page.id, pageName));
         }
     };
@@ -164,7 +164,7 @@ const Page = () => {
     }
 
     const unpublishClick = () => {
-        setOpenUnpublishConfirmationModal(true)
+            setOpenUnpublishConfirmationModal(true)
     }
 
     const renderPublishConfirmationModal = () => {
@@ -342,14 +342,14 @@ const Page = () => {
                                 <Dropdown.Menu>
                                     <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-black-50 fs-5" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand  className='cmd-icon'/>+ <span className='b-icon d-inline-block'>B</span></> : <span>Ctrl + B</span>}</span>
+                                        <span className="text-black-50 fs-5" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand className='cmd-icon' />+ <span className='b-icon d-inline-block'>B</span></> : <span>Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
                                         className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50 fs-5">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand  className='cmd-icon'/>+ <span className='b-icon d-inline-block'>U</span></> : <span>Ctrl + U</span>}</span>
+                                        <span className="text-black-50 fs-5">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand className='cmd-icon' />+ <span className='b-icon d-inline-block'>U</span></> : <span>Ctrl + U</span>}</span>
                                     </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>

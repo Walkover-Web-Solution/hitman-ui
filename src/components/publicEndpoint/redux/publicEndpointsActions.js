@@ -125,8 +125,9 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
       .approveEndpoint(endpoint, uniqueTabId)
       .then((response) => {
         dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true }))
-        publishLoaderHandler()
         toast.success('Enpoint published successfully')
+        publishLoaderHandler()
+        
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error?.response ? error?.response?.data : error))
