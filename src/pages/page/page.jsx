@@ -80,24 +80,24 @@ const Page = () => {
         prod: import.meta.env.VITE_RTC_URL_PROD,
     };
 
-      const { ydoc, provider } = useMemo(() => {
+    const { ydoc, provider } = useMemo(() => {
         if (tabs[activeTabId].status !== "SAVED") return { ydoc: null, provider: null };
         const ydoc = new Y.Doc();
         const baseUrl = mapping[import.meta.env.VITE_ENV];
         const provider = new HocuspocusProvider({
             url: `${baseUrl}?orgId=${orgId}`,
-            name: `${pageId}`, 
+            name: `${pageId}`,
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId]); 
+    }, [orgId, pageId]);
 
     useEffect(() => {
         return () => {
             if (provider) provider.destroy();
             if (ydoc) ydoc.destroy();
         };
-    }, [provider, ydoc]);
+    }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -155,33 +155,33 @@ const Page = () => {
 
     const renderPublishConfirmationModal = () => {
         return (
-         openPublishConfirmationModal && (
-            <ConfirmationModal
-              show={openPublishConfirmationModal}
-              onHide={() => setOpenPublishConfirmationModal(false)}
-              proceed_button_callback={handlePublish}
-              title={msgText.publishPage}
-              submitButton='Publish'
-              rejectButton='Discard'
-            />
-          )
+            openPublishConfirmationModal && (
+                <ConfirmationModal
+                    show={openPublishConfirmationModal}
+                    onHide={() => setOpenPublishConfirmationModal(false)}
+                    proceed_button_callback={handlePublish}
+                    title={msgText.publishPage}
+                    submitButton='Publish'
+                    rejectButton='Discard'
+                />
+            )
         )
-      }
+    }
 
-     const renderUnPublishConfirmationModal = () => {
+    const renderUnPublishConfirmationModal = () => {
         return (
             openUnpublishConfirmationModal && (
-            <ConfirmationModal
-              show={openUnpublishConfirmationModal}
-              onHide={() =>setOpenUnpublishConfirmationModal(false)}
-              proceed_button_callback={handleUnPublish}
-              title={msgText.unpublishPage}
-              submitButton='UnPublish'
-              rejectButton='Discard'
-            />
-          )
+                <ConfirmationModal
+                    show={openUnpublishConfirmationModal}
+                    onHide={() => setOpenUnpublishConfirmationModal(false)}
+                    proceed_button_callback={handleUnPublish}
+                    title={msgText.unpublishPage}
+                    submitButton='UnPublish'
+                    rejectButton='Discard'
+                />
+            )
         )
-      }
+    }
 
     const handlePublish = async () => {
         dispatch(approvePage(pages[pageId]))
@@ -304,11 +304,19 @@ const Page = () => {
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     }
-                    {tabs[activeTabId]?.status === "NEW" && <IconButton>
-                        <button className="btn p-0 text-black-60 disabled">
-                            Unsaved
-                        </button>
-                    </IconButton>}
+                    <IconButton>
+                        <div className='button'>
+                            <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
+                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs[activeTabId]?.status === "NEW" ? (
+                                    <button className="btn p-0 text-black-60 disabled">
+                                        Unsaved
+                                    </button>
+                                ) : (
+                                    <></>
+                                )}</button>}
+                            </OverlayTrigger>
+                        </div>
+                    </IconButton>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
                             <Dropdown>
@@ -343,16 +351,16 @@ const Page = () => {
                     onBlur={handleSavePageName}
                 />
                 <div id='tiptap-editor' className='page-content '>
-                <Tiptap
-                provider={provider}
-                ydoc={ydoc}
-                isInlineEditor={false}
-                disabled={false}
-                initial={draftContent || false}
-                onChange={handleContentChange || false}
-                isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
-                key={activeTabId}
-                />
+                    <Tiptap
+                        provider={provider}
+                        ydoc={ydoc}
+                        isInlineEditor={false}
+                        disabled={false}
+                        initial={draftContent || false}
+                        onChange={handleContentChange || false}
+                        isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
+                        key={activeTabId}
+                    />
                 </div>
             </div>
             {sidebar &&
