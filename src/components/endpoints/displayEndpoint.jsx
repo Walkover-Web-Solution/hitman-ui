@@ -574,10 +574,10 @@ class DisplayEndpoint extends Component {
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
     }
-     if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+     if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       this.setState({ openPublishConfirmationModal: true })
     }
-    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       event.preventDefault();
       this.setState({ openUnPublishConfirmationModal: true })
     }

@@ -22,6 +22,8 @@ import { BsPlayBtn } from "react-icons/bs";
 import { LuPlus } from "react-icons/lu";
 
 import './tabs.scss'
+import { openModal } from '../modals/redux/modalsActions.js'
+import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes.js'
 
 const CustomTabs = (props) => {
   const dispatch = useDispatch()
@@ -40,7 +42,7 @@ const CustomTabs = (props) => {
   const [showPreview, setShowPreview] = useState(false)
   const [previewId, setPreviewId] = useState(null)
 
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, organizations, automation } = useSelector((state) => {
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, organizations, automation, activeModal } = useSelector((state) => {
     return {
       responseView: state.responseView,
       pages: state.pages,
@@ -52,6 +54,7 @@ const CustomTabs = (props) => {
       history: state.history,
       automation: state.automation,
       organizations: state.organizations,
+      activeModal: state.modals.activeModal,
     }
   })
 
@@ -69,6 +72,7 @@ const CustomTabs = (props) => {
     const activeTabId = tabs?.activeTabId
     const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
     const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
+    const isDesktopModalOpen = activeModal === DESKTOP_APP_DOWNLOAD
 
     if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
       switch (e.key) {
@@ -82,6 +86,9 @@ const CustomTabs = (props) => {
           break
         case 'n':
           e.preventDefault()
+          if(tabsOrder.length>=10){
+            openModal(DESKTOP_APP_DOWNLOAD)
+          }
           handleAddTab()
           break
         default:
