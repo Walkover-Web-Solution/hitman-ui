@@ -105,11 +105,11 @@ const Page = () => {
             event.preventDefault();
             handleSavePage();
         }
-        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
+        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && tabs[activeTabId]?.status !== "NEW") {
             event.preventDefault();
             publishClick();
         }
-        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && isPublished) {
+        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && tabs[activeTabId]?.status !== "NEW") {
             event.preventDefault();
             unpublishClick();
         }
@@ -134,7 +134,7 @@ const Page = () => {
     };
 
     const handleSavePageName = () => {
-        if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) { 
+        if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) {
             dispatch(updatePageName(page.id, pageName));
         }
     };
