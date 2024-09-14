@@ -115,13 +115,9 @@ const OnBoarding = () => {
         return orgName && regex.test(orgName) && orgName.length >= 3 && orgName.length <= 50
     }
 
-    const handleArrowClick = () => {
-        navigate(`/orgs/${getOrgId()}/dashboard`)
-    }
-
     return (
         <>
-            <button className='btn home-button position-absolute btn-dark btn-sm' onClick={handleArrowClick}>
+            <button className='btn home-button position-absolute btn-dark btn-sm'onClick={() => redirectToDashboard(getOrgId())}>
                 <IconButton>
                     <IoHomeSharp size={18} />
                 </IconButton>
