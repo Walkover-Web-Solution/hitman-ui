@@ -342,14 +342,14 @@ const Page = () => {
                                 <Dropdown.Menu>
                                     <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-black-50 fs-5" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand  className='cmd-icon'/>+ <span className='b-icon d-inline-block'>B</span></> : <span>Ctrl + B</span>}</span>
+                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>B</span></> : <span className="fs-5">Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
                                         className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50 fs-5">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand  className='cmd-icon'/>+ <span className='b-icon d-inline-block'>U</span></> : <span>Ctrl + U</span>}</span>
+                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>U</span></> : <span className="fs-5">Ctrl + U</span>}</span>
                                     </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
