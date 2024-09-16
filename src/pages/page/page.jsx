@@ -200,7 +200,7 @@ const Page = () => {
                 return (
                     <Tooltip id='edited-by-tooltip'>
                         {lastModified &&
-                            <div className="fs-4 text-secondary">
+                            <div className="font-12 text-secondary">
                                 <div>
                                     <span>Edited by </span>
                                     <span className="font-weight-bold text-white">{user?.name}</span>
@@ -216,11 +216,11 @@ const Page = () => {
                     </Tooltip>
                 )
             case "Live":
-                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary live-tooltip">Live</Tooltip>
+                return <Tooltip id='edited-by-tooltip' className="font-12 text-secondary live-tooltip">Live</Tooltip>
             case "shortcut":
                 return (
                     <Tooltip id='edited-by-tooltip'>
-                        <div className="fs-4 text-secondary">
+                        <div className="font-12 text-secondary">
                             {window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}
                         </div>
                     </Tooltip>

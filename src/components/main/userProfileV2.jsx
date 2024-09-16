@@ -99,7 +99,7 @@ const UserProfile = () => {
             <FiUser size={12} />
           </div>
           <div className='profile-details-user-name'>
-            <span className='profile-details-label-light fs-4'>{email}</span>
+            <span className='profile-details-label-light font-12'>{email}</span>
           </div>
         </div>
       </div>
@@ -146,7 +146,7 @@ const UserProfile = () => {
   }
 
   const showTooltips = () => {
-    return <Tooltip className="fs-4 text-secondary"><span >Leave</span></Tooltip>
+    return <Tooltip className="font-12 text-secondary"><span >Leave</span></Tooltip>
   }
 
   const renderOrgListDropdown = () => {

@@ -161,7 +161,7 @@ const ApiDocReview = (props) => {
               <Form.Group className='mb-3' controlId='exampleForm.ControlInput1'>
                 <Form.Label>Email address</Form.Label>
                 <Form.Control type='email' placeholder='name@example.com' autoFocus onChange={handleInput} value={email} name='email' />
-                {!validateEmail(email) && email && <div className='text-danger fs-4'>Invalid email address</div>}
+                {!validateEmail(email) && email && <div className='text-danger font-12'>Invalid email address</div>}
               </Form.Group>
               <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
                 <Form.Label>
@@ -176,7 +176,7 @@ const ApiDocReview = (props) => {
                   type='text'
                   name='comment'
                 />
-                {comment && comment.trim().length < 5 && <div className='text-danger fs-4'>Comment must be at least 5 characters long</div>}
+                {comment && comment.trim().length < 5 && <div className='text-danger font-12'>Comment must be at least 5 characters long</div>}
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -204,7 +204,7 @@ const ApiDocReview = (props) => {
       <>
         <div className='position-relative'>
           <p className='d-flex justify-content-center Modified-at mb-1'>Was this page helpful?</p>
-          <div className='d-flex justify-content-center like-unline fs-2'>
+          <div className='d-flex justify-content-center like-unline font-18'>
             <OverlayTrigger placement='bottom' overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}>
               <div
                 className='cursor-pointer'

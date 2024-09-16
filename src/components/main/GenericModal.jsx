@@ -52,7 +52,7 @@ function GenericModal({
                         <span class='sr-only'>Please Wait...</span>
                       </div>
                     ) : (
-                      <button className='btn btn-primary btn-sm mt-2 fs-4' type='submit' onClick={handleSendInvite}>
+                      <button className='btn btn-primary btn-sm mt-2 font-12' type='submit' onClick={handleSendInvite}>
                         Send
                       </button>
                     )}

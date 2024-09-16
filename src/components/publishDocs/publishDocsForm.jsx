@@ -270,7 +270,7 @@ const PublishDocForm = (props) => {
           onBlur={(e) => handleBlur(e, isURLInput)}
         />
         {name === 'domain' && (
-          <span className='domain-info fs-4 mt-1 d-block text-danger'>
+          <span className='domain-info font-12 mt-1 d-block text-danger'>
             {`Point c name of the above domain to ${MAPPING_DOMAIN}`}
             <a className='ml-1' href='https://techdoc.walkover.in/p/White-Labelling?collectionId=2Uv_sfKTLPI3'>
               Learn More
@@ -278,7 +278,7 @@ const PublishDocForm = (props) => {
           </span>
         )}
         {name === 'title' && (
-          <span className='domain-info fs-4 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>
+          <span className='domain-info font-12 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>
         )}
         {error && <small className='alert alert-danger'>{error}</small>}
       </div>
@@ -379,14 +379,14 @@ const PublishDocForm = (props) => {
           disabled={!disableCondition}
           id='publish_collection_btn'
           variant='btn btn-outline'
-          className='m-1 btn-sm fs-4'
+          className='m-1 btn-sm font-12'
           onClick={redirectUser}
           title='This will publish all the pages and endpoints inside this collection.'
         >
           Bulk Publish
         </Button>
         <Button
-          className={loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
+          className={loader ? 'buttonLoader m-1 btn-sm font-12' : 'm-1 btn-sm font-12'}
           disabled={!data.title.trim()}
           onClick={() => {
             saveAndPublishCollection(selectedCollection)
@@ -398,8 +398,8 @@ const PublishDocForm = (props) => {
         </Button>
         {!isNotPublished && (
           <Button
-            variant='btn btn-outline-danger btn-sm fs-4'
-            className='m-1 btn-sm fs-4'
+            variant='btn btn-outline-danger btn-sm font-12'
+            className='m-1 btn-sm font-12'
             onClick={() => {
               unPublishCollection(selectedCollection)
               setRepublishNeeded(false)
@@ -510,9 +510,9 @@ const PublishDocForm = (props) => {
             {renderInput('title', false, 'brand name', false)}
             <div className='form-group mb-4'>
               <label>Select Environment</label>
-              {publicEnv === null || Object.keys(publicEnv).length === 0 ? (
+              {publicEnv === null || Object.keys(publicEnv)?.length === 0 ? (
                 <Dropdown>
-                  <Dropdown.Toggle className='justify-content-between bg-white border w-100 fs-4' variant="light" id='dropdown-basic'>
+                  <Dropdown.Toggle className='justify-content-between bg-white border w-100 font-12' variant="light" id='dropdown-basic'>
                     {'Select Environment'}
                   </Dropdown.Toggle>
 
@@ -533,7 +533,7 @@ const PublishDocForm = (props) => {
               ) : (
                 <input
                   type='text'
-                  className='d-block w-100 fs-4'
+                  className='d-block w-100 font-12'
                   value='Public Environment'
                   readOnly
                   onClick={() => handlePublicEnvClick()}
@@ -597,7 +597,7 @@ const PublishDocForm = (props) => {
                           </td>
                           <td>
                             <Form.Control
-                              className='key-input-field text-grey fs-4'
+                              className='key-input-field text-grey font-12'
                               type='text'
                               placeholder='Environment Key'
                               value={row.variable}
@@ -636,15 +636,15 @@ const PublishDocForm = (props) => {
                 </Form>
               </Modal.Body>
               <Modal.Footer className='justify-content-between'>
-                <Button className='add-more-button text-grey bg-white fs-4 border-0' onClick={handleAddRow}>
+                <Button className='add-more-button text-grey bg-white font-12 border-0' onClick={handleAddRow}>
                   + Add More Rows
                 </Button>
                 <div className='d-flex gap-2'>
-                  <Button className='btn-sm fs-4' onClick={handleSave}>
+                  <Button className='btn-sm font-12' onClick={handleSave}>
                     Save
                   </Button>
 
-                  <Button className='btn-sm fs-4' onClick={() => handleDelete(props.selected_collection_id)}>
+                  <Button className='btn-sm font-12' onClick={() => handleDelete(props.selected_collection_id)}>
                     Delete
                   </Button>
                 </div>

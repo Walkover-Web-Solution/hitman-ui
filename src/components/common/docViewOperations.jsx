@@ -36,7 +36,7 @@ export function PublishEntityButton(props) {
   })
   return (
     <button
-      className={(publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm fs-4' : 'btn text-grey btn-sm fs-4')}
+      className={(publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm font-12' : 'btn text-grey btn-sm font-12')}
       type='button'
       onClick={() => props.open_publish_confirmation_modal()}
       disabled={pages[params.pageId]?.state === 2 ? true : false}
@@ -57,7 +57,7 @@ export function UnPublishEntityButton(props) {
   }
   return (
     <button
-      className={(publishLoader ? 'btn buttonLoader  ml-2 btn-sm fs-4' : 'btn btn-sm fs-4 text-grey')}
+      className={(publishLoader ? 'btn buttonLoader  ml-2 btn-sm font-12' : 'btn btn-sm font-12 text-grey')}
       type='button'
       onClick={handleClick}
     >

@@ -215,7 +215,7 @@
               />
             </Form.Group>
           </div>
-          <button onClick={handleSaveChanges} className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
+          <button onClick={handleSaveChanges} className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
             <span>Save Changes</span>
           </button>
         </div>

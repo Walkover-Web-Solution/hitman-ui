@@ -57,7 +57,7 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
       )}
       <button
         onClick={handleImport}
-        className="btn btn-primary mt-3 btn-sm fs-4"
+        className="btn btn-primary mt-3 btn-sm font-12"
         disabled={!file}
       >
         Import

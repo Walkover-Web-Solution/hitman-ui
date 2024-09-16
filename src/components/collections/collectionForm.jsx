@@ -49,7 +49,7 @@ const CollectionForm = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Input defaultValue={collections[props?.collectionId]?.name} name="name" urlName="Name" label="Collection Name" placeholder="Collection Name" mandatory={true} isURLInput={true} note="*collection name accepts min 3 and max 50 characters" ref={inputRef} errors={errors} />
-        <button className='btn btn-primary btn-sm fs-4' onClick={doSubmit}>Save</button>
+        <button className='btn btn-primary btn-sm font-12' onClick={doSubmit}>Save</button>
       </Modal.Body>
     </div>
   );

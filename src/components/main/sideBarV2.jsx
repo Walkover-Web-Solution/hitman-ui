@@ -97,7 +97,7 @@ const SideBar = () => {
                 />
               </div>
             )}
-            <h1 className='hm-sidebar-title mb-0 fs-1 fw-800'>
+            <h1 className='hm-sidebar-title mb-0 font-20 fw-800'>
               {publishedCollectionTitle || collectionName || ''}
             </h1>
           </div>
