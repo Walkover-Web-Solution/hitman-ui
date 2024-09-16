@@ -423,8 +423,8 @@ function TokenGenerator(props) {
         ))}
 
         <div className='text-right'>
-          <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={handleSaveConfiguration}>Save</button>
-          <button className='btn btn-primary btn-sm fs-4 ml-2' type='button' onClick={makeRequest}>Request Token</button>
+          <button className='btn btn-secondary outline btn-sm font-12 ml-2' onClick={handleSaveConfiguration}>Save</button>
+          <button className='btn btn-primary btn-sm font-12 ml-2' type='button' onClick={makeRequest}>Request Token</button>
         </div>
 
       </Modal.Body>

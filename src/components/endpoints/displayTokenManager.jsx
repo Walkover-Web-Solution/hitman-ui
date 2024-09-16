@@ -54,18 +54,16 @@ function AccessTokenManager(props) {
             ))}
           </ListGroup>
         </Col>
-        <Col className='mt-2 mb-2 token-details-field-container' sm={9}>
-          {selectedTokenId && <div>
-            <div>
-              <div className='d-flex justify-content-between align-items-center'>
+        <Col className='mt-2 mb-2 token-details-field-container d-flex flex-column justify-content-between' sm={9}>
+          {selectedTokenId && <><div>
                 <h6 className=''>Token Details</h6>
-                <button onClick={handleUseTokenClick} className='oauth2-token-details-list-item-button' type='button'>
-                  Use Token
-                </button>
-              </div>
-            </div>
             <TokenDetailsComponent tokenDetails={tokenDetails} selectedTokenId={selectedTokenId} />
-          </div>}
+                
+          </div>
+          <button onClick={handleUseTokenClick} className='oauth2-token-details-list-item-button font-12 ml-auto btn btn-secondary' type='button'>
+          Use Token
+        </button>
+        </> }
         </Col>
       </Row>
     </Modal>

@@ -58,7 +58,7 @@ const ShowCaseSaveAsModal = (props) => {
   return (
     <div className='main_container p-2'>
       <div className='d-flex justify-content-start align-items-center flex-wrap'>
-        <span className='fs-4'>Save to </span>
+        <span className='font-12'>Save to </span>
         {pathData.map((singleId, index) => {
           return (
             <div className='d-flex justify-content-start align-items-center' key={index}>
@@ -73,10 +73,10 @@ const ShowCaseSaveAsModal = (props) => {
       <div className='showcase_modal_container'>
         <RenderData data={pathData} setPathData={setPathData} />
         <div className='mt-5 d-flex align-items-center justify-content-end pb-2 pr-1'>
-          <button onClick={handleSave} className='btn btn-primary btn-sm fs-4 mr-2' disabled={currentId === 'currentOrganisation'} >
+          <button onClick={handleSave} className='btn btn-primary btn-sm font-12 mr-2' disabled={currentId === 'currentOrganisation'} >
             Save
           </button>
-          <button onClick={props.onHide} className='btn btn-secondary outline fs-4 api-cancel-btn btn-sm'>
+          <button onClick={props.onHide} className='btn btn-secondary outline font-12 api-cancel-btn btn-sm'>
             Cancel
           </button>
         </div>

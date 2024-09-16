@@ -61,7 +61,7 @@ const VersionInput = (props) => {
               defaultValue={pages?.[props?.singleChildId]?.name}
               ref={versionNameInputRef}
             ></input>
-            <Button id='publish_collection_btn' variant='btn btn-outline btn-sm fs-4 ml-2' onClick={() => onRename(props?.singleChildId)}>
+            <Button id='publish_collection_btn' variant='btn btn-outline btn-sm font-12 ml-2' onClick={() => onRename(props?.singleChildId)}>
               Save
             </Button>
           </div>
@@ -122,7 +122,7 @@ const AddVersion = (props) => {
         ref={newVersionNameInputRef}
         onKeyDown={handleKeyDown}
       ></input>
-      <Button onClick={addVersion} id='publish_collection_btn' className='btn-sm fs-4' variant='btn btn-outline ml-2'>
+      <Button onClick={addVersion} id='publish_collection_btn' className='btn-sm font-12' variant='btn btn-outline ml-2'>
         Add
       </Button>
     </div>
@@ -167,7 +167,7 @@ export default function SelectVersion(props) {
                   {pages?.[singleChildId]?.state !== 1 && (
                     <Button
                       variant='btn btn-outline ml-1'
-                      className='btn-sm fs-4'
+                      className='btn-sm font-12'
                       onClick={() => {
                         handleDefaultVersion(singleChildId)
                       }}

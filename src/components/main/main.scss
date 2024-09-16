@@ -3,27 +3,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import './variables.scss';
 
-.fs-1 {
+.font-20 {
   font-size: $font-extra-large !important;
 }
 
-.fs-2 {
+.font-18 {
   font-size: $font-large-l !important;
 }
 
-.fs-3 {
+.font-16 {
   font-size: $font-medium-m !important;
 }
 
-.fs-4 {
+.font-12 {
   font-size: $font-small-s !important;
 }
 
-.fs-5 {
+.font-10 {
   font-size: $font-extra-small !important;
 }
 
-.font-16 {
+.font-14 {
   font-size: $font-normal-n !important;
 }
 
@@ -84,27 +84,27 @@
 }
 
 .fw-400 {
-  font-weight: $font-weight-400;
+  font-weight: $font-weight-400 !important;
 }
 
 .fw-500 {
-  font-weight: $font-weight-500;
+  font-weight: $font-weight-500 !important;
 }
 
 .fw-600 {
-  font-weight: $font-weight-600;
+  font-weight: $font-weight-600 !important;
 }
 
 .fw-700 {
-  font-weight: $font-weight-700;
+  font-weight: $font-weight-700 !important;
 }
 
 .fw-800 {
-  font-weight: $font-weight-800;
+  font-weight: $font-weight-800 !important;
 }
 
 .fw-900 {
-  font-weight: $font-weight-900;
+  font-weight: $font-weight-900 !important;
 }
 
 .text-grey {

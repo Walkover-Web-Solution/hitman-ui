@@ -55,7 +55,7 @@ class CookiesList extends Component {
             value={this.state.currentDomain.domain}
             onChange={(e) => this.handleChange(e)}
           />
-          <button className='btn btn-primary btn-sm fs-4 ml-3' type='submit' disabled={this.state.currentDomain.domain === ''}>
+          <button className='btn btn-primary btn-sm font-12 ml-3' type='submit' disabled={this.state.currentDomain.domain === ''}>
             Add
           </button>
         </form>
@@ -88,7 +88,7 @@ class CookiesList extends Component {
         </div>
       ))
     ) : (
-      <h4 className='text-center fs-4 text-secondary'>No Domain available!</h4>
+      <h4 className='text-center font-12 text-secondary'>No Domain available!</h4>
     )
   }
 

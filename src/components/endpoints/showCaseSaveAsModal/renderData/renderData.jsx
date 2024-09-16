@@ -67,7 +67,7 @@ export default function RenderData(props) {
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
                 <FaRegFolderClosed className='text-grey' size='14px' />
-                <div className='ml-1 fs-4'>{collections?.[singleId]?.name}</div>
+                <div className='ml-1 font-12'>{collections?.[singleId]?.name}</div>
               </div>
             )
           case 'page':
@@ -78,7 +78,7 @@ export default function RenderData(props) {
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
                 <IoDocumentTextOutline className='text-grey' size='14px' />
-                <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
+                <div className='ml-1 font-12'>{pages?.[singleId]?.name}</div>
               </div>
             )
           case 'version':
@@ -89,14 +89,14 @@ export default function RenderData(props) {
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
                 <IoDocumentTextOutline className='text-grey' size='14px' />
-                <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
+                <div className='ml-1 font-12'>{pages?.[singleId]?.name}</div>
               </div>
             )
           case 'endpoint':
             return (
               <div key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
                 <div className={`api-label ${pages?.[singleId]?.requestType} request-type-bgcolor`}>{pages?.[singleId]?.requestType}</div>
-                <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
+                <div className='ml-1 font-12'>{pages?.[singleId]?.name}</div>
               </div>
             )
           default:
