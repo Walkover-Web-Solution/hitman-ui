@@ -73,7 +73,7 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
 import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
@@ -414,7 +414,8 @@ class DisplayEndpoint extends Component {
       fileDownloaded: false,
       sendClickec: false,
       showPublicEnvironments: false,
-      themes: ''
+      loading: false,
+      errorFound: true,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -557,6 +558,7 @@ class DisplayEndpoint extends Component {
     }
   }
   handleKeyDown = (event) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     const activeTabId = this.props.activeTabId
     const status = this.props.tabs?.[activeTabId]?.status
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
@@ -572,6 +574,13 @@ class DisplayEndpoint extends Component {
       }
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
+    }
+     if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
+      this.setState({ openPublishConfirmationModal: true })
+    }
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  && this.props.pages[this.endpointId]?.isPublished)  {
+      event.preventDefault();
+      this.setState({ openUnPublishConfirmationModal: true })
     }
   }
 
@@ -2927,7 +2936,7 @@ class DisplayEndpoint extends Component {
 
   renderSwitchBtn() {
     return (
-      <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
+      <div onClick={this.handleToggle} className='p-0 d-flex justify-content-between align-items-center cursor-pointer'>
         <button className='btn text-grey btn-sm font-12'>DOC</button>
         <Form>
           <Form.Check
@@ -2973,13 +2982,13 @@ class DisplayEndpoint extends Component {
 
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
+    this.setState({loading:true})
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
-      this.props.approve_endpoint(endpointId, () => {
-        this.setState({ publishLoader: false })
-      })
+      await this.props.approve_endpoint(endpointId)
+      this.setState({loading:false})
     }
   }
 
@@ -3237,6 +3246,7 @@ class DisplayEndpoint extends Component {
                           setActiveTab={this.setActiveTab}
                           {...this.props}
                           isEndpoint
+                          publishLoader= {this.state.loading}
                         />
                         <div className='d-flex gap-1 align-items-center'>
                           {this.state.showEndpointFormModal && (
@@ -3261,20 +3271,24 @@ class DisplayEndpoint extends Component {
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item className='p-0  d-flex justify-content-between align-items-center'>
                                   <span>
                                     {approvedOrRejected
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-14'>B</span></>  : <span className='font-10'>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
-                                <Dropdown.Item className='p-0'>
+                                <Dropdown.Item
+                                  className='p-0  d-flex justify-content-between align-items-center unpublishBtn'
+                                >
                                   <span>
                                     {isStateApproved(endpointId, endpointss)
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
+                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-14'>U</span></>  :<span className='font-10'>Ctrl + U</span> }</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button

@@ -25,6 +25,9 @@
     .btn {
       border-radius: 0;
       height: 42px;
+      &:focus {
+        box-shadow: none !important;
+      }
     }
 
     .nav {

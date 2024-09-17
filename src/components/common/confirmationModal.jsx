@@ -1,19 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 
 function ConfirmationModal(props) {
-  function handleSave() {
+
+  const handleSave = () => {
     props.proceed_button_callback()
     props.onHide()
   }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSave();
+    }
+  };
+
   return (
     <Modal onHide={props.onHide} show={props.show} animation={false} aria-labelledby='contained-modal-title-vcenter' centered>
       <Modal.Header className='custom-collection-modal-container' closeButton>
-        <Modal.Title>{props.title}</Modal.Title>
+        <Modal.Title className='font-16'>{props.title}</Modal.Title>
       </Modal.Header>
       <Modal.Body id='custom-delete-modal-body'>
         <div className='text-left mt-4 mb-2'>
-          <button id='custom-delete-modal-delete' className='btn btn-primary btn-sm font-12' onClick={() => handleSave()}>
+          <button id='custom-delete-modal-delete'
+            className='btn btn-secondary btn-sm font-12'
+            onClick={() => handleSave()}
+            onKeyDown={handleKeyDown}
+            autoFocus
+          >
             {props.submitButton || 'Yes'}
           </button>
 
@@ -22,7 +35,7 @@ function ConfirmationModal(props) {
           </button>
         </div>
       </Modal.Body>
-    </Modal>
+    </Modal >
   )
 }
 

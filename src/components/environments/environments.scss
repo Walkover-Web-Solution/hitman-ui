@@ -243,7 +243,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   display: flex !important;
   justify-content: space-between;
   &:hover .export-icon{
-    display: inline; 
+    opacity: 1; 
   }
   &:hover .check-icon{
     display: none;
@@ -257,7 +257,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   padding: 0px 20px;
 }
 .export-icon {
-  display: none; 
+  opacity: 0; 
   color: rgba(55, 53, 47, 0.65);
 }
 .check-icon {
