@@ -27,7 +27,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    update_name: (payload) => dispatch(updateNameOfPages(payload)),
+    update_name: (id, name) => dispatch(updateNameOfPages(id, name)),
     update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
@@ -143,41 +143,45 @@ class EndpointBreadCrumb extends Component {
       this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
     }
   }
-
   handleInputChange(e) {
-    this.setState({ changesMade: true, endpointTitle: e.currentTarget.textContent })
-    if (this.props?.isEndpoint) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = e.currentTarget.textContent
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.params?.endpointId, name: e.currentTarget.value })
-    }
+    const newName = e.currentTarget.textContent;
+      this.setState({ changesMade: true, endpointTitle: newName });
+      if (this.props?.isEndpoint) {
+        const tempData = this.props?.endpointContent || {};
+        tempData.data.name = newName;
+        this.props.setQueryUpdatedData(tempData);
+        this.props.update_name(this.props?.params?.endpointId, newName);
+      }
   }
 
   handleInputBlur(event) {
-    if (this.props.tabState[this.props.activeTabId].status !== 'NEW' && trimString(event.currentTarget.textContent).length === 0) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = 'Untitled'
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.params?.endpointId, name: 'Untitled' })
-    }
-    else if (this.props.tabState[this.props.activeTabId].status === 'NEW' && trimString(event.currentTarget.textContent).length === 0) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = 'Untitled'
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props.activeTabId, name: 'Untitled' })
-    }
-    else if (this.props.tabState[this.props.activeTabId].status === 'NEW') {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = event.currentTarget.textContent
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props.activeTabId, name:  event.currentTarget.textContent})
-    }
-    else {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = event.currentTarget.textContent
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.params?.endpointId, name: event.currentTarget.textContent })
+    const newName = event.currentTarget.textContent;
+
+    if (newName !== this.state.previousTitle && this.props.tabState[this.props.activeTabId].status !== 'NEW') {
+      if (trimString(event.currentTarget.textContent).length === 0) {
+        const tempData = this.props?.endpointContent || {}
+        tempData.data.name = 'Untitled'
+        this.props.setQueryUpdatedData(tempData)
+        this.props.update_name(this.props?.params?.endpointId, 'Untitled')
+      }
+      // else if (this.props.tabState[this.props.activeTabId].status === 'NEW' && trimString(event.currentTarget.textContent).length === 0) {
+      //   const tempData = this.props?.endpointContent || {}
+      //   tempData.data.name = 'Untitled'
+      //   this.props.setQueryUpdatedData(tempData)
+      //   this.props.update_name(this.props.activeTabId, 'Untitled')
+      // }
+      // else if (this.props.tabState[this.props.activeTabId].status === 'NEW') {
+      //   const tempData = this.props?.endpointContent || {}
+      //   tempData.data.name = event.currentTarget.textContent
+      //   this.props.setQueryUpdatedData(tempData)
+      //   this.props.update_name(this.props.activeTabId, event.currentTarget.textContent)
+      // }
+      else {
+        const tempData = this.props?.endpointContent || {}
+        tempData.data.name = event.currentTarget.textContent
+        this.props.setQueryUpdatedData(tempData)
+        this.props.update_name(this.props?.params?.endpointId, event.currentTarget.textContent)
+      }
     }
   }
 
@@ -277,9 +281,9 @@ class EndpointBreadCrumb extends Component {
   handleKeyDownEvent(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      event.target.blur();
-      this.setState({ nameEditable: false });
-      this.handleInputBlur(event);
+        event.target.blur();
+        this.setState({ nameEditable: false });
+        this.handleInputBlur(event);
     }
   }
 
@@ -297,14 +301,24 @@ class EndpointBreadCrumb extends Component {
 
           {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              
+
               <div className='text-nowrap-heading breadcrumb-main d-flex align-items-center flex-wrap'>
-              {this.collectionName && (
-                <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={() => this.props.navigate(`/${path}`, { replace: true })}>{this.collectionName}</strong>
-              )}
-              <p className='p-0 m-0 text-secondary fw-400'>/</p>
+                {this.collectionName && (
+                  <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={() => this.props.navigate(`/${path}`, { replace: true })}>{this.collectionName}</strong>
+                )}
+                <p className='p-0 m-0 text-secondary fw-400'>/</p>
                 {this.renderPathLinks()}
-                </div>
+              </div>
+              {
+                this.props.publishLoader && (
+                  <div>
+                    <div class="spinner-border spinner-border-sm ml-2" role="status" style={{ color: '#6c757d ', width: '1rem', height: '1rem' }}>
+                      <span class="sr-only ">Publishing...</span>
+                    </div>
+                    <span className="ml-1" style={{ color: '#6c757d ', fontSize: '0.8rem' }}>Publishing...</span>
+                  </div>
+                )
+              }
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <OverlayTrigger placement="right" overlay={<Tooltip className="font-12 text-secondary live-tooltip" id="tooltip-right">Live</Tooltip>} trigger={['hover', 'focus']}>
                   <GoDotFill size={14} color="green" />
@@ -323,7 +337,7 @@ class EndpointBreadCrumb extends Component {
               {this.props?.pages?.[this.props?.params?.endpointId]?.name ||
                 this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
                 this.props?.endpointContent?.data?.name
-                && this.props?.pages?.[this.props?.params?.pageId]?.name  || "Untitled"}
+                && this.props?.pages?.[this.props?.params?.pageId]?.name || "Untitled"}
             </strong>
           )}
         </div>

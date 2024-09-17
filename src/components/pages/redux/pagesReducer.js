@@ -161,7 +161,7 @@ function pagesReducer(state = initialState, action) {
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
       return {
-        ...state, [action.data.id]: {...state[action.data.id], ...action.data}
+        ...state, [action.data.id]: { ...state[action.data.id], ...action.data }
       }
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:

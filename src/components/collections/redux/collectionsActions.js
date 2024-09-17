@@ -68,12 +68,14 @@ export const addCollection = (newCollection, customCallback) => {
             customCallback({ success: true, data: response.data });
           }
           resolve(response.data);
+          toast.success("Collection added successfully")
         })
         .catch((error) => {
           dispatch(onCollectionAddedError(error.response ? error.response.data : error, newCollection));
           if (customCallback) {
             customCallback({ success: false });
           }
+          toast.error(error.response ? error.response.data : 'Error adding collection');
           reject(error);
         });
     });

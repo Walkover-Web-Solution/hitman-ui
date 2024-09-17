@@ -13,12 +13,13 @@ import OnlineStatus from '../onlineStatus/onlineStatus'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
 import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
-import { ReactComponent as NoCollectionIcon }  from '../../assets/icons/collection.svg'
+import { ReactComponent as NoCollectionIcon } from '../../assets/icons/collection.svg'
 import 'react-toastify/dist/ReactToastify.css'
 import './main.scss'
 import { useNavigate } from 'react-router-dom'
 import CollectionForm from '../collections/collectionForm'
 import CustomModal from '../customModal/customModal'
+import ShortcutModal from '../shortcutModal/shortcutModal'
 
 const MainV2 = () => {
   const params = useParams()
@@ -29,6 +30,7 @@ const MainV2 = () => {
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showAddCollectionPage, setShowAddCollectionPage] = useState(true)
+  const [showShortcutModal, setShowShortcutModal] = useState(false)
 
   useEffect(() => {
     const initialize = async () => {
@@ -56,6 +58,11 @@ const MainV2 = () => {
       setLoading(false)
     }
     initialize()
+    window.addEventListener('keydown', addShortCutForShortcutModal);
+
+    return () => {
+      window.removeEventListener('keydown', addShortCutForShortcutModal);
+    }
   }, [])
 
   const fetchAll = async () => {
@@ -101,8 +108,20 @@ const MainV2 = () => {
     </>
   )
 
+  const addShortCutForShortcutModal = async () => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    if ((isMac && event.metaKey && event.key === "/") || (!isMac && event.ctrlKey && event.key === "/")) {
+      event.preventDefault();
+      handleShortcutModal();
+    }
+  }
+
   const handleAddNewClick = () => {
     setShowAddCollectionModal(prev => !prev)
+  }
+
+  const handleShortcutModal = () => {
+    setShowShortcutModal(prev => !prev)
   }
 
   return (
@@ -131,6 +150,9 @@ const MainV2 = () => {
       )}
       <CustomModal size='sm' modalShow={showAddCollectionModal} hideModal={handleAddNewClick}>
         <CollectionForm title='Add new Collection' onHide={handleAddNewClick} />
+      </CustomModal>
+      <CustomModal size='sm' modalShow={showShortcutModal} onHide={handleShortcutModal}>
+        <ShortcutModal hideModal={handleShortcutModal} />
       </CustomModal>
     </>
   )

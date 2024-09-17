@@ -16,7 +16,9 @@ const ExportButton = ({ orgId, collectionId, collectionName }) => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            toast.success('Exported successfully!');
         } catch (error) {
+            toast.error(error);
             console.error('Error exporting data:', error);
         }
     };

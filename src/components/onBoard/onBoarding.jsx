@@ -15,6 +15,8 @@ import { addCollection } from '../collections/redux/collectionsActions';
 import { addPage } from '../pages/redux/pagesActions';
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions';
 import { getOrgId, redirectToDashboard } from '../common/utility';
+import { IoHomeSharp } from "react-icons/io5";
+import IconButton from '../common/iconButton';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -36,16 +38,21 @@ const OnBoarding = () => {
     };
 
     const handleContinueClick = () => {
-        if (isContinue) {
+        if(isContinue){
             setShowInput(true);
             setIsInputVisible(true);
             setIsContinue(false);
-        } else {
-            setShowInput(false);
-            setIsInputVisible(false);
-            setIsContinue(true);
         }
+        else{
+            handleAddOrg(selectedIndex)
+        }  
     };
+
+    const handleBackClick = () => {
+        setShowInput(false);
+        setIsInputVisible(false);
+        setIsContinue(true);
+    }
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
@@ -72,7 +79,7 @@ const OnBoarding = () => {
         dispatch(onHistoryRemoved(historySnapshot));
         await createOrg(orgName, selectedIndex);
         const collection = await createUntitledCollection();
-        dispatch(addIsExpandedAction({value:true, id:collection.id}))
+        dispatch(addIsExpandedAction({ value: true, id: collection.id }))
         const rootParentId = collection?.rootParentId
         await createUntitledPage(rootParentId);
     };
@@ -110,7 +117,16 @@ const OnBoarding = () => {
 
     return (
         <>
-        <button className='btn home-button position-absolute btn-dark btn-sm' onClick={() => redirectToDashboard(getOrgId())}><FaLongArrowAltLeft /></button>
+            <button className='btn home-button position-absolute btn-dark btn-sm'onClick={() => redirectToDashboard(getOrgId())}>
+                <IconButton>
+                    <IoHomeSharp size={18} />
+                </IconButton>
+            </button>
+            { !isContinue && (
+                <button className='btn back-button btn-dark position-absolute px-2' onClick={handleBackClick}>
+                        <FaLongArrowAltLeft size={18} />
+                </button>
+            )}
             <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
                 <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
                     <h2 className='mb-5'>
@@ -172,9 +188,9 @@ const OnBoarding = () => {
                                     isInvalid={orgName && !validateName(orgName)}
                                     autoFocus
                                 />
-                                <Button className='ml-2' onClick={() => { handleAddOrg(selectedIndex) }} variant='outline-secondary' id='button-addon2'>
+                                {/* <Button className='ml-2' onClick={() => { handleAddOrg(selectedIndex) }} variant='outline-secondary' id='button-addon2'>
                                     Create
-                                </Button>
+                                </Button> */}
                             </InputGroup>
                             <div className='d-flex'>
                                 <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
@@ -182,13 +198,13 @@ const OnBoarding = () => {
                         </div>
                     )}
                 </div>
-                <Button
+               <Button
                     variant="secondary"
                     className={`btn-Continue btn-btn-lg px-5 mt-5 ${isCardClicked ? 'bg-dark' : ''}`}
                     disabled={!isContinueEnabled}
                     onClick={handleContinueClick}
                 >
-                    {isContinue ? 'Continue' : 'Back'}
+                   {isContinue ? 'Continue' : 'Create'}
                 </Button>
             </div>
         </>
