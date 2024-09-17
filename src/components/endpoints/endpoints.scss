@@ -1989,6 +1989,7 @@ table#custom-generic-table {
   padding-left: 92%;
   color: steelblue;
   font-size: smaller;
+  margin-top: 10px;
 }
 
 .Modified-at {
@@ -2017,5 +2018,11 @@ table#custom-generic-table {
     .public-input-key {
       background-color: rgba(174, 169, 169, 0.2) !important;
     }
+  }
+}
+.delete-endpoint-btn {
+  &:hover {
+    background-color: $alert-color !important;
+    color: white !important;
   }
 }

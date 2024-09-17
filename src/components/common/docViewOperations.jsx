@@ -57,7 +57,7 @@ export function UnPublishEntityButton(props) {
   }
   return (
     <button
-      className={(publishLoader ? 'btn buttonLoader  ml-2 btn-sm fs-4' : 'btn btn-sm fs-4 text-grey')}
+      className={(publishLoader ? 'btn buttonLoader  ml-2 btn-sm fs-4' : 'btn text-danger btn-sm fs-4 button ')}
       type='button'
       onClick={handleClick}
     >

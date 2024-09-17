@@ -33,6 +33,9 @@
 
     .inner-operations {
       .dropdown {
+        .cmd-icons {
+          margin: 0 3px 2px 0;
+        }
         .dropdown-toggle {
           &::after {
             all: unset;
@@ -45,10 +48,21 @@
 
         .unpublish-btn {
           color: rgb(235, 87, 87);
+         
         }
 
         .disable-unpublish {
           color: rgb(235, 87, 87, 0.5);
+        }
+
+        .unpublish-page{
+          &:hover{
+            background-color: $alert-color;
+            span{
+              color: white !important;
+            }
+
+          }
         }
       }
 
@@ -78,4 +92,14 @@
 
 .live-tooltip {
   font-size: 10px;
+}
+.publish-loader {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.publish-spinner {
+  color: #6c757d;
+  width: 1rem;
+  height: 1rem;
 }

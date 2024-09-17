@@ -1,4 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+$alert-color: #CC0000;
 
 #child-accordion > .card {
   border-radius: 0px;
@@ -74,4 +75,10 @@
   font-size: 12px;
   color: #d61124;
   font-weight: 400;
+}
+.delete-subpage-btn {
+  &:hover {
+    background-color: $alert-color !important;
+    color: white !important;
+  }
 }

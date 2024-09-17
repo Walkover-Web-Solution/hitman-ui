@@ -6,7 +6,7 @@ import { approvePage, draftPage } from "../../components/publicEndpoint/redux/pu
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
 import { updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
@@ -30,7 +30,7 @@ const Page = () => {
         activeTabId: state.tabs.activeTabId,
         tabs: state.tabs.tabs,
         isPublished: state?.pages[state.tabs.activeTabId]?.isPublished,
-        collections: state.collections
+        collections: state.collections,
     }));
 
     const dispatch = useDispatch();
@@ -42,6 +42,7 @@ const Page = () => {
     const [pageName, setPageName] = useState(page?.name);
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
@@ -100,9 +101,18 @@ const Page = () => {
     }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
             event.preventDefault();
             handleSavePage();
+        }
+        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && tabs[activeTabId]?.status !== "NEW") {
+            event.preventDefault();
+            publishClick();
+        }
+        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && tabs[activeTabId]?.status !== "NEW") {
+            event.preventDefault();
+            unpublishClick();
         }
     };
 
@@ -118,12 +128,16 @@ const Page = () => {
 
     const handlePageNameChange = (event) => {
         const newName = event.target.value;
-        setPageName(newName);
-        if (tabs?.[activeTabId]?.status === "NEW") debounceUpdateName(activeTabId, newName);
+        if (newName !== pageName) {
+            setPageName(newName);
+            if (tabs?.[activeTabId]?.status === "NEW") debounceUpdateName(activeTabId, newName);
+        }
     };
 
     const handleSavePageName = () => {
-        if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName));
+        if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) {
+            dispatch(updatePageName(page.id, pageName));
+        }
     };
 
     const handlePageNameKeyDown = (event) => {
@@ -150,7 +164,7 @@ const Page = () => {
     }
 
     const unpublishClick = () => {
-        setOpenUnpublishConfirmationModal(true)
+            setOpenUnpublishConfirmationModal(true)
     }
 
     const renderPublishConfirmationModal = () => {
@@ -184,7 +198,9 @@ const Page = () => {
     }
 
     const handlePublish = async () => {
-        dispatch(approvePage(pages[pageId]))
+        setLoading(true)
+        await dispatch(approvePage(pages[pageId]))
+        setLoading(false)
     };
 
     const handleUnPublish = async () => {
@@ -292,7 +308,15 @@ const Page = () => {
                     <div className="header-page-name d-flex align-items-center fa-1x">
                         {renderPathLinks()}
                     </div>
-                    {pages?.[pageId]?.isPublished &&
+                    {
+                        loading && <div>
+                            <div class="spinner-border spinner-border-sm ml-2 publish-spinner" role="status">
+                                <span class="sr-only ">Publishing...</span>
+                            </div>
+                            <span className="ml-1 publish-loader">Publishing...</span>
+                        </div>
+                    }
+                    {pages?.[pageId]?.isPublished && !loading &&
                         <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />
                         </OverlayTrigger>
@@ -324,8 +348,17 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={publishClick}>Publish</Dropdown.Item>
-                                    <Dropdown.Item onClick={unpublishClick} disabled={!isPublished}>Unpublish</Dropdown.Item>
+                                    <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
+                                        <span>Publish</span>
+                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>B</span></> : <span className="fs-5">Ctrl + B</span>}</span>
+                                    </Dropdown.Item>
+                                    {isPublished && <Dropdown.Item
+                                        onClick={unpublishClick}
+                                        className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
+                                    >
+                                        <span className="text-danger">Unpublish</span>
+                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>U</span></> : <span className="fs-5">Ctrl + U</span>}</span>
+                                    </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

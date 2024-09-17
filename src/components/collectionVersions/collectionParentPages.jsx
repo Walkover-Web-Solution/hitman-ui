@@ -157,7 +157,7 @@ const CollectionParentPages = (props) => {
   const versionDropDown = (rootId) => {
     if (isOrgDocType()) {
       return (
-        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
+        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()} onClick={(e) => e.stopPropagation()}>
           {pages[rootId].child.map((childId, index) => (
             <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
               {pages[childId]?.name}
@@ -273,7 +273,8 @@ const CollectionParentPages = (props) => {
                     {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
                       <SlSettings color='gray' /> Manage Version
                     </div>}
-                    <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeletePageModal(pageId)}>
+                    <div className='dropdown-item d-flex align-items-center text-danger delete-parent-btn'
+                      onClick={() => openDeletePageModal(pageId)}>
                       <RiDeleteBin6Line size={15} /> Delete
                     </div>
                   </div>

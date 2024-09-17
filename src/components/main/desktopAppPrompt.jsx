@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { closeModal } from '../modals/redux/modalsActions'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
 import { toast } from 'react-toastify'
 import withRouter from '../common/withRouter'
@@ -23,8 +23,10 @@ const mapStateToProps = (state) => {
 function DesktopAppDownloadModal(props) {
   const navigate = useNavigate()
   const [isAppInstalled, setIsAppInstalled] = useState(false)
-  const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches
+  const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches 
+
   const handleDownloadClick = () => {
+    debugger
     if (props.modals.installPrompt) {
       props.modals.installPrompt.prompt()
       props.modals.installPrompt.userChoice.then((choiceResult) => {
@@ -40,7 +42,7 @@ function DesktopAppDownloadModal(props) {
     }
   }
 
-  const show = props.modals.activeModal === DESKTOP_APP_DOWNLOAD ? true : false
+  const show = shouldShowModal && props.modals.activeModal === DESKTOP_APP_DOWNLOAD 
 
   const onHide = () => {
     const { orgId } = props.params
