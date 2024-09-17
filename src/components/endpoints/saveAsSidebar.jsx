@@ -106,7 +106,7 @@ const SaveAsSidebar = (props) => {
       <div className='custom-collection-modal-container modal-header align-items-center'>
         <div className='modal-title h4'>{props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}</div>
         <IconButtons>
-          <MdOutlineClose className='fs-2' onClick={props.onHide} />
+          <MdOutlineClose className='font-18' onClick={props.onHide} />
         </IconButtons>
       </div>
       <div className='drawer-body'>

@@ -78,6 +78,7 @@ import IconButton from '../common/iconButton.jsx'
 import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
+import { IoIosArrowUp } from "react-icons/io";
 
 
 const shortid = require('shortid')
@@ -1096,7 +1097,7 @@ class DisplayEndpoint extends Component {
     }
     let finalString = str;
     let suggestions = this.props.currentEnvironment;
-    if(isOnPublishedPage()){
+    if (isOnPublishedPage()) {
       suggestions = this.props.publicEnv;
     }
     matches.forEach(match => {
@@ -2716,57 +2717,74 @@ class DisplayEndpoint extends Component {
   handleInputChange(key, event) {
     const newValue = event.target.value;
     this.props.update_public_env(key, newValue);
-    setTimeout(()=>{
+    setTimeout(() => {
       this.prepareHarObject();
-    },500)
+    }, 500)
   }
 
   renderPublicEnvironments() {
     return (
       <div className='public-env-contanier mt-4'>
-        <span className='fw-600'>Variables</span>
-        <table className="table border rounded py-3 mt-2 pl-5 pr-3 pb-4" style={this.state.themes.backgroundStyles}>
-          <thead>
-            <tr>
-              <th className='p-1 font-weight-normal fs-4'>
-                KEY
-              </th>
-              <th className='p-1 font-weight-normal fs-4'>VALUE</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.publicEnv && (
-              Object.keys(this.props.publicEnv).map((key, Index) => {
-                const env = this.props.publicEnv[key]
-                if (env && typeof env.Checked !== "undefined" && env.Checked) {
+        <div className="accordion" id="accordionExample">
+          <div className="card">
+            <div className="card-header p-0" id="headingOne">
+              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center"  style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button className='btn fw-600 text-left w-100' type="button">
+                  Variables
+                </button>
+                <IoIosArrowUp size={18} className='down-arrow mr-2 text-center' />
+              </h2>
+            </div>
 
-                  return (
-                    <tr key={Index}>
-                      <td width={200} className=' pl-0 py-1'>
-                        <input
-                          type="text"
-                          value={key}
-                          disabled
-                          className="form-control public-input-key text-grey"
-                        />
-                      </td>
-                      <td className='py-1 pl-0 pr-1'>
-                        <input
-                          type="text"
-                          value={env.currentValue}
-                          disabled={!env.IsEditable}
-                          onChange={(event) => this.handleInputChange(key, event)}
-                          className={`form-control ${!env.IsEditable && 'public-input-key text-grey'}`}
-                        />
-                      </td>
+            <div id="collapseOne" className="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div className="card-body p-0">
+                <table className="table border rounded py-3 my-0 pl-5 pr-3 pb-4" style={this.state.themes.backgroundStyles}>
+                  <thead>
+                    <tr>
+                      <th className='p-1 font-weight-normal font-12'>
+                        KEY
+                      </th>
+                      <th className='p-1 font-weight-normal font-12'>VALUE</th>
                     </tr>
-                  );
-                }
-                return null;
-              })
-            )}
-          </tbody>
-        </table>
+                  </thead>
+                  <tbody>
+                    {this.props.publicEnv && (
+                      Object.keys(this.props.publicEnv).map((key, Index) => {
+                        const env = this.props.publicEnv[key]
+                        if (env && typeof env.Checked !== "undefined" && env.Checked) {
+
+                          return (
+                            <tr key={Index}>
+                              <td width={200} className=' pl-0 py-1'>
+                                <input
+                                  type="text"
+                                  value={key}
+                                  disabled
+                                  className="form-control public-input-key text-grey"
+                                />
+                              </td>
+                              <td className='py-1 pl-0 pr-1'>
+                                <input
+                                  type="text"
+                                  value={env.currentValue}
+                                  disabled={!env.IsEditable}
+                                  onChange={(event) => this.handleInputChange(key, event)}
+                                  className={`form-control ${!env.IsEditable && 'public-input-key text-grey'}`}
+                                />
+                              </td>
+                            </tr>
+
+                          );
+                        }
+                        return null;
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -2835,7 +2853,7 @@ class DisplayEndpoint extends Component {
             <div className='dropdown-menu dropdown-url' aria-labelledby='dropdownMenuButton'>
               {this.state.methodList.map((methodName) => (
                 <button
-                  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`}
+                  className={`dropdown-item font-12 ${methodClassMap[methodName]}`}
                   onClick={() => this.setMethod(methodName)}
                   key={methodName}
                 >
@@ -2910,7 +2928,7 @@ class DisplayEndpoint extends Component {
   renderSwitchBtn() {
     return (
       <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
-        <button className='btn text-grey btn-sm fs-4'>DOC</button>
+        <button className='btn text-grey btn-sm font-12'>DOC</button>
         <Form>
           <Form.Check
             className='text-center pl-5'
@@ -3041,7 +3059,7 @@ class DisplayEndpoint extends Component {
             <button
               className={
                 this.state.saveLoader
-                  ? 'btn btn-outline-secondary buttonLoader btn-sm fs-4 d-flex align-items-center'
+                  ? 'btn btn-outline-secondary buttonLoader btn-sm font-12 d-flex align-items-center'
                   : 'btn save-button-endpoint save-button px-1 btn-sm gap-1 d-flex align-items-center'
               }
               type='button'
@@ -3113,7 +3131,7 @@ class DisplayEndpoint extends Component {
         <div className='d-flex justify-content-center'>
           <OverlayTrigger placement='bottom' overlay={<Tooltip id='edited-by-tooltip'>
             {lastModified &&
-              <div className="fs-4 text-secondary">
+              <div className="font-12 text-secondary">
                 <div>
                   <span> Updated by </span>
                   <span className="font-weight-bold text-white">{user?.name}</span>
