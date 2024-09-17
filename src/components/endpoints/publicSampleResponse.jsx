@@ -130,7 +130,7 @@ class PublicSampleResponse extends Component {
                     <div >{this.showSampleResponseBody(sampleResponse.data)}</div>
                   </div>
                   {showExpandButton && (
-                    <div className="expand-btn " onClick={this.toggleExpand}>
+                    <div className="expand-btn cursor-pointer " onClick={this.toggleExpand}>
                       {isExpanded ? 'Show Less' : 'Show More'}
                     </div>
                   )}
