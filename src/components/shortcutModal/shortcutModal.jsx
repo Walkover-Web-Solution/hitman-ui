@@ -8,7 +8,7 @@ const ShortcutModal = () => {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
     const shortcuts = [
-        { name: 'Save', key: !isMac ? [<BsCommand key="cmd" />, 'S'] : ['Ctrl', 'S'] },
+        { name: 'Save', key: isMac ? [<BsCommand key="cmd" />, 'S'] : ['Ctrl', 'S'] },
         { name: 'Open Tab', key: isMac ? [<PiControlBold key="ctrl" />, 'N'] : ['Alt', 'N'] },
         { name: 'Publish', key: isMac ? [<BsCommand key="cmd" />, 'B'] : ['Ctrl', 'B'] },
         { name: 'Close Tab', key: isMac ? [<PiControlBold key="ctrl" />, 'W'] : ['Alt', 'W'] },
