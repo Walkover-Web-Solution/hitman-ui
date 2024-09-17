@@ -310,10 +310,10 @@ const Page = () => {
                     </div>
                     {
                         loading && <div>
-                            <div class="spinner-border spinner-border-sm ml-2" role="status" style={{ color: '#6c757d ', width: '1rem', height: '1rem' }}>
+                            <div class="spinner-border spinner-border-sm ml-2 publish-spinner" role="status">
                                 <span class="sr-only ">Publishing...</span>
                             </div>
-                            <span className="ml-1" style={{ color: '#6c757d ', fontSize: '0.8rem' }}>Publishing...</span>
+                            <span className="ml-1 publish-loader">Publishing...</span>
                         </div>
                     }
                     {pages?.[pageId]?.isPublished && !loading &&
