@@ -21,7 +21,6 @@ import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
-import { openInNewTab } from '../tabs/redux/tabsActions.js'
 import { SlSettings } from "react-icons/sl";
 import { RiDeleteBin6Line } from 'react-icons/ri'
 
@@ -236,7 +235,7 @@ const CollectionParentPages = (props) => {
                     <IoDocumentTextOutline size={18} className='collection-icons' />
                   </span>
                   <div
-                    className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? 'text-truncate' : ''}`}
+                    className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? '' : ''}`}
                     draggable={!isUserOnPublishedPage}
                     onDragOver={props.handleOnDragOver}
                     onDragStart={() => props.onDragStart(pageId)}

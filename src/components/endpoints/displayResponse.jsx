@@ -245,13 +245,13 @@ class DisplayResponse extends Component {
                 <div className='d-flex justify-content-between align-items-center mt-3 mb-1'>
                   <ul className='nav nav-pills body-button rounded'>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
-                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-grey'}>Pretty</a>
+                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-3 py-1 font-10 text-black' : 'nav-link px-3 py-1 font-10 text-grey'}>Pretty</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
-                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-grey'}>Raw</a>
+                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-3 py-1 font-10 text-black' : 'nav-link px-3 py-1 font-10 text-grey'}>Raw</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
-                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-grey'}>Preview</a>
+                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-3 py-1 font-10 text-black' : 'nav-link px-3 py-1 font-10 text-grey'}>Preview</a>
                     </li>
                   </ul>
                   {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
@@ -355,7 +355,7 @@ class DisplayResponse extends Component {
     if (this.props.response.headers) {
       return (
         <div className='response-headers-container'>
-          <table className='table table-sm fs-6'>
+          <table className='table table-sm'>
             <thead>
               <tr>
                 <th scope='col'>Key</th>
@@ -446,13 +446,13 @@ class DisplayResponse extends Component {
       <div className='w-100'>
         <div className='console-button mt-3 mb-1 rounded'>
           <button
-            className={classNames('script-button rounded fs-5 btn-sm btn', { active: showPreScript })}
+            className={classNames('script-button rounded font-10 btn-sm btn', { active: showPreScript })}
             onClick={this.handlePreScriptClick}
           >
             Pre-Script
           </button>
           <button
-            className={classNames('script-button rounded fs-5 btn-sm btn', { active: !showPreScript })}
+            className={classNames('script-button rounded font-10 btn-sm btn', { active: !showPreScript })}
             onClick={this.handlePostScriptClick}
           >
             Post-Script

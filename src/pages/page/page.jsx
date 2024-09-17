@@ -97,7 +97,7 @@ const Page = () => {
             if (provider) provider.destroy();
             if (ydoc) ydoc.destroy();
         };
-    }, [provider, ydoc]);
+    }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
         const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
@@ -217,7 +217,7 @@ const Page = () => {
                 return (
                     <Tooltip id='edited-by-tooltip'>
                         {lastModified &&
-                            <div className="fs-4 text-secondary">
+                            <div className="font-12 text-secondary">
                                 <div>
                                     <span>Edited by </span>
                                     <span className="font-weight-bold text-white">{user?.name}</span>
@@ -233,11 +233,11 @@ const Page = () => {
                     </Tooltip>
                 )
             case "Live":
-                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary live-tooltip">Live</Tooltip>
+                return <Tooltip id='edited-by-tooltip' className="font-12 text-secondary live-tooltip">Live</Tooltip>
             case "shortcut":
                 return (
                     <Tooltip id='edited-by-tooltip'>
-                        <div className="fs-4 text-secondary">
+                        <div className="font-12 text-secondary">
                             {window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}
                         </div>
                     </Tooltip>
@@ -329,11 +329,19 @@ const Page = () => {
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     }
-                    {tabs[activeTabId]?.status === "NEW" && <IconButton>
-                        <button className="btn p-0 text-black-60 disabled">
-                            Unsaved
-                        </button>
-                    </IconButton>}
+                    <IconButton>
+                        <div className='button'>
+                            <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
+                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs[activeTabId]?.status === "NEW" ? (
+                                    <button className="btn p-0 text-black-60 disabled">
+                                        Unsaved
+                                    </button>
+                                ) : (
+                                    <></>
+                                )}</button>}
+                            </OverlayTrigger>
+                        </div>
+                    </IconButton>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
                             <Dropdown>
@@ -341,16 +349,16 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
+                                    <Dropdown.Item className="p-1 font-12 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='fs-4 d-inline-block'>B</span></> : <span className="fs-5">Ctrl + B</span>}</span>
+                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>B</span></> : <span className="font-10">Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
-                                        className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
+                                        className="p-1 px-2 font-12 d-flex justify-content-between align-items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='fs-4 d-inline-block'>U</span></> : <span className="fs-5">Ctrl + U</span>}</span>
+                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>U</span></> : <span className="font-10">Ctrl + U</span>}</span>
                                     </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>

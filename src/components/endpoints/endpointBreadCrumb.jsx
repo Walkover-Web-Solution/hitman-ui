@@ -320,7 +320,7 @@ class EndpointBreadCrumb extends Component {
                 )
               }
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
-                <OverlayTrigger placement="right" overlay={<Tooltip className="fs-4 text-secondary live-tooltip" id="tooltip-right">Live</Tooltip>} trigger={['hover', 'focus']}>
+                <OverlayTrigger placement="right" overlay={<Tooltip className="font-12 text-secondary live-tooltip" id="tooltip-right">Live</Tooltip>} trigger={['hover', 'focus']}>
                   <GoDotFill size={14} color="green" />
                 </OverlayTrigger>
               )}

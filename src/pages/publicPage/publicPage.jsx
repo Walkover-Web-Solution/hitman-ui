@@ -58,7 +58,7 @@ function PublicPage() {
                         <span className='empty-line'>
                             {pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
                         </span>
-                        <span className='mt-1 d-inline-block Modified-at fs-4'>
+                        <span className='mt-1 d-inline-block Modified-at font-12'>
                             <DisplayUserAndModifiedData />
                         </span>
                     </div>

@@ -325,7 +325,7 @@ class PublicBodyContainer extends Component {
         )}
 
         {this.props.body?.[bodyTypesEnums['multipart/form-data']] && this.props.body.type !== bodyTypesEnums['multipart/form-data'] && this.props.body.type !== bodyTypesEnums['application/x-www-form-urlencoded'] &&
-          (this.props.body.type === rawTypesEnums.JSON && this.props.body?.raw?.value?.length > 0 ?
+          (this.props.body.type === rawTypesEnums.JSON ?
             (
               <div className='hm-public-table mb-2'>
                 <div className="d-flex justify-content-between align-items-center mt-4">
@@ -388,9 +388,9 @@ class PublicBodyContainer extends Component {
                 )}
               </div>
             ) :
-            (this.props.body?.raw?.value?.length > 0 && <div className='hm-public-table'>
+            (<div className='hm-public-table'>
               <div className='public-generic-table-title-container'>
-                Body <small className='text-muted'>({this.props.body.type})</small>{' '}
+                Body <small className='text-muted'>({this.props.body.type})</small>
                 {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
               </div>
               <AceEditor

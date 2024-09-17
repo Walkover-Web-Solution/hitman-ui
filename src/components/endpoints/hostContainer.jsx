@@ -274,7 +274,7 @@ class HostContainer extends Component {
         parsedData.raw_url = parsedData.raw_url.replace(/^http:\/\/\s/, '');
         parsedData.raw_url = parsedData.raw_url.replace(/^(http:\/\/https?:\/\/)/, '$2');
         this.getDataFromParsedData(this.props.untitledEndpointData, parsedData);
-        this.hostcontainerRef.current.innerHTML = `<span text-block='true'>${parsedData.raw_url}</span>`
+        this.hostcontainerRef.current.innerHTML = convertTextToHTML(parsedData.raw_url);
         return;
       } catch (e) {
         toast.error('could not parse the curl');

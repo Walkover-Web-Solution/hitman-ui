@@ -262,10 +262,10 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
             </Modal.Body>
             <div className='custom-table-footer p-3'>
               <div className='text-left'>
-                <button className='btn btn-primary btn-sm fs-4 mr-2' id='add_env_save_btn'>
+                <button className='btn btn-primary btn-sm font-12 mr-2' id='add_env_save_btn'>
                   Save
                 </button>
-                <button className='btn btn-secondary outline btn-sm fs-4' onClick={onHide}>
+                <button className='btn btn-secondary outline btn-sm font-12' onClick={onHide}>
                   Cancel
                 </button>
               </div>

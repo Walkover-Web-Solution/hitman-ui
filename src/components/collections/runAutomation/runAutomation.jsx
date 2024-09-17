@@ -259,7 +259,7 @@ export default function RunAutomation() {
           <span className='mr-2'><IoInformationCircle size={15} color='#7fbaff' /></span>
           <span className='small-text'>If descriptions and sample responses are not provided, AI will not generate the order, and automation will fail.</span>
           {/* {showAiIcon && (
-            <button className='btn btn-primary btn-sm fs-4' title='Write your endpoint descriptions through AI' onClick={handleAskAi}>
+            <button className='btn btn-primary btn-sm font-12' title='Write your endpoint descriptions through AI' onClick={handleAskAi}>
               <span className='mr-1'><FaMeta /></span>
               Ask AI
             </button>
@@ -458,18 +458,18 @@ export default function RunAutomation() {
         )}
         {runType === 'manual' ? (
           automationLoading ? (
-            <button className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
+            <button className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
               <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
               <span className='ml-1'>Running...</span>
             </button>
           ) : (
-            <button onClick={handleRunAutomation} className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
+            <button onClick={handleRunAutomation} className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
               <IoIosPlay className='mr-1' />
               <span>Run</span>
             </button>
           )
         ) : runType === 'schedule' ? (
-          <button onClick={handleScheduleRun} className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
+          <button onClick={handleScheduleRun} className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
             <IoIosPlay className='mr-1' />
             <span>Schedule Run</span>
           </button>
@@ -478,7 +478,7 @@ export default function RunAutomation() {
             <button
               onClick={generateToken}
               disabled={tokenGenerationInProgress}
-              className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'
+              className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'
             >
               <RiAiGenerate className='mr-1' />
               <span>Generate Token</span>

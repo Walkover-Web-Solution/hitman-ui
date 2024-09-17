@@ -112,10 +112,10 @@ function PublishSidebar(props) {
   function RenderFooter() {
     return (
       <div className='d-flex'>
-        <Button variant='btn btn-outline' className='m-1 btn-sm fs-4' onClick={sendPublishRequest}>
+        <Button variant='btn btn-outline' className='m-1 btn-sm font-12' onClick={sendPublishRequest}>
           Publish
         </Button>
-        <Button variant='btn btn-outline' className='m-1 btn-sm fs-4' onClick={() => props.closePublishSidebar()}>
+        <Button variant='btn btn-outline' className='m-1 btn-sm font-12' onClick={() => props.closePublishSidebar()}>
           Cancel
         </Button>
       </div>
