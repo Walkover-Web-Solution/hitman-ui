@@ -340,7 +340,7 @@ const Redirections = () => {
                 <span className='mt-1 additional-info'>Click on the pages and endpoints to add the redirection URL</span>
               </div>
             </div>
-            <button className='h-100 fs-4 ml-2' onClick={handleAddUrl}>
+            <button className='h-100 font-12 ml-2' onClick={handleAddUrl}>
               Add
             </button>
           </div>

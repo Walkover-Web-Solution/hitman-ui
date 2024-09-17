@@ -108,15 +108,15 @@ class SavePromptModal extends Component {
             </p>
           </div>
           <div className='text-left mt-4 mb-2'>
-            <button id='custom-delete-modal-delete' className='btn btn-primary btn-sm fs-4' onClick={() => this.handleSave()}>
+            <button id='custom-delete-modal-delete' className='btn btn-primary btn-sm font-12' onClick={() => this.handleSave()}>
               Save
             </button>
 
-            <button id='custom-delete-modal-cancel' className='btn btn-danger btn-sm ml-2 fs-4' onClick={() => this.handleDontSave()} autoFocus>
+            <button id='custom-delete-modal-cancel' className='btn btn-danger btn-sm ml-2 font-12' onClick={() => this.handleDontSave()} autoFocus>
               Don't Save
             </button>
 
-            <button id='custom-delete-modal-cancel' className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
+            <button id='custom-delete-modal-cancel' className='btn btn-secondary outline btn-sm font-12 ml-2' onClick={this.props.onHide}>
               Cancel
             </button>
           </div>

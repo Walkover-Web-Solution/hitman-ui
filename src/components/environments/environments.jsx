@@ -104,7 +104,7 @@ const Environments = () => {
 
         <div className='select-environment-dropdown border-radius-right-none align-content-center'>
           <Dropdown className='ml-1'>
-            <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1 fs-4' variant='default' id='dropdown-basic'>
+          <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1 font-12' variant='default' id='dropdown-basic'>
               <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
               <IoIosArrowDown className='m-1' />
             </Dropdown.Toggle></IconButton>
@@ -115,7 +115,7 @@ const Environments = () => {
                 {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck size={16} /></span>}
                 <OverlayTrigger
                   placement="bottom"
-                  overlay={<Tooltip className='fs-4' id="export-tooltip">Export environment</Tooltip>}
+                  overlay={<Tooltip className='font-14' id="export-tooltip">Export environment</Tooltip>}
                 >
                   <BiExport
                     className='export-icon icon-button'

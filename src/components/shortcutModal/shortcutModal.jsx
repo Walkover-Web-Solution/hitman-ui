@@ -8,7 +8,7 @@ const ShortcutModal = () => {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
     const shortcuts = [
-        { name: 'Save', key: !isMac ? [<BsCommand key="cmd" />, 'S'] : ['Ctrl', 'S'] },
+        { name: 'Save', key: isMac ? [<BsCommand key="cmd" />, 'S'] : ['Ctrl', 'S'] },
         { name: 'Open Tab', key: isMac ? [<PiControlBold key="ctrl" />, 'N'] : ['Alt', 'N'] },
         { name: 'Publish', key: isMac ? [<BsCommand key="cmd" />, 'B'] : ['Ctrl', 'B'] },
         { name: 'Close Tab', key: isMac ? [<PiControlBold key="ctrl" />, 'W'] : ['Alt', 'W'] },
@@ -25,10 +25,10 @@ const ShortcutModal = () => {
                 </Modal.Header>
                 <Modal.Body className='name-Shortcuts-contanier gap-2'>{shortcuts.map((shortcut, index) => (
                         <div className='name-Shortcuts d-flex justify-content-between align-items-center p-1' key={index}>
-                            <span className='fs-4 text-grey'>{shortcut.name}</span>
+                            <span className='font-14 text-grey'>{shortcut.name}</span>
                             <span className="key-Shortcuts d-flex gap-2">
                                 {shortcut.key.map((keyPart, idx) => (
-                                    <span key={idx} className="border rounded px-2 py-1 fs-4 text-grey text-center">{keyPart}</span>
+                                    <span key={idx} className="border rounded px-2 py-1 font-14 text-grey text-center">{keyPart}</span>
                                 ))}
                             </span>
                         </div>

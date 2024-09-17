@@ -591,8 +591,8 @@ class GenericTable extends Component {
         {isOnPublishedPage() && <div className='public-generic-table-title-container mt-2'>
           {getTitleHeading()}
         </div>}
-        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) && this.props?.dataArray?.length > 0 && <div className='fs-4 fw-500 my-1 text-secondary'>{title}</div>}
-        {title === 'Params' && isDashboardAndTestingView(this.props, this.props.currentView) && this.props?.dataArray?.length > 0 && <div className='fs-4 fw-500 my-1 text-secondary'>Query Params</div>}
+        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) && this.props?.dataArray?.length > 0 && <div className='font-12 fw-500 my-1 text-secondary'>{title}</div>}
+        {title === 'Params' && isDashboardAndTestingView(this.props, this.props.currentView) && this.props?.dataArray?.length > 0 && <div className='font-12 fw-500 my-1 text-secondary'>Query Params</div>}
         {!this.state.bulkEdit && dataArray.length > 0 ? (
           <div className={`headParaWraper mb-1 p-0`} style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>

@@ -216,7 +216,7 @@ const Page = () => {
                 return (
                     <Tooltip id='edited-by-tooltip'>
                         {lastModified &&
-                            <div className="fs-4 text-secondary">
+                            <div className="font-12 text-secondary">
                                 <div>
                                     <span>Edited by </span>
                                     <span className="font-weight-bold text-white">{user?.name}</span>
@@ -232,11 +232,11 @@ const Page = () => {
                     </Tooltip>
                 )
             case "Live":
-                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary live-tooltip">Live</Tooltip>
+                return <Tooltip id='edited-by-tooltip' className="font-12 text-secondary live-tooltip">Live</Tooltip>
             case "shortcut":
                 return (
                     <Tooltip id='edited-by-tooltip'>
-                        <div className="fs-4 text-secondary">
+                        <div className="font-12 text-secondary">
                             {window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}
                         </div>
                     </Tooltip>
@@ -348,16 +348,16 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
+                                    <Dropdown.Item className="p-1 font-14 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>B</span></> : <span className="fs-5">Ctrl + B</span>}</span>
+                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='font-14 d-inline-block'>B</span></> : <span className="font-10">Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
-                                        className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
+                                        className="p-1 px-2 font-14 d-flex justify-content-between align-items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>U</span></> : <span className="fs-5">Ctrl + U</span>}</span>
+                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='font-14 d-inline-block'>U</span></> : <span className="font-10">Ctrl + U</span>}</span>
                                     </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
