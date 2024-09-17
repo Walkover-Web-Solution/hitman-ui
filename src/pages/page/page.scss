@@ -33,6 +33,9 @@
 
     .inner-operations {
       .dropdown {
+        .cmd-icons {
+          margin: 0 3px 2px 0;
+        }
         .dropdown-toggle {
           &::after {
             all: unset;
@@ -45,6 +48,7 @@
 
         .unpublish-btn {
           color: rgb(235, 87, 87);
+         
         }
 
         .disable-unpublish {
