@@ -29,7 +29,6 @@ const Page = () => {
         users: state.users,
         activeTabId: state.tabs.activeTabId,
         tabs: state.tabs.tabs,
-        isPublished: state?.pages[state.tabs.activeTabId]?.isPublished,
         collections: state.collections,
     }));
 
@@ -160,11 +159,13 @@ const Page = () => {
         dispatch(updateDraft(activeTabId, newContent))
     };
     const publishClick = () => {
-        setOpenPublishConfirmationModal(true)
+            setOpenPublishConfirmationModal(true)
     }
 
     const unpublishClick = () => {
-        setOpenUnpublishConfirmationModal(true)
+        if (page?.isPublished) {
+            setOpenUnpublishConfirmationModal(true)
+        }
     }
 
     const renderPublishConfirmationModal = () => {
@@ -342,14 +343,14 @@ const Page = () => {
                                 <Dropdown.Menu>
                                     <Dropdown.Item className="p-1 fs-4 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>B</span></> : <span className="fs-5">Ctrl + B</span>}</span>
+                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='fs-4 d-inline-block'>B</span></> : <span className="fs-5">Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
                                         className="p-1 px-2 fs-4 d-flex justify-content-between align-items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='fs-4 d-inline-block'>U</span></> : <span className="fs-5">Ctrl + U</span>}</span>
+                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='fs-4 d-inline-block'>U</span></> : <span className="fs-5">Ctrl + U</span>}</span>
                                     </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
