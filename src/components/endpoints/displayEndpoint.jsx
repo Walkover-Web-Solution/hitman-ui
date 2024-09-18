@@ -1874,81 +1874,54 @@ class DisplayEndpoint extends Component {
     this.propsFromChild('Params', updatedParams)
   }
 
-  setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
-    const originalHeaders = this.props.endpointContent.originalHeaders
-    const updatedHeaders = []
-    const emptyHeader = {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: '',
-      type: 'enable'
+  setHeaders(value, title) {
+    const rawBodyTypes = {
+      'JavaScript': "application/javascript",
+      "JSON": 'application/json',
+      "TEXT": 'text/plain',
+      'HTML': 'text/html',
+      "XML": 'application/xml'
+    };
+    const originalHeaders = this.props.endpointContent.originalHeaders;
+    originalHeaders.pop();
+    function findAuthorizationKeyOrContentTypeIndex(title) {
+      let getIndex = -1;
+      originalHeaders.forEach((headers, index) => {
+        if (getInnerText(headers.key) === title) {
+          getIndex = index;
+          return;
+        }
+      });
+      return getIndex
     }
-    let authorizationIndex = -1;
-    for (let i = 0; i < originalHeaders.length; i++) {
-      if (getInnerText(originalHeaders[i].key) === 'Authorization') {
-        authorizationIndex = i;
-        authorizationFlag = true;
-        updatedHeaders.push(originalHeaders[i])
-        continue;
+
+    if (title === 'oauth2' || title === 'basicAuth') {
+      const authorizationKeyIndex = findAuthorizationKeyOrContentTypeIndex('Authorization');
+      if (authorizationKeyIndex > -1) {
+        originalHeaders[authorizationKeyIndex].value = getIntoTextBlock(value);
       }
-      if (getInnerText(originalHeaders[i].key) === '') {
-        continue
-      } else if (getInnerText(originalHeaders[i].key).toLowerCase() === title.split('.')[0]) {
-        originalHeaders[i].value = getIntoTextBlock(this.identifyBodyType(value))
-        const dummyData = this.props.endpointContent
-        dummyData.originalHeaders = originalHeaders
-        this.props.setQueryUpdatedData(dummyData)
-        return
-      } else {
-        updatedHeaders.push(originalHeaders[i])
-      }
-    }
-    if (value === 'none') {
-      updatedHeaders.push(emptyHeader)
-      const dummyData = this.props.endpointContent
-      dummyData.originalHeaders = updatedHeaders
-      this.props.setQueryUpdatedData(dummyData)
-      return
-    }
-    if (value !== 'noAuth' && !authorizationFlag) {
-      updatedHeaders.push({
-        checked: 'true',
-        key: title === 'content-type' ? getIntoTextBlock('content-type') : getIntoTextBlock('Authorization'),
-        value: title.split('.')[0] === 'Authorization' ? (title.split('.')[1] === 'oauth_2' ? getIntoTextBlock('Bearer') + getIntoTextBlock('&nbsp;') + getIntoTextBlock(value) : getIntoTextBlock('Basic') + getIntoTextBlock('&nbsp;') + getIntoTextBlock(value)) : '',
-        description: '',
-        type: 'enable'
-      })
-    }
-    if (title === 'content-type') {
-      updatedHeaders[updatedHeaders.length - 1].value = getIntoTextBlock(this.identifyBodyType(value))
-    }
-    if (title.split('.')[0] === 'basicAuth' && authorizationIndex > -1) {
-      updatedHeaders[authorizationIndex].value = getIntoTextBlock('Basic') + getIntoTextBlock('&nbsp;') + getIntoTextBlock(value)
-    }
-    updatedHeaders.push(emptyHeader)
-    const dummyData = this.props.endpointContent
-    if (dummyData?.authorizationData?.authorization?.oauth2) {
-      dummyData.authorizationData.authorization.oauth2 = {
-        ...dummyData?.authorizationData?.authorization?.oauth2,
-        selectedTokenId: tokenIdToSave
+      else {
+        originalHeaders.push({ checked: 'true', key: getIntoTextBlock('Authorization'), value: getIntoTextBlock(value), description: '', type: 'disable' })
       }
     }
-    if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
-      const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
-      if (basicAuth) {
-        dummyData.authorizationData.authorization.basicAuth.username = basicAuth.username
-        dummyData.authorizationData.authorization.basicAuth.password = basicAuth.password
+    else if (title === 'content-type') {
+      const contentTypeKeyIndex = findAuthorizationKeyOrContentTypeIndex(title);
+      if (Object.keys(rawBodyTypes).includes(value) && contentTypeKeyIndex > -1) {
+        originalHeaders[contentTypeKeyIndex].value = getIntoTextBlock(rawBodyTypes[value]);
       }
-    } {
-      dummyData.authorizationData.authorization = { oauth2: {} }
-      dummyData.authorizationData.authorization.oauth2 = {
-        ...dummyData?.authorizationData?.authorization?.oauth2,
-        selectedTokenId: tokenIdToSave
+      else if (value === "none") {
+        originalHeaders.splice(contentTypeKeyIndex, 1);
+      }
+      else if (contentTypeKeyIndex > -1) {
+        originalHeaders[contentTypeKeyIndex].value = getIntoTextBlock(value);
+      }
+      else {
+        originalHeaders.push({ checked: 'true', key: getIntoTextBlock('content-type'), value: getIntoTextBlock(value), description: '', type: 'disable' })
       }
     }
-    dummyData.originalHeaders = [...updatedHeaders]
-    this.props.setQueryUpdatedData({ ...dummyData })
+    const emptyHeader = { checked: 'notApplicable', key: '', value: '', description: '', type: 'enable' };
+    originalHeaders.push(emptyHeader)
+    this.props.setQueryUpdatedData({ ...this.props.endpointContent, originalHeaders: [...originalHeaders] })
   }
 
   deleteHeader() {

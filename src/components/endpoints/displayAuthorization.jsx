@@ -87,7 +87,7 @@ export default function Authorization(props) {
   function generateEncodedValue(username, password) {
     const value = { username, password }
     const encodedValue = btoa(`${username}:${password}`)
-    props.set_authorization_headers(encodedValue, 'Authorization.basicAuth')
+    props.set_authorization_headers(encodedValue, 'basicAuth')
     props.set_authoriztaion_type('basicAuth', value)
   }
 
@@ -122,7 +122,7 @@ export default function Authorization(props) {
     queryClient.setQueryData(queryKey, dataToSave, options)
     tabService.updateDraftData(endpointId, _.cloneDeep(dataToSave))
     if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
-      props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
+      props.set_authorization_headers(selectedTokenValue, 'oauth2')
       props.delete_params()
     } else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
       props.set_authoriztaion_params(selectedTokenValue, 'access_token')
@@ -140,7 +140,7 @@ export default function Authorization(props) {
 
   const addAccessTokenInsideHeadersAndParams = (value, tokenIdToSave) => {
     if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestHeaders) {
-      props.set_authorization_headers(value, 'Authorization.oauth_2', null, tokenIdToSave)
+      props.set_authorization_headers(value, 'oauth2', null, tokenIdToSave)
     } else if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestUrl) {
       props.set_authoriztaion_params(value, 'access_token', null, tokenIdToSave)
     }
