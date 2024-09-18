@@ -107,7 +107,7 @@ function getProxyToken() {
   return window.localStorage.getItem(tokenKey) || "";
 }
 
-async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null, redirect=true) {
+async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect) {
   if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
 
   window.localStorage.setItem(tokenKey, proxyAuthToken);
@@ -128,7 +128,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null, r
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
     const currentOrgId = userInfo.currentCompany?.id;
-    if (currentOrgId) { switchOrg(currentOrgId, redirect) }
+    if (currentOrgId && redirect) { switchOrg(currentOrgId, redirect) }
   } catch (e) {
     console.error('Error:', e);
   }
@@ -143,7 +143,7 @@ function AuthServiceV2() {
       try {
         const proxyAuthToken = query.get("proxy_auth_token");
         if (proxyAuthToken) {
-          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
+          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken , true);
         }
       } catch (err) {
         navigate("/logout");
