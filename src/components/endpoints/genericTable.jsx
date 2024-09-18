@@ -379,31 +379,19 @@ class GenericTable extends Component {
   }
 
   handleFileInput(dataArray, index) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote
-      const files = dialog.showOpenDialogSync({
-        properties: ['openFile']
-      })
-      if (files) {
-        const id = shortid.generate()
-        this.handleChange({
-          currentTarget: {
-            name: index + '.value',
-            value: {
-              id,
-              name: this.getName(files[0]),
-              srcPath: files[0]
-            }
-          }
-        })
-      }
-    } else {
-      const data = <h5 className='text-center'>File upload feature is not supported on Web</h5>
-      this.props.open_modal('DESKTOP_APP_DOWNLOAD', data)
+    const files = dialog.showOpenDialogSync({
+      properties: ['openFile']
+    })
+    if (files) {
+      const id = shortid.generate()
       this.handleChange({
         currentTarget: {
-          name: index + '.type',
-          value: 'text'
+          name: index + '.value',
+          value: {
+            id,
+            name: this.getName(files[0]),
+            srcPath: files[0]
+          }
         }
       })
     }
@@ -482,33 +470,31 @@ class GenericTable extends Component {
   }
 
   renderSelectFiles(dataArray, index) {
-    if (isElectron()) {
-      const { app } = window.require('electron').remote
-      const value = dataArray[index].value
-      const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
-      const destPath = FILE_UPLOAD_DIRECTORY + value.id + '_' + value.name
-      const fs = window.require('fs')
-      const srcExist = fs.existsSync(value.srcPath)
-      const desExist = value.id ? fs.existsSync(destPath) : false
-      let name = ''
-      if (srcExist) name = value.name
-      if (!srcExist && desExist) name = value.id + '_' + value.name
-      if (name) {
-        return (
-          <div className='fileName selectFile d-flex align-items-center justify-content-between'>
-            {' '}
-            <span className='truncate'>{name}</span>
-            <button
-              className='align-items-center d-flex ml-2'
-              onClick={() => {
-                this.handleDeSelectFile(index)
-              }}
-            >
-              &times;
-            </button>
-          </div>
-        )
-      }
+    // const { app } = window.require('electron').remote
+    const value = dataArray[index].value
+    // const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
+    const destPath = 'FILE_UPLOAD_DIRECTORY' + value.id + '_' + value.name
+    // const fs = window.require('fs')
+    // const srcExist = fs.existsSync(value.srcPath)
+    // const desExist = value.id ? fs.existsSync(destPath) : false
+    // let name = ''
+    // if (srcExist) name = value.name
+    // if (!srcExist && desExist) name = value.id + '_' + value.name
+    if (name) {
+      return (
+        <div className='fileName selectFile d-flex align-items-center justify-content-between'>
+          {' '}
+          <span className='truncate'>{name}</span>
+          <button
+            className='align-items-center d-flex ml-2'
+            onClick={() => {
+              this.handleDeSelectFile(index)
+            }}
+          >
+            &times;
+          </button>
+        </div>
+      )
     }
     return (
       <div className='selectFile d-flex align-items-center'>
@@ -524,11 +510,11 @@ class GenericTable extends Component {
   renderOptionalParamsButton() {
     return !isDashboardRoute(this.props) && this.findUncheckedEntityCount() ? (
       <IconButton>
-      <div className='cursor-pointer px-1' onClick={() => this.toggleOptionalParams()} style={{ color: this.state.theme }}>
-        {!this.state.optionalParams
-          ? `View Optional ${this.renderTitle(this.props.title)}`
-          : `Hide Optional ${this.renderTitle(this.props.title)}`}
-      </div>
+        <div className='cursor-pointer px-1' onClick={() => this.toggleOptionalParams()} style={{ color: this.state.theme }}>
+          {!this.state.optionalParams
+            ? `View Optional ${this.renderTitle(this.props.title)}`
+            : `Hide Optional ${this.renderTitle(this.props.title)}`}
+        </div>
       </IconButton>
     ) : null
   }
