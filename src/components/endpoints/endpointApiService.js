@@ -155,6 +155,7 @@ export async function getRefreshToken(singleTokenDetails) {
 }
 
 export async function getSchemaThroughIntrospectionQuery(graphQlAPI) {
+  
   try {
     const { data: responseData } = await httpService.request({
       url: graphQlAPI,

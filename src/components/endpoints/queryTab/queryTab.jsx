@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIntrospectionSchema } from '../../tabs/redux/tabsActions';
 import './queryTab.scss'
+import { getInnerText } from '../../../utilities/htmlConverter';
 
 export default function QueryTab(props) {
 
@@ -17,10 +18,11 @@ export default function QueryTab(props) {
         showGutter: false,
     };
 
-    const { activeTabId, introspectionSchemaData } = useSelector((state) => {
+    const { activeTabId, introspectionSchemaData, currentEnvironment } = useSelector((state) => {
         return {
             activeTabId: state.tabs.activeTabId,
-            introspectionSchemaData: state?.tabs?.tabs?.[state.tabs.activeTabId]?.introspectionSchemaData
+            introspectionSchemaData: state?.tabs?.tabs?.[state.tabs.activeTabId]?.introspectionSchemaData,
+            currentEnvironment: state?.environment.environments?.[state?.environment?.currentEnvironmentId] || {},
         }
     })
 
@@ -32,7 +34,8 @@ export default function QueryTab(props) {
     const dispatch = useDispatch()
 
     const callIntrospectionQueryAPI = async () => {
-        const graphQlUrl = (props?.endpointContent?.host?.BASE_URL + props?.endpointContent?.data?.uri) || ''
+        
+        const graphQlUrl = props.replaceVariables(getInnerText(props?.endpointContent?.data.URL), currentEnvironment?.variables) || ''
         if (graphQlUrl) {
             try {
                 setLoadingStateForSchema(true)

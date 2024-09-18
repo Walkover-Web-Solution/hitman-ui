@@ -295,10 +295,14 @@ const withQuery = (WrappedComponent) => {
     })
 
     const setOldDataToNewDataForBody = (data) => {
+      
       let endpoint = _.cloneDeep(data.data)
-      const bodyType = endpoint.body.type
+      const bodyType = endpoint?.body?.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
-      if (
+      if (data?.protocolType != 1) {
+        untitled.body = data?.data?.body;
+      }
+      else if (
         [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
         endpoint.body.raw
       ) {
@@ -575,10 +579,10 @@ class DisplayEndpoint extends Component {
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
     }
-     if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
+    if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       this.setState({ openPublishConfirmationModal: true })
     }
-    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  && this.props.pages[this.endpointId]?.isPublished)  {
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && this.props.pages[this.endpointId]?.isPublished) {
       event.preventDefault();
       this.setState({ openUnPublishConfirmationModal: true })
     }
@@ -745,7 +749,7 @@ class DisplayEndpoint extends Component {
   }
 
   replaceVariables(str, customEnv) {
-    let envVars = this.props.environment.variables
+    let envVars = this.props?.environment?.variables
     if (customEnv) {
       envVars = customEnv
     }
@@ -1172,6 +1176,7 @@ class DisplayEndpoint extends Component {
       return
     }
     /** Prepare Body & Modify Headers */
+    
     let body, headers
     if (this.checkProtocolType(1)) {
       const data = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
@@ -1739,6 +1744,7 @@ class DisplayEndpoint extends Component {
   }
 
   setQueryTabBody(queryTabData) {
+    
     let data = { ...this.props?.endpointContent.data }
     data.body = queryTabData
     this.setModifiedTabData()
@@ -2955,13 +2961,13 @@ class DisplayEndpoint extends Component {
 
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
-    this.setState({loading:true})
+    this.setState({ loading: true })
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
       await this.props.approve_endpoint(endpointId)
-      this.setState({loading:false})
+      this.setState({ loading: false })
     }
   }
 
@@ -3219,7 +3225,7 @@ class DisplayEndpoint extends Component {
                           setActiveTab={this.setActiveTab}
                           {...this.props}
                           isEndpoint
-                          publishLoader= {this.state.loading}
+                          publishLoader={this.state.loading}
                         />
                         <div className='d-flex gap-1 align-items-center'>
                           {this.state.showEndpointFormModal && (
@@ -3631,6 +3637,7 @@ class DisplayEndpoint extends Component {
                                 aria-labelledby={`pills-query-tab-${this.props.tab.id}`}
                               >
                                 <QueryTab
+                                  replaceVariables={this.replaceVariables}
                                   endpointContent={this.props.endpointContent}
                                   setQueryTabBody={this.setQueryTabBody.bind(this)}
                                   endpointId={this.props.endpointId}
