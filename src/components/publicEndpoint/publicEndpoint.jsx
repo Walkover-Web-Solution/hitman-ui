@@ -166,15 +166,59 @@ class PublicEndpoint extends Component {
     }
   }
 
-  async componentDidUpdate(prevState) {
-    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    // before this display page or display endpoint gets called and data gets rendered
+  async componentDidUpdate(prevProps) {
+    window.onpopstate = async (event) => {
+      if (event.state) {
+        const url = new URL(window.location.href);
+        const queryParams = this.props?.location?.search ? new URLSearchParams(this.props.location.search) : null;
+        
+        let collectionId = queryParams?.get('collectionId') || sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID);
+        if (collectionId) {
+          sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId);
+        }
+
+        this.setState({ publicCollectionId: collectionId });
+
+        const queryParamApi2 = {};
+        if (isTechdocOwnDomain()) {
+          queryParamApi2.collectionId = collectionId;
+          queryParamApi2.path = url.pathname.slice(3);
+          this.props.add_collection_and_pages(null, { collectionId, public: true });
+        } else {
+          queryParamApi2.custom_domain = window.location.hostname;
+          queryParamApi2.path = url.pathname.slice(1);
+          this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname });
+        }
+
+        if (queryParams?.has('version')) {
+          queryParamApi2.versionName = queryParams.get('version');
+        }
+
+        const queryParamsString = new URLSearchParams(queryParamApi2).toString();
+
+        try {
+          const response = await generalApiService.getPublishedContentByPath(`?${queryParamsString}`);
+          this.setDataToReactQueryAndSessionStorage(response);
+        } catch (e) {
+          sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined');
+          this.setState({ idToRenderState: 'undefined' });
+        }
+      }
+    };
+    
+    const currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
-      const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
-      if (this.props.pages?.[currentIdToShow]?.type == 4) {
-        // this.props.mutationFn.mutate({ type: 'endpoint', id: currentIdToShow, content: response })
-      } else if (this.props.pages?.[currentIdToShow]?.type != 4) {
-        // this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response })
+      try {
+        const response = await generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type);
+        if (this.props.pages?.[currentIdToShow]?.type == 4) {
+          // Example: Handle endpoint case
+          // this.props.mutationFn.mutate({ type: 'endpoint', id: currentIdToShow, content: response });
+        } else {
+          // Example: Handle page content case
+          // this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response });
+        }
+      } catch (e) {
+        console.error("Failed to fetch content", e);
       }
     }
   }
