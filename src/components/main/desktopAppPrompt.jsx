@@ -26,7 +26,7 @@ function DesktopAppDownloadModal(props) {
   const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches 
 
   const handleDownloadClick = () => {
-    debugger
+    
     if (props.modals.installPrompt) {
       props.modals.installPrompt.prompt()
       props.modals.installPrompt.userChoice.then((choiceResult) => {
