@@ -38,14 +38,14 @@ const OnBoarding = () => {
     };
 
     const handleContinueClick = () => {
-        if(isContinue){
+        if (isContinue) {
             setShowInput(true);
             setIsInputVisible(true);
             setIsContinue(false);
         }
-        else{
+        else {
             handleAddOrg(selectedIndex)
-        }  
+        }
     };
 
     const handleBackClick = () => {
@@ -73,6 +73,7 @@ const OnBoarding = () => {
     }
 
     const handleNewOrgClick = async (selectedIndex) => {
+        debugger
         const tabIdsToClose = tabs.tabsOrder;
         removeFromLocalStorage(tabIdsToClose);
         dispatch(closeAllTabs(tabIdsToClose));
@@ -117,14 +118,14 @@ const OnBoarding = () => {
 
     return (
         <>
-            <button className='btn home-button position-absolute btn-dark btn-sm'onClick={() => redirectToDashboard(getOrgId())}>
+            <button className='btn home-button position-absolute btn-dark btn-sm' onClick={() => redirectToDashboard(getOrgId())}>
                 <IconButton>
                     <IoHomeSharp size={18} />
                 </IconButton>
             </button>
-            { !isContinue && (
+            {!isContinue && (
                 <button className='btn back-button btn-dark position-absolute px-2' onClick={handleBackClick}>
-                        <FaLongArrowAltLeft size={18} />
+                    <FaLongArrowAltLeft size={18} />
                 </button>
             )}
             <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
@@ -198,13 +199,13 @@ const OnBoarding = () => {
                         </div>
                     )}
                 </div>
-               <Button
+                <Button
                     variant="secondary"
                     className={`btn-Continue btn-btn-lg px-5 mt-5 ${isCardClicked ? 'bg-dark' : ''}`}
                     disabled={!isContinueEnabled}
                     onClick={handleContinueClick}
                 >
-                   {isContinue ? 'Continue' : 'Create'}
+                    {isContinue ? 'Continue' : 'Create'}
                 </Button>
             </div>
         </>
