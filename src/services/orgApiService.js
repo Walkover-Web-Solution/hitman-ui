@@ -67,7 +67,7 @@ export async function createOrg(name, type) {
   try {
     const data = { company: { name, meta: { type } } }
     const newOrg = await http.post(proxyUrl + '/createCompany', data)
-    await getDataFromProxyAndSetDataToLocalStorage(null, true)
+    await getDataFromProxyAndSetDataToLocalStorage(null, false)
     updateOrgDataByOrgId(newOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
     await switchOrg(newOrg?.data?.data?.id, true)
@@ -80,7 +80,7 @@ export async function updateOrg(name, type) {
   try {
     const data = { company: { name, meta: { type } } }
     const updateOrg = await http.post(proxyUrl + '/{featureId}/updateDetails', data)
-    await getDataFromProxyAndSetDataToLocalStorage()
+    await getDataFromProxyAndSetDataToLocalStorage(null , false)
     updateOrgDataByOrgId(updateOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
     await switchOrg(updateOrg?.data?.data?.id, true)
