@@ -228,17 +228,21 @@ class PublicBodyContainer extends Component {
   }
 
   handleSetQueryData() {
-    this.props.setQueryTabBody({ query: this.queryRef.current.editor.getValue(), variables: this.variablesRef.current.editor.getValue() })
+    
+    const query = this.queryRef?.current?.editor?.getValue() || '';
+    const variables = this.variablesRef?.current?.editor?.getValue() || '';
+    this.props.setQueryTabBody({ query, variables })
   }
 
   graphqlBody() {
+    
     const editorOptions = {
       markers: false,
       showGutter: false,
     };
     return (
       <div className='hm-public-table'>
-        {this.props.Content?.data?.body?.query && <div className="mt-3">
+        {this.props.endpointContent?.data?.body?.query && <div className="mt-3">
           <div className='public-generic-table-title-container'>
             Query
           </div>
@@ -300,7 +304,7 @@ class PublicBodyContainer extends Component {
 
   render() {
     this.bodyDescription = this.props.body_description
-    if (this.props.body && this.props.endpointContent?.protocolType === 2) return this.graphqlBody();
+    if (this.props.body && this.props.endpointContent?.protocolType == 2) return this.graphqlBody();
     if (this.props.body && this.props.body.type === 'none') return null;
     return (
       <>
