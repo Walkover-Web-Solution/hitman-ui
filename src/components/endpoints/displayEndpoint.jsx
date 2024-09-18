@@ -79,6 +79,7 @@ import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
+import PublishModal from '../publishModal/publishModal.jsx'
 
 
 const shortid = require('shortid')
@@ -420,6 +421,7 @@ class DisplayEndpoint extends Component {
       showPublicEnvironments: false,
       loading: false,
       errorFound: true,
+      contentChanged :false,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -657,6 +659,7 @@ class DisplayEndpoint extends Component {
     }
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
+    this.setState({contentChanged:true})
   }
 
   setUnsavedTabDataInIDB() {
@@ -2716,7 +2719,7 @@ class DisplayEndpoint extends Component {
         <div className="accordion" id="accordionExample">
           <div className="card">
             <div className="card-header p-0" id="headingOne">
-              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center" style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 <button className='btn fw-600 text-left w-100' type="button">
                   Variables
                 </button>
@@ -2961,6 +2964,7 @@ class DisplayEndpoint extends Component {
 
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
+    this.setState({contentChanged:false})
     this.setState({ loading: true })
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
@@ -3241,6 +3245,20 @@ class DisplayEndpoint extends Component {
                           )}
                           {this.renderEndpointUserData()}
                           {this.renderSaveButton()}
+                          <Dropdown className='ml-1'>
+                            <Dropdown.Toggle variant="default" id="dropdown-basic">
+                              Publish
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                              <PublishModal
+                                onPublish={this.handleApproveEndpointRequest.bind(this)}
+                                onUnpublish={this.handleRejectEndpointRequest.bind(this)}
+                                pageId={endpointId}
+                                collectionId={this.props.pages[endpointId].collectionId}
+                                isContentChanged={this.state.contentChanged}
+                              />
+                            </Dropdown.Menu>
+                          </Dropdown>
                           <Dropdown className='publish-unpublish-button'>
                             {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
                               <Dropdown.Toggle as='div' id='dropdown-basic'>
@@ -3249,7 +3267,7 @@ class DisplayEndpoint extends Component {
                             )}
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
-                              {isAdmin() && !isStatePending(endpointId, endpointss) && (
+                              {/* {isAdmin() && !isStatePending(endpointId, endpointss) && (
                                 <Dropdown.Item className='p-0  d-flex justify-content-between align-items-center'>
                                   <span>
                                     {approvedOrRejected
@@ -3277,7 +3295,7 @@ class DisplayEndpoint extends Component {
                                 >
                                   {getEntityState(endpointId, endpointss)}
                                 </button>
-                              </Dropdown.Item>)}
+                              </Dropdown.Item>)} */}
 
                             </Dropdown.Menu>
                           </Dropdown>
