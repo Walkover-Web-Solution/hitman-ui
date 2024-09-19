@@ -40,6 +40,7 @@ function GenericTableAutoSuggest(props) {
             handleValueChange={handleValueChange}
             initial={htmlData}
             disable={props?.disable}
+            placeholder={props?.placeholder || ''}
         />
     );
 }
