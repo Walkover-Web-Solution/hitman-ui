@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip, Form } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, OverlayTrigger, Tooltip, Form } from 'react-bootstrap'
 import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
 
 import {
@@ -76,10 +76,13 @@ import EndpointBreadCrumb from './endpointBreadCrumb'
 import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
 import { MdExpandMore } from 'react-icons/md'
-import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
+import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
 
+import { formatBody, identifyBodyType, isBase64, makeHeaders, makeOriginalParams, makeParams, parseBody, prepareBodyForSaving, prepareBodyForSending, prepareHeaderCookies, replaceVariables, replaceVariablesInBody, replaceVariablesInJson } from './endpointUtility.js'
+import EndpointLoading from './endpointLoading.jsx'
+import EndpointEntityTabs from './endpointEntityTabs.jsx'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -444,7 +447,6 @@ class DisplayEndpoint extends Component {
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
-    if (endpointId === 'new') this.setUnsavedTabDataInIDB()
     document.addEventListener('keydown', this.handleKeyDown)
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
@@ -496,7 +498,6 @@ class DisplayEndpoint extends Component {
         variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
       })
     }
-    // window.closeChatbot()
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
@@ -531,10 +532,6 @@ class DisplayEndpoint extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions)
     document.removeEventListener('keydown', this.handleKeyDown)
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
-    }
   }
 
   handleShortcuts = (event, data) => {
@@ -615,15 +612,6 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  getFieldDescription(bodyDescription) {
-    const keys = Object.keys(bodyDescription)
-    const fieldDescription = {}
-    for (let i = 0; i < keys.length; i++) {
-      fieldDescription[keys[i]] = bodyDescription[keys[i]].description
-    }
-    return fieldDescription
-  }
-
   handleChange = (e) => {
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
@@ -652,35 +640,11 @@ class DisplayEndpoint extends Component {
           }
         }
       }
-      originalParams = this.makeOriginalParams(keys, values, description, e.currentTarget.value)
+      originalParams = makeOriginalParams(e.currentTarget.value, description, this.props.endpointContent)
       tempData.originalParams = originalParams
     }
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
-  }
-
-  setUnsavedTabDataInIDB() {
-    if (this.props.tab.id === this.props.tabs.activeTabId) {
-      clearTimeout(this.saveTimeOut)
-      this.saveTimeOut = setTimeout(() => {
-        const state = _.cloneDeep(this.state)
-
-        /** clean unnecessary items from state before saving */
-        const unnecessaryStateItems = [
-          'loader',
-          'draftDataSet',
-          'saveLoader',
-          'codeEditorVisibility',
-          'showCookiesModal',
-          'methodList',
-          'theme',
-          'runSendRequest',
-          'requestKey'
-        ]
-        unnecessaryStateItems.forEach((item) => delete state[item])
-        this.props.update_tab(this.props.tab.id, { state })
-      }, 1000)
-    }
   }
 
   setPathVariables(value) {
@@ -702,118 +666,6 @@ class DisplayEndpoint extends Component {
     const dummyData = this.props?.endpointContent
     dummyData.pathVariables = pathVariables
     this.props.setQueryUpdatedData(dummyData)
-  }
-
-  makeOriginalParams(keys, values, description, value) {
-    const originalParams = []
-    let trueCounter = 0;
-    const queryParamsHtmlData = getQueryParamsHTML(value);
-    for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
-      if (this.props?.endpointContent?.originalParams[i].checked === "false" || this.props?.endpointContent?.originalParams[i].checked === 'false') {
-        originalParams.push({
-          checked: this.props?.endpointContent?.originalParams[i].checked,
-          key: this.props?.endpointContent?.originalParams[i].key,
-          value: this.props?.endpointContent?.originalParams[i].value,
-          description: this.props?.endpointContent?.originalParams[i].description,
-          type: this.props?.endpointContent?.originalParams[i].type
-        })
-      }
-      else if (this.props?.endpointContent?.originalParams[i].checked === "true" && (this.props?.endpointContent?.originalParams[i]?.key?.length > 0 || this.props?.endpointContent?.originalParams[i]?.value?.length > 0 || this.props?.endpointContent?.originalParams[i]?.description?.length > 0)) {
-        if (trueCounter > queryParamsHtmlData.length) break;
-        originalParams.push({
-          checked: "true",
-          key: fixSpanTags(queryParamsHtmlData?.[trueCounter]?.key?.html),
-          value: fixSpanTags(queryParamsHtmlData?.[trueCounter]?.value?.html),
-          description: this.props?.endpointContent?.originalParams[i]?.description,
-        })
-        trueCounter++;
-      }
-    }
-    while (trueCounter < queryParamsHtmlData.length) {
-      originalParams.push({
-        checked: 'true',
-        key: fixSpanTags(queryParamsHtmlData[trueCounter].key.html),
-        value: fixSpanTags(queryParamsHtmlData[trueCounter].value.html),
-        description: description[trueCounter] || '',
-      })
-      trueCounter++;
-    }
-    originalParams.push({
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: '',
-      type: ''
-    })
-    return originalParams
-  }
-
-  replaceVariables(str, customEnv) {
-    let envVars = this.props?.environment?.variables
-    if (customEnv) {
-      envVars = customEnv
-    }
-    str = str?.toString() || ''
-    const regexp = /{{((\w|-|\s)+)}}/g
-    let match = regexp.exec(str)
-    const variables = []
-    if (match === null) return str
-
-    if (!envVars) {
-      const missingVariable = match[1]
-      return `${missingVariable}`
-    }
-
-    do {
-      variables.push(match[1])
-    } while ((match = regexp.exec(str)) !== null)
-
-    for (let i = 0; i < variables.length; i++) {
-      const envVariable = envVars[variables[i]]
-      if (!envVariable) continue
-      const strToReplace = `{{${variables[i]}}}`
-      if (envVariable?.currentValue) {
-        str = str.replace(strToReplace, envVariable.currentValue)
-      } else if (envVariable?.initialValue) {
-        str = str.replace(strToReplace, envVariable.initialValue)
-      } else {
-        str = str.replace(strToReplace, '')
-      }
-    }
-    return str
-  }
-
-  replaceVariablesInJson(json, customEnv) {
-    const keys = Object.keys(json)
-    for (let i = 0; i < keys.length; i++) {
-      json[keys[i]] = this.replaceVariables(json[keys[i]], customEnv)
-      const updatedKey = this.replaceVariables(keys[i], customEnv)
-      if (updatedKey !== keys[i]) {
-        json[updatedKey] = json[keys[i]]
-        delete json[keys[i]]
-      }
-    }
-    return json
-  }
-
-  replaceVariablesInBody(body, bodyType, customEnv) {
-    if (bodyType === bodyTypesEnums['multipart/form-data'] || bodyType === bodyTypesEnums['application/x-www-form-urlencoded']) {
-      body = this.replaceVariablesInJson(body, customEnv)
-    } else if (this.rawBodyTypes?.includes(bodyType)) {
-      body = this.replaceVariables(body, customEnv)
-    }
-    return body
-  }
-
-  parseBody(rawBody) {
-    let body = {}
-    try {
-      body = JSON.parse(rawBody)
-      return body
-    } catch (error) {
-      toast.error('Invalid Body')
-      return body
-    }
   }
 
   handleErrorResponse(error) {
@@ -843,15 +695,8 @@ class DisplayEndpoint extends Component {
     const currentEndpointId = this.props.currentEndpointId !== 'new' ? this.props.activeTabId : this.props.currentEndpointId
     let responseJson = {}
     try {
-      if (isElectron()) {
-        // Handle API through Electron Channel
-        const { ipcRenderer } = window.require('electron')
-        const { sslMode } = this.state
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest, sslMode })
-      } else {
         // Handle API through Backend
         responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
-      }
 
       if (responseJson.data.success) {
         /** request creation was successfull */
@@ -907,7 +752,7 @@ class DisplayEndpoint extends Component {
     const pathVariablesMap = {}
 
     this.props.endpointContent.pathVariables.forEach((variable) => {
-      pathVariablesMap[this.replaceVariables(getInnerText(variable.key), env.variables)] = this.replaceVariables(getInnerText(variable.value), env.variables)
+      pathVariablesMap[replaceVariables(getInnerText(variable.key), env.variables)] = replaceVariables(getInnerText(variable.value), env.variables)
     })
 
     for (let i = 0; i < pathParameters.length; i++) {
@@ -927,9 +772,9 @@ class DisplayEndpoint extends Component {
   setData = async () => {
     let body = this.props?.endpointContent?.data?.body
     if (this.props?.endpointContent?.data?.body?.type === bodyTypesEnums['raw']) {
-      body.value = this.parseBody(body.value)
+      body.value = parseBody(body.value)
     }
-    body = this.prepareBodyForSending(body)
+    body = prepareBodyForSending(body)
     const headersData = this.doSubmitHeader('save')
     const updatedParams = this.doSubmitParam()
     const updatedPathVariables = this.doSubmitPathVariables()
@@ -1004,33 +849,6 @@ class DisplayEndpoint extends Component {
     return url
   }
 
-  prepareHeaderCookies(url) {
-    if (!url) return null
-    const domainUrl = url.split('/')[2]
-    let cookies
-    Object.values(this.props.cookies || {}).forEach((domain) => {
-      if (domain.domain === domainUrl) {
-        cookies = domain?.cookies
-      }
-    })
-    if (cookies) {
-      let cookieString = ''
-      Object.values(cookies || {}).forEach((cookie) => {
-        let time
-        const expires = cookie.split(';')[2]
-        if (expires.split('=')[1]) {
-          time = expires.split('=')[1]
-        }
-        time = moment(time)
-        if (!(time && moment(time).isBefore(moment().format()))) {
-          cookieString += cookie.split(';')[0] + '; '
-        }
-      })
-      return cookieString
-    }
-    return null
-  }
-
   checkTokenExpired(expirationTime, generatedDateTime) {
     if (!expirationTime) return false
     const generatedTime = new Date(generatedDateTime).getTime()
@@ -1084,20 +902,6 @@ class DisplayEndpoint extends Component {
       }
     }
     return { newHeaders: headers, newUrl: url }
-  }
-
-  isBase64(response) {
-    if (typeof response !== 'string') {
-      return false
-    }
-    const base64Pattern = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
-    return base64Pattern.test(response)
-  }
-
-  decodeHtmlEntities(input) {
-    const textarea = document.createElement('textarea');
-    textarea.innerHTML = input;
-    return textarea.value;
   }
 
   HtmlUrlToString(htmlString) {
@@ -1179,7 +983,7 @@ class DisplayEndpoint extends Component {
     
     let body, headers
     if (this.checkProtocolType(1)) {
-      const data = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
+      const data = formatBody(this.props?.endpointContent?.data.body, headerJson)
       body = data.body
       headers = data.headers
     } else if (this.checkProtocolType(2)) {
@@ -1195,7 +999,7 @@ class DisplayEndpoint extends Component {
     }
 
     /** Add Cookie in Headers */
-    const cookiesString = this.prepareHeaderCookies(BASE_URL)
+    const cookiesString = prepareHeaderCookies(BASE_URL,this.props.cookies)
     if (cookiesString) {
       headers.cookie = cookiesString.trim()
     }
@@ -1216,15 +1020,15 @@ class DisplayEndpoint extends Component {
         let { environment, request: { url, headers }, tests } = result.data
         this.setState({ tests })
         /** Replace Environemnt Variables */
-        url = this.replaceVariables(url || {}, environment)
+        url = replaceVariables(url || {}, this.props.environment.variables)
         url = this.addhttps(url)
-        headers = this.replaceVariablesInJson(headers || {}, environment)
+        headers = replaceVariablesInJson(headers || {}, environment)
         // Start of Regeneration of AUTH2.0 Token
         const { newHeaders, newUrl } = await this.getRefreshToken(headers, url)
         headers = newHeaders
         url = newUrl
         const bodyType = this.props?.endpointContent?.data?.body?.type
-        body = this.replaceVariablesInBody(body, bodyType, environment)
+        body = replaceVariablesInBody(body, bodyType, environment)
         requestOptions = { ...requestOptions, body, headers, url, bodyType }
         /** Steve Onboarding Step 5 Completed */
         moveToNextStep(5)
@@ -1317,27 +1121,7 @@ class DisplayEndpoint extends Component {
     return count + 1
   }
 
-  prepareBodyForSaving(body) {
-    const data = _.cloneDeep(body)
-    if (data?.type === bodyTypesEnums['multipart/form-data']) {
-      data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
-        if (item.type === 'file') item.value = {}
-      })
-    }
-    return data
-  }
-
-  prepareBodyForSending(body) {
-    const data = _.cloneDeep(body)
-    if (data.type === bodyTypesEnums['multipart/form-data']) {
-      data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
-        if (item.type === 'file') item.value.srcPath = ''
-      })
-    }
-    return data
-  }
-
-  handleSave = async (id, endpointObject, slug) => {
+  handleSave = async (id, endpointObject, slug) => {    
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
@@ -1348,13 +1132,13 @@ class DisplayEndpoint extends Component {
       this.openEndpointFormModal()
     } else {
       let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
-      const body = this.prepareBodyForSaving(endpointContent?.data?.body)
+      const body = prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
         body: body?.value
       })
       if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
-        body.value = this.parseBody(body.value)
+        body.value = parseBody(body.value)
       }
       const headersData = this.doSubmitHeader('save')
       const updatedParams = this.doSubmitParam()
@@ -1487,7 +1271,6 @@ class DisplayEndpoint extends Component {
   setModifiedTabData() {
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id)
-      this.setUnsavedTabDataInIDB()
     }
   }
 
@@ -1606,33 +1389,6 @@ class DisplayEndpoint extends Component {
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
 
-  makeHeaders(headersData) {
-    const processedHeaders = Object.keys(headersData).map(header => ({
-      name: getInnerText(header),
-      value: getInnerText(headersData[header].value),
-      comment: headersData[header].description || '',
-      type: headersData[header].type || ''
-    })).filter(header => header.name && header.value);
-    return processedHeaders
-  }
-
-  makeParams(params) {
-    const processedParams = []
-    if (params) {
-      for (let i = 0; i < Object.keys(params).length; i++) {
-        if (params[Object.keys(params)[i]].checked === 'true') {
-          processedParams.push({
-            name: getInnerText(params[Object.keys(params)[i]].key),
-            value: getInnerText(params[Object.keys(params)[i]].value),
-            comment: params[Object.keys(params)[i]].description,
-            type: params[Object.keys(params)[i]].type
-          })
-        }
-      }
-    }
-    return processedParams
-  }
-
   async makePostData(body) {
     const params = []
     let paramsFlag = false
@@ -1686,9 +1442,9 @@ class DisplayEndpoint extends Component {
       url: url,
       httpVersion: 'HTTP/1.1',
       cookies: [],
-      headers: this.makeHeaders(headersData || {}),
+      headers: makeHeaders(headersData || {}),
       postData: body && body.type !== bodyTypesEnums['none'] ? await this.makePostData(body) : null,
-      queryString: this.makeParams(originalParams)
+      queryString: makeParams(originalParams)
     }
     if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
       harObject.url = 'https://' + url
@@ -1753,76 +1509,9 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  setBodyDescription(type, value) {
-    const data = {}
-    try {
-      if (value.trim() === '') {
-        data.bodyDescription = {}
-        return data
-      }
-      const body = JSON.parse(value)
-      const keys = Object.keys(body)
-      const bodyDescription = {}
-      for (let i = 0; i < keys.length; i++) {
-        if (typeof body[keys[i]] !== 'object') {
-          bodyDescription[keys[i]] = {
-            default: body[keys[i]],
-            description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : '',
-            dataType: typeof body[keys[i]]
-          }
-        } else {
-          if (typeof body[keys[i]] === 'object' && Array.isArray(body[keys[i]])) {
-            if (body[keys[i]].length !== 0) {
-              bodyDescription[keys[i]] = {
-                default: body[keys[i]],
-                description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : '',
-                dataType: 'Array of ' + typeof body[keys[i]][0]
-              }
-            } else {
-              bodyDescription[keys[i]] = {
-                default: [''],
-                description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : '',
-                dataType: 'Array of string'
-              }
-            }
-          } else if (typeof body[keys[i]] === 'object') {
-            const bodyField = body[keys[i]]
-            const key = Object.keys(bodyField)
-            if (key.length > 0 && typeof bodyField[key[0]] === 'object') {
-              bodyDescription[keys[i]] = {
-                default: body[keys[i]],
-                description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : '',
-                dataType: 'Object of objects'
-              }
-            } else {
-              bodyDescription[keys[i]] = {
-                default: body[keys[i]],
-                description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : '',
-                dataType: typeof body[keys[i]]
-              }
-            }
-          }
-        }
-      }
-      data.bodyDescription = bodyDescription
-      return data
-    } catch (error) {
-      data.error = error
-      return data
-    }
-  }
-
   setDescription(bodyDescription) {
     this.setState({ bodyDescription })
     const tempData = this.props.endpointContent
-    tempData.bodyDescription = bodyDescription
-    this.props.setQueryUpdatedData(tempData)
-  }
-
-  setFieldDescription(fieldDescription, bodyDescription) {
-    this.setState({ fieldDescription, bodyDescription })
-    const tempData = this.props.endpointContent
-    tempData.fieldDescription = fieldDescription
     tempData.bodyDescription = bodyDescription
     this.props.setQueryUpdatedData(tempData)
   }
@@ -1965,27 +1654,6 @@ class DisplayEndpoint extends Component {
     this.handleUpdateUri(updatedParams)
   }
 
-  identifyBodyType(bodyType) {
-    switch (bodyType) {
-      case bodyTypesEnums['application/x-www-form-urlencoded']:
-        return bodyTypesEnums['application/x-www-form-urlencoded']
-      case bodyTypesEnums['multipart/form-data']:
-        return bodyTypesEnums['multipart/form-data']
-      case rawTypesEnums.TEXT:
-        return 'text/plain'
-      case rawTypesEnums.JSON:
-        return 'application/json'
-      case rawTypesEnums.HTML:
-        return 'text/HTML'
-      case rawTypesEnums.XML:
-        return 'application/XML'
-      case rawTypesEnums.JavaScript:
-        return 'application/JavaScript'
-      default:
-        break
-    }
-  }
-
   propsFromDescription(title, data) {
     if (title === 'data') {
       this.setState({ data: data }, () => this.setModifiedTabData())
@@ -2013,46 +1681,6 @@ class DisplayEndpoint extends Component {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
     } else {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
-    }
-  }
-
-  makeFormData(body) {
-    const formData = {}
-    for (let i = 0; i < body.length; i++) {
-      if (getInnerText(body[i].key).length !== 0 && body[i].checked === 'true') {
-        if (!isElectron() && body[i].type === 'file') {
-          continue
-        }
-        formData[getInnerText(body[i].key)] = getInnerText(body[i].value)
-      }
-    }
-    return formData
-  }
-
-  formatBody(body, headers) {
-    let finalBodyValue = null
-    switch (body.type) {
-      case bodyTypesEnums['raw']:
-        finalBodyValue = this.parseBody(body?.raw?.value || '')
-        return { body: finalBodyValue, headers }
-      case bodyTypesEnums['multipart/form-data']: {
-        const formData = this.makeFormData(body[bodyTypesEnums['multipart/form-data']])
-        headers['content-type'] = bodyTypesEnums['multipart/form-data']
-        return { body: formData, headers }
-      }
-      case bodyTypesEnums['application/x-www-form-urlencoded']: {
-        const urlEncodedData = {}
-        for (let i = 0; i < body?.[bodyTypesEnums['application/x-www-form-urlencoded']].length; i++) {
-          let innerTextKey = getInnerText(body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key)
-          let innerTextValue = getInnerText(body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].value)
-          if (innerTextKey.length !== 0 && body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].checked === 'true') {
-            urlEncodedData[innerTextKey] = innerTextValue
-          }
-        }
-        return { body: urlEncodedData, headers }
-      }
-      default:
-        return { body: body?.raw?.value, headers }
     }
   }
 
@@ -2111,13 +1739,8 @@ class DisplayEndpoint extends Component {
   }
 
   handleCancel() {
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.invoke('request-cancel', this.state.requestKey)
-    } else {
-      const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
-      this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
-    }
+    const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
+    this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
     this.setState({
       loader: false,
       runSendRequest: null,
@@ -2163,7 +1786,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  checkProtocolType(protocolType = 1) {
+  checkProtocolType = (protocolType = 1) => {
     if (this.props?.endpointContent?.protocolType === protocolType) return true
     return false
   }
@@ -2270,7 +1893,7 @@ class DisplayEndpoint extends Component {
     const historyId = this.props?.params?.historyId
     const testResponse = this.props?.endpointContent?.testResponse
 
-    if (this.isBase64(testResponse?.data)) {
+    if (isBase64(testResponse?.data)) {
       if (this.state.sendClicked && !this.state.fileDownloaded) {
         try {
           const byteCharacters = atob(testResponse?.data)
@@ -2483,48 +2106,33 @@ class DisplayEndpoint extends Component {
     )
   }
   renderPublicItem = (item, index) => {
+    const isDashboard = isDashboardRoute(this.props);
     switch (item.type) {
-      case 'textArea': {
-        if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
-          return <div>{this.renderTiptapEditor(item, index)}</div>
-        }
-        break
-      }
-      case 'textBlock': {
-        if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
+      case 'textArea':
+      case 'textBlock':
+        if (isDashboard || (!isDashboard && item.data)) {
+          const containerClass = item.type === 'textBlock' ? 'pub-notes' : '';
+          const style = item.type === 'textBlock' ? { borderLeftColor: this.state.theme } : {};
           return (
-            <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
+            <div className={containerClass} style={style}>
               {this.renderTiptapEditor(item, index)}
             </div>
-          )
+          );
         }
-        break
-      }
-      case 'host': {
-        if (!isDashboardRoute(this.props)) return this.renderPublicHost()
-        else return <div className='endpoint-url-container'> {this.renderHost()} </div>
-      }
-      case 'body': {
-        if (!isDashboardRoute(this.props)) return this.renderPublicBodyContainer()
-        else return this.renderBodyContainer()
-      }
-      case 'headers': {
-        if (!isDashboardRoute(this.props)) return this.renderPublicHeaders()
-        else return <div className='mb-3'>{this.renderHeaders()}</div>
-      }
-      case 'params': {
-        if (!isDashboardRoute(this.props) && this.checkProtocolType(1)) return this.renderPublicParams()
-        else if (isDashboardRoute(this.props) && this.checkProtocolType(1)) return <div className='mb-3'>{this.renderParams()}</div>
-        return null
-      }
-      case 'pathVariables': {
-        if (!isDashboardRoute(this.props)) return this.renderPublicPathVariables()
-        else return this.renderPathVariables()
-      }
-      case 'sampleResponse': {
-        if (!isDashboardRoute(this.props)) return this.displayPublicSampleResponse()
-        else return this.renderSampleResponse()
-      }
+        break;
+      case 'host':
+        return isDashboard ? <div className='endpoint-url-container'> {this.renderHost()} </div> : this.renderPublicHost();
+      case 'body':
+        return isDashboard ? this.renderBodyContainer() : this.renderPublicBodyContainer();
+      case 'headers':
+        return isDashboard ? <div className='mb-3'>{this.renderHeaders()}</div> : this.renderPublicHeaders();
+      case 'params':
+        if (this.checkProtocolType(1)) return isDashboard ? <div className='mb-3'>{this.renderParams()}</div> : this.renderPublicParams();
+        return null;
+      case 'pathVariables':
+        return isDashboard ? this.renderPathVariables() : this.renderPublicPathVariables();
+      case 'sampleResponse':
+        return isDashboard ? this.renderSampleResponse() : this.displayPublicSampleResponse();
     }
   }
 
@@ -2535,24 +2143,6 @@ class DisplayEndpoint extends Component {
   isDashboardAndTestingView() {
     return isDashboardRoute(this.props) && (this.props?.endpointContent?.currentView === 'testing' || !isSavedEndpoint(this.props))
   }
-
-  // renderToggleView() {
-  //   if (isSavedEndpoint(this.props)) {
-  //     return (
-  //       <ButtonGroup className='btn-group-custom' aria-label='Basic example'>
-  //         <Button
-  //           className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-grey')}
-  //           onClick={() => this.switchView('testing')}
-  //         >
-  //           Testing
-  //         </Button>
-  //         <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-grey'} onClick={() => this.switchView('doc')}>
-  //           Doc
-  //         </Button>
-  //       </ButtonGroup>
-  //     )
-  //   }
-  // }
 
   renderDocViewOptions() {
     if (isDashboardRoute(this.props) && this.props?.endpointContent.currentView === 'doc') {
@@ -3002,11 +2592,6 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  showDocOptions() {
-    const { docOptions } = this.state
-    this.setState({ docOptions: !docOptions })
-  }
-
   renderSaveButton() {
     return (
       <div className='save-endpoint'>
@@ -3141,40 +2726,8 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    if (this.props?.endpointContentLoading) {
-      return (
-        <>
-          <div>
-            <div className='loading'>
-              <div className='box bg'></div>
-              <div className='d-flex align-items-center justify-content-between mt-3'>
-                <div>
-                  <div className='new bg rounded-1'></div>
-                  <div className='live bg mt-1'></div>
-                </div>
-                <div className='new bg rounded-1'></div>
-              </div>
-              <div className='d-flex align-items-center gap-3 mt-2'>
-                <div className='api-call bg rounded-1'></div>
-                <div className='bg send rounded-1'></div>
-              </div>
-              <div className='boxes mt-4 bg rounded-1'></div>
-              <div className='bulk-edit bg mt-2 rounded-1'></div>
-              <div className='path-var mt-2 bg rounded-1'></div>
-              <div className='bulk-edit bg mt-2 rounded-1'></div>
-              <div className='d-flex align-items-center justify-content-between mt-4'>
-                <div className='response bg rounded-1'></div>
-                <div className='d-flex align-items-center gap-2'>
-                  <div className='min-box bg rounded-1'></div>
-                  <div className='min-box bg rounded-1'></div>
-                </div>
-              </div>
-              <div className='hit-send bg mt-3 rounded-1'></div>
-            </div>
-          </div>
-        </>
-      )
-    }
+    if (this.props?.endpointContentLoading) return <EndpointLoading/>
+    
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -3348,164 +2901,15 @@ class DisplayEndpoint extends Component {
                       </div>
                     </div>
                   )}
-                  {isElectron() && (
-                    <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>
-
-                    </div>
-                  )}
                   <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
                     <div className='main-table-wrapper'>
                       {this.isDashboardAndTestingView() ? (
-                        <div className='d-flex justify-content-between align-items-center'>
-                          <div className='headers-params-wrapper custom-tabs w-100'>
-                            <ul className='nav nav-tabs border-0 border-bottom w-100 rounded-0 mb-2' id='pills-tab' role='tablist'>
-                              {this.checkProtocolType(1) && (
-                                <>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link bg-none ${this.state.activeTab === 'default' ? 'active text-black' : 'text-secondary'}`}
-                                      id={`pills-params-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#params-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`params-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'default'}
-                                      onClick={() => this.setState({ activeTab: 'default' })}
-                                    >
-                                      Params
-                                    </a>
-                                  </li>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link bg-none ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-secondary'}`}
-                                      id={`pills-authorization-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#authorization-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`authorization-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'authorization'}
-                                      onClick={() => this.setState({ activeTab: 'authorization' })}
-                                    >
-                                      Authorization
-                                    </a>
-                                  </li>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link bg-none ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-secondary'}`}
-                                      id={`pills-headers-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#headers-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`headers-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'headers'}
-                                      onClick={() => this.setState({ activeTab: 'headers' })}
-                                    >
-                                      Headers
-                                    </a>
-                                  </li>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link bg-none ${this.state.activeTab === 'body' ? 'active text-black' : 'text-secondary'}`}
-                                      id={`pills-body-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#body-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`body-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'body'}
-                                      onClick={() => this.setState({ activeTab: 'body' })}
-                                    >
-                                      Body
-                                    </a>
-                                  </li>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link bg-none ${this.state.activeTab === 'script' ? 'active text-black' : 'text-secondary'}`}
-                                      id={`pills-script-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#script-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`script-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'script'}
-                                      onClick={() => this.setState({ activeTab: 'script' })}
-                                    >
-                                      Script
-                                    </a>
-                                  </li>
-                                  {getCurrentUser() && (
-                                    <li className='nav-item cookie-tab'>
-                                      <a
-                                        className={`nav-link bg-none ${this.state.activeTab === 'cookies' ? 'active text-black' : 'text-secondary'}`}
-                                        onClick={() => this.setState({ showCookiesModal: true })}
-                                      >
-                                        Cookies
-                                      </a>
-                                    </li>
-                                  )}
-                                </>
-                              )}
-                              {this.checkProtocolType(2) && (
-                                <>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active text-back' : 'text-grey'}`}
-                                      id={`pills-query-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#query-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`query-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'default'}
-                                      onClick={() => this.setState({ activeTab: 'default' })}
-                                    >
-                                      Query
-                                    </a>
-                                  </li>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-grey'}`}
-                                      id={`pills-authorization-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#authorization-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`authorization-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'authorization'}
-                                      onClick={() => this.setState({ activeTab: 'authorization' })}
-                                    >
-                                      Authorization
-                                    </a>
-                                  </li>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-grey'}`}
-                                      id={`pills-headers-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#headers-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`headers-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'headers'}
-                                      onClick={() => this.setState({ activeTab: 'headers' })}
-                                    >
-                                      Headers
-                                    </a>
-                                  </li>
-                                  <li className='nav-item'>
-                                    <a
-                                      className={`nav-link ${this.state.activeTab === 'g-script' ? 'active text-black' : 'text-grey'}`}
-                                      id={`pillss-script-tab-${this.props.tab.id}`}
-                                      data-toggle='pill'
-                                      href={`#g-script-${this.props.tab.id}`}
-                                      role='tab'
-                                      aria-controls={`g-script-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'g-script'}
-                                      onClick={() => this.setState({ activeTab: 'g-script' })}
-                                    >
-                                      Script
-                                    </a>
-                                  </li>
-                                </>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
+                        <EndpointEntityTabs
+                        activeTab={this.state.activeTab}
+                        checkProtocolType={this.checkProtocolType}
+                        setState={this.setState.bind(this)}
+                        tabId={this.props.tab.id}
+                      />
                       ) : null}
 
                       {this.isDashboardAndTestingView() ? (
