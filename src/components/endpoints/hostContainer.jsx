@@ -11,7 +11,7 @@ import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import { convertTextToHTML, getInnerText } from '../../utilities/htmlConverter'
+import { convertTextToHTML } from '../../utilities/htmlConverter'
 
 const mapStateToProps = (state) => {
   return {
@@ -43,6 +43,7 @@ class HostContainer extends Component {
   componentDidMount() {
     this.setHosts();
     this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
+    
 
     if (this.hostcontainerRef.current) {
       this.observer = new MutationObserver((mutationsList) => {
@@ -362,6 +363,7 @@ class HostContainer extends Component {
           contentEditableDivRef={this.hostcontainerRef}
           suggestions={this.props?.currentEnvironment}
           initial={this.state.initalUrlValue ?? ''}
+          placeholder={'Enter URL or paste curl'}
         />
         {showIcon && <div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon' />
           <span className='position-absolute'>URL cannot be empty</span>
