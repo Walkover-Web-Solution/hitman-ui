@@ -318,11 +318,11 @@ class GenericTable extends Component {
           )}
         </td>
         <td className='custom-td keyWrapper'>
-          <GenericTableAutoSuggest suggestions={this.props.publicEnv} htmlValue={currentItem.key} disable={true} />
+          <GenericTableAutoSuggest placeholder='Key' suggestions={this.props.publicEnv} htmlValue={currentItem.key} disable={true} />
         </td>
         <td className='custom-td valueWrapper'>
           <div className='d-flex align-items-center'>
-            <GenericTableAutoSuggest suggestions={this.props?.publicEnv || {}} URL={this.props?.endpointContent?.data?.URL} valueKey={`${index}.value`} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
+            <GenericTableAutoSuggest placeholder='Value' suggestions={this.props?.publicEnv || {}} URL={this.props?.endpointContent?.data?.URL} valueKey={`${index}.value`} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
             {isEmpty && <div className='mandatory-field-text'>*This field is mandatory</div>}
           </div>
           {currentItem.description && <div className='public-description ml-1'>
@@ -356,7 +356,7 @@ class GenericTable extends Component {
     const key = `${index}.key`
     return (
       <div className='position-relative fileInput'>
-        <GenericTableAutoSuggest suggestions={this.props?.currentEnvironment} URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={key} handleChange={this.handleChange} htmlValue={dataArray[index].key} disable={(title === 'Path Variables' && key.split('.')[1] === 'key') ? true : false} />
+        <GenericTableAutoSuggest placeholder='Key' suggestions={this.props?.currentEnvironment} URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={key} handleChange={this.handleChange} htmlValue={dataArray[index].key} disable={(title === 'Path Variables' && key.split('.')[1] === 'key') ? true : false} />
         {title === 'formData' && (
           <select
             className='transition cursor-pointer'
@@ -431,7 +431,7 @@ class GenericTable extends Component {
             this.renderSelectFiles(dataArray, index)
           ) : (
             <div className='position-relative'>
-              <GenericTableAutoSuggest suggestions={this.props?.currentEnvironment} URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={valueKey} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
+              <GenericTableAutoSuggest placeholder='Value' suggestions={this.props?.currentEnvironment} URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={valueKey} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
             </div>
           )}
         </td>
