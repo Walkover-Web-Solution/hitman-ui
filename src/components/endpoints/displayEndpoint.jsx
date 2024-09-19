@@ -3245,7 +3245,7 @@ class DisplayEndpoint extends Component {
                           )}
                           {this.renderEndpointUserData()}
                           {this.renderSaveButton()}
-                          <Dropdown className='ml-1'>
+                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && <Dropdown className='ml-1'>
                             <Dropdown.Toggle variant="default" id="dropdown-basic">
                               Publish
                             </Dropdown.Toggle>
@@ -3258,7 +3258,7 @@ class DisplayEndpoint extends Component {
                                 isContentChanged={this.state.contentChanged}
                               />
                             </Dropdown.Menu>
-                          </Dropdown>
+                          </Dropdown>}
                           <Dropdown className='publish-unpublish-button'>
                             {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
                               <Dropdown.Toggle as='div' id='dropdown-basic'>
