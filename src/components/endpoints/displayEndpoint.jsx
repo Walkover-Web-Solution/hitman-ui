@@ -3276,9 +3276,10 @@ class DisplayEndpoint extends Component {
                           {this.renderEndpointUserData()}
                           {this.renderSaveButton()}
                           {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && <Dropdown className='ml-1'>
-                            <Dropdown.Toggle variant="default" id="dropdown-basic">
+                            <IconButton>
+                            <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
                               Publish
-                            </Dropdown.Toggle>
+                            </Dropdown.Toggle></IconButton>
                             <Dropdown.Menu>
                               <PublishModal
                                 onPublish={this.handleApproveEndpointRequest.bind(this)}
