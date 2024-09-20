@@ -47,27 +47,26 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
     }
 
     return (
-        <div className='custom-modal'>
-            <div className='modal-body d-flex align-items-center'>
-                <div className='d-flex align-items-center wrapper'>
+        <div className='custom-modal d-flex flex-column align-items-center'>
                     <div >
                         {!isPublished ? (
-                            <div className='d-flex align-items-center text-container'>
-                                <div className='Publish-to-web'>
+                            <div className='d-flex align-items-center flex-column text-container'>
+                                <div className='fw-600 font-18'>
                                     Publish to Web
                                 </div>
-                                <div className='create d-flex align-items-center pb-4'> Create a website with Techdoc </div>
+                                <div className='create d-flex align-items-center pb-4 font-12 text-grey'> Create a website with Techdoc </div>
                             </div>
                         ) : (
-                            <div className="custom-input-wrapper d-flex align-items-center">
-                                <div className='align-items-center editable-input cursor-pointer w-50' >
+                            <div className="custom-input-wrapper d-flex align-items-center border bg rounded">
+                                <div className='align-items-center editable-input cursor-pointer w-50 p-1  border-right bg-white' >
                                     <div className='d-flex align-items-center input'>
-                                        <div className='value'>
+                                        <div className='value overflow-auto font-14 text-grey'>
                                             {visiblePath2}
                                         </div>
                                     </div>
                                 </div>
-                                <div className='disabled-input'>
+                                <div className='d-flex justify-content-between flex-grow-1'>
+                                <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey'>
                                     {disabledValue}
                                 </div>
                                 <div className='d-flex align-items-center copy-buton'>
@@ -75,22 +74,24 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                                         <CopyToClipboard
                                             text={visiblePath2 + disabledValue}
                                         >
-                                            <GoLink />
+                                            <GoLink className='mx-2' size={14} />
                                         </CopyToClipboard>
                                     </div>
+                                </div>
                                 </div>
                             </div>
                         )}
                         {isPublished && (visiblePath1 !== 'https://techdoc.walkover.in/') && (
-                            <div className="custom-input-wrapper d-flex align-items-center mt-4">
-                                <div className='align-items-center editable-input cursor-pointer w-50' >
+                            <div className="custom-input-wrapper d-flex align-items-center mt-2 border bg rounded">
+                                <div className='align-items-center editable-input cursor-pointer bg-white w-50 p-1 border-right' >
                                     <div className='d-flex align-items-center input'>
-                                        <div className='value'>
+                                        <div className='value font-14 text-grey'>
                                             {visiblePath1}
                                         </div>
                                     </div>
                                 </div>
-                                <div className='disabled-input'>
+                                <div className='d-flex justify-content-between flex-grow-1'>
+                                <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey'>
                                     {disabledValue}
                                 </div>
                                 <div className='d-flex align-items-center copy-buton'>
@@ -98,30 +99,29 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                                         <CopyToClipboard
                                             text={visiblePath1 + disabledValue}
                                         >
-                                            <GoLink />
+                                          <GoLink className='mx-2' size={14} />
                                         </CopyToClipboard>
                                     </div>
+                                </div>
                                 </div>
                             </div>
                         )}
 
                     </div>
-                    <div className='d-flex align-items-center mt-4 buttons'>
-                        {!isPublished ? <Button className="w-100 publish-modal-btn cursor-pointer d-flex align-items-center" onClick={handlePublishClick}>
+                    <div className='d-flex align-items-center justify-content-end gap-2 mt-4 buttons'>
+                        {!isPublished ? <Button className="publish-modal-btn cursor-pointer btn-sm font-12" onClick={handlePublishClick}>
                             Publish
-                        </Button> : <Button className="publish-modal-btn cursor-pointer d-flex align-items-center" onClick={handleUnpublishClick}  >
+                        </Button> : <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handleUnpublishClick}  >
                             Unpublish
                         </Button>}
-                        {isContentChanged && isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center" onClick={handlePublishClick}>
+                        {isContentChanged && !isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handlePublishClick}>
                             Publish
                         </Button>}
-                        {isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center" onClick={handleViewSite} >
+                        {isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handleViewSite} >
                             View Site
                         </Button>
                         }
                     </div>
-                </div>
-            </div>
         </div>
     );
 }
