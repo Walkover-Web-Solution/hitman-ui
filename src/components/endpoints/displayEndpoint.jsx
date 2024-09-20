@@ -425,6 +425,7 @@ class DisplayEndpoint extends Component {
       loading: false,
       errorFound: true,
       contentChanged :false,
+      endpointSaved: false,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -1434,7 +1435,11 @@ class DisplayEndpoint extends Component {
               if (closeForm) this.closeEndpointFormModal()
               if (stopLoader) this.setState({ saveAsLoader: false })
             },
-            this.state.saveAsFlag
+            () => {
+              this.state.saveAsFlag
+              this.setState({endpointSaved : true})
+            }
+            
           )
           moveToNextStep(4)
         } else {
@@ -1450,6 +1455,7 @@ class DisplayEndpoint extends Component {
             },
             () => {
               this.setState({ saveLoader: false })
+              this.setState({endpointSaved : true})
             }
           )
           if (endpoint.description !== '') {
@@ -3286,7 +3292,7 @@ class DisplayEndpoint extends Component {
                                 onUnpublish={this.handleRejectEndpointRequest.bind(this)}
                                 pageId={endpointId}
                                 collectionId={this.props?.pages[endpointId]?.collectionId}
-                                isContentChanged={this.state.contentChanged}
+                                isContentChanged={this.state.endpointSaved}
                               />
                             </Dropdown.Menu>
                           </Dropdown>}
