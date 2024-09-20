@@ -6,6 +6,7 @@ import { getUrlPathById, SESSION_STORAGE_KEY } from '../common/utility';
 import { useSelector } from 'react-redux';
 import { GoLink } from "react-icons/go";
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { toast } from 'react-toastify';
 
 function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged }) {
     const params = useParams()
@@ -46,6 +47,10 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
         navigate(path, { replace: true });
     }
 
+    const handleCopy = () => {
+        toast.success('Link copied!');
+    };
+
     return (
         <div className='custom-modal d-flex flex-column align-items-center'>
                     <div >
@@ -73,6 +78,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                                     <div className='align-items-center icon cursor-pointer'>
                                         <CopyToClipboard
                                             text={visiblePath2 + disabledValue}
+                                            onCopy={handleCopy}
                                         >
                                             <GoLink className='mx-2' size={14} />
                                         </CopyToClipboard>
