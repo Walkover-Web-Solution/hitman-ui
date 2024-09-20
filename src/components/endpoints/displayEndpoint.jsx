@@ -1385,9 +1385,9 @@ class DisplayEndpoint extends Component {
         description: endpointContent?.description || "",
         sampleResponse: endpointContent?.sampleResponseArray || []
       }
-      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
-        return toast.error('Please enter Endpoint name')
-      else if (currentTabId && !this.props.pages[currentTabId]) {
+      // if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
+      //   return toast.error('Please enter Endpoint name')
+     if (currentTabId && !this.props.pages[currentTabId]) {
         // endpoint.requestId = currentTabId
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
@@ -2360,10 +2360,10 @@ class DisplayEndpoint extends Component {
     return (
       <>
         {this.state.postReqScriptError ? (
-          <div className='script-error'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div>
+          <div className='script-error text-danger'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div>
         ) : null}
         {this.state.preReqScriptError ? (
-          <div className='script-error'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div>
+          <div className='script-error text-danger'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div>
         ) : null}
       </>
     )
@@ -3255,7 +3255,7 @@ class DisplayEndpoint extends Component {
                                 onPublish={this.handleApproveEndpointRequest.bind(this)}
                                 onUnpublish={this.handleRejectEndpointRequest.bind(this)}
                                 pageId={endpointId}
-                                collectionId={this.props.pages[endpointId].collectionId}
+                                collectionId={this.props?.pages[endpointId]?.collectionId}
                                 isContentChanged={this.state.contentChanged}
                               />
                             </Dropdown.Menu>
@@ -3832,9 +3832,10 @@ class DisplayEndpoint extends Component {
                         this.renderDocView()
                       )}
                     </div>
-                    {this.isDashboardAndTestingView() && this.renderScriptError()}
+                    
                     {this.displayResponse()}
                   </div>
+                  {this.isDashboardAndTestingView() && this.renderScriptError()}
                 </div>
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>

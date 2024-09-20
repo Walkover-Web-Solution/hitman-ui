@@ -145,13 +145,13 @@ class EndpointBreadCrumb extends Component {
   }
   handleInputChange(e) {
     const newName = e.currentTarget.textContent;
-      this.setState({ changesMade: true, endpointTitle: newName });
-      if (this.props?.isEndpoint) {
-        const tempData = this.props?.endpointContent || {};
-        tempData.data.name = newName;
-        this.props.setQueryUpdatedData(tempData);
-        this.props.update_name(this.props?.params?.endpointId, newName);
-      }
+    this.setState({ changesMade: true, endpointTitle: newName });
+    if (this.props?.isEndpoint) {
+      const tempData = this.props?.endpointContent || {};
+      tempData.data.name = newName;
+      this.props.setQueryUpdatedData(tempData);
+      this.props.update_name(this.props?.params?.endpointId, newName);
+    }
   }
 
   handleInputBlur(event) {
@@ -182,6 +182,11 @@ class EndpointBreadCrumb extends Component {
         this.props.setQueryUpdatedData(tempData)
         this.props.update_name(this.props?.params?.endpointId, event.currentTarget.textContent)
       }
+    } else {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = event.currentTarget.textContent
+      this.props.setQueryUpdatedData(tempData)
+      this.props.update_name(this.props?.params?.endpointId, event.currentTarget.textContent)
     }
   }
 
@@ -281,9 +286,9 @@ class EndpointBreadCrumb extends Component {
   handleKeyDownEvent(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-        event.target.blur();
-        this.setState({ nameEditable: false });
-        this.handleInputBlur(event);
+      event.target.blur();
+      this.setState({ nameEditable: false });
+      this.handleInputBlur(event);
     }
   }
 
