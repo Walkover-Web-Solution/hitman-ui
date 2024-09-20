@@ -3133,7 +3133,7 @@ class DisplayEndpoint extends Component {
   renderEndpointUserData(isOnPublishedPage) {
     const { pages, currentEndpointId, users } = this.props
     const updatedById = pages?.[currentEndpointId]?.updatedBy
-    const createdAt = pages?.[currentEndpointId]?.createdAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
+    const createdAt = pages?.[currentEndpointId]?.createdAt ? moment(pages[currentEndpointId].createdAt).fromNow() : null
     const lastModified = pages?.[currentEndpointId]?.updatedAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
 
     const user = users?.find((user) => user.id === updatedById)
