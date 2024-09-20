@@ -47,12 +47,12 @@ export const fetchCollection = (collectionId) => {
   }
 }
 
-export const addCollection = (newCollection, customCallback) => {
+export const addCollection = (newCollection, customCallback, orgId) => {
   newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       collectionsApiService
-        .saveCollection(newCollection)
+        .saveCollection(newCollection , orgId)
         .then((response) => {
           dispatch(onCollectionAdded(response.data));
           const invisiblePageData = {

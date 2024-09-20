@@ -36,7 +36,10 @@ export function getCollection(collectionId) {
   return http.get(collectionUrl(collectionId))
 }
 
-export function saveCollection(collection) {
+export function saveCollection(collection, orgId) {
+  if(orgId){
+    return http.post(`${apiUrl}/orgs/${orgId}/collections`, collection)
+  }
   const apiEndpoint = getApiEndpoint(orgId)
   return http.post(apiEndpoint, collection)
 }

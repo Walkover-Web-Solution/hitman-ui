@@ -87,7 +87,7 @@ const OnBoarding = () => {
     const createUntitledCollection = async () => {
         const newCollection = { name: 'untitled' };
         try {
-            const actionResult = await dispatch(addCollection(newCollection));
+            const actionResult = await dispatch(addCollection(newCollection, orgId));
             return actionResult;
         } catch (error) {
             console.error("Error creating collection:", error);
