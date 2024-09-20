@@ -14,6 +14,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
 
     const [publishclicked, setPublishClicked] = useState(false);
     const [disabledValue, setDisabledValue] = useState(null);
+    const [save,setSave] = useState(true)
     const { pages, customDomain, isPublished } = useSelector((state) => ({
         pages: state.pages,
         customDomain: state.collections?.[params.collectionId]?.customDomain || '',
@@ -24,6 +25,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
         sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId);
         let pathName = getUrlPathById(id, pages);
         setDisabledValue(`/${pathName}`);
+       setSave(true)
     }, [collectionId, id, pages]);
 
     const visiblePath1 = customDomain ? `https://${customDomain}/` : `${import.meta.env.VITE_UI_URL}/p`
@@ -37,15 +39,22 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
         onPublish()
     }
 
+    const handlePublish = () => {
+        setSave(false)
+        onPublish()
+    }
+
     const handleUnpublishClick = () => {
         setPublishClicked(false);
+        setSave(true)
         onUnpublish()
     }
 
     const handleViewSite = () => {
         const path = `/p${disabledValue}`;
-        navigate(path, { replace: true });
-    }
+        window.open(path, '_blank');
+    };
+    
 
     const handleCopy = () => {
         toast.success('Link copied!');
@@ -120,7 +129,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </Button> : <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handleUnpublishClick}  >
                             Unpublish
                         </Button>}
-                        {isContentChanged && !isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handlePublishClick}>
+                        {isContentChanged && save && isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handlePublish}>
                             Publish
                         </Button>}
                         {isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handleViewSite} >

@@ -64,23 +64,24 @@ async function createOrganizationAndRunCode() {
 }
 
 export async function createOrg(name, type) {
+  const data = { company: { name, meta: { type } } };
+  const newOrg = await http.post(proxyUrl + '/createCompany', data);
   try {
-    const data = { company: { name, meta: { type } } }
-    const newOrg = await http.post(proxyUrl + '/createCompany', data)
-    await getDataFromProxyAndSetDataToLocalStorage(null, false)
-    updateOrgDataByOrgId(newOrg?.data?.data?.id)
-    await createOrganizationAndRunCode()
-    await switchOrg(newOrg?.data?.data?.id, true)
+    await getDataFromProxyAndSetDataToLocalStorage(null, false);
+    updateOrgDataByOrgId(newOrg?.data?.data?.id);
+    await createOrganizationAndRunCode();
+    await switchOrg(newOrg?.data?.data?.id, true);
   } catch (e) {
-    toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
+    toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong");
   }
 }
+
 
 export async function updateOrg(name, type) {
   try {
     const data = { company: { name, meta: { type } } }
     const updateOrg = await http.post(proxyUrl + '/{featureId}/updateDetails', data)
-    await getDataFromProxyAndSetDataToLocalStorage(null , false)
+    await getDataFromProxyAndSetDataToLocalStorage(null, false)
     updateOrgDataByOrgId(updateOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
     await switchOrg(updateOrg?.data?.data?.id, true)
