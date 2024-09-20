@@ -19,6 +19,7 @@ import * as Y from "yjs";
 import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
+import PublishModal from "../../components/publishModal/publishModal";
 
 const Page = () => {
 
@@ -43,9 +44,10 @@ const Page = () => {
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isContentChanged, setIsContentChanged] = useState(false);
 
     const updatedById = pages?.[pageId]?.updatedBy;
-    const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
+    const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].createdAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
 
@@ -158,13 +160,14 @@ const Page = () => {
     const handleContentChange = (newContent) => {
         if (tabs[activeTabId]?.isModified === false) dispatch(setTabIsModified(activeTabId, true));
         dispatch(updateDraft(activeTabId, newContent))
+        setIsContentChanged(true)
     };
     const publishClick = () => {
         setOpenPublishConfirmationModal(true)
     }
 
     const unpublishClick = () => {
-            setOpenUnpublishConfirmationModal(true)
+        setOpenUnpublishConfirmationModal(true)
     }
 
     const renderPublishConfirmationModal = () => {
@@ -199,6 +202,7 @@ const Page = () => {
 
     const handlePublish = async () => {
         setLoading(true)
+        setIsContentChanged(false)
         await dispatch(approvePage(pages[pageId]))
         setLoading(false)
     };
@@ -292,7 +296,6 @@ const Page = () => {
         const path = `orgs/${getOrgId()}/dashboard/collection/${pages?.[activeTabId]?.collectionId}/settings`;
         navigate(`/${path}`, { replace: true });
     }
-
     return (
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-3 bg-white d-flex align-items-center justify-content-between w-100'>
@@ -342,26 +345,22 @@ const Page = () => {
                         </div>
                     </IconButton>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
-                        <div className='inner-operations'>
-                            <Dropdown>
-                                <Dropdown.Toggle as='div' id='dropdown-basic'>
-                                    <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item className="p-1 font-14 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
-                                        <span>Publish</span>
-                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='font-14 d-inline-block'>B</span></> : <span className="font-10">Ctrl + B</span>}</span>
-                                    </Dropdown.Item>
-                                    {isPublished && <Dropdown.Item
-                                        onClick={unpublishClick}
-                                        className="p-1 px-2 font-14 d-flex justify-content-between align-items-center unpublish-page "
-                                    >
-                                        <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons'/>+ <span className='font-14 d-inline-block'>U</span></> : <span className="font-10">Ctrl + U</span>}</span>
-                                    </Dropdown.Item>}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </div>
+                        <Dropdown className='ml-1'>
+                            <IconButton>
+                                <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
+                                    Publish
+                                </Dropdown.Toggle></IconButton>
+                            <Dropdown.Menu>
+                                <PublishModal
+                                    onPublish={handlePublish}
+                                    onUnpublish={handleUnPublish}
+                                    pageId={activeTabId}
+                                    collectionId={pages[activeTabId].collectionId}
+                                    isContentChanged={isContentChanged}
+                                />
+                            </Dropdown.Menu>
+                        </Dropdown>
+
                     }
                     {renderPublishConfirmationModal()}
                     {renderUnPublishConfirmationModal()}

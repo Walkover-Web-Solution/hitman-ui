@@ -79,6 +79,7 @@ import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
+import PublishModal from '../publishModal/publishModal.jsx'
 
 
 const shortid = require('shortid')
@@ -420,6 +421,7 @@ class DisplayEndpoint extends Component {
       showPublicEnvironments: false,
       loading: false,
       errorFound: true,
+      contentChanged :false,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -657,6 +659,7 @@ class DisplayEndpoint extends Component {
     }
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
+    this.setState({contentChanged:true})
   }
 
   setUnsavedTabDataInIDB() {
@@ -1382,9 +1385,9 @@ class DisplayEndpoint extends Component {
         description: endpointContent?.description || "",
         sampleResponse: endpointContent?.sampleResponseArray || []
       }
-      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
-        return toast.error('Please enter Endpoint name')
-      else if (currentTabId && !this.props.pages[currentTabId]) {
+      // if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
+      //   return toast.error('Please enter Endpoint name')
+     if (currentTabId && !this.props.pages[currentTabId]) {
         // endpoint.requestId = currentTabId
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
@@ -2357,10 +2360,10 @@ class DisplayEndpoint extends Component {
     return (
       <>
         {this.state.postReqScriptError ? (
-          <div className='script-error'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div>
+          <div className='script-error text-danger'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div>
         ) : null}
         {this.state.preReqScriptError ? (
-          <div className='script-error'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div>
+          <div className='script-error text-danger'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div>
         ) : null}
       </>
     )
@@ -2716,7 +2719,7 @@ class DisplayEndpoint extends Component {
         <div className="accordion" id="accordionExample">
           <div className="card">
             <div className="card-header p-0" id="headingOne">
-              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center" style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 <button className='btn fw-600 text-left w-100' type="button">
                   Variables
                 </button>
@@ -2961,6 +2964,7 @@ class DisplayEndpoint extends Component {
 
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
+    this.setState({contentChanged:false})
     this.setState({ loading: true })
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
@@ -3099,7 +3103,7 @@ class DisplayEndpoint extends Component {
   renderEndpointUserData(isOnPublishedPage) {
     const { pages, currentEndpointId, users } = this.props
     const updatedById = pages?.[currentEndpointId]?.updatedBy
-    const createdAt = pages?.[currentEndpointId]?.createdAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
+    const createdAt = pages?.[currentEndpointId]?.createdAt ? moment(pages[currentEndpointId].createdAt).fromNow() : null
     const lastModified = pages?.[currentEndpointId]?.updatedAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
 
     const user = users?.find((user) => user.id === updatedById)
@@ -3241,6 +3245,21 @@ class DisplayEndpoint extends Component {
                           )}
                           {this.renderEndpointUserData()}
                           {this.renderSaveButton()}
+                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && <Dropdown className='ml-1'>
+                            <IconButton>
+                            <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
+                              Publish
+                            </Dropdown.Toggle></IconButton>
+                            <Dropdown.Menu>
+                              <PublishModal
+                                onPublish={this.handleApproveEndpointRequest.bind(this)}
+                                onUnpublish={this.handleRejectEndpointRequest.bind(this)}
+                                pageId={endpointId}
+                                collectionId={this.props?.pages[endpointId]?.collectionId}
+                                isContentChanged={this.state.contentChanged}
+                              />
+                            </Dropdown.Menu>
+                          </Dropdown>}
                           <Dropdown className='publish-unpublish-button'>
                             {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
                               <Dropdown.Toggle as='div' id='dropdown-basic'>
@@ -3249,7 +3268,7 @@ class DisplayEndpoint extends Component {
                             )}
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
-                              {isAdmin() && !isStatePending(endpointId, endpointss) && (
+                              {/* {isAdmin() && !isStatePending(endpointId, endpointss) && (
                                 <Dropdown.Item className='p-0  d-flex justify-content-between align-items-center'>
                                   <span>
                                     {approvedOrRejected
@@ -3277,7 +3296,7 @@ class DisplayEndpoint extends Component {
                                 >
                                   {getEntityState(endpointId, endpointss)}
                                 </button>
-                              </Dropdown.Item>)}
+                              </Dropdown.Item>)} */}
 
                             </Dropdown.Menu>
                           </Dropdown>
@@ -3813,9 +3832,10 @@ class DisplayEndpoint extends Component {
                         this.renderDocView()
                       )}
                     </div>
-                    {this.isDashboardAndTestingView() && this.renderScriptError()}
+                    
                     {this.displayResponse()}
                   </div>
+                  {this.isDashboardAndTestingView() && this.renderScriptError()}
                 </div>
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>

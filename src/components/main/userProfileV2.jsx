@@ -157,12 +157,11 @@ const UserProfile = () => {
         <div className='org-listing-column d-flex flex-column gap-1 w-100'>
           {organizations.map((org, key) => (
             <div key={key} className='d-flex name-list cursor-pointer'>
-              <div className='org-collection-name d-flex'>
+              <div className='org-collection-name d-flex'
+                onClick={() => handleOrgClick(org, selectedOrg)}>
                 <Avatar className='mr-2 avatar-org' name={org.name} size={32} />
                 <span
-                  className={`org-listing-button mr-1 ${org.id === selectedOrg?.id ? 'selected-org' : ''}`}
-                  onClick={() => handleOrgClick(org, selectedOrg)}
-                >
+                  className={`org-listing-button mr-1 ${org.id === selectedOrg?.id ? 'selected-org' : ''}`}>
                   {org.name}
                 </span>
               </div>
@@ -258,7 +257,16 @@ const UserProfile = () => {
     <>
       <div className='profile-menu pt-1 px-2'>
         <Dropdown className='d-flex align-items-center'>
-          <Dropdown.Toggle as={forwardRef(({ onClick }, ref) => renderAvatarWithOrg(onClick, ref))} id='dropdown-custom-components' />
+          <Dropdown.Toggle
+            as={forwardRef(({ onClick }, ref) => {
+              const handleClick = async (e) => {
+                await fetchOrganizations();
+                onClick(e);
+              };
+              return renderAvatarWithOrg(handleClick, ref);
+            })}
+            id='dropdown-custom-components'
+          />
           <Dropdown.Menu className='p-0'>
             {renderUserDetails()}
             <div className='profile-listing-container'>
