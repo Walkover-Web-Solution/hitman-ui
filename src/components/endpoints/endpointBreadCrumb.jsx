@@ -304,7 +304,7 @@ class EndpointBreadCrumb extends Component {
             {this.props?.tabState[this.props?.activeTabId]?.status === 'NEW' && this.switchProtocolTypeDropdown()}
           </div>
 
-          {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
+          {this.props.tabState[this.props.activeTabId]?.status !== 'NEW' ? (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
 
               <div className='text-nowrap-heading breadcrumb-main d-flex align-items-center flex-wrap'>
