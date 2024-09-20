@@ -342,7 +342,7 @@ class EndpointBreadCrumb extends Component {
               {this.props?.pages?.[this.props?.params?.endpointId]?.name ||
                 this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
                 this.props?.endpointContent?.data?.name
-                && this.props?.pages?.[this.props?.params?.pageId]?.name || "Untitled"}
+                && this.props?.pages?.[this.props?.params?.pageId]?.name ||  this.props?.endpointContent?.data?.name || "Untitled"}
             </strong>
           )}
         </div>

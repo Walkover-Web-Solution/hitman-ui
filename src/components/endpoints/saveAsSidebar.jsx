@@ -89,7 +89,7 @@ const SaveAsSidebar = (props) => {
     )
   }
 
-  const renderSaveAsExistingEndpointInput = () => {
+  const   renderSaveAsExistingEndpointInput = () => {
     return (
       <Input
         value={data.name}
