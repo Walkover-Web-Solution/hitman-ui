@@ -47,7 +47,7 @@ const Page = () => {
     const [isContentChanged, setIsContentChanged] = useState(false);
 
     const updatedById = pages?.[pageId]?.updatedBy;
-    const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
+    const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].createdAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
 
@@ -167,7 +167,7 @@ const Page = () => {
     }
 
     const unpublishClick = () => {
-            setOpenUnpublishConfirmationModal(true)
+        setOpenUnpublishConfirmationModal(true)
     }
 
     const renderPublishConfirmationModal = () => {
@@ -346,9 +346,10 @@ const Page = () => {
                     </IconButton>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <Dropdown className='ml-1'>
-                            <Dropdown.Toggle variant="default" id="dropdown-basic">
-                                Publish
-                            </Dropdown.Toggle>
+                            <IconButton>
+                                <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
+                                    Publish
+                                </Dropdown.Toggle></IconButton>
                             <Dropdown.Menu>
                                 <PublishModal
                                     onPublish={handlePublish}
