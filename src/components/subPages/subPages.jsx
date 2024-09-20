@@ -19,6 +19,8 @@ import './subpages.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 import { openInNewTab } from '../tabs/redux/tabsActions.js'
 import { RiDeleteBin6Line } from 'react-icons/ri'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+
 
 const SubPage = (props) => {
   const { pages, clientData, collections, organizations } = useSelector((state) => ({
@@ -149,9 +151,9 @@ const SubPage = (props) => {
 
     return (
       <div className='sidebar-accordion accordion ' id='child-accordion'>
-        <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
+        <button tabIndex={-1} className={`p-0 w-full ${expanded ? 'expanded' : ''}`}>
           <div
-            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
+            className={`active-selected flex justify-between align-items-center rounded ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
             style={backgroundStyle}
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}
@@ -164,7 +166,7 @@ const SubPage = (props) => {
               onDragEnter={(e) => props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => props.onDragEnd(e)}
               style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : { paddingLeft: `${props?.level * 8}px` }}
-              className={`d-flex justify-content-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
+              className={`flex justify-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
               onClick={(e) => {
                 handleRedirect(subPageId)
                 if (!expanded) {
@@ -172,38 +174,58 @@ const SubPage = (props) => {
                 }
               }}
             >
-              <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, subPageId)}>
+              <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} flex justify-center`} onClick={(e) => handleToggle(e, subPageId)}>
                 <IconButtons variant='sm'>
                   <MdExpandMore
                     size={13}
                     className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
                   /></IconButtons>
-                <IoDocumentTextOutline size={18} className='collection-icons d-inline' />
+                <IoDocumentTextOutline size={18} className='collection-icons inline' />
               </span>
-              <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
+              <div className={`sidebar-accordion-item inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
             </div>
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-              <div className='sidebar-item-action align-items-center'>
-                <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
+              <div className='sidebar-item-action flex align-items-center'>
+                <div onClick={() => openAddSubPageModal(subPageId)} className='flex align-items-center'>
                   <IconButtons>
                     <FiPlus />
                   </IconButtons>
                 </div>
-                <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <IconButtons>
-                    <BsThreeDots />
-                  </IconButtons>
-                </div>
-                <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item d-flex align-items-center' onClick={() => openEditSubPageForm(pages[subPageId])}>
-                    <FiEdit2 color='gray' /> Rename
+
+                <Menu as="div" className="relative inline-block text-left">
+                  <div>
+                    <MenuButton>
+                      <IconButtons>
+                        <BsThreeDots />
+                      </IconButtons>
+                    </MenuButton>
                   </div>
-                  <div className='dropdown-item d-flex align-items-center text-danger delete-subpage-btn'
-                    onClick={() => openDeleteSubPageModal(subPageId)}>
-                    <RiDeleteBin6Line size={15} /> Delete
-                  </div>
-                </div>
+
+                  <MenuItems
+                    transition
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  >
+                    <div className="py-1">
+                      <MenuItem onClick={() => openEditSubPageForm(pages[subPageId])}>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                        >
+                          <FiEdit2 color='gray' /> Rename
+                        </a>
+                      </MenuItem>
+                      <MenuItem onClick={() => openDeleteSubPageModal(subPageId)}>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                        >
+                          <RiDeleteBin6Line size={15} /> Delete
+                        </a>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </Menu>
               </div>
             ) : null}
           </div>

@@ -23,6 +23,7 @@ import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 import { SlSettings } from "react-icons/sl";
 import { RiDeleteBin6Line } from 'react-icons/ri'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 const CollectionParentPages = (props) => {
   const { pages, clientData, collections, organizations } = useSelector((state) => {
@@ -221,21 +222,21 @@ const CollectionParentPages = (props) => {
     return (
       <div className={'hm-sidebar-outer-block my-1'} key={pageId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-          <button tabIndex={-1} className={`px-0 ${expanded ? 'expanded' : ''}`}>
+          <button tabIndex={-1} className={`px-0 w-full ${expanded ? 'expanded' : ''}`}>
             <div
-              className={`active-select d-flex align-items-center justify-content-between rounded my-1 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
+              className={`active-select flex align-items-center justify-between rounded my-1 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
               style={backgroundStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`d-flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
-                <div className='d-flex td-name ml-1 align-items-center'>
-                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
+              <div className={`flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
+                <div className='flex td-name ml-1 align-items-center'>
+                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} flex justify-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
                     <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
                     <IoDocumentTextOutline size={18} className='collection-icons' />
                   </span>
                   <div
-                    className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? '' : ''}`}
+                    className={`flex align-items-center name-parent-page ${isOnPublishedPage() ? '' : ''}`}
                     draggable={!isUserOnPublishedPage}
                     onDragOver={props.handleOnDragOver}
                     onDragStart={() => props.onDragStart(pageId)}
@@ -255,29 +256,53 @@ const CollectionParentPages = (props) => {
               </div>
 
               {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-                <div className='sidebar-item-action align-items-center'>
+                <div className='sidebar-item-action flex align-items-center'>
                   <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
                     <IconButtons>
                       <FiPlus />
                     </IconButtons>
                   </div>
-                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <IconButtons>
-                      <BsThreeDots />
-                    </IconButtons>
-                  </div>
-                  <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item d-flex align-items-center' onClick={() => openEditPageForm(pageId)}>
-                      <FiEdit2 color='gray' /> Rename
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <MenuButton>
+                        <IconButtons>
+                          <BsThreeDots />
+                        </IconButtons>
+                      </MenuButton>
                     </div>
-                    {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
-                      <SlSettings color='gray' /> Manage Version
-                    </div>}
-                    <div className='dropdown-item d-flex align-items-center text-danger delete-parent-btn'
-                      onClick={() => openDeletePageModal(pageId)}>
-                      <RiDeleteBin6Line size={15} /> Delete
-                    </div>
-                  </div>
+
+                    <MenuItems
+                      transition
+                      className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    >
+                      <div className="py-1">
+                        <MenuItem onClick={() => openEditPageForm(pageId)}>
+                          <a
+                            href="#"
+                            className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                          >
+                            <FiEdit2 color='gray' /> Rename
+                          </a>
+                        </MenuItem>
+                        <MenuItem onClick={() => setShowVersionForm(true)}>
+                          <a
+                            href="#"
+                            className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                          >
+                            <SlSettings color='gray' /> Manage Version
+                          </a>
+                        </MenuItem>
+                        <MenuItem onClick={() => openDeletePageModal(pageId)}>
+                          <a
+                            href="#"
+                            className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                          >
+                            <RiDeleteBin6Line size={15} /> Delete
+                          </a>
+                        </MenuItem>
+                      </div>
+                    </MenuItems>
+                  </Menu>
                 </div>
               ) : null}
             </div>

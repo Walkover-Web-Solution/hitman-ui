@@ -240,16 +240,16 @@ const ContentPanel = () => {
         {getCurrentUser() ? (
           <>
             <div className='content-header'>
-              <div className='tabs-container d-flex justify-content-between'>
+              <div className='tabs-container flex justify-between'>
                 <CustomTabs
                   handle_save_endpoint={handleSaveEndpoint}
                   handle_save_page={handleSavePage}
                 />
-                <div className='d-flex'>
+                <div className='flex'>
                   <Environments />
                   {params.endpointId && tabs.tabs.length !==0 && 
                     <div
-                      className='d-flex justify-content-center align-items-center code-curl-icon'
+                      className='flex justify-content-center align-items-center code-curl-icon'
                       onClick={handleCodeCurlClick}
                     >
                       <IconButton>

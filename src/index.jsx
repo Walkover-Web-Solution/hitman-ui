@@ -9,8 +9,6 @@ import { store, persistor } from './store/store'
 import App from './App.jsx'
 import { sentryIntegration } from './components/common/utility'
 import './index.scss'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/js/bootstrap.js'
 import '../src/components/main/responsive.scss'
 
 if (import.meta.env.VITE_ENV !== 'local') {

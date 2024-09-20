@@ -219,7 +219,7 @@ const CustomTabs = (props) => {
         if (historySnapshots[tabId]) {
           if (tab.previewMode) {
             return (
-              <div className='d-flex align-items-center '>
+              <div className='flex align-items-center '>
                 <LuHistory size={16} />
                 <span className='mr-2 fw-500 font-12' >{historySnapshots[tabId].endpoint.name}</span>
               </div>
@@ -227,7 +227,7 @@ const CustomTabs = (props) => {
           } else {
             return (
               <>
-                <div className='d-flex align-items-center '>
+                <div className='flex align-items-center '>
                   <LuHistory className='mr-1' size={16} />
                   <span className='mr-2 fw-500 font-12' >{historySnapshots[tabId].endpoint.name || historySnapshots[tabId].endpoint.BASE_URL + historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</span>
                 </div>
@@ -243,7 +243,7 @@ const CustomTabs = (props) => {
           const endpoint = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex justify-content-center fw-500 font-12 align-items-center'>
+              <div className='flex justify-content-center fw-500 font-12 align-items-center'>
                 {endpoint.protocolType === 1 && (
                   <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2  request-type-bgcolor`}>
                     {tabState[tabId]?.draft?.data?.method || 'GET'}
@@ -255,7 +255,7 @@ const CustomTabs = (props) => {
             )
           } else {
             return (
-              <div className='d-flex justify-content-center fw-500 font-12 align-items-center'>
+              <div className='flex justify-content-center fw-500 font-12 align-items-center'>
                 {endpoint.protocolType === 1 && (
                   <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
                     {tabState[tabId]?.draft?.data?.method}
@@ -269,7 +269,7 @@ const CustomTabs = (props) => {
         } else {
           const endpoint = tabState?.[tabId]
           return (
-            <div className='d-flex fw-500 font-12 justify-content-end align-items-end'>
+            <div className='flex fw-500 font-12 justify-content-end align-items-end'>
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
@@ -284,7 +284,7 @@ const CustomTabs = (props) => {
           const page = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex fw-500 font-12 justify-content-end align-items-end'>
+              <div className='flex fw-500 font-12 justify-content-end align-items-end'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>
                   <>{page.name} </>
@@ -293,7 +293,7 @@ const CustomTabs = (props) => {
             )
           } else {
             return (
-              <div className='d-flex fw-500 font-12 justify-content-end align-items-end'>
+              <div className='flex fw-500 font-12 justify-content-end align-items-end'>
                 <IoDocumentTextOutline size={14} className='mr-1' />
                 <span>
                   <>{page.name} </>
@@ -303,7 +303,7 @@ const CustomTabs = (props) => {
           }
         } else {
           return (
-            <div className='d-flex fw-500 font-12 justify-content-end align-items-end'>
+            <div className='flex fw-500 font-12 justify-content-end align-items-end'>
               <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
               <span>{'Untiled'}</span>
             </div>
@@ -315,7 +315,7 @@ const CustomTabs = (props) => {
         if (location?.pathname?.split('/')?.[6] === 'settings') {
           return (
             <>
-              <span className='d-flex fw-500 font-12 align-items-center'>
+              <span className='flex fw-500 font-12 align-items-center'>
                 <CiSettings size={18} className='setting-icons mr-1' />
                 <span>{collectionName}</span>
               </span>
@@ -323,14 +323,14 @@ const CustomTabs = (props) => {
           )
         } else if (location?.pathname?.split('/')?.[6] === 'runner') {
           return (
-            <div className='d-flex fw-500 font-12 align-items-center'>
+            <div className='flex fw-500 font-12 align-items-center'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
         } else {
           return (
-            <div className='d-flex fw-500 font-12 align-items-center'>
+            <div className='flex fw-500 font-12 align-items-center'>
               <CiSettings size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
@@ -340,7 +340,7 @@ const CustomTabs = (props) => {
       case 'feedback': {
         return (
           <>
-            <div className='d-flex fw-500 font-12 align-items-center'>
+            <div className='flex fw-500 font-12 align-items-center'>
               <IoIosChatboxes className='mr-1' size={16} />
               <span>Feedback</span>
             </div>
@@ -351,7 +351,7 @@ const CustomTabs = (props) => {
         if (automation[tabId]) {
           return (
             <>
-              <div className='d-flex fw-500 font-12 align-items-center'>
+              <div className='flex fw-500 font-12 align-items-center'>
                 <BsPlayBtn className='mr-1' size={16} />
                 <span>Runs</span>
               </div>
@@ -386,7 +386,7 @@ const CustomTabs = (props) => {
   //       const endpoint = pages[tabId]
   //       return (
   //         <div className='hover-div' style={styles}>
-  //           <div className='d-flex align-items-center'>
+  //           <div className='flex align-items-center'>
   //             {endpoint.protocolType === 1 && (
   //               <div className={`api-label ${tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
   //                 {tabState[tabId]?.draft?.data?.method}{' '}
@@ -453,10 +453,10 @@ const CustomTabs = (props) => {
 
   return (
     <>
-      <div className='d-flex navs-container'>
+      <div className='flex navs-container'>
         {/* {showScrollButton() ? (
           <div
-            className={`scroll-button scroll-button--left d-flex ${leftHideTabs() ? '' : 'disabled'}`}
+            className={`scroll-button scroll-button--left flex ${leftHideTabs() ? '' : 'disabled'}`}
             onMouseEnter={() => handleMouseEnter('left')}
             onMouseLeave={() => handleMouseLeave()}
           >
@@ -468,7 +468,7 @@ const CustomTabs = (props) => {
         ) : null} */}
         <Nav
           variant='pills'
-          className='flex-row flex-nowrap item-wrp'
+          className='flex flex-nowrap overflow-auto item-wrp'
           onScroll={() => scrollLength()}
           ref={navRef}
           style={{ scrollBehavior: 'smooth' }}
@@ -510,7 +510,7 @@ const CustomTabs = (props) => {
                 }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
-                <Nav.Link className='p-0 d-flex align-items-center bg-white pr-2' eventKey={tabId}>
+                <Nav.Link className='p-0 flex align-items-center bg-white pr-2' eventKey={tabId}>
                   <button
                     className='btn truncate bg-white pr-0'
                     onClick={() => tabService.selectTab(tabId, { navigate, params })}
@@ -518,7 +518,7 @@ const CustomTabs = (props) => {
                       tabService.disablePreviewMode(tabId)
                     }}
                   >
-                    <div className={`d-flex ${tabs?.activeTabId === tabId ? 'tab-name' : ''}`} >
+                    <div className={`flex ${tabs?.activeTabId === tabId ? 'tab-name' : ''}`} >
                       {renderTabName(tabId)}
                     </div>
                   </button>
@@ -532,7 +532,7 @@ const CustomTabs = (props) => {
         </Nav>
         {/* {showScrollButton() ? (
           <div
-            className={`scroll-button scroll-button--right d-flex ${rightHideTabs() ? '' : 'disabled'}`}
+            className={`scroll-button scroll-button--right flex ${rightHideTabs() ? '' : 'disabled'}`}
             onMouseEnter={() => handleMouseEnter('right')}
             onMouseLeave={() => handleMouseLeave()}
           >
@@ -547,7 +547,7 @@ const CustomTabs = (props) => {
             <LuPlus />
           </button>
         </Nav.Item>
-        <div className='d-flex'>
+        <div className='flex'>
           <Nav.Item className='tab-buttons' id='options-tab-button'>
             {
               tabs?.tabsOrder?.length > 1 && (
@@ -564,7 +564,7 @@ const CustomTabs = (props) => {
             <div className='history-main-container bg-white'>
               <div className='heading'>
                 History
-                <div className='d-flex close-button' onClick={handleHistoryClick} aria-label='Close'>
+                <div className='flex close-button' onClick={handleHistoryClick} aria-label='Close'>
                   <IconButtons>
                     <GrFormClose />
                   </IconButtons>

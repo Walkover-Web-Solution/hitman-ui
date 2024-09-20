@@ -1,5 +1,8 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 @import '../src/components/main/variables.scss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .main {
   width: 100%;
@@ -33,34 +36,6 @@ body .logoBox .dropdown .dropdown-toggle {
   position: relative;
 }
 
-.menu-trigger-box {
-  .org-button {
-    .sb-avatar--text {
-      .sb-avatar__text {
-        span {
-          span {
-            font-size: 9px;
-          }
-        }
-      }
-    }
-
-    svg {
-      margin-top: 2px;
-    }
-  }
-
-  span {
-    &.user-notification-badge {
-      right: 0.25rem;
-      top: 0.75rem;
-    }
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
-}
 
 .accordion>.card {
   overflow: inherit !important;

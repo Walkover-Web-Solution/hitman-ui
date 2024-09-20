@@ -6,6 +6,7 @@
   "private": true,
   "main": "public/electron.js",
   "dependencies": {
+    "@headlessui/react": "^2.1.8",
     "@hocuspocus/provider": "^2.13.5",
     "@sentry/react": "^7.88.0",
     "@tiptap/extension-collaboration": "^2.6.4",
@@ -34,7 +35,6 @@
     "@tiptap/starter-kit": "^2.6.4",
     "ace-builds": "^1.4.9",
     "axios": "^0.19.1",
-    "bootstrap": "^4.4.1",
     "brace": "^0.11.1",
     "chai": "^4.3.4",
     "concurrently": "^6.2.0",
@@ -100,6 +100,7 @@
     "sass": "^1.69.4",
     "serve": "^14.2.2",
     "shortid": "^2.2.15",
+    "tailwindcss": "^1.9.6",
     "to-json-schema": "^0.2.5",
     "universal-cookie": "^4.0.4",
     "urijs": "^1.19.2",

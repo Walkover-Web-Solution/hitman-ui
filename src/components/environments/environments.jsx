@@ -88,7 +88,7 @@ const Environments = () => {
   if (organizations?.currentOrg?.meta?.type !== 0) {
     return (
 
-      <div className='environment-container d-flex align-items-center transition'>
+      <div className='environment-container flex align-items-center transition'>
         {(environmentFormName === 'Add new Environment' || environmentFormName === 'Edit Environment') &&
           <EnvironmentVariables show onHide={handleEnvironmentModal} title={environmentFormName} environment={environmentToBeEdited} />}
 
@@ -102,9 +102,9 @@ const Environments = () => {
           <IconButton>{environment?.environments[currentEnvironmentId] ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1' />}</IconButton>
         </div>
 
-        <div className='select-environment-dropdown border-radius-right-none align-content-center'>
+        <div className='select-environment-dropdown border-radius-right-none flex align-content-center'>
           <Dropdown className='ml-1'>
-            <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1 font-12' variant='default' id='dropdown-basic'>
+            <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1 font-12 flex' variant='default' id='dropdown-basic'>
               <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
               <IoIosArrowDown className='m-1' />
             </Dropdown.Toggle></IconButton>

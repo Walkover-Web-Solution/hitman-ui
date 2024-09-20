@@ -141,12 +141,12 @@ const SideBar = () => {
   const renderSearch = () => {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     return (
-      <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
-        <SearchIcon className='mr-2' />
+      <div tabIndex={0} className='flex align-items-center border my-1 p-1 gap-2 rounded search-container w-full focus:ring focus:ring-violet-300'>
+        <SearchIcon />
         <input
           ref={inputRef}
           value={searchData.filter}
-          className='search-input'
+          className='search-input bg-none w-100  focus:outline-none'
           placeholder={isMac ? 'Press ⌘ + K to search' : 'Press Ctrl + K to search'}
           autoComplete='off'
           type='text'
@@ -438,7 +438,7 @@ const SideBar = () => {
           {renderSearch()}
           {/* {isOnDashboardPage && renderGlobalAddButton()} */}
         </div>
-        <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1' : ''}`}>
+        <div className={`sidebar-content overflow-auto h-[32rem] ${isOnPublishedPage() ? 'px-2 mx-1' : ''}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
         </div>

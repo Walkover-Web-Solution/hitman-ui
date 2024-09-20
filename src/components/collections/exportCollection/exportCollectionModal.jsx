@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './exportCollection.scss';
 
 const techdocLogo= <img src="/maskable_icon_x192.png" alt="Techdoc Logo" height={30}/>

@@ -57,10 +57,10 @@ const UserProfile = () => {
   const renderAvatarWithOrg = (onClick, ref1) => {
     const firstLetterCapital = getCurrentOrg()?.name?.[0].toUpperCase();
     return (
-      <div className='menu-trigger-box d-flex align-items-center justify-content-between w-100 rounded gap-1 px-1 py-1'>
+      <div className='menu-trigger-box flex align-items-center justify-between w-100 rounded gap-1 px-1 py-1'>
         <div
           ref={ref1}
-          className='org-button pl-1 d-flex position-relative align-items-center cursor-pointer flex-grow-1 gap-1'
+          className='org-button pl-1 flex position-relative align-items-center cursor-pointer flex-grow-1 gap-1'
           onClick={(e) => {
             e.preventDefault()
             onClick(e)
@@ -71,7 +71,7 @@ const UserProfile = () => {
           <IoIosArrowDown size={16} className='text-secondary' />
         </div>
         <div className='add-button d-flex align-items-center'>
-          {isOrgDocType() && <button className='border-0 btn btn-light px-1 text-secondary shadow' onClick={handleImportClick}>
+          {isOrgDocType() && <button className='border-0 px-1 font-12 text-gray-700 fw-500 shadow' onClick={handleImportClick}>
             Import
           </button>}
           <ImportCollectionModal

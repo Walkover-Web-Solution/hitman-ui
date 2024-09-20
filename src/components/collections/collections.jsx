@@ -25,6 +25,7 @@ import { addPage } from '../pages/redux/pagesActions'
 import { openInNewTab } from '../tabs/redux/tabsActions'
 import { IoIosSettings } from "react-icons/io";
 import { IoDocumentTextOutline, IoPricetagOutline } from 'react-icons/io5'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
@@ -171,7 +172,7 @@ const Collections = (props) => {
     return (
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={`sidebar-accordion px-2 ${expanded ? 'expanded mb-3' : ''}`}>
-          <button tabIndex={-1} variant='default' className={`sidebar-hower pr-2 rounded ${expanded ? 'expanded' : ''}`}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower flex pr-2 w-full rounded justify-between ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
               onClick={() => toggleSelectedCollectionIds(collectionId)}
@@ -191,8 +192,8 @@ const Collections = (props) => {
             {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
-                <div className='d-flex align-items-center justify-content-end' >
-                  <div className='sidebar-item-action d-flex align-items-center justify-content-end pr-0'>
+                <div>
+                  <div className='sidebar-item-action flex align-items-center justify-end pr-0'>
                     <div className='d-flex align-items-center' onClick={() => openPublishSettings(collectionId)}>
                       <IconButtons>
                         <IoIosSettings color='grey' />
@@ -203,68 +204,125 @@ const Collections = (props) => {
                         <FiPlus color='grey' />
                       </IconButtons>
                     </div>
-                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <IconButtons>
-                        <BsThreeDots color='grey' />
-                      </IconButtons>
-                    </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
+                    
+                    <Menu as="div" className="relative inline-block text-left">
+                      <div>
+                        <MenuButton className='focus:outline-none'>
+                          <IconButtons>
+                            <BsThreeDots color='grey' />
+                          </IconButtons>
+                        </MenuButton>
+                      </div>
                       {!collections[collectionId]?.importedFromMarketPlace && (
-                        <>
-                          <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCollectionForm(collectionId)}>
-                            <FiEdit2 color='gray' /> Rename
-                          </div>
+
+                      <MenuItems
+                        transition
+                        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                      >
+                        <div className="py-1">
+                          <MenuItem  onClick={() => openEditCollectionForm(collectionId)}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
+                               <FiEdit2 color='gray' /> Rename
+                            </a>
+                          </MenuItem>
                           {collections[collectionId].isPublic && (
-                            <div className='dropdown-item d-flex align-items-center' onClick={() => handleGoToDocs(collections[collectionId])}>
+                          <MenuItem  onClick={() => handleGoToDocs(collections[collectionId])}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
                               <IoDocumentTextOutline color='gray' /> Go to API Documentation
-                            </div>
+                            </a>
+                          </MenuItem>
                           )}
-                          <div
-                            className='dropdown-item d-flex align-items-center'
-                            onClick={() => {
+                          <MenuItem  onClick={() => {
                               TagManagerModalOpen(collectionId)
-                            }}
-                          >
-                            <IoPricetagOutline color='gray' /> Add Google Tag Manager
-                          </div>
-                          <div className='dropdown-item' onClick={() => handleOrgModalOpen(collections[collectionId])}>
-                            <RiShareForward2Line size={16} color='grey' /> Move
-                          </div>
-                          <div className='dropdown-item d-flex' onClick={() => openRedirectionsPage(collections[collectionId])}>
-                            <TbDirections size={16} color='grey' /> Redirections
-                          </div>
-                          {isOrgDocType() && <div className='dropdown-item' onClick={() => handleApiAutomation(collectionId)}>
-                            <TbSettingsAutomation size={16} color='grey' />
-                            API Automation
-                          </div>}
-                          {isOrgDocType() && <div className='dropdown-item d-flex align-items-center h-auto'>
-                            <BiExport className='mb-1' size={18} color='grey' />
+                            }}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
+                               <IoPricetagOutline color='gray' /> Add Google Tag Manager
+                            </a>
+                          </MenuItem>
+
+                          <MenuItem  onClick={() => handleOrgModalOpen(collections[collectionId])}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
+                              <RiShareForward2Line size={16} color='grey' /> Move
+                            </a>
+                          </MenuItem>
+
+
+                          <MenuItem  onClick={() => openRedirectionsPage(collections[collectionId])}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
+                               <TbDirections size={16} color='grey' /> Redirections
+                            </a>
+                          </MenuItem>
+                          {isOrgDocType() &&
+                          <MenuItem  onClick={() => handleApiAutomation(collectionId)}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
+                               <TbSettingsAutomation size={16} color='grey' />
+                               API Automation
+                            </a>
+                          </MenuItem>
+                      }
+                      {isOrgDocType() &&
+
+                          <MenuItem >
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
+                              <BiExport className='mb-1' size={18} color='grey' />
                             <ExportButton
                               orgId={params.orgId}
                               collectionId={collectionId}
                               collectionName={collections[collectionId].name}
                             />
-                          </div>}
-                          <div
-                            className='text-danger dropdown-item delete-button-sb d-flex align-items-center delete-collection-btn'
-                            onClick={() => openDeleteCollectionModal(collectionId)}
-                          >
+                            </a>
+                          </MenuItem>
+  }
+
+                          <MenuItem  onClick={() => openDeleteCollectionModal(collectionId)}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
                             <RiDeleteBin6Line size={12} /> Delete
-                          </div>
-                        </>
-                      )}
-                      {collections[collectionId]?.importedFromMarketPlace && (
-                        <div
-                          className='dropdown-item d-flex align-items-center justify-content-between'
-                          onClick={() => {
+                            </a>
+                          </MenuItem>
+                          {collections[collectionId]?.importedFromMarketPlace && (
+
+                          <MenuItem   onClick={() => {
                             removeImporedPublicCollection(collectionId)
-                          }}
-                        >
-                          <div className='marketplace-icon mr-2'> M </div>
-                          <div> Remove Public Collection </div>
+                          }}>
+                            <a
+                              href="#"
+                              className="block px-4  flex py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+                            >
+                           <div className='marketplace-icon mr-2'> M </div>
+                           <div> Remove Public Collection </div>
+                            </a>
+                          </MenuItem>
+                          )}
                         </div>
-                      )}
-                    </div>
+                      </MenuItems>
+                       )}
+                    </Menu>
+
+
                   </div>
                   <div className='theme-color d-flex transition counts ml-1 f-12'>
                     {collections[collectionId]?.importedFromMarketPlace ? <div className='marketplace-icon mr-1'> M </div> : null}
@@ -302,7 +360,7 @@ const Collections = (props) => {
     return (
       <div className='empty-collections text-center mt-4'>
         <div>
-          <EmptyCollections/>
+          <EmptyCollections />
           {/* <img src={emptyCollections} alt='' /> */}
         </div>
         <div className='content'>
