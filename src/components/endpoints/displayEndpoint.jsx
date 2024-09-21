@@ -2973,6 +2973,7 @@ class DisplayEndpoint extends Component {
     this.setState({contentChanged:false})
     this.setState({ loading: true })
     this.setState({ publishLoader: true })
+    this.setState({endpointSaved:false})
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
@@ -3260,7 +3261,7 @@ class DisplayEndpoint extends Component {
                               <PublishModal
                                 onPublish={this.handleApproveEndpointRequest.bind(this)}
                                 onUnpublish={this.handleRejectEndpointRequest.bind(this)}
-                                pageId={endpointId}
+                                id={endpointId}
                                 collectionId={this.props?.pages[endpointId]?.collectionId}
                                 isContentChanged={this.state.endpointSaved}
                               />

@@ -354,7 +354,7 @@ const Page = () => {
                                 <PublishModal
                                     onPublish={handlePublish}
                                     onUnpublish={handleUnPublish}
-                                    pageId={activeTabId}
+                                    id={activeTabId}
                                     collectionId={pages[activeTabId].collectionId}
                                     isContentChanged={isContentChanged}
                                 />
