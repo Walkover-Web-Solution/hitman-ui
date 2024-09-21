@@ -1443,7 +1443,6 @@ class DisplayEndpoint extends Component {
           } else {
             this.props.endpoints[currentTabId].description = false
           }
-          tabService.markTabAsSaved(currentTabId)
         }
       }
     }
