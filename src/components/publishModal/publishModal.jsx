@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import './publishModal.scss'
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { getUrlPathById, SESSION_STORAGE_KEY } from '../common/utility';
 import { useSelector } from 'react-redux';
 import { GoLink } from "react-icons/go";
@@ -11,7 +11,6 @@ import { toast } from 'react-toastify';
 function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged }) {
     const params = useParams()
 
-    const [publishclicked, setPublishClicked] = useState(false);
     const [disabledValue, setDisabledValue] = useState(null);
     const [save, setSave] = useState(true)
     const { pages, customDomain, isPublished, tabs } = useSelector((state) => ({
@@ -22,7 +21,6 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
     }));
 
     useEffect(() => {
-        debugger
         sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId);
         let pathName = getUrlPathById(id, pages);
         setDisabledValue(`/${pathName}`);
@@ -33,7 +31,6 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
     const visiblePath2 = 'https://techdoc.walkover.in/p'
 
     const handlePublishClick = () => {
-        setPublishClicked(true);
         sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
         let pathName = getUrlPathById(id, pages)
         setDisabledValue(`/${pathName}`)
@@ -41,13 +38,11 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
     }
 
     const handlePublish = () => {
-        debugger
         setSave(false)
         onPublish()
     }
 
     const handleUnpublishClick = () => {
-        setPublishClicked(false);
         setSave(true)
         onUnpublish()
     }
@@ -62,6 +57,31 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
         toast.success('Link copied!');
     };
 
+    const showTooltips = (tooltipType) => {
+        switch (tooltipType) {
+            case "path2":
+                return (
+                    <Tooltip className="custom-tooltip" id='link-tooltip'>
+                        {
+                            <div className="font-12 text-secondary">
+                                <span>&nbsp;{visiblePath2 + disabledValue}</span>
+                            </div>
+                        }
+                    </Tooltip>
+                )
+            case "path1":
+                return (
+                    <Tooltip className="custom-tooltip" id='link-tooltip'>
+                        {
+                            <div className="font-12 text-secondary">
+                                <span>&nbsp;{visiblePath1 + disabledValue}</span>
+                            </div>
+                        }
+                    </Tooltip>
+                )
+        }
+    }
+
     return (
         <div className='custom-modal d-flex flex-column align-items-center'>
             <div >
@@ -73,7 +93,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         <div className='create d-flex align-items-center pb-4 font-12 text-grey'> Create a website with Techdoc </div>
                     </div>
                 ) : (
-                    <div className="custom-input-wrapper d-flex align-items-center border bg rounded">
+                    <div className="custom-input-wrapper mr-1 ml-1 mt-1 d-flex align-items-center border bg rounded">
                         <div className='align-items-center editable-input cursor-pointer w-50 p-1  border-right bg-white' >
                             <div className='d-flex align-items-center input'>
                                 <div className='value overflow-auto font-14 text-grey'>
@@ -81,10 +101,12 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                                 </div>
                             </div>
                         </div>
-                        <div className='d-flex justify-content-between flex-grow-1'>
-                            <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey'>
-                                {disabledValue}
-                            </div>
+                        <div className='d-flex justify-content-between flex-grow-1 cursor-pointer'>
+                            <OverlayTrigger placement='bottom' overlay={showTooltips("path2")} >
+                                <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey text'>
+                                    {disabledValue}
+                                </div>
+                            </OverlayTrigger>
                             <div className='d-flex align-items-center copy-buton'>
                                 <div className='align-items-center icon cursor-pointer'>
                                     <CopyToClipboard
@@ -107,10 +129,12 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                                 </div>
                             </div>
                         </div>
-                        <div className='d-flex justify-content-between flex-grow-1'>
-                            <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey'>
-                                {disabledValue}
-                            </div>
+                        <div className='d-flex justify-content-between cursor-pointer   flex-grow-1'>
+                            <OverlayTrigger placement='bottom' overlay={showTooltips("path1")} >
+                                <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey text'>
+                                    {disabledValue}
+                                </div>
+                            </OverlayTrigger>
                             <div className='d-flex align-items-center copy-buton'>
                                 <div className='align-items-center icon cursor-pointer'>
                                     <CopyToClipboard
@@ -126,21 +150,21 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                 )}
 
             </div>
-            <div className='d-flex align-items-center justify-content-end gap-2 mt-4 buttons'>
-                {!isPublished ? <Button className="publish-modal-btn cursor-pointer btn-sm font-12" onClick={handlePublishClick}>
+            <div className='d-flex align-items-center justify-content-end gap-2 mt-4 '>
+                {!isPublished ? <Button className="cursor-pointer btn-sm font-12" onClick={handlePublishClick}>
                     Publish
-                </Button> : <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handleUnpublishClick}  >
+                </Button> : <Button className="cursor-pointer d-flex align-items-center btn-sm font-12 view-site" onClick={handleUnpublishClick}  >
                     Unpublish
                 </Button>}
-                {isContentChanged && save && isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handlePublish} >
+                {isContentChanged && save && isPublished && <Button className="cursor-pointer d-flex align-items-center btn-sm font-12 view-site " onClick={handlePublish} >
                     Publish
                 </Button>}
-                {isPublished && <Button className="publish-modal-btn cursor-pointer d-flex align-items-center btn-sm font-12" onClick={handleViewSite} >
+                {isPublished && <Button className="bg-primary cursor-pointer d-flex align-items-center btn-sm font-12 view-site" onClick={handleViewSite} >
                     View Site
                 </Button>
                 }
             </div>
-        </div>
+        </div >
     );
 }
 

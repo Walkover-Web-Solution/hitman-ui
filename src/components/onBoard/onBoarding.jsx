@@ -197,7 +197,7 @@ const OnBoarding = () => {
                                     onKeyDown={(e) => {
                                         handleKeyPress(e)
                                     }}
-                                    isInvalid={orgName && !validateName(orgName)}
+                                    isInvalid={!!errorMessage}
                                     autoFocus
                                 />
                             </InputGroup>
