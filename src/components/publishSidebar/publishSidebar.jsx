@@ -74,9 +74,7 @@ function PublishSidebar(props) {
     dataToPublish.delete(1)
     const pageIds = Array.from(dataToPublish).map((id) => flattenData?.[id]?.metadata?.actualId)
     try {
-      // await bulkPublishApiService.bulkPublishSelectedData({ rootParentId pageIds })
       dispatch(bulkPublish(rootParentId, pageIds))
-      // props.closePublishSidebar()
     } catch (error) {
       console.error(error)
       toast.error('Cannot Publish at this moment')

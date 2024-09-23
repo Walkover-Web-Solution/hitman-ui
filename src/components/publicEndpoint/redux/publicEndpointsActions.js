@@ -1,6 +1,6 @@
-import publicEndpointsService from '../publicEndpointsService.js'
+import publicEndpointsService from '../../../api/endpoint/endpointApi.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
-import publicPageService from '../publicPageService'
+import publicPageService from '../../../api/page/pageApi'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
 import { navigateTo } from '../../../navigationService.js'
 import { toast } from 'react-toastify'

@@ -6,7 +6,6 @@ import { IoIosPlay } from 'react-icons/io'
 import { updateEndpointCheckStatus, updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
 import { toast } from 'react-toastify'
 import './runAutomation.scss'
-import { addCron, addWebhook } from '../../../services/cronJobs'
 import { generateCronExpression } from '../../common/utility'
 import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaExclamationCircle, FaLongArrowAltLeft } from 'react-icons/fa'
@@ -18,6 +17,8 @@ import { IoInformationCircle } from "react-icons/io5";
 import { updateEndpoint } from '../../endpoints/endpointApiService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
 import IconButton from '../../common/iconButton'
+import { addCron } from '../../../api/cron/cronApi'
+import { addWebhook } from '../../../api/webhook/webhookApi'
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'

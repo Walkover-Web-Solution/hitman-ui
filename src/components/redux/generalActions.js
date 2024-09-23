@@ -1,3 +1,4 @@
+import { getCollectionsAndPages } from '../../api/collection/collectionApi'
 import generalActionsTypes from './generalActionTypes'
 import generalApiService from '../../services/generalApiService'
 import { createNewPublicEnvironment } from '../publishDocs/redux/publicEnvActions'

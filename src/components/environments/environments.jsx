@@ -14,7 +14,7 @@ import './environments.scss'
 import { FaCheck } from "react-icons/fa6";
 import { getCurrentUser } from '../auth/authServiceV2.jsx'
 import { BiExport } from 'react-icons/bi'
-import exportEnvironmentApi from './exportEnvironmentApi.js'
+import {exportEnvironmentApi} from '../../api/environment/environmentApi.js'
 import { FaGlobeAmericas } from 'react-icons/fa'
 
 const Environments = () => {

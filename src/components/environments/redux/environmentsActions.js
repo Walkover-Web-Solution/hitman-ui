@@ -1,4 +1,4 @@
-import environmentsApiService from '../environmentsApiService'
+import environmentsApiService from '../../../api/environment/environmentApi'
 import environmentsActionTypes from './environmentsActionTypes'
 import { store } from '../../../store/store'
 import { toast } from 'react-toastify'
