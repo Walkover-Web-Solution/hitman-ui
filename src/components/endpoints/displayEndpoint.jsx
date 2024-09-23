@@ -693,9 +693,9 @@ class DisplayEndpoint extends Component {
     const pathVariableData = {};
     const pathVariables = [];
     prevPathVariablesData.forEach((pathVar) => {
-      pathVariableData[getInnerText(pathVar.key)] = { value: pathVar.value, description: pathVar.description };
+      pathVariableData[getInnerText(pathVar?.key)] = { value: pathVar?.value, description: pathVar?.description };
     })
-    for (let i = 0; i < pathVariablesHtmlData.length; i++) {
+    for (let i = 0; i < pathVariablesHtmlData?.length; i++) {
       pathVariables.push({
         checked: 'notApplicable',
         key: fixSpanTags(pathVariablesHtmlData[i]),
