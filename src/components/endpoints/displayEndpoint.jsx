@@ -296,7 +296,7 @@ const withQuery = (WrappedComponent) => {
     })
 
     const setOldDataToNewDataForBody = (data) => {
-      
+
       let endpoint = _.cloneDeep(data.data)
       const bodyType = endpoint?.body?.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
@@ -421,7 +421,7 @@ class DisplayEndpoint extends Component {
       showPublicEnvironments: false,
       loading: false,
       errorFound: true,
-      contentChanged :false,
+      contentChanged: false,
       endpointSaved: false,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
@@ -660,7 +660,7 @@ class DisplayEndpoint extends Component {
     }
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
-    this.setState({contentChanged:true})
+    this.setState({ contentChanged: true })
   }
 
   setUnsavedTabDataInIDB() {
@@ -1180,7 +1180,7 @@ class DisplayEndpoint extends Component {
       return
     }
     /** Prepare Body & Modify Headers */
-    
+
     let body, headers
     if (this.checkProtocolType(1)) {
       const data = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
@@ -1388,7 +1388,7 @@ class DisplayEndpoint extends Component {
       }
       // if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
       //   return toast.error('Please enter Endpoint name')
-     if (currentTabId && !this.props.pages[currentTabId]) {
+      if (currentTabId && !this.props.pages[currentTabId]) {
         // endpoint.requestId = currentTabId
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
@@ -1417,9 +1417,9 @@ class DisplayEndpoint extends Component {
             },
             () => {
               this.state.saveAsFlag
-              this.setState({endpointSaved : true})
+              this.setState({ endpointSaved: true })
             }
-            
+
           )
           moveToNextStep(4)
         } else {
@@ -1435,7 +1435,7 @@ class DisplayEndpoint extends Component {
             },
             () => {
               this.setState({ saveLoader: false })
-              this.setState({endpointSaved : true})
+              this.setState({ endpointSaved: true })
             }
           )
           if (endpoint.description !== '') {
@@ -1752,7 +1752,7 @@ class DisplayEndpoint extends Component {
   }
 
   setQueryTabBody(queryTabData) {
-    
+
     let data = { ...this.props?.endpointContent.data }
     data.body = queryTabData
     this.setModifiedTabData()
@@ -2969,10 +2969,10 @@ class DisplayEndpoint extends Component {
 
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
-    this.setState({contentChanged:false})
+    this.setState({ contentChanged: false })
     this.setState({ loading: true })
     this.setState({ publishLoader: true })
-    this.setState({endpointSaved:false})
+    this.setState({ endpointSaved: false })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
@@ -3250,22 +3250,24 @@ class DisplayEndpoint extends Component {
                             />
                           )}
                           {this.renderEndpointUserData()}
+                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' &&
+                            <Dropdown className='ml-1'>
+                              <IconButton>
+                                <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
+                                  Publish
+                                </Dropdown.Toggle>
+                              </IconButton>
+                              <Dropdown.Menu>
+                                <PublishModal
+                                  onPublish={this.handleApproveEndpointRequest.bind(this)}
+                                  onUnpublish={this.handleRejectEndpointRequest.bind(this)}
+                                  id={endpointId}
+                                  collectionId={this.props?.pages[endpointId]?.collectionId}
+                                  isContentChanged={this.state.endpointSaved}
+                                />
+                              </Dropdown.Menu>
+                            </Dropdown>}
                           {this.renderSaveButton()}
-                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && <Dropdown className='ml-1'>
-                            <IconButton>
-                            <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
-                              Publish
-                            </Dropdown.Toggle></IconButton>
-                            <Dropdown.Menu>
-                              <PublishModal
-                                onPublish={this.handleApproveEndpointRequest.bind(this)}
-                                onUnpublish={this.handleRejectEndpointRequest.bind(this)}
-                                id={endpointId}
-                                collectionId={this.props?.pages[endpointId]?.collectionId}
-                                isContentChanged={this.state.endpointSaved}
-                              />
-                            </Dropdown.Menu>
-                          </Dropdown>}
                           <Dropdown className='publish-unpublish-button'>
                             {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
                               <Dropdown.Toggle as='div' id='dropdown-basic'>
@@ -3838,7 +3840,7 @@ class DisplayEndpoint extends Component {
                         this.renderDocView()
                       )}
                     </div>
-                    
+
                     {this.displayResponse()}
                   </div>
                   {this.isDashboardAndTestingView() && this.renderScriptError()}
