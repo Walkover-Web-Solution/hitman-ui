@@ -21,6 +21,12 @@ function getQueryParamsHTML(html) {
     for (let i = 0; i < html.length; i++) {
         let char = html[i];
         if (char === '<') {
+            if(html[i+1] === '/' && inTemplate){
+                inTemplate = false;
+            }
+            if(html[i+6] === 'v'){
+                inTemplate = true;
+            }
             inTag = true;
             if (startProcessing) {
                 if (readingKey) {
@@ -41,14 +47,6 @@ function getQueryParamsHTML(html) {
             }
             continue;
         }
-
-        // Handle template {{xyz}}
-        /* if (char === '{' && html[i + 1] === '{') {
-            inTemplate = true;
-        } else if (char === '}' && html[i - 1] === '}') {
-            inTemplate = false;
-        } */
-
         if (inTag || inTemplate) {
             if (startProcessing) {
                 if (readingKey) {
@@ -133,12 +131,22 @@ function getPathVariableHTML(html) {
         let char = html[i];
 
         if (char === '<') {
+            if(html[i+1] === '/' && inTemplate){
+                inTemplate = false;
+            }
+            if(html[i+6] === 'v'){
+                inTemplate = true;
+            }
             inTag = true;
         } else if (char === '>') {
             inTag = false;
         }
 
-        if (char === ':' && html[i - 1] === '/' && c1 === 0) {
+        if(char === '?' && !inTag && !inTemplate){
+            break;
+        }
+
+        if (char === ':' && html[i - 1] === '/' && c1 === 0 && !inTemplate) {
             c1++;
             continue;
         }
