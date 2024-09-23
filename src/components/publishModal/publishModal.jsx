@@ -9,15 +9,13 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
 
 function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged }) {
-    const params = useParams()
 
     const [disabledValue, setDisabledValue] = useState(null);
     const [save, setSave] = useState(true)
-    const { pages, customDomain, isPublished, tabs } = useSelector((state) => ({
+    const { pages, customDomain, isPublished} = useSelector((state) => ({
         pages: state.pages,
-        customDomain: state.collections?.[params.collectionId]?.customDomain || '',
+        customDomain: state.collections?.[collectionId]?.customDomain || '',
         isPublished: state?.pages[state.tabs.activeTabId].isPublished,
-        tabs: state.tabs.tabs,
     }));
 
     useEffect(() => {
@@ -27,8 +25,8 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
         setSave(true)
     }, [collectionId, id, pages]);
 
-    const visiblePath1 = customDomain ? `https://${customDomain}/` : `${import.meta.env.VITE_UI_URL}/p`
-    const visiblePath2 = 'https://techdoc.walkover.in/p'
+    const visiblePath1 = `${import.meta.env.VITE_UI_URL}/p`
+    const visiblePath2 = customDomain ? `https://${customDomain}/` : null
 
     const handlePublishClick = () => {
         sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
@@ -92,7 +90,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </div>
                         <div className='create d-flex align-items-center pb-4 font-12 text-grey'> Create a website with Techdoc </div>
                     </div>
-                ) : (
+                ) : ( customDomain &&
                     <div className="custom-input-wrapper mr-1 ml-1 mt-1 d-flex align-items-center border bg rounded">
                         <div className='align-items-center editable-input cursor-pointer w-50 p-1  border-right bg-white' >
                             <div className='d-flex align-items-center input'>
@@ -120,7 +118,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </div>
                     </div>
                 )}
-                {isPublished && (visiblePath1 !== 'https://techdoc.walkover.in/') && (
+                {isPublished && (
                     <div className="custom-input-wrapper d-flex align-items-center mt-2 border bg rounded">
                         <div className='align-items-center editable-input cursor-pointer bg-white w-50 p-1 border-right' >
                             <div className='d-flex align-items-center input'>
