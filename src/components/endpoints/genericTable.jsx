@@ -86,6 +86,12 @@ class GenericTable extends Component {
     if (this.props.params.endpointId !== prevProps.params.endpointId) {
       const randomId = shortid.generate()
       this.setState({ optionalParams: false, randomId })
+      if (this.state.bulkEdit) {
+        this.setState({
+          bulkEdit: false,
+          editButtonName: 'Bulk Edit'
+        })
+      }
     }
   }
 
