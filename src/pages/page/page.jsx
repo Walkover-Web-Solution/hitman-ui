@@ -331,25 +331,22 @@ const Page = () => {
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     }
-                    <IconButton>
-                        <div className='button'>
-                            <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
-                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs[activeTabId]?.status === "NEW" ? (
-                                    <button className="btn p-0 text-black-60 disabled">
-                                        Unsaved
-                                    </button>
-                                ) : (
-                                    <></>
-                                )}</button>}
-                            </OverlayTrigger>
-                        </div>
-                    </IconButton>
+                    <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
+                        <>
+                            {tabs[activeTabId]?.isModified ? (
+                                <IconButton><button className="btn p-0" onClick={handleSavePage}>Save</button></IconButton>
+                            ) : tabs[activeTabId]?.status === "NEW" ? (
+                                <IconButton><button className="btn p-0 text-black-60 disabled">Unsaved</button></IconButton>
+                            ) : null}
+                        </>
+                    </OverlayTrigger>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
-                        <Dropdown className='ml-1'>
+                        <Dropdown>
                             <IconButton>
                                 <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
                                     Publish
-                                </Dropdown.Toggle></IconButton>
+                                </Dropdown.Toggle>
+                            </IconButton>
                             <Dropdown.Menu>
                                 <PublishModal
                                     onPublish={handlePublish}
