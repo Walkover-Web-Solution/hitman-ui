@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
-import { deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
+import { addExampleRequest, deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, hexToRgb } from '../common/utility'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -17,6 +17,8 @@ import './endpoints.scss'
 import { FiEdit2 } from 'react-icons/fi'
 import { MdOutlineContentCopy } from 'react-icons/md'
 import { RiDeleteBin6Line } from 'react-icons/ri'
+import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
+import { ReactComponent as Example } from '../../assets/icons/example.svg';
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
@@ -47,6 +49,7 @@ const Endpoints = (props) => {
   }
 
   const handleDuplicate = (endpointId) => dispatch(duplicateEndpoint(endpoints[endpointId]))
+  const handleAddExampleRequest = (endpointId) => dispatch(addExampleRequest(navigate, endpointId))
 
   const closeDeleteEndpointModal = () => {
     setShowEndpointForm((prev) => ({ ...prev, delete: false }))
@@ -81,13 +84,23 @@ const Endpoints = (props) => {
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
-        {endpoints[endpointId]?.protocolType === 1 && (
-          <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
-            {endpoints[endpointId].requestType}
-          </div>
+      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{ paddingLeft: `${props?.level * 8}px` }}>
+        {endpoints[endpointId]?.type === 5 ? (
+          <Example />
+        ) : (
+          <>
+            {endpoints[endpointId]?.protocolType === 1 && (
+              <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
+                {endpoints[endpointId].requestType}
+              </div>
+            )}
+            {endpoints[endpointId]?.protocolType === 2 && (
+              <div className={`api-label graphql request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
+                <GrGraphQl className='ml-1 graphql-icon' size={16} />
+              </div>
+            )}
+          </>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='ml-1 graphql-icon' size={16} />}
         <div className={`end-point-name truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{endpoints[endpointId].name}</div>
       </div>
     )
@@ -102,6 +115,7 @@ const Endpoints = (props) => {
       </div>
       <div className='dropdown-menu dropdown-menu-right'>
         <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2 className='text-grey' size={15} /> Rename </div>
+          <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleAddExampleRequest(endpointId)}> <Example className='text-grey' size={15} /> Add example </div>
         <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-grey' size={15} /> Duplicate </div>
         <div
           className='dropdown-item d-flex font-14 align-items-center text-danger delete-endpoint-btn'
@@ -126,29 +140,34 @@ const Endpoints = (props) => {
     }
 
     return (
-      <div
-        key={endpointId}
-        draggable={!isUserOnPublishedPage}
-        onDragOver={(e) => e.preventDefault()}
-        onDragStart={() => props.onDragStart(endpointId)}
-        onDrop={(e) => props.onDrop(e, endpointId)}
-        onDragEnter={(e) => props.onDragEnter(e, endpointId)}
-        onDragEnd={(e) => props.onDragEnd(e)}
-        style={props.draggingOverId === endpointId ? { borderTop: '3px solid red'} : null}
-      >
-        <div className='sidebar-toggle d-flex justify-content-between'>
-          <button className='pl-0'>
-            <div className={`side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-              <button className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
-                {displayEndpointName(endpointId)}
-              </button>
-              <div className='endpoint-icons align-items-center'>
-                {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
+      <>
+        <div
+          key={endpointId}
+          draggable={!isUserOnPublishedPage}
+          onDragOver={(e) => e.preventDefault()}
+          onDragStart={() => props.onDragStart(endpointId)}
+          onDrop={(e) => props.onDrop(e, endpointId)}
+          onDragEnter={(e) => props.onDragEnter(e, endpointId)}
+          onDragEnd={(e) => props.onDragEnd(e)}
+          style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
+        >
+          <div className='sidebar-toggle d-flex justify-content-between'>
+            <button className='pl-0'>
+              <div className={`side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                <button className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
+                  {displayEndpointName(endpointId)}
+                </button>
+                <div className='endpoint-icons align-items-center'>
+                  {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
+          </div>
         </div>
-      </div>
+        <div>
+          <CombinedCollections level={props.level} collectionId={props?.collectionId} rootParentId={props?.endpointId} />
+        </div>
+      </>
     )
   }
 
@@ -162,7 +181,7 @@ const Endpoints = (props) => {
           onCancel={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
           onHide={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
           selectedEndpoint={selectedEndpoint}
-          pageType={4}
+          pageType={4 || 5}
           isEndpoint={true}
           selectedPage={selectedEndpoint?.id}
         />
