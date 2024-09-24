@@ -3,10 +3,10 @@ import { bodyTypesEnums } from '../components/common/bodyTypeEnums'
 import querystring from 'querystring'
 import FormData from 'form-data'
 import axios from 'axios'
+import { base64ToBlob } from '../components/common/utility'
 
 export async function makeHttpRequestThroughAxios({ api: url, method, body: data, headers, cancelToken }) {
   headers = headers || {}
-
   const options = {
     method: method,
     url: encodeURI(url),
@@ -18,7 +18,14 @@ export async function makeHttpRequestThroughAxios({ api: url, method, body: data
   if (headers['content-type'] === bodyTypesEnums['multipart/form-data']) {
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {
-      bodyFormData.append(key, value)
+      if (Array.isArray(value.value)) {
+        value.value.forEach(item => {
+          const newBlob = base64ToBlob(item.file, item.fileType)
+          bodyFormData.append(key, newBlob, item.name);
+        });
+      } else {
+        bodyFormData.append(key, value);
+      }
     }
     options.data = bodyFormData
   } else if (headers['content-type'] === bodyTypesEnums['application/x-www-form-urlencoded']) {

@@ -12,6 +12,7 @@ export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
 export const DEFAULT_URL = 'https://'
+var b64toBlob = require('b64-to-blob');
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 export const statesEnum = {
@@ -801,6 +802,20 @@ export const isOrgDocType = () => {
   return state?.organizations?.currentOrg?.meta?.type === 0 ? false : true
 }
 
+export const fileToBase64 = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = error => reject(error);
+});
+
+export const base64ToBlob = (base64, type = 'application/octet-stream') => {
+  const base64String = base64.split(',')[1] || base64;
+  const binaryString = b64toBlob(base64String);
+  return new Blob([binaryString], { type });
+}
+
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -843,4 +858,5 @@ export default {
   modifyDataForBulkPublish,
   isOnRedirectionPage,
   isOrgDocType,
+  fileToBase64
 }

@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react'
-import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb, isOnPublishedPage, fileToBase64 } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
@@ -384,23 +384,15 @@ class GenericTable extends Component {
     return name.split('\\')[name.split('\\').length - 1]
   }
 
-  handleFileInput(dataArray, index) {
-    const files = dialog.showOpenDialogSync({
-      properties: ['openFile']
-    })
-    if (files) {
-      const id = shortid.generate()
-      this.handleChange({
-        currentTarget: {
-          name: index + '.value',
-          value: {
-            id,
-            name: this.getName(files[0]),
-            srcPath: files[0]
-          }
-        }
-      })
-    }
+  handleFileInput = async (e, index) => {
+    const files = e.target.files;
+    const values = await Promise.all(Array.from(files).map(async (singleFile) => {
+      return { name: singleFile.name, file: await fileToBase64(singleFile), fileType: singleFile.type || singleFile.mimeType, size: singleFile.size }
+    }));
+    const { title } = this.props
+    const data = this.props?.dataArray || [];
+    data[index].value = values || [];
+    this.props.handle_change_body_data(title, data);
   }
 
 
@@ -504,7 +496,7 @@ class GenericTable extends Component {
     }
     return (
       <div className='selectFile d-flex align-items-center'>
-        <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
+        <input onChange={(e) => this.handleFileInput(e, index)} type='file' multiple />
       </div>
     )
   }

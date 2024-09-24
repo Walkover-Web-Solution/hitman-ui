@@ -295,7 +295,7 @@ const withQuery = (WrappedComponent) => {
     })
 
     const setOldDataToNewDataForBody = (data) => {
-      
+
       let endpoint = _.cloneDeep(data.data)
       const bodyType = endpoint?.body?.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
@@ -786,7 +786,7 @@ class DisplayEndpoint extends Component {
   replaceVariablesInJson(json, customEnv) {
     const keys = Object.keys(json)
     for (let i = 0; i < keys.length; i++) {
-      json[keys[i]] = this.replaceVariables(json[keys[i]], customEnv)
+      json[keys[i]] = typeof (json[keys[i]]) != 'object' ? this.replaceVariables(json[keys[i]], customEnv) : this.replaceVariablesInJson(json[keys[i]])
       const updatedKey = this.replaceVariables(keys[i], customEnv)
       if (updatedKey !== keys[i]) {
         json[updatedKey] = json[keys[i]]
@@ -1176,7 +1176,7 @@ class DisplayEndpoint extends Component {
       return
     }
     /** Prepare Body & Modify Headers */
-    
+
     let body, headers
     if (this.checkProtocolType(1)) {
       const data = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
@@ -1744,7 +1744,7 @@ class DisplayEndpoint extends Component {
   }
 
   setQueryTabBody(queryTabData) {
-    
+
     let data = { ...this.props?.endpointContent.data }
     data.body = queryTabData
     this.setModifiedTabData()
@@ -2020,10 +2020,14 @@ class DisplayEndpoint extends Component {
     const formData = {}
     for (let i = 0; i < body.length; i++) {
       if (getInnerText(body[i].key).length !== 0 && body[i].checked === 'true') {
-        if (!isElectron() && body[i].type === 'file') {
-          continue
+        if (body[i].type === 'file') {
+          formData[getInnerText(body[i].key)] = { ...body[i] };
+          continue;
         }
-        formData[getInnerText(body[i].key)] = getInnerText(body[i].value)
+        formData[getInnerText(body[i].key)] = {
+          value: getInnerText(body[i].value),
+          type: body[i].type,
+        }
       }
     }
     return formData
@@ -2716,7 +2720,7 @@ class DisplayEndpoint extends Component {
         <div className="accordion" id="accordionExample">
           <div className="card">
             <div className="card-header p-0" id="headingOne">
-              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center"  style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center" style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 <button className='btn fw-600 text-left w-100' type="button">
                   Variables
                 </button>
@@ -3256,7 +3260,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>B</span></>  : <span className='font-10'>Ctrl + B</span>}</span>
+                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>B</span></> : <span className='font-10'>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item
@@ -3267,7 +3271,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>U</span></>  :<span className='font-10'>Ctrl + U</span> }</span>
+                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>U</span></> : <span className='font-10'>Ctrl + U</span>}</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button

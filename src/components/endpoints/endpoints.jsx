@@ -81,13 +81,13 @@ const Endpoints = (props) => {
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
+      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{ paddingLeft: `${props?.level * 8}px` }}>
         {endpoints[endpointId]?.protocolType === 1 && (
           <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
             {endpoints[endpointId].requestType}
           </div>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='ml-1 graphql-icon' size={16} />}
+        {endpoints[endpointId]?.protocolType === 2 && <div className='d-flex align-items-center justify-content-center' style={{width : "40px"}}><GrGraphQl className='ml-1 graphql-icon' size={16} /></div>}
         <div className={`end-point-name truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{endpoints[endpointId].name}</div>
       </div>
     )
@@ -134,7 +134,7 @@ const Endpoints = (props) => {
         onDrop={(e) => props.onDrop(e, endpointId)}
         onDragEnter={(e) => props.onDragEnter(e, endpointId)}
         onDragEnd={(e) => props.onDragEnd(e)}
-        style={props.draggingOverId === endpointId ? { borderTop: '3px solid red'} : null}
+        style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
       >
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button className='pl-0'>
