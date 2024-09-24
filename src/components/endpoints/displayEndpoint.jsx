@@ -376,6 +376,7 @@ class DisplayEndpoint extends Component {
     this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this)
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
+    this.responseRef = React.createRef();
     this.state = {
       methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       environment: {},
@@ -1237,6 +1238,11 @@ class DisplayEndpoint extends Component {
           requestKey: null
         })
         this.setState({ addUrlClass: false })
+        setTimeout(() => {
+          if (this.responseRef?.current?.scrollIntoView) {
+            this.responseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 0);
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
         return
@@ -1935,7 +1941,7 @@ class DisplayEndpoint extends Component {
         originalHeaders[contentTypeKeyIndex].value = getIntoTextBlock(value);
       }
       else {
-        originalHeaders.push({ checked: 'true', key: getIntoTextBlock('content-type'), value: getIntoTextBlock(value), description: '', type: 'disable' })
+        originalHeaders.push({ checked: 'true', key: getIntoTextBlock('content-type'), value: getIntoTextBlock(rawBodyTypes[value]), description: '', type: 'disable' })
       }
     }
     const emptyHeader = { checked: 'notApplicable', key: '', value: '', description: '', type: 'enable' };
@@ -2228,7 +2234,7 @@ class DisplayEndpoint extends Component {
               role='tabpanel'
               aria-labelledby='pills-response-tab'
             >
-              <div className='hm-panel endpoint-public-response-container '>
+              <div ref={this.responseRef} className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
                   loader={this.state?.loader}

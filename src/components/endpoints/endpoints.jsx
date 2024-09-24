@@ -165,7 +165,7 @@ const Endpoints = (props) => {
           </div>
         </div>
         <div>
-          <CombinedCollections level={4} collectionId={props?.collectionId} rootParentId={props?.endpointId} />
+          <CombinedCollections level={props.level} collectionId={props?.collectionId} rootParentId={props?.endpointId} />
         </div>
       </>
     )
@@ -181,7 +181,7 @@ const Endpoints = (props) => {
           onCancel={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
           onHide={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
           selectedEndpoint={selectedEndpoint}
-          pageType={4}
+          pageType={4 || 5}
           isEndpoint={true}
           selectedPage={selectedEndpoint?.id}
         />
