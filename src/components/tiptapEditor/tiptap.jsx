@@ -194,47 +194,49 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
     setColor(color.hex);
     editor.chain().focus().setColor(color.hex).run();
   }
-  const handleFileUpload = async (file) => {
-    const formData = new FormData();
-    formData.append('image', file);
-    formData.append('pathData', pathData);
-    try {
-      const response = await fetch('http://localhost:2000/upload/createTipTapImage', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-      const imageUrl = result.imageUrl;
-      setImageUrl(imageUrl);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
+  
+  const handleFileUpload = async (files) => {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+          formData.append('files', files[i]);
+      }
+      formData.append('pathData', pathData); 
+      try {
+        const response = await fetch('http://localhost:2000/upload/createTipTapImage', {
+          method: 'POST',
+          body: formData,
+        });
+        const result = await response.json();
+        const fileUrls = result.results.map(item => item.imageUrl); 
+        setImageUrl(fileUrls);
+      } catch (error) {
+        console.error('Error uploading files:', error);
+      }
   };
 
   const onFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      handleFileUpload(selectedFile); 
-    }
+      const selectedFiles = e.target.files;
+      if (selectedFiles.length > 0) {
+          handleFileUpload(selectedFiles); 
+      }
   };
 
   const renderUploadModule = (disabled) => (
-    <>
-      <div>
-        <label htmlFor='upload-button'>
-          Upload
-        </label>
-        <input
-          type='file'
-          id='upload-button'
-          disabled={disabled}
-          style={{ display: 'none' }}
-          accept='.png'
-          onChange={(e) => onFileChange(e)}
-        />
-      </div>
-    </>
+      <>
+        <div>
+          <label htmlFor='upload-button'>
+            Upload Multiple Files
+          </label>
+          <input
+            type='file'
+            id='upload-button'
+            disabled={disabled}
+            style={{ display: 'none' }}
+            multiple 
+            onChange={(e) => onFileChange(e)} 
+          />
+        </div>
+      </>
   );
 
   function showModal() {
