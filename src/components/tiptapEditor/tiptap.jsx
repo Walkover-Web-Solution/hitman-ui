@@ -194,7 +194,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
     setColor(color.hex);
     editor.chain().focus().setColor(color.hex).run();
   }
-  
+
   const handleFileUpload = async (files) => {
       const formData = new FormData();
       for (let i = 0; i < files.length; i++) {
@@ -202,7 +202,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
       }
       formData.append('pathData', pathData); 
       try {
-        const response = await fetch('http://localhost:2000/upload/createTipTapImage', {
+        const response = await fetch('http://localhost:2000/upload/file', {
           method: 'POST',
           body: formData,
         });
