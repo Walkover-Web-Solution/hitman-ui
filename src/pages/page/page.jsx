@@ -42,7 +42,7 @@ const Page = () => {
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
     const [loading, setLoading] = useState(false);
-
+    const [pathData,setPathData] = useState('');
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
@@ -246,23 +246,34 @@ const Page = () => {
     }
 
     const getPath = (id, sidebar) => {
-        const orgId = getOrgId()
-        let path = []
+        const orgId = getOrgId();
+        let path = [];
+        let newPath = `${pages?.[activeTabId]?.collectionId}`;
         while (sidebar?.[id]?.type > 0) {
-            const itemName = sidebar[id].name
-            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
-            id = sidebar?.[id]?.parentId
+            const itemName = sidebar[id].name;
+            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id });
+            id = sidebar?.[id]?.parentId;
         }
-        return path.reverse()
-    }
+        path.forEach((item) => {
+            if (pages?.[item.id]?.type !== 2) {
+                newPath += `/${item.id}`;
+            }
+        });
+        return { pathArray: path.reverse(), newPath }; 
+    };
+
+    useEffect(() => {
+        const { newPath } = getPath(activeTabId, pages);
+        setPathData(newPath);  
+    }, [activeTabId, pages]); 
 
     const handleStrongChange = (e) => {
         setPageName(e.currentTarget.textContent);
     };
 
-
     const renderPathLinks = () => {
-        const pathWithUrls = getPath(pageId, pages)
+        const { pathArray } = getPath(pageId, pages);
+        const pathWithUrls = pathArray
         return pathWithUrls.map((item, index) => {
             if (pages?.[item.id]?.type === 2) return null;
             const isLastItem = index === pathWithUrls.length - 1;
@@ -394,6 +405,7 @@ const Page = () => {
                         onChange={handleContentChange || false}
                         isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
                         key={activeTabId}
+                        pathData={pathData}
                     />
                 </div>
             </div>

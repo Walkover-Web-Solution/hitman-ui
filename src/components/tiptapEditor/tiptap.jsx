@@ -55,7 +55,7 @@ import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
-export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false }) {
+export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData }) {
 
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser
@@ -194,6 +194,49 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
     setColor(color.hex);
     editor.chain().focus().setColor(color.hex).run();
   }
+  const handleFileUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('pathData', pathData);
+    try {
+      const response = await fetch('http://localhost:2000/upload/createTipTapImage', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      const imageUrl = result.imageUrl;
+      setImageUrl(imageUrl);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+
+  const onFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      handleFileUpload(selectedFile); 
+    }
+  };
+
+  const renderUploadModule = (disabled) => (
+    <>
+      <div>
+        <label htmlFor='upload-button'>
+          Upload
+        </label>
+        <input
+          type='file'
+          id='upload-button'
+          disabled={disabled}
+          style={{ display: 'none' }}
+          accept='.png'
+          onChange={(e) => onFileChange(e)}
+        />
+      </div>
+    </>
+  );
+
   function showModal() {
     return (
       <Modal show={showImage || showLink || showTable} onHide={onHide}>
@@ -205,6 +248,12 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {showImage && (
+            <div className='form-group mb-0'>
+              <label> Fav Icon </label>
+              <div className='favicon-uploader'>{renderUploadModule()}</div>
+            </div>
+          )}
           {(showImage || showLink) && (
             <div className='form-group'>
               <label>URL</label>
@@ -221,13 +270,23 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
               <div className='col-md-6'>
                 <div className='form-group'>
                   <label>Rows</label>
-                  <input className='form-control' type='integer' value={row} onChange={(e) => setRow(e.target.value)} />
+                  <input
+                    className='form-control'
+                    type='integer'
+                    value={row}
+                    onChange={(e) => setRow(e.target.value)}
+                  />
                 </div>
               </div>
               <div className='col-md-6'>
                 <div className='form-group'>
                   <label>Columns</label>
-                  <input className='form-control' type='integer' value={column} onChange={(e) => setColumn(e.target.value)} />
+                  <input
+                    className='form-control'
+                    type='integer'
+                    value={column}
+                    onChange={(e) => setColumn(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
@@ -242,16 +301,16 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
             className='btn btn-primary'
             onClick={() => {
               if (showTable) {
-                editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run()
-                setShowTable(false)
+                editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run();
+                setShowTable(false);
               }
               if (showLink && linkUrl) {
-                editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run()
-                setShowLink(false)
+                editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+                setShowLink(false);
               }
               if (showImage && ImageUrl) {
-                editor.chain().focus().setImage({ src: ImageUrl }).run()
-                setShowImage(false)
+                editor.chain().focus().setImage({ src: ImageUrl }).run();
+                setShowImage(false);
               }
             }}
           >
@@ -259,9 +318,8 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
           </button>
         </Modal.Footer>
       </Modal>
-    )
+    );
   }
-
   const activeFontFamily = () => {
     const fontFamilies = ['Inter', 'Comic Sans', 'serif', 'monospace', 'cursive', 'var(--title-font-family)'];
     const activeFont = fontFamilies.find(font => editor.isActive('textStyle', { fontFamily: font }));
