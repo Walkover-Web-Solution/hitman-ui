@@ -17,6 +17,7 @@ import { isOrgDocType } from '../common/utility'
 import { FaCheck } from "react-icons/fa6";
 import { IoExit } from 'react-icons/io5'
 import './userProfile.scss'
+import ConfirmationModal from '../common/confirmationModal'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -30,6 +31,8 @@ const UserProfile = () => {
   const [showNewCollectionModal, setShowNewCollectionModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [currentOrg, setCurrentOrg] = useState('')
+  const [openLeaveModal, setOpenLeaveModal] = useState(false)
+  const [orgToLeave, setOrgToLeave] = useState(null);
 
   const removeFromLocalStorage = (tabIds) => {
     tabIds.forEach((key) => {
@@ -149,6 +152,26 @@ const UserProfile = () => {
     return <Tooltip className="font-12 text-secondary"><span >Leave</span></Tooltip>
   }
 
+  const leaveOrg = (id) => {
+    setOpenLeaveModal(true)
+    setOrgToLeave(id)
+  }
+
+  const renderLeaveModal = () => {
+    return (
+      openLeaveModal && (
+        <ConfirmationModal
+          show={openLeaveModal}
+          onHide={() => setOpenLeaveModal(false)}
+          proceed_button_callback={() => leaveOrganization(orgToLeave)}
+          title={'Are you sure you want to leave this organization?'}
+          submitButton='Leave'
+          rejectButton='Cancel'
+        />
+      )
+    )
+  }
+
   const renderOrgListDropdown = () => {
     const organizations = organizationList || []
     const selectedOrg = getCurrentOrg()
@@ -167,7 +190,7 @@ const UserProfile = () => {
               </div>
               {org?.id !== selectedOrg?.id && (
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
-                  <span className='leave-icon' onClick={() => leaveOrganization(org.id)}><IoExit size={20} /></span>
+                  <span className='leave-icon' onClick={() => leaveOrg(org.id)}><IoExit size={20} /></span>
                 </OverlayTrigger>
               )}
               {org.id === selectedOrg?.id && <span className='check' ><FaCheck /></span>}
@@ -286,6 +309,7 @@ const UserProfile = () => {
         </Dropdown>
       </div>
       {modalForTabs ? showModalForTabs() : ''}
+      {renderLeaveModal()}
     </>
   )
 }

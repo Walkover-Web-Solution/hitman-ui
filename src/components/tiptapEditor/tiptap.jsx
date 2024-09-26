@@ -55,7 +55,7 @@ import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
-export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false }) {
+export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint = false }) {
 
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser
@@ -78,12 +78,40 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   const [alignment, setAlignment] = useState('left');
   const [color, setColor] = useState("");
   const [activeHeading, setActiveHeading] = useState(0);
-
+  const [showSlashMenu, setShowSlashMenu] = useState(false);
+  const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const editor = useEditor({
     editorProps: {
       attributes: {
         class: 'textEditor'
+      },
+      handleKeyDown(view, event) {
+        if (event.key === '/') {
+          const selection = window.getSelection();
+          if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            const container = document.querySelector('.textEditorContainer');
+
+            const containerRect = container.getBoundingClientRect();
+
+            const containerOffsetLeft = containerRect.left;
+            const editorPaddingTop = parseFloat(window.getComputedStyle(container).paddingTop) || 0;
+
+            setSlashMenuPosition({
+              top: rect.bottom + window.scrollY - editorPaddingTop - containerRect.top,
+              left: rect.left - containerOffsetLeft + window.scrollX,
+            });
+
+            setShowSlashMenu(true);
+          }
+        }
+        if (event.key === 'Escape') {
+          setShowSlashMenu(false);
+        }
+        return false;
       }
+
     },
     extensions: [
       StarterKit,
@@ -141,7 +169,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
         autolink: false
       })
     ],
-    ...(isEndpoint ? [{content: initial}] : []),
+    ...(isEndpoint ? [{ content: initial }] : []),
     onUpdate: ({ editor }) => {
       if (isEndpoint) {
         const html = editor.getHTML();
@@ -166,6 +194,21 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
       setActiveHeading(level);
     }
   };
+  useEffect(() => {
+    if (showSlashMenu) {
+      const handleOutsideClick = (event) => {
+        if (!event.target.closest('.slash-menu')) {
+          setShowSlashMenu(false);
+        }
+      };
+
+      window.addEventListener('click', handleOutsideClick);
+
+      return () => {
+        window.removeEventListener('click', handleOutsideClick);
+      };
+    }
+  }, [showSlashMenu]);
 
   const HeadingIcon = ({ level }) => {
     switch (level) {
@@ -194,6 +237,37 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
     setColor(color.hex);
     editor.chain().focus().setColor(color.hex).run();
   }
+  const insertBlock = (type) => {
+    if (!editor) return;
+
+    switch (type) {
+      case 'heading-1':
+        editor.chain().focus().toggleHeading({ level: 1 }).run();
+        break;
+      case 'heading-2':
+        editor.chain().focus().toggleHeading({ level: 2 }).run();
+        break;
+      case 'heading-3':
+        editor.chain().focus().toggleHeading({ level: 3 }).run();
+        break;
+      case 'blockquote':
+        editor.chain().focus().toggleBlockquote().run();
+        break;
+      case 'image':
+        editor.chain().focus().setImage({ src: 'https://placekitten.com/400/300' }).run();
+        break;
+      case 'task-list':
+        editor.chain().focus().toggleTaskList().run();
+        break;
+      case 'codeBlock':
+        editor.chain().focus().toggleCodeBlock().run();
+        break;
+      default:
+        break;
+    }
+
+    setShowSlashMenu(false);
+  };
   function showModal() {
     return (
       <Modal show={showImage || showLink || showTable} onHide={onHide}>
@@ -272,7 +346,6 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
 
       {editor && (
-
         <BubbleMenu className='bubble-menu px-2 border-0 d-flex align-items-center' tippyOptions={{ duration: 100 }} editor={editor} >
           <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : ''}>
             <FaBold />
@@ -506,6 +579,66 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
 
         </FloatingMenu>
       )}
+
+      {showSlashMenu && (
+        <div className="slash-menu align-items-center d-flex" style={{
+          top: `${slashMenuPosition.top}px`,
+          left: `${slashMenuPosition.left}px`,
+        }}>
+          <ul >
+            <li className='align-items-center d-flex cursor-pointer' onClick={() => insertBlock('heading-1')} >
+              <LuHeading1 className='slash-menu-icon' size={35} />
+              <div>
+                <span className="menu-label d-flex">Heading 1</span>
+                <span className="menu-description">Big section heading</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('heading-2')}>
+              <LuHeading2  className='slash-menu-icon'size={35} />
+              <div>
+                <span className="menu-label d-flex">Heading 2</span>
+                <span className="menu-description">Medium section heading</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('heading-3')} >
+              <LuHeading3  className='slash-menu-icon' size={35}/>
+              <div>
+                <span className="menu-label d-flex">Heading 3</span>
+                <span className="menu-description">Small section heading</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('task-list')} >
+              <GoTasklist  className='slash-menu-icon' size={35}/>
+              <div>
+                <span className="menu-label d-flex">Task List</span>
+                <span className="menu-description">Track tasks with a to-do list</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('codeBlock')} >
+              <FaCode  className='slash-menu-icon'size={35}/>
+              <div>
+                <span className="menu-label d-flex">Code Block</span>
+                <span className="menu-description">Write a block of code</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('blockquote')} >
+              <LuTextQuote  className='slash-menu-icon' size={35}/>
+              <div>
+                <span className="menu-labe d-flex">Blockquote</span>
+                <span className="menu-description">Highlight a quote</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('image')} >
+              <FaImage  className='slash-menu-icon' size={35}/>
+              <div>
+                <span className="menu-label d-flex">Image</span>
+                <span className="menu-description">Insert an image</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      )}
+
       {showModal()}
       <EditorContent editor={editor} />
     </div>
