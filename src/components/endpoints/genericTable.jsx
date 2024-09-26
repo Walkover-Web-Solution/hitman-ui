@@ -4,7 +4,6 @@ import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
 import _ from 'lodash'
-import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
@@ -25,14 +24,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {}
 }
-
-const autoCompleterDefaultProps = {
-  Component: 'input',
-  autoComplete: 'off',
-  trigger: ['{{']
-}
-
-
 class GenericTable extends Component {
   constructor(props) {
     super(props)
@@ -307,7 +298,7 @@ class GenericTable extends Component {
           {isNotApplicable ? null : (
             <label className='customCheckbox'>
               <input
-                disabled={isDisabled}
+                disabled={false}
                 name={`${index}.checkbox`}
                 value={currentItem.checked}
                 checked={isChecked}
