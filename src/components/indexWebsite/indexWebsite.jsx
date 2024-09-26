@@ -45,17 +45,17 @@ export default function IndexWebsite() {
                 <button className='btn web_btn-primary web_btn-rg web_btn'>Get Started for free</button>
               </a>
             </div>
-            <img src={heroImg} alt='Hero Image' /> {/* Use the imported image */}
+            <img src={heroImg} alt='Hero Image'/>
           </div>
         </div>
         <div className='web_bg-sec py-5'>
           <div className='container d-flex flex-column'>
             <h2 className='web_h2 mb-5 font-american'>
-              Experience <span className='font-american web_text-primary '>the Benefits </span>
+              Experience <span className='font-american web_text-primary'>the Benefits </span>
               <br />
               of TechDoc
             </h2>
-            <div className='web_benifit_grid '>
+            <div className='web_benifit_grid'>
               {content?.benefits?.length &&
                 content?.benefits?.map((benifit, i) => {
                   let icon = null
@@ -80,7 +80,7 @@ export default function IndexWebsite() {
                     <>
                       <div className=' d-flex flex-column '>
                         {icon}
-                        <h3 dangerouslySetInnerHTML={{ __html: benifit?.name }} className='my-3 font-american !text-black  '></h3>
+                        <h3 dangerouslySetInnerHTML={{ __html: benifit?.name }}className='my-3 font-american'></h3>
                         <p className='web_tagline'>{benifit?.description}</p>
                       </div>
                     </>
@@ -91,10 +91,10 @@ export default function IndexWebsite() {
         </div>
         <div className=' bg-white py-5'>
           <div className='container web_cont d-flex flex-column'>
-            <h2 className='web_h2 mb-5 '>
-             <span className=' font-american web_text-primary'>The results speak for themselves,</span>
+            <h2 className='web_h2 mb-5'>
+             <span className='font-american web_text-primary'>The results speak for themselves,</span>
               <br />
-              <span className='font-american '>so do our customers</span>
+              <span className='font-american'>so do our customers</span>
             </h2>
             <div className='web_logogrid'>
               {content?.customers &&
