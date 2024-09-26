@@ -307,7 +307,7 @@ class GenericTable extends Component {
           {isNotApplicable ? null : (
             <label className='customCheckbox'>
               <input
-                disabled={isDisabled}
+                disabled={false}
                 name={`${index}.checkbox`}
                 value={currentItem.checked}
                 checked={isChecked}
