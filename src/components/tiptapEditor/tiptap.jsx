@@ -587,49 +587,49 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
         }}>
           <ul >
             <li className='align-items-center d-flex cursor-pointer' onClick={() => insertBlock('heading-1')} >
-              <LuHeading1 className='slash-menu-icon' size={35} />
+              <LuHeading1 className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Heading 1</span>
                 <span className="menu-description">Big section heading</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('heading-2')}>
-              <LuHeading2  className='slash-menu-icon'size={35} />
+              <LuHeading2  className='slash-menu-icon'size={30} />
               <div>
                 <span className="menu-label d-flex">Heading 2</span>
                 <span className="menu-description">Medium section heading</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('heading-3')} >
-              <LuHeading3  className='slash-menu-icon' size={35}/>
+              <LuHeading3  className='slash-menu-icon' size={30}/>
               <div>
                 <span className="menu-label d-flex">Heading 3</span>
                 <span className="menu-description">Small section heading</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('task-list')} >
-              <GoTasklist  className='slash-menu-icon' size={35}/>
+              <GoTasklist  className='slash-menu-icon' size={30}/>
               <div>
                 <span className="menu-label d-flex">Task List</span>
                 <span className="menu-description">Track tasks with a to-do list</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('codeBlock')} >
-              <FaCode  className='slash-menu-icon'size={35}/>
+              <FaCode  className='slash-menu-icon'size={30}/>
               <div>
                 <span className="menu-label d-flex">Code Block</span>
                 <span className="menu-description">Write a block of code</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('blockquote')} >
-              <LuTextQuote  className='slash-menu-icon' size={35}/>
+              <LuTextQuote  className='slash-menu-icon' size={30}/>
               <div>
                 <span className="menu-labe d-flex">Blockquote</span>
                 <span className="menu-description">Highlight a quote</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('image')} >
-              <FaImage  className='slash-menu-icon' size={35}/>
+              <FaImage  className='slash-menu-icon' size={30}/>
               <div>
                 <span className="menu-label d-flex">Image</span>
                 <span className="menu-description">Insert an image</span>
