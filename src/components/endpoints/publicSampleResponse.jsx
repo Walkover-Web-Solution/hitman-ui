@@ -33,16 +33,16 @@ class PublicSampleResponse extends Component {
   }
 
   checkContentHeight() {
-    const contentElement = document.querySelector('.sample-response .tab-pane'); 
+    const contentElement = document.querySelector('.sample-response .tab-pane');
     if (contentElement) {
-        const contentHeight = contentElement.scrollHeight;
-        const { maxHeight } = this.state;
+      const contentHeight = contentElement.scrollHeight;
+      const { maxHeight } = this.state;
 
-        const shouldShowExpandButton = contentHeight > maxHeight;
+      const shouldShowExpandButton = contentHeight > maxHeight;
 
-        if (shouldShowExpandButton !== this.state.showExpandButton) {
-            this.setState({ showExpandButton: shouldShowExpandButton });
-        }
+      if (shouldShowExpandButton !== this.state.showExpandButton) {
+        this.setState({ showExpandButton: shouldShowExpandButton });
+      }
     }
   }
 
@@ -81,6 +81,16 @@ class PublicSampleResponse extends Component {
       }
     }
   }
+  groupByStatus() {
+    const groupedResponses = this.props.sample_response_array.reduce((acc, curr) => {
+      if (!acc[curr.status]) {
+        acc[curr.status] = [];
+      }
+      acc[curr.status].push(curr);
+      return acc;
+    }, {});
+    return groupedResponses;
+  }
 
   toggleExpand() {
     this.setState(prevState => ({ isExpanded: !prevState.isExpanded }));
@@ -88,6 +98,7 @@ class PublicSampleResponse extends Component {
 
   render() {
     const { isExpanded, maxHeight, showExpandButton } = this.state;
+    const groupedResponses = this.groupByStatus();
     const contentStyle = {
       maxHeight: isExpanded ? 'none' : `${maxHeight}px`,
       overflow: 'hidden',
@@ -108,29 +119,36 @@ class PublicSampleResponse extends Component {
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
           </div>
           <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
-            <Tabs id='uncontrolled-tab-example' aria-hidden="true" >
-              {this.props.sample_response_array.map((sampleResponse, key) => (
+            <Tabs id="uncontrolled-tab-example" aria-hidden="true">
+              {Object.keys(groupedResponses).map((status, key) => (
                 <Tab
                   key={key}
-                  eventKey={sampleResponse.status}
+                  eventKey={status}
                   title={
-                    getHighlightsData(this.props, 'sampleResponse', sampleResponse.status) ? (
+                    getHighlightsData(this.props, 'sampleResponse', status) ? (
                       <span>
-                        {sampleResponse.status}
-                        <i className='fas fa-circle' />
+                        {status}
+                        <i className="fas fa-circle" />
                       </span>
                     ) : (
-                      sampleResponse.status
+                      status
                     )
                   }
                 >
-
                   <div style={contentStyle}>
-                    <div>{sampleResponse.description}</div>
-                    <div >{this.showSampleResponseBody(sampleResponse.data)}</div>
+                    {groupedResponses[status].map((sampleResponse, idx) => (
+                      <div key={idx}>
+                        <div>{sampleResponse.description}</div>
+                        <div>{this.showSampleResponseBody(sampleResponse.data)}</div>
+                        {idx < groupedResponses[status].length - 1 && <hr />}
+                      </div>
+                    ))}
                   </div>
                   {showExpandButton && (
-                    <div className="expand-btn cursor-pointer " onClick={this.toggleExpand}>
+                    <div
+                      className="expand-btn cursor-pointer"
+                      onClick={this.toggleExpand}
+                    >
                       {isExpanded ? 'Show Less' : 'Show More'}
                     </div>
                   )}

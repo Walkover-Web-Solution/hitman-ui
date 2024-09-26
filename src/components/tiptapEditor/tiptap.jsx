@@ -262,6 +262,21 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       case 'codeBlock':
         editor.chain().focus().toggleCodeBlock().run();
         break;
+      case 'undo':
+        editor.chain().focus().undo().run()
+        break;
+      case 'redo':
+        editor.chain().focus().redo().run()
+        break;
+      case 'bulletList':
+        editor.chain().focus().toggleBulletList().run()
+        break;
+      case 'numberedList':
+        editor.chain().focus().toggleOrderedList().run()
+        break;
+      case 'rule':
+        editor.chain().focus().setHorizontalRule().run()
+        break;
       default:
         break;
     }
@@ -583,7 +598,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       {showSlashMenu && (
         <div className="slash-menu align-items-center d-flex" style={{
           top: `${slashMenuPosition.top}px`,
-          left: `${slashMenuPosition.left}px`,
+          left: `${slashMenuPosition.left}px`,  
         }}>
           <ul >
             <li className='align-items-center d-flex cursor-pointer' onClick={() => insertBlock('heading-1')} >
@@ -594,42 +609,77 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('heading-2')}>
-              <LuHeading2  className='slash-menu-icon'size={30} />
+              <LuHeading2 className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Heading 2</span>
                 <span className="menu-description">Medium section heading</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('heading-3')} >
-              <LuHeading3  className='slash-menu-icon' size={30}/>
+              <LuHeading3 className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Heading 3</span>
                 <span className="menu-description">Small section heading</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('task-list')} >
-              <GoTasklist  className='slash-menu-icon' size={30}/>
+              <GoTasklist className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Task List</span>
                 <span className="menu-description">Track tasks with a to-do list</span>
               </div>
             </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('bulletList')} >
+              <FaListUl className='slash-menu-icon' size={30} />
+              <div>
+                <span className="menu-label d-flex">Bullet List</span>
+                <span className="menu-description">Create a simple bulleted list</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('numberedList')} >
+              <FaListOl className='slash-menu-icon' size={30} />
+              <div>
+                <span className="menu-label d-flex">Numbered List</span>
+                <span className="menu-description">Create a list with numbering</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('undo')} >
+              <FaUndo className='slash-menu-icon' size={30} />
+              <div>
+                <span className="menu-label d-flex">Undo</span>
+                <span className="menu-description">Delete your text</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('redo')} >
+              <FaUndo className='slash-menu-icon' size={30} />
+              <div>
+                <span className="menu-label d-flex">Redo</span>
+                <span className="menu-description">Bring back your text</span>
+              </div>
+            </li>
+            <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('rule')} >
+              <FaRulerHorizontal className='slash-menu-icon' size={30} />
+              <div>
+                <span className="menu-label d-flex">Horizontal Rule</span>
+                <span className="menu-description">Visually divide blocks</span>
+              </div>
+            </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('codeBlock')} >
-              <FaCode  className='slash-menu-icon'size={30}/>
+              <FaCode className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Code Block</span>
                 <span className="menu-description">Write a block of code</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('blockquote')} >
-              <LuTextQuote  className='slash-menu-icon' size={30}/>
+              <LuTextQuote className='slash-menu-icon' size={30} />
               <div>
-                <span className="menu-labe d-flex">Blockquote</span>
+                <span className="menu-label d-flex">Quote</span>
                 <span className="menu-description">Highlight a quote</span>
               </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer' onClick={() => insertBlock('image')} >
-              <FaImage  className='slash-menu-icon' size={30}/>
+              <FaImage className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Image</span>
                 <span className="menu-description">Insert an image</span>
