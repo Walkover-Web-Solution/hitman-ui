@@ -279,16 +279,19 @@ const UserProfile = () => {
   return (
     <>
       <div className='profile-menu pt-1 px-2'>
-        <Dropdown className='d-flex align-items-center'>
+        <Dropdown
+          className="d-flex align-items-center"
+          onToggle={async (isOpen) => {
+            if (isOpen) {
+              await fetchOrganizations();
+            }
+          }}
+        >
           <Dropdown.Toggle
             as={forwardRef(({ onClick }, ref) => {
-              const handleClick = async (e) => {
-                await fetchOrganizations();
-                onClick(e);
-              };
-              return renderAvatarWithOrg(handleClick, ref);
+              return renderAvatarWithOrg(onClick, ref);
             })}
-            id='dropdown-custom-components'
+            id="dropdown-custom-components"
           />
           <Dropdown.Menu className='p-0'>
             {renderUserDetails()}
