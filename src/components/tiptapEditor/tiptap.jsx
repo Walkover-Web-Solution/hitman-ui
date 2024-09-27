@@ -196,22 +196,46 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   }
 
   const handleFileUpload = async (files) => {
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-          formData.append('files', files[i]);
-      }
-      formData.append('pathData', pathData); 
-      try {
-        const response = await fetch('http://localhost:2000/upload/file', {
-          method: 'POST',
-          body: formData,
-        });
-        const result = await response.json();
-        const fileUrls = result.results.map(item => item.imageUrl); 
-        setImageUrl(fileUrls);
-      } catch (error) {
-        console.error('Error uploading files:', error);
-      }
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+    formData.append('pathData', pathData);
+
+    try {
+      const response = await fetch('http://localhost:2000/upload/file', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      result.files.forEach((item) => {
+        if (item.type.startsWith('image')) {
+          editor.chain().focus().insertContent(`<img src="${item.url}" alt="${item.originalName}" />`).run();
+        } 
+        else if (item.type.startsWith('video')) {
+          editor.chain().focus().insertContent(`
+            <video controls>
+              <source src="${item.url}" type="${item.type}">
+              Your browser does not support the video tag.
+            </video>
+          `).run();
+        } 
+        else {
+          editor.chain().focus().insertContent(`
+            <a href="${item.url}" target="_blank">
+              <strong>Download File: ${item.originalName}</strong>
+            </a>
+          `).run();
+        }
+        editor.commands.setTextSelection(editor.state.doc.content.size);
+      });
+
+      setShowImage(false);
+    } catch (error) {
+      console.error('Error uploading files:', error);
+    }
   };
 
   const onFileChange = (e) => {
