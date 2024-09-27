@@ -88,22 +88,36 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
         class: 'textEditor'
       },
       handleKeyDown(view, event) {
+        debugger
         if (event.key === '/') {
           const selection = window.getSelection();
+          const container = document.querySelector('.textEditorContainer');
+          const containerRect = container.getBoundingClientRect();
+          const containerOffsetLeft = containerRect.left;
+          const editorPaddingTop = parseFloat(window.getComputedStyle(container).paddingTop) || 0;
+          console.log(container,"container")
+          console.log(containerRect,"containerRect")
+          console.log(containerOffsetLeft,"containerOffsetLeft")
+          console.log(editorPaddingTop,"editorPaddingTop")
+
           if (selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
-            const container = document.querySelector('.textEditorContainer');
-
-            const containerRect = container.getBoundingClientRect();
-
-            const containerOffsetLeft = containerRect.left;
-            const editorPaddingTop = parseFloat(window.getComputedStyle(container).paddingTop) || 0;
-
-            setSlashMenuPosition({
-              top: rect.bottom + window.scrollY - editorPaddingTop - containerRect.top,
-              left: rect.left - containerOffsetLeft + window.scrollX,
-            });
+            console.log(range,"range")
+            console.log(rect,"rect")
+            if (rect.top === 0 && rect.left === 0) {
+              const caretRect = view.coordsAtPos(view.state.selection.$from.pos);
+              setSlashMenuPosition({
+                top: caretRect.top + window.scrollY - containerRect.top - editorPaddingTop+30,
+                left: containerRect.left - containerOffsetLeft + window.scrollX,
+              });
+            } 
+            else{
+              setSlashMenuPosition({
+                top: rect.bottom + window.scrollY - editorPaddingTop - containerRect.top,
+                left: rect.left - containerOffsetLeft + window.scrollX,
+              });
+            }
 
             setShowSlashMenu(true);
           }
@@ -302,7 +316,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
         editor.chain().focus().setTextAlign('right').run()
         break;
       case 'center':
-         editor.chain().focus().setTextAlign('center').run();
+        editor.chain().focus().setTextAlign('center').run();
         break;
       case 'justify':
         editor.chain().focus().setTextAlign('justify').run()
@@ -673,28 +687,28 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
                 <span className="menu-description">Create a list with numbering</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => {setAlignment('left'),insertBlock('left')}} >
+            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => { setAlignment('left'), insertBlock('left') }} >
               <FaAlignLeft className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Left</span>
                 <span className="menu-description">Align your content to the left</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => {setAlignment('right') ,insertBlock('right')}} >
+            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => { setAlignment('right'), insertBlock('right') }} >
               <FaAlignRight className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Right</span>
                 <span className="menu-description">Align your content to the right</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => {setAlignment('center'), insertBlock('center')}} >
+            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => { setAlignment('center'), insertBlock('center') }} >
               <FaAlignCenter className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Center</span>
                 <span className="menu-description">Align your content to the center</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => { setAlignment('justify'), insertBlock('justify')}} >
+            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => { setAlignment('justify'), insertBlock('justify') }} >
               <FaAlignJustify className='slash-menu-icon' size={30} />
               <div>
                 <span className="menu-label d-flex">Justify</span>
