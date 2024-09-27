@@ -1609,10 +1609,10 @@ class DisplayEndpoint extends Component {
   makeHeaders(headersData) {
     const processedHeaders = Object.keys(headersData).map(header => ({
       name: getInnerText(header),
-      value: getInnerText(headersData[header].value),
+      value: getInnerText(headersData[header].value) || '""',
       comment: headersData[header].description || '',
       type: headersData[header].type || ''
-    })).filter(header => header.name && header.value);
+    })).filter(header => header.name || header.value);
     return processedHeaders
   }
 
