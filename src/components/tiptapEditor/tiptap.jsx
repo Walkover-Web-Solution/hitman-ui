@@ -605,7 +605,7 @@ const editor = useEditor({
                 <LuTextQuote /> Quote
               </Dropdown.Item>
               <Dropdown.Item onClick={() => setShowImage(true)}>
-                <FaImage /> Images
+                <FaImage /> Files
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
