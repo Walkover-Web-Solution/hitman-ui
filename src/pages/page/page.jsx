@@ -19,6 +19,7 @@ import * as Y from "yjs";
 import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
+import { setPagesPath } from "../../components/pages/redux/pagesActions";
 
 const Page = () => {
 
@@ -246,38 +247,29 @@ const Page = () => {
     }
 
     const getPath = (id, sidebar) => {
-    const orgId = getOrgId();
-    let path = [];
-    let newPath = `${pages?.[activeTabId]?.collectionId}`; // Store collectionId in front
-    let path1 = [];
+        const orgId = getOrgId();
+        let path = [];
+        let newPath = `${pages?.[activeTabId]?.collectionId}`;
+        let pagePath = [];
 
-    // Traverse through the sidebar to construct path
-    while (sidebar?.[id]?.type > 0) {
-        const itemName = sidebar[id].name;
-        path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id });
-        id = sidebar?.[id]?.parentId;
-    }
-
-    // Build path1 with IDs where the type is not 2
-    path.forEach((item) => {
-        if (pages?.[item.id]?.type !== 2) {
-            path1.push(`/${item.id}`); // Collect item IDs
+        while (sidebar?.[id]?.type > 0) {
+            const itemName = sidebar[id].name;
+            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id });
+            id = sidebar?.[id]?.parentId;
         }
-    });
-
-    // Reverse path1
-    path1 = path1.reverse().join(''); // Reverse the array and join it into a string
-
-    // Combine collectionId (newPath) with the reversed path1
-    newPath = newPath + path1;
-
-    return { pathArray: path.reverse(), newPath }; // Return the reversed path and new path
-};
-
-
+        path.forEach((item) => {
+            if (pages?.[item.id]?.type !== 2) {
+                pagePath.push(`/${item.id}`);
+            }
+        });
+        pagePath = pagePath.reverse().join('');
+        newPath = newPath + pagePath;
+        return { pathArray: path.reverse(), newPath };
+    };
     useEffect(() => {
         const { newPath } = getPath(activeTabId, pages);
         setPathData(newPath);  
+        setPagesPath(newPath);
     }, [activeTabId, pages]); 
 
     const handleStrongChange = (e) => {

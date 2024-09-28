@@ -158,6 +158,25 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
   }
 }
 
+const removeContent = async (collectionPath) => {
+  try {
+    const response = await fetch('http://localhost:2000/delete/multipleFiles', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ imagePath: collectionPath }) 
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete content');
+    }
+    const data = await response.json();
+    console.log('Content deleted successfully:', data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
 export const deleteCollection = (collection) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
@@ -172,6 +191,7 @@ export const deleteCollection = (collection) => {
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
             // after deletion operation
+            removeContent(collection?.id);
             operationsAfterDeletion(data)
             toast.success('Collection deleted successfully')
           })

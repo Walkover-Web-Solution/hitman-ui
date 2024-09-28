@@ -79,80 +79,99 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   const [color, setColor] = useState("");
   const [activeHeading, setActiveHeading] = useState(0);
 
-  const editor = useEditor({
-    editorProps: {
-      attributes: {
-        class: 'textEditor'
-      }
+  const NonEditableLink = Link.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      contenteditable: {
+        default: 'false',
+        parseHTML: () => 'false',
+        renderHTML: () => {
+          return {
+            contenteditable: 'false',
+          }
+        },
+      },
+    }
+  },
+})
+
+const editor = useEditor({
+  editorProps: {
+    attributes: {
+      class: 'textEditor',
     },
-    extensions: [
-      StarterKit,
-      Blockquote,
-      Underline,
-      Highlight,
-      Image,
-      CodeBlock,
-      Dropcursor,
-      HorizontalRule,
-      TextStyle,
-      TaskList,
-      Typography,
-      TaskItem.configure({
-        nested: true,
-        itemTypeName: 'taskItem',
-      }),
-      FontFamily.configure({
-        types: ['textStyle'],
-      }),
-      Color.configure({
-        types: ['textStyle'],
-      }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Text,
-      Placeholder.configure({
-        placeholder: 'Write your text here …'
-      }),
-      Table.configure({
-        resizable: true,
-        HTMLAttributes: {
-          class: 'my-custom-class'
-        }
-      }),
-      TableCell,
-      ...(!isEndpoint ? [
-        CollaborationCursor.configure({
-          provider,
-          user: {
-            name: currentUser?.name || 'Anonymous',
-            color: getRandomColor(),
-          },
-        }),
-        Collaboration.configure({
-          document: ydoc,
-        })
-      ] : []),
-      TableRow,
-      TableHeader,
-      Link.configure({
-        linkOnPaste: true,
-        openOnClick: true,
-        autolink: false
-      })
-    ],
-    ...(isEndpoint ? [{content: initial}] : []),
-    onUpdate: ({ editor }) => {
-      if (isEndpoint) {
-        const html = editor.getHTML();
-        if (typeof onChange === 'function') {
-          onChange(html);
-          localStorage.setItem('editorContent', html);
-        }
+  },
+  extensions: [
+    StarterKit,
+    Blockquote,
+    Underline,
+    Highlight,
+    Image,
+    CodeBlock,
+    Dropcursor,
+    HorizontalRule,
+    TextStyle,
+    TaskList,
+    Typography,
+    TaskItem.configure({
+      nested: true,
+      itemTypeName: 'taskItem',
+    }),
+    FontFamily.configure({
+      types: ['textStyle'],
+    }),
+    Color.configure({
+      types: ['textStyle'],
+    }),
+    TextAlign.configure({
+      types: ['heading', 'paragraph'],
+    }),
+    Text,
+    Placeholder.configure({
+      placeholder: 'Write your text here …',
+    }),
+    Table.configure({
+      resizable: true,
+      HTMLAttributes: {
+        class: 'my-custom-class',
+      },
+    }),
+    TableCell,
+    ...(isEndpoint
+      ? []
+      : [
+          CollaborationCursor.configure({
+            provider,
+            user: {
+              name: currentUser?.name || 'Anonymous',
+              color: getRandomColor(),
+            },
+          }),
+          Collaboration.configure({
+            document: ydoc,
+          }),
+        ]),
+    TableRow,
+    TableHeader,
+    NonEditableLink.configure({
+      linkOnPaste: true,
+      openOnClick: true,
+      autolink: false,
+    }),
+  ],
+  ...(isEndpoint ? { content: initial } : {}),
+  onUpdate: ({ editor }) => {
+    if (isEndpoint) {
+      const html = editor.getHTML()
+      if (typeof onChange === 'function') {
+        onChange(html)
+        localStorage.setItem('editorContent', html)
       }
-    },
-    editable: !disabled
-  })
+    }
+  },
+  editable: !disabled,
+})
 
   useEffect(() => {
     if (editor && initial !== editor.getHTML()) {
