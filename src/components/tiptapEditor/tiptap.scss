@@ -23,6 +23,30 @@
     }
 }
 
+.favicon-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    .custom-or{
+        margin-top: 5px;
+        font-size: 18px;
+    }
+    .font-icon {
+        padding: 10px;
+        border: 1.5px dashed black; 
+        border-radius: 5px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .font-icon:hover {
+        font-size: 1.1em;
+        transform: scale(1.05); 
+        border-color: darkgray;
+    }
+}
+
 
 .tiptap {
 

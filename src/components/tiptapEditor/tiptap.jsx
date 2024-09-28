@@ -22,6 +22,7 @@ import FontFamily from '@tiptap/extension-font-family'
 import Dropcursor from '@tiptap/extension-dropcursor'
 import Typography from '@tiptap/extension-typography'
 import { BsThreeDots } from "react-icons/bs";
+import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import '../styles.scss'
 import './tiptap.scss'
 import {
@@ -264,11 +265,13 @@ const editor = useEditor({
       }
   };
 
+  const getDisabledStyle = (disabled) => (disabled ? { cursor: 'not-allowed', opacity: 0.4 } : { cursor: 'pointer' })
+
   const renderUploadModule = (disabled) => (
       <>
-        <div>
-          <label htmlFor='upload-button'>
-            Upload Multiple Files
+        <div className='favicon-container'>
+          <label className='font-icon' style={getDisabledStyle(disabled)} htmlFor='upload-button'>
+            <UploadIcon />
           </label>
           <input
             type='file'
@@ -278,6 +281,7 @@ const editor = useEditor({
             multiple 
             onChange={(e) => onFileChange(e)} 
           />
+          <div className='custom-or'>OR</div>
         </div>
       </>
   );
@@ -295,7 +299,6 @@ const editor = useEditor({
         <Modal.Body>
           {showImage && (
             <div className='form-group mb-0'>
-              <label> Fav Icon </label>
               <div className='favicon-uploader'>{renderUploadModule()}</div>
             </div>
           )}
