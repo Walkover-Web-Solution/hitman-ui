@@ -193,24 +193,14 @@ export const setPagesPath = (newValue) => {
   pathData = newValue;
 };
 
-const removeContent = async (collectionPath) => {
+export const removeContent = async (collectionPath) => {
   try {
-    const response = await fetch('http://localhost:2000/delete/multipleFiles', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ imagePath: collectionPath })
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to delete content');
-    }
-
-    const data = await response.json();
-    console.log('Content deleted successfully:', data);
+    const res = await pageApiService.deleteFiles(collectionPath);
+    toast.success('Content deleted successfully');
+    console.log('Deleted content data:', res.data);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error deleting content:', error);
+    toast.error('Error deleting content');
   }
 };
 

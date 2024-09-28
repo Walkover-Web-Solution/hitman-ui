@@ -55,6 +55,7 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
+import pageApiService from '../pages/pageApiService'
 
 export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData }) {
 
@@ -97,82 +98,84 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   },
 })
 
-const editor = useEditor({
-  editorProps: {
-    attributes: {
-      class: 'textEditor',
-    },
-  },
-  extensions: [
-    StarterKit,
-    Blockquote,
-    Underline,
-    Highlight,
-    Image,
-    CodeBlock,
-    Dropcursor,
-    HorizontalRule,
-    TextStyle,
-    TaskList,
-    Typography,
-    TaskItem.configure({
-      nested: true,
-      itemTypeName: 'taskItem',
-    }),
-    FontFamily.configure({
-      types: ['textStyle'],
-    }),
-    Color.configure({
-      types: ['textStyle'],
-    }),
-    TextAlign.configure({
-      types: ['heading', 'paragraph'],
-    }),
-    Text,
-    Placeholder.configure({
-      placeholder: 'Write your text here …',
-    }),
-    Table.configure({
-      resizable: true,
-      HTMLAttributes: {
-        class: 'my-custom-class',
+  const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: 'textEditor',
       },
-    }),
-    TableCell,
-    ...(isEndpoint
-      ? []
-      : [
-          CollaborationCursor.configure({
-            provider,
-            user: {
-              name: currentUser?.name || 'Anonymous',
-              color: getRandomColor(),
-            },
-          }),
-          Collaboration.configure({
-            document: ydoc,
-          }),
-        ]),
-    TableRow,
-    TableHeader,
-    NonEditableLink.configure({
-      linkOnPaste: true,
-      openOnClick: true,
-      autolink: false,
-    }),
-  ],
-  ...(isEndpoint ? { content: initial } : {}),
-  onUpdate: ({ editor }) => {
-    if (isEndpoint) {
-      const html = editor.getHTML()
-      if (typeof onChange === 'function') {
-        onChange(html)
-        localStorage.setItem('editorContent', html)
+    },
+    extensions: [
+      StarterKit,
+      Blockquote,
+      Underline,
+      Highlight,
+      Image,
+      CodeBlock,
+      Dropcursor,
+      HorizontalRule,
+      TextStyle,
+      TaskList,
+      Typography,
+      TaskItem.configure({
+        nested: true,
+        itemTypeName: 'taskItem',
+      }),
+      FontFamily.configure({
+        types: ['textStyle'],
+      }),
+      Color.configure({
+        types: ['textStyle'],
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Text,
+      Placeholder.configure({
+        placeholder: 'Write your text here …',
+      }),
+      Table.configure({
+        resizable: true,
+        HTMLAttributes: {
+          class: 'my-custom-class',
+        },
+      }),
+      TableCell,
+      ...(isEndpoint
+        ? []
+        : provider && ydoc
+        ? [
+            CollaborationCursor.configure({
+              provider,
+              user: {
+                name: currentUser?.name || 'Anonymous',
+                color: getRandomColor(),
+              },
+            }),
+            Collaboration.configure({
+              document: ydoc,
+            }),
+          ]
+        : []),
+      TableRow,
+      TableHeader,
+      NonEditableLink.configure({
+        linkOnPaste: true,
+        openOnClick: true,
+        autolink: false,
+      }),
+    ],
+    ...(isEndpoint ? { content: initial } : {}),
+    onUpdate: ({ editor }) => {
+      if (isEndpoint) {
+        const html = editor.getHTML();
+        if (typeof onChange === 'function') {
+          onChange(html);
+          localStorage.setItem('editorContent', html);
+        }
       }
-    }
-  },
-  editable: !disabled,
-})
+    },
+    editable: !disabled,
+  });
 
   useEffect(() => {
     if (editor && initial !== editor.getHTML()) {
@@ -216,6 +219,7 @@ const editor = useEditor({
   }
 
   const handleFileUpload = async (files) => {
+    debugger
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i]);
@@ -223,14 +227,8 @@ const editor = useEditor({
     formData.append('pathData', pathData);
 
     try {
-      const response = await fetch('http://localhost:2000/upload/file', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      result.files.forEach((item) => {
+      const result = await pageApiService.uploadFiles(formData);
+      result.data.files.forEach((item) => {
         if (item.type.startsWith('image')) {
           editor.chain().focus().insertContent(`<img src="${item.url}" alt="${item.originalName}" />`).run();
         } 
@@ -529,7 +527,7 @@ const editor = useEditor({
               <HeadingIcon level={activeHeading} />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              {[1, 2, 3, 4, 5, 6].map((level) => (
+              {[1, 2, 3, 4, 5, 6]?.map((level) => (
                 <Dropdown.Item key={level}>
                   <button
                     onClick={() => toggleHeading(level)}

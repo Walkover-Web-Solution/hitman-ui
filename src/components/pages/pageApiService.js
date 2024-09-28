@@ -51,9 +51,23 @@ export function dragAndDropApi(body) {
   return http.post(`${apiUrl}/dragAndDrop`, body)
 }
 
+export function deleteFiles(path) {
+  const apiUrl = import.meta.env.VITE_API_URL
+  return http.delete(`${apiUrl}/delete/multipleFiles`, {
+    data: { imagePath: path },
+  });
+}
+
+export function uploadFiles(formData) {
+  const apiUrl = import.meta.env.VITE_API_URL
+  return http.post(`${apiUrl}/upload/file`, formData);
+}
+
 export default {
   updatePage,
   deletePage,
+  deleteFiles,
+  uploadFiles,
   duplicatePage,
   getAllPages,
   updatePageOrder,
