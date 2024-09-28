@@ -52,6 +52,32 @@ export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback,
   }
 }
 
+export const addExampleRequest = (navigate, id,editedEndpoint=null, customCallback) => {
+  if(editedEndpoint == null){
+    editedEndpoint = {};
+    editedEndpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+  }
+  editedEndpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+  const orgId = getOrgId()
+  return (dispatch) => {
+    endpointApiService
+      .addExampleRequest(id, { ...editedEndpoint })
+      .then(async (response) => {
+        const responseToSend = formatResponseToSend(response)
+        const data = await dispatch(addChildInParent(responseToSend))
+        navigate(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        if (customCallback) {
+          customCallback({ closeForm: true, stopLoader: true })
+        }
+      })
+      .catch((error) => {
+        if (customCallback) {
+          customCallback({ closeForm: false, stopLoader: true })
+        }
+      })
+  }
+}
+
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
     // const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))

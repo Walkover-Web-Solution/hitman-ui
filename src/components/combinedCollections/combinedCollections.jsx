@@ -45,6 +45,8 @@ function CombinedCollections(props) {
             return <SubPage {...commonProps} rootParentId={singleId} />
           case 4:
             return <Endpoints {...endpointProps} endpointId={singleId} />
+          case 5:
+            return <Endpoints {...endpointProps} endpointId={singleId} />
           default:
             break
         }
