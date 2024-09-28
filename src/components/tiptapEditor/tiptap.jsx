@@ -228,10 +228,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           const prevIndex = (activeSlashMenuIndex - 1 + 12) % 12;
           setActiveSlashMenuIndex(prevIndex);
           slashMenuRefs.current[prevIndex]?.focus();
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          slashMenuRefs.current[activeSlashMenuIndex]?.click();
-        }
+        } 
       };
 
       window.addEventListener('keydown', handleArrowNavigation);
