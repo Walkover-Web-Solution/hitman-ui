@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useEditor, EditorContent} from '@tiptap/react'
+import { useEditor, EditorContent } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
 import Blockquote from '@tiptap/extension-blockquote'
@@ -74,16 +74,10 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           const containerRect = container.getBoundingClientRect();
           const containerOffsetLeft = containerRect.left;
           const editorPaddingTop = parseFloat(window.getComputedStyle(container).paddingTop) || 0;
-          console.log(container, "container")
-          console.log(containerRect, "containerRect")
-          console.log(containerOffsetLeft, "containerOffsetLeft")
-          console.log(editorPaddingTop, "editorPaddingTop")
 
           if (selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
-            console.log(range, "range")
-            console.log(rect, "rect")
             if (rect.top === 0 && rect.left === 0) {
               const caretRect = view.coordsAtPos(view.state.selection.$from.pos);
               setSlashMenuPosition({
@@ -105,8 +99,17 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           setShowSlashMenu(false);
         }
         return false;
-      }
+      },
+      handleDOMEvents: {
+        input(view) {
+          const { from } = view.state.selection;
+          const textBefore = view.state.doc.textBetween(from - 1, from, ' ');
 
+          if (textBefore !== '/') {
+            setShowSlashMenu(false);
+          }
+        },
+      },
     },
     extensions: [
       StarterKit,
@@ -268,9 +271,9 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
 
-      {editor && <BubbleMenuComponent editor={editor}/>}
+      {editor && <BubbleMenuComponent editor={editor} />}
 
-      {editor && <FloatingMenuComponent editor={editor}/>}
+      {editor && <FloatingMenuComponent editor={editor} />}
 
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex" style={{
