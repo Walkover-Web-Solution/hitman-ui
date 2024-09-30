@@ -33,7 +33,7 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
-import { addEndpoint } from './redux/endpointsActions'
+import { addEndpoint, addExampleRequest } from './redux/endpointsActions'
 import { addHistory } from '../history/redux/historyAction'
 import Authorization from './displayAuthorization'
 import PublicSampleResponse from './publicSampleResponse'
@@ -79,7 +79,7 @@ import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
-
+import { ReactComponent as Example } from '../../assets/icons/example.svg';
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -123,6 +123,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     add_endpoint: (newEndpoint, rootParentID, callback, props) =>
       dispatch(addEndpoint(ownProps.navigate, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
+    example_request: (id,editedEndpoint, callback) => dispatch(addExampleRequest(ownProps.navigate,id,editedEndpoint, callback)),
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
@@ -295,7 +296,7 @@ const withQuery = (WrappedComponent) => {
     })
 
     const setOldDataToNewDataForBody = (data) => {
-      
+
       let endpoint = _.cloneDeep(data.data)
       const bodyType = endpoint?.body?.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
@@ -375,6 +376,7 @@ class DisplayEndpoint extends Component {
     this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this)
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
+    this.responseRef = React.createRef();
     this.state = {
       methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       environment: {},
@@ -1176,7 +1178,7 @@ class DisplayEndpoint extends Component {
       return
     }
     /** Prepare Body & Modify Headers */
-    
+
     let body, headers
     if (this.checkProtocolType(1)) {
       const data = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
@@ -1236,6 +1238,11 @@ class DisplayEndpoint extends Component {
           requestKey: null
         })
         this.setState({ addUrlClass: false })
+        setTimeout(() => {
+          if (this.responseRef?.current?.scrollIntoView) {
+            this.responseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 0);
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
         return
@@ -1337,7 +1344,7 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, slug) => {
+  handleSave = async (id, endpointObject, slug, saveType = null) => {
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
@@ -1397,7 +1404,19 @@ class DisplayEndpoint extends Component {
           this.props
         )
         moveToNextStep(4)
-      } else {
+      } else if (saveType == 'example') {
+        this.setState({ saveAsLoader: true })
+        delete endpoint.id
+        this.props.example_request(
+          currentTabId,
+          endpoint,
+          ({ closeForm, stopLoader }) => {
+            if (closeForm) this.closeEndpointFormModal()
+            if (stopLoader) this.setState({ saveAsLoader: false })
+          }
+        )
+      }
+      else {
         if (this.state.saveAsFlag || slug === 'isHistory') {
           endpoint.description = endpointDescription || ''
           // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
@@ -1609,10 +1628,10 @@ class DisplayEndpoint extends Component {
   makeHeaders(headersData) {
     const processedHeaders = Object.keys(headersData).map(header => ({
       name: getInnerText(header),
-      value: getInnerText(headersData[header].value),
+      value: getInnerText(headersData[header].value) || '""',
       comment: headersData[header].description || '',
       type: headersData[header].type || ''
-    })).filter(header => header.name && header.value);
+    })).filter(header => header.name || header.value);
     return processedHeaders
   }
 
@@ -1744,7 +1763,7 @@ class DisplayEndpoint extends Component {
   }
 
   setQueryTabBody(queryTabData) {
-    
+
     let data = { ...this.props?.endpointContent.data }
     data.body = queryTabData
     this.setModifiedTabData()
@@ -1922,7 +1941,7 @@ class DisplayEndpoint extends Component {
         originalHeaders[contentTypeKeyIndex].value = getIntoTextBlock(value);
       }
       else {
-        originalHeaders.push({ checked: 'true', key: getIntoTextBlock('content-type'), value: getIntoTextBlock(value), description: '', type: 'disable' })
+        originalHeaders.push({ checked: 'true', key: getIntoTextBlock('content-type'), value: getIntoTextBlock(rawBodyTypes[value]), description: '', type: 'disable' })
       }
     }
     const emptyHeader = { checked: 'notApplicable', key: '', value: '', description: '', type: 'enable' };
@@ -2215,7 +2234,7 @@ class DisplayEndpoint extends Component {
               role='tabpanel'
               aria-labelledby='pills-response-tab'
             >
-              <div className='hm-panel endpoint-public-response-container '>
+              <div ref={this.responseRef} className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
                   loader={this.state?.loader}
@@ -2230,6 +2249,7 @@ class DisplayEndpoint extends Component {
                   handleCancel={() => {
                     this.handleCancel()
                   }}
+                  handleSave={this.handleSave.bind(this)}
                 />
               </div>
             </div>
@@ -2716,7 +2736,7 @@ class DisplayEndpoint extends Component {
         <div className="accordion" id="accordionExample">
           <div className="card">
             <div className="card-header p-0" id="headingOne">
-              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center"  style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center" style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 <button className='btn fw-600 text-left w-100' type="button">
                   Variables
                 </button>
@@ -2821,7 +2841,8 @@ class DisplayEndpoint extends Component {
       POST: 'post-button',
       PUT: 'put-button',
       PATCH: 'patch-button',
-      DELETE: 'delete-button'
+      DELETE: 'delete-button',
+      EXAMPLE : <Example/>
     }
     return (
       <div className={`input-group-prepend ${this.props?.endpointContent?.currentView === 'doc' ? 'w-100' : ''}`}>
@@ -3029,6 +3050,14 @@ class DisplayEndpoint extends Component {
                     <IconButton variant='sm'><MdExpandMore color='gray' size={17} /></IconButton>
                   </Dropdown.Toggle>
                   <Dropdown.Menu className=''>
+                    <Dropdown.Item
+                      className='px-2'
+                      onClick={() =>
+                        this.handleSave(null,null,null,'example')
+                      }
+                    >
+                      Save As Example Request
+                    </Dropdown.Item>
                     <Dropdown.Item
                       className='px-2'
                       onClick={() =>
@@ -3256,7 +3285,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>B</span></>  : <span className='font-10'>Ctrl + B</span>}</span>
+                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>B</span></> : <span className='font-10'>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item
@@ -3267,7 +3296,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>U</span></>  :<span className='font-10'>Ctrl + U</span> }</span>
+                                  <span className='text-black-50 mr-2'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={12} className='cmd-icon d-inline-block' />+ <span className='d-inline-block font-12'>U</span></> : <span className='font-10'>Ctrl + U</span>}</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button

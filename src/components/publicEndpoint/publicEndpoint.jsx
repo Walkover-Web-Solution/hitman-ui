@@ -522,7 +522,7 @@ class PublicEndpoint extends Component {
                     }
                   }}
                 >
-                  {type == 4 && (
+                  {(type == 4 || type == 5) && (
                     <DisplayEndpoint
                       {...this.props}
                       fetch_entity_name={this.fetchEntityName.bind(this)}

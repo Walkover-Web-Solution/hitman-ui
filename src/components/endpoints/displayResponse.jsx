@@ -16,6 +16,8 @@ import classNames from 'classnames';
 import { FaPlus } from 'react-icons/fa'
 import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
 import JSONPrettyMon from 'react-json-pretty/dist/monikai'
+import { ReactComponent as Example } from '../../assets/icons/example.svg';
+
 
 
 const mapStateToProps = (state) => {
@@ -92,6 +94,10 @@ class DisplayResponse extends Component {
   addSampleResponse(response) {
     this.openAddForm(response, null, 'Add Sample Response')
   }
+
+  handleAddExampleRequest = () => {
+      this.props.handleSave(null,null,null,'example');
+  };
 
   openAddForm(obj, index, name) {
     const showSampleResponseForm = { ...this.state.showSampleResponseForm }
@@ -259,6 +265,9 @@ class DisplayResponse extends Component {
                       // style={{ float: "right" }}
                       className='add-to-sample-response'
                     >
+                      <div className='adddescLink d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.handleAddExampleRequest()}>
+                        <Example /> Save as Example Request
+                      </div>
                       <div className='adddescLink d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.addSampleResponse(this.props.response)}>
                         <FaPlus /> Add to Sample Response
                       </div>

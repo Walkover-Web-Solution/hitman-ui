@@ -51,7 +51,13 @@ export function saveEndpoint(rootParentId, endpoint) {
 
 export function updateEndpoint(endpointId, endpoint) {
   const apiUrl = getApiUrl()
+  
   return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint)
+}
+
+export function addExampleRequest(endpointId, endpoint=null) {
+  const apiUrl = getApiUrl()
+  return http.post(`${apiUrl}/endpoints/sample-request/${endpointId}`, endpoint)
 }
 
 export function deleteEndpoint(endpointId, endpoint) {
@@ -182,4 +188,5 @@ export default {
   getTokenAuthorizationCodeAndAuthorizationPKCE,
   getTokenPasswordAndClientGrantType,
   getRefreshToken,
+  addExampleRequest
 }

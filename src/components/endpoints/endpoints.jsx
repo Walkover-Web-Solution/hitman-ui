@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
-import { deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
+import { addExampleRequest, deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, hexToRgb } from '../common/utility'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -18,6 +18,8 @@ import { FiEdit2 } from 'react-icons/fi'
 import { MdOutlineContentCopy } from 'react-icons/md'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
+import { ReactComponent as Example } from '../../assets/icons/example.svg';
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
@@ -48,6 +50,7 @@ const Endpoints = (props) => {
   }
 
   const handleDuplicate = (endpointId) => dispatch(duplicateEndpoint(endpoints[endpointId]))
+  const handleAddExampleRequest = (endpointId) => dispatch(addExampleRequest(navigate, endpointId))
 
   const closeDeleteEndpointModal = () => {
     setShowEndpointForm((prev) => ({ ...prev, delete: false }))
@@ -82,13 +85,23 @@ const Endpoints = (props) => {
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item flex gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
-        {endpoints[endpointId]?.protocolType === 1 && (
-          <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
-            {endpoints[endpointId].requestType}
-          </div>
+      <div className={`sidebar-accordion-item flex gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{ paddingLeft: `${props?.level * 8}px` }}>
+        {endpoints[endpointId]?.type === 5 ? (
+          <Example />
+        ) : (
+          <>
+            {endpoints[endpointId]?.protocolType === 1 && (
+              <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
+                {endpoints[endpointId].requestType}
+              </div>
+            )}
+            {endpoints[endpointId]?.protocolType === 2 && (
+              <div className={`api-label graphql request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
+                <GrGraphQl className='ml-1 graphql-icon' size={16} />
+              </div>
+            )}
+          </>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='ml-1 graphql-icon' size={16} />}
         <div className={`end-point-name truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{endpoints[endpointId].name}</div>
       </div>
     )
@@ -152,6 +165,7 @@ const Endpoints = (props) => {
     }
 
     return (
+      <>
       <div
         key={endpointId}
         draggable={!isUserOnPublishedPage}
@@ -170,11 +184,15 @@ const Endpoints = (props) => {
               </button>
               <div className='endpoint-icons align-items-center'>
                 {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
+                </div>
               </div>
-            </div>
-          </button>
+            </button>
+          </div>
         </div>
-      </div>
+        <div>
+          <CombinedCollections level={props.level} collectionId={props?.collectionId} rootParentId={props?.endpointId} />
+        </div>
+      </>
     )
   }
 
@@ -188,7 +206,7 @@ const Endpoints = (props) => {
           onCancel={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
           onHide={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
           selectedEndpoint={selectedEndpoint}
-          pageType={4}
+          pageType={4 || 5}
           isEndpoint={true}
           selectedPage={selectedEndpoint?.id}
         />
