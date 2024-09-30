@@ -80,6 +80,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   const [alignment, setAlignment] = useState('left');
   const [color, setColor] = useState("");
   const [activeHeading, setActiveHeading] = useState(0);
+  const [loading,setLoading] = useState(false);
 
   const NonEditableLink = Link.extend({
   addAttributes() {
@@ -224,7 +225,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
       formData.append('files', files[i]);
     }
     formData.append('pathData', pathData);
-
+    setLoading(true);
     try {
       const result = await pageApiService.uploadFiles(formData);
       result.data.files.forEach((item) => {
@@ -243,9 +244,10 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
         }
         editor.commands.setTextSelection(editor.state.doc.content.size);
       });
-
+      setLoading(false);
       setShowImage(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error uploading files:', error);
     }
   };
@@ -279,67 +281,79 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   );
 
   function showModal() {
-    return (
-      <Modal show={showImage || showLink || showTable} onHide={onHide}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {showImage && 'Set Image URL'}
-            {showLink && 'Set Link'}
-            {showTable && 'Add Number of rows and columns'}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {showImage && (
-            <div className='form-group mb-0'>
-              <div className='favicon-uploader'>{renderUploadModule()}</div>
+  return (
+    <Modal show={showImage || showLink || showTable} onHide={onHide}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          {showImage && 'Set File URL'}
+          {showLink && 'Set Link'}
+          {showTable && 'Add Number of rows and columns'}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {loading ? (
+          <div className="d-flex justify-content-center align-items-center" style={{ height: '25vh', flexDirection: 'column' }}>
+            <div className="spinner-border" role="status" style={{ width: '4rem', height: '4rem', borderWidth: '0.25rem' }}>
+              <span className="sr-only">Loading...</span>
             </div>
-          )}
-          {(showImage || showLink) && (
-            <div className='form-group'>
-              <label>URL</label>
-              <input
-                type='text'
-                className='form-control'
-                value={showImage ? ImageUrl : linkUrl}
-                onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
-              />
-            </div>
-          )}
-          {showTable && (
-            <div className='row'>
-              <div className='col-md-6'>
-                <div className='form-group'>
-                  <label>Rows</label>
-                  <input
-                    className='form-control'
-                    type='integer'
-                    value={row}
-                    onChange={(e) => setRow(e.target.value)}
-                  />
+            <span className="mt-3" style={{ color: '#000', fontSize: '2rem', fontWeight: '500' }}>Loading...</span>
+          </div>
+        ) : (
+          <>
+            {showImage && (
+              <div className='form-group mb-0'>
+                <div className='favicon-uploader'>{renderUploadModule()}</div>
+              </div>
+            )}
+            {(showImage || showLink) && (
+              <div className='form-group'>
+                <label>URL</label>
+                <input
+                  type='text'
+                  className='form-control'
+                  value={showImage ? ImageUrl : linkUrl}
+                  onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
+                />
+              </div>
+            )}
+            {showTable && (
+              <div className='row'>
+                <div className='col-md-6'>
+                  <div className='form-group'>
+                    <label>Rows</label>
+                    <input
+                      className='form-control'
+                      type='integer'
+                      value={row}
+                      onChange={(e) => setRow(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className='col-md-6'>
+                  <div className='form-group'>
+                    <label>Columns</label>
+                    <input
+                      className='form-control'
+                      type='integer'
+                      value={column}
+                      onChange={(e) => setColumn(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className='col-md-6'>
-                <div className='form-group'>
-                  <label>Columns</label>
-                  <input
-                    className='form-control'
-                    type='integer'
-                    value={column}
-                    onChange={(e) => setColumn(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </Modal.Body>
+            )}
+          </>
+        )}
+      </Modal.Body>
+      {!loading ? (
         <Modal.Footer>
           <button className='btn btn-secondary outline mr-2' onClick={onHide}>
-            {' '}
             Close
           </button>
           <button
             className='btn btn-primary'
             onClick={() => {
+              setLoading(true);
               if (showTable) {
                 editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run();
                 setShowTable(false);
@@ -351,8 +365,16 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
               if (showImage && ImageUrl) {
                 const fileExtension = ImageUrl.split('.').pop().toLowerCase();
                 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+                const videoExtensions = ['mp4', 'webm', 'ogg'];
                 if (imageExtensions.includes(fileExtension)) { 
                   editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
+                } else if (videoExtensions.includes(fileExtension)) {
+                  editor.chain().focus().insertContent(`
+                    <video controls>
+                      <source src="${ImageUrl}" type="video/${fileExtension}">
+                      Your browser does not support the video tag.
+                    </video>
+                  `).run();
                 } else {
                   editor.chain().focus().insertContent(`
                     <a href="${ImageUrl}" target="_blank">
@@ -364,14 +386,16 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
                 setImageUrl('');
                 setShowImage(false);
               }
+              setLoading(false); 
             }}
           >
             Save
           </button>
         </Modal.Footer>
-      </Modal>
-    );
-  }
+      ) : (<></>)}
+    </Modal>
+  );
+}
   const activeFontFamily = () => {
     const fontFamilies = ['Inter', 'Comic Sans', 'serif', 'monospace', 'cursive', 'var(--title-font-family)'];
     const activeFont = fontFamilies.find(font => editor.isActive('textStyle', { fontFamily: font }));
@@ -583,9 +607,9 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
       {editor && (
         <FloatingMenu className='floating-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
+            {(!showImage && !showTable) ? <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
               <BiPlus size={18} />
-            </Dropdown.Toggle>
+            </Dropdown.Toggle> : ''}
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}>
                 <LuHeading1 /> Heading 1
