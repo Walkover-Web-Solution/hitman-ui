@@ -276,100 +276,100 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       {editor && <FloatingMenuComponent editor={editor} />}
 
       {showSlashMenu && (
-        <div className="slash-menu position-absolute align-items-center d-flex" style={{
+        <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{
           top: `${slashMenuPosition.top}px`,
           left: `${slashMenuPosition.left}px`,
         }}>
-          <ul className='overflow-auto p-0 m-0'>
-            <li className='align-items-center d-flex cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[0] = el} onClick={() => insertBlock('heading-1')} >
-              <LuHeading1 className='slash-menu-icon' size={30} />
+          <ul className='overflow-auto p-0 m-0 w-100'>
+            <li className='align-items-center d-flex cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[0] = el} onClick={() => insertBlock('heading-1')} >
+              <LuHeading1 className='mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Heading 1</span>
-                <span className="menu-description mt-1">Big section heading</span>
+                <span className="d-flex font-14 fw-500">Heading 1</span>
+                <span className="menu-description mt-1 font-12">Big section heading</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[1] = el} onClick={() => insertBlock('heading-2')}>
-              <LuHeading2 className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[1] = el} onClick={() => insertBlock('heading-2')}>
+              <LuHeading2 className='mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Heading 2</span>
-                <span className="menu-description mt-1">Medium section heading</span>
+                <span className="d-flex font-14 fw-500">Heading 2</span>
+                <span className="menu-description mt-1 font-12">Medium section heading</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[2] = el} onClick={() => insertBlock('heading-3')} >
-              <LuHeading3 className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[2] = el} onClick={() => insertBlock('heading-3')} >
+              <LuHeading3 className='mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Heading 3</span>
-                <span className="menu-description mt-1">Small section heading</span>
+                <span className="d-flex font-14 fw-500">Heading 3</span>
+                <span className="menu-description mt-1 font-12">Small section heading</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[3] = el} onClick={() => insertBlock('task-list')} >
-              <GoTasklist className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[3] = el} onClick={() => insertBlock('task-list')} >
+              <GoTasklist className='mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Task List</span>
-                <span className="menu-description mt-1">Track tasks with a to-do list</span>
+                <span className="d-flex font-14 fw-500">Task List</span>
+                <span className="menu-description mt-1 font-12">Track tasks with a to-do list</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[4] = el} onClick={() => insertBlock('bulletList')} >
-              <FaListUl className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[4] = el} onClick={() => insertBlock('bulletList')} >
+              <FaListUl className=' mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Bullet List</span>
-                <span className="menu-description mt-1">Create a simple bulleted list</span>
+                <span className="d-flex font-14 fw-500">Bullet List</span>
+                <span className="menu-description mt-1 font-12">Create a simple bulleted list</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[5] = el} onClick={() => insertBlock('numberedList')} >
-              <FaListOl className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[5] = el} onClick={() => insertBlock('numberedList')} >
+              <FaListOl className=' mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Numbered List</span>
-                <span className="menu-description mt-1">Create a list with numbering</span>
+                <span className="d-flex font-14 fw-500">Numbered List</span>
+                <span className="menu-description mt-1 font-12">Create a list with numbering</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => { setAlignment('left'), insertBlock('left') }} >
-              <FaAlignLeft className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => { setAlignment('left'), insertBlock('left') }} >
+              <FaAlignLeft className='mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Left</span>
-                <span className="menu-description mt-1">Align your content to the left</span>
+                <span className="d-flex font-14 fw-500">Left</span>
+                <span className="menu-description mt-1 font-12">Align your content to the left</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => { setAlignment('right'), insertBlock('right') }} >
-              <FaAlignRight className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => { setAlignment('right'), insertBlock('right') }} >
+              <FaAlignRight className='mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Right</span>
-                <span className="menu-description mt-1">Align your content to the right</span>
+                <span className="d-flex font-14 fw-500">Right</span>
+                <span className="menu-description mt-1 font-12">Align your content to the right</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => { setAlignment('center'), insertBlock('center') }} >
-              <FaAlignCenter className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => { setAlignment('center'), insertBlock('center') }} >
+              <FaAlignCenter className=' mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Center</span>
-                <span className="menu-description mt-1">Align your content to the center</span>
+                <span className="d-flex font-14 fw-500">Center</span>
+                <span className="menu-description mt-1 font-12">Align your content to the center</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => { setAlignment('justify'), insertBlock('justify') }} >
-              <FaAlignJustify className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => { setAlignment('justify'), insertBlock('justify') }} >
+              <FaAlignJustify className=' mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Justify</span>
-                <span className="menu-description mt-1">Justify your content.</span>
+                <span className="d-flex font-14 fw-500">Justify</span>
+                <span className="menu-description mt-1 font-12">Justify your content.</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[10] = el} onClick={() => insertBlock('codeBlock')} >
-              <FaCode className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[10] = el} onClick={() => insertBlock('codeBlock')} >
+              <FaCode className=' mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Code Block</span>
-                <span className="menu-description mt-1">Write a block of code</span>
+                <span className="d-flex font-14 fw-500">Code Block</span>
+                <span className="menu-description mt-1 font-12">Write a block of code</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[11] = el} onClick={() => insertBlock('blockquote')} >
-              <LuTextQuote className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[11] = el} onClick={() => insertBlock('blockquote')} >
+              <LuTextQuote className='mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Quote</span>
-                <span className="menu-description mt-1">Highlight a quote</span>
+                <span className="d-flex font-14 fw-500">Quote</span>
+                <span className="menu-description mt-1 font-12">Highlight a quote</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer' tabIndex="0" ref={el => slashMenuRefs.current[12] = el} onClick={() => insertBlock('rule')} >
-              <FaRulerHorizontal className='slash-menu-icon' size={30} />
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[12] = el} onClick={() => insertBlock('rule')} >
+              <FaRulerHorizontal className=' mr-4 ml-2' size={30} />
               <div>
-                <span className="menu-label d-flex">Horizontal Rule</span>
-                <span className="menu-description mt-1">Visually divide blocks</span>
+                <span className="d-flex font-14 fw-500">Horizontal Rule</span>
+                <span className="menu-description mt-1 font-12">Visually divide blocks</span>
               </div>
             </li>
           </ul>
