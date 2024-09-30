@@ -46,11 +46,11 @@
 }
 
 @media (max-width: 1699px) {
-  .colorChooser.d-flex {
+  .colorChooser.flex {
     justify-content: normal !important;
     display: block !important;
   }
-  .colorChooser.d-flex button {
+  .colorChooser.flex button {
     margin-top: 10px;
   }
 }

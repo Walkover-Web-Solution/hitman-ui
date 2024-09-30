@@ -327,7 +327,7 @@ class GenericTable extends Component {
           <GenericTableAutoSuggest placeholder='Key' suggestions={this.props.publicEnv} htmlValue={currentItem.key} disable={true} />
         </td>
         <td className='custom-td valueWrapper'>
-          <div className='d-flex align-items-center'>
+          <div className='flex items-center'>
             <GenericTableAutoSuggest placeholder='Value' suggestions={this.props?.publicEnv || {}} URL={this.props?.endpointContent?.data?.URL} valueKey={`${index}.value`} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
             {isEmpty && <div className='mandatory-field-text'>*This field is mandatory</div>}
           </div>
@@ -488,11 +488,11 @@ class GenericTable extends Component {
     // if (!srcExist && desExist) name = value.id + '_' + value.name
     if (name) {
       return (
-        <div className='fileName selectFile d-flex align-items-center justify-content-between'>
+        <div className='fileName selectFile flex items-center justify-between'>
           {' '}
           <span className='truncate'>{name}</span>
           <button
-            className='align-items-center d-flex ml-2'
+            className='items-center flex ml-2'
             onClick={() => {
               this.handleDeSelectFile(index)
             }}
@@ -503,7 +503,7 @@ class GenericTable extends Component {
       )
     }
     return (
-      <div className='selectFile d-flex align-items-center'>
+      <div className='selectFile flex items-center'>
         <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
       </div>
     )

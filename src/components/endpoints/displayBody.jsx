@@ -301,7 +301,7 @@ class BodyContainer extends Component {
     return (
       <React.Fragment>
         <div className='button-panel-wrapper'>
-          <form className='body-select d-flex align-items-center mb-2 ml-3'>
+          <form className='body-select flex items-center mb-2 ml-3'>
             <label className='customRadio'>
               <input
                 type='radio'

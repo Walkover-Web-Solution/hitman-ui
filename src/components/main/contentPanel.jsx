@@ -202,7 +202,7 @@ const ContentPanel = () => {
     if (orgMeta === null || orgMetaType === 1) {
       return (
         <>
-          <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
+          <div className='no-collection h-100 flex flex-d-col justify-center items-center flex-wrap'>
             <SiAmazonapigateway size={100} className='mb-4 text-secondary' />
             <p className='mb-4 text-secondary'>Create a new request:</p>
             <div>
@@ -219,7 +219,7 @@ const ContentPanel = () => {
     } else if (orgMetaType === 0) {
       return (
         <>
-          <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
+          <div className='no-collection h-100 flex flex-d-col justify-center items-center flex-wrap'>
             <SiCloudflarepages size={100} className='mb-4 text-secondary' />
             <p className='mb-4 text-secondary'>Create a new page:</p>
             <div>
@@ -249,7 +249,7 @@ const ContentPanel = () => {
                   <Environments />
                   {params.endpointId && tabs.tabs.length !==0 && 
                     <div
-                      className='flex justify-content-center align-items-center code-curl-icon'
+                      className='flex justify-center items-center code-curl-icon'
                       onClick={handleCodeCurlClick}
                     >
                       <IconButton>
@@ -270,7 +270,7 @@ const ContentPanel = () => {
           </>
         ) : (
           <div className='content-header'>
-            <div className='tabs-container tabs-width d-flex dashboard-wrp'>
+            <div className='tabs-container tabs-width flex dashboard-wrp'>
               <Nav variant='pills'>
                 <Nav.Item className='px-0'>
                   <Nav.Link className='active'>

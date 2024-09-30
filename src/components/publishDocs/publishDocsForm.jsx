@@ -226,9 +226,9 @@ const PublishDocForm = (props) => {
     const error = errors[name]
     return (
       <>
-        <div className='d-flex'>
+        <div className='flex'>
           <div className='uploadBox' style={getDisabledStyle(data.logoUrl)}>
-            {!binaryFile && <div className='d-flex align-items-center'>{renderUploadModule(data.logoUrl)}</div>}
+            {!binaryFile && <div className='flex items-center'>{renderUploadModule(data.logoUrl)}</div>}
             {binaryFile && <img src={`data:image/png;base64,${binaryFile}`} height='60' width='60' alt='data' />}
             <div className='uplod-info d-none'>
               {binaryFile && (
@@ -317,7 +317,7 @@ const PublishDocForm = (props) => {
 
     return (
       <div>
-        <div className='published-post d-flex align-items-center mt-4 mb-1'>
+        <div className='published-post flex items-center mt-4 mb-1'>
           <span className='public-title d-block'>Preview Documentation</span>
           <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
@@ -328,7 +328,7 @@ const PublishDocForm = (props) => {
             </Tooltip>
           }
         >
-          <div className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4`}>
+          <div className={`sidebar-public-url flex items-center justify-content-start mb-4`}>
             <HiOutlineExternalLink className='mr-1' size={13} />
             <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable flex-grow-1' : 'disabled-link'}>
               {url}
@@ -496,10 +496,10 @@ const PublishDocForm = (props) => {
 
   return (
     <>
-      <div className='d-flex justify-content-center'>
+      <div className='flex justify-center'>
         <div className={'publish-on-tab'}>
-          <div className='d-flex justify-content-between align-item-center'>
-            <div className='d-flex align-items-center'>
+          <div className='flex justify-between align-item-center'>
+            <div className='flex items-center'>
               <h3 className='page-title mb-0'>Publish Collection Settings</h3>
             </div>
           </div>
@@ -512,7 +512,7 @@ const PublishDocForm = (props) => {
               <label>Select Environment</label>
               {publicEnv === null || Object.keys(publicEnv)?.length === 0 ? (
                 <Dropdown>
-                  <Dropdown.Toggle className='justify-content-between bg-white border w-100 font-12' variant="light" id='dropdown-basic'>
+                  <Dropdown.Toggle className='justify-between bg-white border w-100 font-12' variant="light" id='dropdown-basic'>
                     {'Select Environment'}
                   </Dropdown.Toggle>
 
@@ -635,11 +635,11 @@ const PublishDocForm = (props) => {
 
                 </Form>
               </Modal.Body>
-              <Modal.Footer className='justify-content-between'>
+              <Modal.Footer className='justify-between'>
                 <Button className='add-more-button text-grey bg-white font-12 border-0' onClick={handleAddRow}>
                   + Add More Rows
                 </Button>
-                <div className='d-flex gap-2'>
+                <div className='flex gap-2'>
                   <Button className='btn-sm font-12' onClick={handleSave}>
                     Save
                   </Button>
@@ -651,12 +651,12 @@ const PublishDocForm = (props) => {
               </Modal.Footer>
             </Modal>
           )}
-          <div className='d-flex favicon mb-4'>
+          <div className='flex favicon mb-4'>
             <div className='form-group mb-0'>
               <label> Fav Icon </label>
               <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
             </div>
-            <div className='or-wrap d-flex align-items-center'>
+            <div className='or-wrap flex items-center'>
               <p className='mb-0'>OR</p>
             </div>
             {renderInput('logoUrl', false, false, binaryFile, '')}

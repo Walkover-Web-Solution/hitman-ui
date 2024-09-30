@@ -88,7 +88,7 @@ const Environments = () => {
   if (organizations?.currentOrg?.meta?.type !== 0) {
     return (
 
-      <div className='environment-container flex align-items-center transition'>
+      <div className='environment-container flex items-center transition'>
         {(environmentFormName === 'Add new Environment' || environmentFormName === 'Edit Environment') &&
           <EnvironmentVariables show onHide={handleEnvironmentModal} title={environmentFormName} environment={environmentToBeEdited} />}
 
@@ -110,7 +110,7 @@ const Environments = () => {
             </Dropdown.Toggle></IconButton>
             <Dropdown.Menu alignRight>
               <Dropdown.Item className='px-2' onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
-              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item className='gap-2 px-2 align-items-end' onClick={() => handleEnv(environmentId)} key={environmentId}>
+              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item className='gap-2 px-2 items-end' onClick={() => handleEnv(environmentId)} key={environmentId}>
                 {environment.environments[environmentId]?.name}
                 {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck size={16} /></span>}
                 <OverlayTrigger

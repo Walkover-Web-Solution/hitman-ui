@@ -88,7 +88,7 @@ const MainV2 = () => {
 
   const renderLandingDashboard = () => (
     <>
-      <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
+      <div className='no-collection h-100 flex flex-d-col justify-center items-center flex-wrap'>
         <img src={NoCollectionIcon} alt='' />
         <p className='mb-4'>Add your first collection for API testing and Public API Doc</p>
         <button onClick={() => setShowAddCollectionModal(true)} className='btn btn-primary'>

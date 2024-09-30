@@ -153,7 +153,7 @@ const SubPage = (props) => {
       <div className='sidebar-accordion accordion ' id='child-accordion'>
         <button tabIndex={-1} className={`p-0 w-full ${expanded ? 'expanded' : ''}`}>
           <div
-            className={`active-selected flex justify-between align-items-center rounded ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
+            className={`active-selected flex justify-between items-center rounded ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
             style={backgroundStyle}
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}
@@ -186,8 +186,8 @@ const SubPage = (props) => {
             </div>
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-              <div className='sidebar-item-action flex align-items-center'>
-                <div onClick={() => openAddSubPageModal(subPageId)} className='flex align-items-center'>
+              <div className='sidebar-item-action flex items-center'>
+                <div onClick={() => openAddSubPageModal(subPageId)} className='flex items-center'>
                   <IconButtons>
                     <FiPlus />
                   </IconButtons>

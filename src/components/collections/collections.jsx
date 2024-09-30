@@ -172,13 +172,13 @@ const Collections = (props) => {
     return (
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={`sidebar-accordion px-2 ${expanded ? 'expanded mb-3' : ''}`}>
-          <button tabIndex={-1} variant='default' className={`sidebar-hower flex pr-2 w-full rounded justify-between ${expanded ? 'expanded' : ''}`}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower flex w-full rounded justify-between ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
               onClick={() => toggleSelectedCollectionIds(collectionId)}
             >
-              <div className='d-flex justify-content-between'>
-                <div className='w-100 d-flex'>
+              <div className='flex justify-between'>
+                <div className='w-100 flex'>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => openSelectedCollection(collectionId)}>
                       <div className='text-truncate'>{collections[collectionId].name}</div>
@@ -193,13 +193,13 @@ const Collections = (props) => {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
                 <div>
-                  <div className='sidebar-item-action flex align-items-center justify-end pr-0'>
-                    <div className='d-flex align-items-center' onClick={() => openPublishSettings(collectionId)}>
+                  <div className='sidebar-item-action flex items-center justify-end pr-0'>
+                    <div className='flex items-center' onClick={() => openPublishSettings(collectionId)}>
                       <IconButtons>
                         <IoIosSettings color='grey' />
                       </IconButtons>
                     </div>
-                    <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
+                    <div className='flex items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
                       <IconButtons>
                         <FiPlus color='grey' />
                       </IconButtons>
@@ -324,7 +324,7 @@ const Collections = (props) => {
 
 
                   </div>
-                  <div className='theme-color d-flex transition counts ml-1 f-12'>
+                  <div className='theme-color flex transition counts ml-1 f-12'>
                     {collections[collectionId]?.importedFromMarketPlace ? <div className='marketplace-icon mr-1'> M </div> : null}
                     <span className={collections[collectionId].isPublic ? 'published' : ''}></span>
                   </div>

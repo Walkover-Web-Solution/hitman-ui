@@ -197,9 +197,9 @@ class CookiesListItem extends Component {
         <div className='back-link' onClick={() => this.props.changeModalTab(1)}>
           {'< Back'}
         </div>
-        <div className='d-flex justify-content-between align-items-center'>
+        <div className='flex justify-between items-center'>
           <div className='domain-title'>{this.state.currentDomain.domain}</div>
-          <div className='d-flex justify-content-between align-items-center'>
+          <div className='flex justify-between items-center'>
             <div className='mr-3'>{`${Object.entries(this.state.currentDomain.cookies || {}).length} cookies`}</div>
             <button className='btn btn-primary' onClick={() => this.handleAddCookie()}>
               Add Cookie

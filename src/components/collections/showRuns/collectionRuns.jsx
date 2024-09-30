@@ -104,21 +104,21 @@ const CollectionRuns = () => {
                   <td>{run.cron_name}</td>
                   <td>{environments[run.environmentId]?.name || 'N/A'}</td>
                   <div className='position-relative'>
-                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <div className='sidebar-item-action-btn flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <IconButtons>
                         <BsThreeDots />
                       </IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item d-flex align-items-center' onClick={() => updateCronStatus(run?.id, run?.status === 1 ? 0 : 1)}>
+                      <div className='dropdown-item flex items-center' onClick={() => updateCronStatus(run?.id, run?.status === 1 ? 0 : 1)}>
                         {run?.status === 1 ? <MdOutlineMotionPhotosPaused /> : <GrResume />}
                         <span className="ml-2">{run?.status === 1 ? 'Pause' : 'Resume'}</span>
                       </div>
-                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCron(run?.id)} >
+                      <div className='dropdown-item flex items-center' onClick={() => openEditCron(run?.id)} >
                         <MdModeEdit /><span className="ml-2">Edit</span>
                       </div>
                       <div
-                        className='dropdown-item text-danger d-flex align-items-center'
+                        className='dropdown-item text-danger flex items-center'
                         onClick={() => { deleteCronById(run?.id) }}
                       >
                         <RiDeleteBinLine /><span className="ml-2">Delete</span>

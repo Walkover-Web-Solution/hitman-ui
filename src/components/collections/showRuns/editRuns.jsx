@@ -71,7 +71,7 @@
 
     const renderEndpointName = (endpointId) => {
       return (
-        <div className='d-flex justify-content-center align-items-center'>
+        <div className='flex justify-center items-center'>
           <span className={`api-label ${allPages?.[endpointId]?.requestType} request-type-bgcolor mr-2`}>
             {allPages?.[endpointId]?.requestType}
           </span>
@@ -113,13 +113,13 @@
         <div className='endpoints-container'>
           <h3 className='text-left'>Run Automation for {`${collectionName}`}</h3>
           {endpointsIds.length === 0 ? (
-            <div className='p-3 d-flex flex-column justify-content-center'>
+            <div className='p-3 flex flex-column justify-center'>
               <span className='data-message'>No Endpoint has been found...</span>
             </div>
           ) : (
-            <div className='p-3 d-flex flex-column'>
-              <div className='d-flex align-items-center justify-content-between'>
-                <div className='checkbox-container d-flex align-items-center'>
+            <div className='p-3 flex flex-column'>
+              <div className='flex items-center justify-between'>
+                <div className='checkbox-container flex items-center'>
                   <span onClick={() => handleSelectAndDeselectAll(true)} className='ml-1 select-all mr-1 cursor-pointer'>
                     Select All
                   </span>
@@ -129,7 +129,7 @@
                   </span>
                 </div>
               </div>
-              <div className='mt-1 d-flex flex-column align-items-start justify-content-center'>
+              <div className='mt-1 flex flex-column items-start justify-center'>
                 {endpointsIds.map((endpointId) => {
                   const isChecked = selectedEndpointIds.includes(endpointId)
                   return (
@@ -171,7 +171,7 @@
                 <option>Weekly</option>
               </Form.Control>
             </Form.Group>
-            <div className='d-flex justify-content-between'>
+            <div className='flex justify-between'>
               <Form.Group className='w-50 pr-2'>
                 <Form.Control as='select'
                   value={runFrequency}
@@ -215,7 +215,7 @@
               />
             </Form.Group>
           </div>
-          <button onClick={handleSaveChanges} className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
+          <button onClick={handleSaveChanges} className='btn btn-primary btn-sm font-12 flex justify-center items-center'>
             <span>Save Changes</span>
           </button>
         </div>

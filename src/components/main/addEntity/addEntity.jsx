@@ -93,7 +93,7 @@ export class AddEntity extends Component {
             <small className='entity-name-error'> {this.state.errors.entityName}</small>
           </div>
         )}
-        <div className='d-flex align-items-center'>
+        <div className='flex items-center'>
           <button type='submit' className='entity-submit-btn'>{`Add ${this.props.type}`}</button>
           {this.props.type && this.props.type !== 'endpoint' && this.renderToolTip(this.props.type)}
         </div>
@@ -103,7 +103,7 @@ export class AddEntity extends Component {
 
   renderEmptyMessage() {
     return (
-      <div className='d-flex empty-box justify-content-between'>
+      <div className='flex empty-box justify-between'>
         <p className='mb-0 f-12 pl-3'>{entityENUM[this.props.type].message} </p>
         {this.renderToolTip(this.props.type)}
       </div>

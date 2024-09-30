@@ -90,7 +90,7 @@ const PublishDocsReview = () => {
 
   return (
     <div className='feedback-tab'>
-      <div className='d-flex flex-row'>
+      <div className='flex flex-row'>
         {renderHostedApiHeading('API Doc Feedback')}
       </div>
       {feedbacks.length > 0 ? renderFeedback() : renderNoFeedback()}

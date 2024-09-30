@@ -17,7 +17,7 @@ const CustomColorPicker = (props) => {
   };
 
   return (
-    <div className='d-flex align-items-center justify-content-between'>
+    <div className='flex items-center justify-between'>
       <TwitterPicker triangle='hide' colors={colors} color={props.theme} onChangeComplete={handleChangeComplete} width='400px' />
       <div style={customColor} />
     </div>

@@ -209,8 +209,8 @@ class EndpointBreadCrumb extends Component {
 
   switchProtocolTypeDropdown() {
     return (
-      <div className='dropdown d-flex justify-content-center align-items-center'>
-        <button className='protocol-selected-type d-flex justify-content-center align-items-center' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+      <div className='dropdown flex justify-center items-center'>
+        <button className='protocol-selected-type flex justify-center items-center' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           {this.state.protocols[this.props?.endpointContent?.protocolType - 1]?.icon}
         </button>
         <div className='dropdown-menu protocol-dropdown' aria-labelledby='dropdownMenuButton'>
@@ -253,7 +253,7 @@ class EndpointBreadCrumb extends Component {
       if (this.props.pages?.[item.id]?.type === 2) return null;
       const isLastItem = index === pathWithUrls.length - 1;
       return (
-        <div className='d-flex align-items-center' onClick={() => this.handleOnPathVarClick(isLastItem, item)}>
+        <div className='flex items-center' onClick={() => this.handleOnPathVarClick(isLastItem, item)}>
           {isLastItem ? (
             <strong
               contentEditable
@@ -292,17 +292,17 @@ class EndpointBreadCrumb extends Component {
     const path = `orgs/${orgId}/dashboard/collection/${this.collectionId}/settings`;
 
     return (
-      <div className='endpoint-header d-flex align-items-center'>
-        <div className='panel-endpoint-name-container d-flex align-items-center'>
+      <div className='endpoint-header flex items-center'>
+        <div className='panel-endpoint-name-container flex items-center'>
 
-          <div className='page-title-name d-flex align-items-center'>
+          <div className='page-title-name flex items-center'>
             {this.props?.tabState[this.props?.activeTabId]?.status === 'NEW' && this.switchProtocolTypeDropdown()}
           </div>
 
           {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
-            <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
+            <div className='flex bread-crumb-wrapper items-center text-nowrap'>
 
-              <div className='text-nowrap-heading breadcrumb-main d-flex align-items-center flex-wrap'>
+              <div className='text-nowrap-heading breadcrumb-main flex items-center flex-wrap'>
                 {this.collectionName && (
                   <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={() => this.props.navigate(`/${path}`, { replace: true })}>{this.collectionName}</strong>
                 )}

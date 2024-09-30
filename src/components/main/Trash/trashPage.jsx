@@ -91,7 +91,7 @@ const TrashPage = () => {
 
   return (
     <Container>
-      <div className='back-to-workspace mb-4 d-flex align-items-center' onClick={handleBack} style={{ cursor: 'pointer' }}>
+      <div className='back-to-workspace mb-4 flex items-center' onClick={handleBack} style={{ cursor: 'pointer' }}>
         <BiArrowBack className='mr-2' />
         <span>Back to workspace</span>
       </div>

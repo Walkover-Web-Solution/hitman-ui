@@ -57,10 +57,10 @@ const UserProfile = () => {
   const renderAvatarWithOrg = (onClick, ref1) => {
     const firstLetterCapital = getCurrentOrg()?.name?.[0].toUpperCase();
     return (
-      <div className='menu-trigger-box flex align-items-center justify-between w-100 rounded gap-1 px-1 py-1'>
+      <div className='menu-trigger-box flex items-center justify-between w-100 rounded gap-1 px-1 py-1'>
         <div
           ref={ref1}
-          className='org-button pl-1 flex position-relative align-items-center cursor-pointer flex-grow-1 gap-1'
+          className='org-button pl-1 flex position-relative items-center cursor-pointer flex-grow-1 gap-1'
           onClick={(e) => {
             e.preventDefault()
             onClick(e)
@@ -70,7 +70,7 @@ const UserProfile = () => {
           <div className='org-name text-secondary'>{getCurrentOrg()?.name || null}</div>
           <IoIosArrowDown size={16} className='text-secondary' />
         </div>
-        <div className='add-button d-flex align-items-center'>
+        <div className='add-button flex items-center'>
           {isOrgDocType() && <button className='border-0 px-1 font-12 text-gray-700 fw-500 shadow' onClick={handleImportClick}>
             Import
           </button>}
@@ -93,8 +93,8 @@ const UserProfile = () => {
   const renderUserDetails = () => {
     const { email } = getUserDetails()
     return (
-      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center justify-content-between py-1'>
-        <div className='d-flex align-items-center'>
+      <div className='profile-details border-bottom plr-3 pb-1 flex items-center justify-between py-1'>
+        <div className='flex items-center'>
           <div className='user-icon mr-2'>
             <FiUser size={12} />
           </div>
@@ -154,10 +154,10 @@ const UserProfile = () => {
     const selectedOrg = getCurrentOrg()
     return (
       <div className='org-listing-container'>
-        <div className='org-listing-column d-flex flex-column gap-1 w-100'>
+        <div className='org-listing-column flex flex-column gap-1 w-100'>
           {organizations.map((org, key) => (
-            <div key={key} className='d-flex name-list cursor-pointer'>
-              <div className='org-collection-name d-flex'>
+            <div key={key} className='flex name-list cursor-pointer'>
+              <div className='org-collection-name flex'>
                 <Avatar className='mr-2 avatar-org' name={org.name} size={32} />
                 <span
                   className={`org-listing-button mr-1 ${org.id === selectedOrg?.id ? 'selected-org' : ''}`}
@@ -257,7 +257,7 @@ const UserProfile = () => {
   return (
     <>
       <div className='profile-menu pt-1 px-2'>
-        <Dropdown className='d-flex align-items-center'>
+        <Dropdown className='flex items-center'>
           <Dropdown.Toggle
             as={forwardRef(({ onClick }, ref) => {
               const handleClick = async (e) => {

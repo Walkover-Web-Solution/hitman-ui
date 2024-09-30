@@ -18,9 +18,9 @@ export default function IndexWebsite() {
       <div className='web_body'>
         <div>
           {/* navbar */}
-          <div className='navigation d-flex justify-content-between container'>
+          <div className='navigation flex justify-between container'>
             <Logo className='web_logo' />
-            <div className='d-flex align-items-center nav-menu'>
+            <div className='flex items-center nav-menu'>
               <a href='/login'>
                 <button className='btn web_btn-login web_btn-rg web_btn'>Login</button>
               </a>
@@ -30,7 +30,7 @@ export default function IndexWebsite() {
             </div>
           </div>
           {/* navbar */}
-          <div className='web_hero container d-flex flex-column gy-4'>
+          <div className='web_hero container flex flex-column gy-4'>
             <div>
               <p className='web_tagline'>The developer's toolkit</p>
               <h1 className='web_h1'>
@@ -49,7 +49,7 @@ export default function IndexWebsite() {
           </div>
         </div>
         <div className='web_bg-sec py-5'>
-          <div className='container d-flex flex-column'>
+          <div className='container flex flex-column'>
             <h2 className='web_h2 mb-5'>
               Experience <span className='font-american '>the Benefits </span>
               <br />
@@ -78,7 +78,7 @@ export default function IndexWebsite() {
                   }
                   return (
                     <>
-                      <div className=' d-flex flex-column '>
+                      <div className=' flex flex-column '>
                         {icon}
                         <h3 dangerouslySetInnerHTML={{ __html: benifit?.name }} className='my-3'></h3>
                         <p>{benifit?.description}</p>
@@ -90,7 +90,7 @@ export default function IndexWebsite() {
           </div>
         </div>
         <div className=' bg-white py-5'>
-          <div className='container web_cont d-flex flex-column'>
+          <div className='container web_cont flex flex-column'>
             <h2 className='web_h2 mb-5'>
               The results speak for themselves,
               <br />
@@ -141,9 +141,9 @@ export default function IndexWebsite() {
         </div>
 
         <div className='container web_cont'>
-          <div className='d-flex flex-md-row flex-column  justify-content-between align-items-center'>
+          <div className='flex flex-md-row flex-column  justify-between items-center'>
             <Logo className='web_logo' />
-            {/* <ul className='web_list d-flex flex-column'>
+            {/* <ul className='web_list flex flex-column'>
             <li>
               <a href='https://walkover.in' target='_blank' className='text-dark'>About Us</a>
             </li>

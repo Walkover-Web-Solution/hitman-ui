@@ -143,7 +143,7 @@ class PublicBodyContainer extends Component {
     const displayLegend = () => {
       const types = ['string', 'number', 'boolean', 'array', 'object'];
       return (
-        <div className='d-flex flex-row-reverse'>
+        <div className='flex flex-row-reverse'>
           {types.map((type, index) => (
             <small key={index} className='ml-3 text-small'>
               <Badge className={`body-desc-type ${type}`}>{type.charAt(0)}</Badge> <span className='text-capitalize'>{type}</span>
@@ -332,13 +332,13 @@ class PublicBodyContainer extends Component {
           (this.props.body.type === rawTypesEnums.JSON ?
             (
               <div className='hm-public-table mb-2'>
-                <div className="d-flex justify-content-between align-items-center mt-4">
+                <div className="flex justify-between items-center mt-4">
                   {isOnPublishedPage(this.props) &&
                     <div className='public-generic-table-title-container'>
                       Body <small className='text-muted'>({this.props.body.type})</small>{' '}
                       {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
                     </div>}
-                  <div className='d-flex justify-content-between'>
+                  <div className='flex justify-between'>
                     <ul className='public-endpoint-tabs'>
                       <li
                         className={this.state.showBodyCodeEditor ? 'active' : ''}

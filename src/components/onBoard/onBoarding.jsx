@@ -127,14 +127,14 @@ const OnBoarding = () => {
                         <FaLongArrowAltLeft size={18} />
                 </button>
             )}
-            <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
-                <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
+            <div className="onboarding-container position-relative flex flex-column items-center justify-center overflow-hidden">
+                <div className={`on-boarding flex flex-column items-center justify-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
                     <h2 className='mb-5'>
                         How do you want to use techdoc?
                     </h2>
-                    <div className='card-container d-flex flex-column flex-sm-row'>
+                    <div className='card-container flex flex-column flex-sm-row'>
                         {['Light', 'Light'].map((variant, index) => (
-                            <div key={index} className='d-flex flex-column align-items-center justify-content-center'>
+                            <div key={index} className='flex flex-column items-center justify-center'>
                                 <Card
                                     bg={variant.toLowerCase()}
                                     text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
@@ -142,21 +142,21 @@ const OnBoarding = () => {
                                     onClick={() => handleCardClick(index)}
                                 >
                                     <Card.Body >
-                                        <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-dark' : 'text-gray'}`}>
+                                        <Card.Text className={`card-text flex flex-column justify-center items-center h-100 ${selectedIndex === index ? 'text-dark' : 'text-gray'}`}>
                                             {index === 0 ? (
-                                                <div className='d-flex flex-column align-items-center'>
+                                                <div className='flex flex-column items-center'>
                                                     <IoDocumentTextOutline size={80} />
                                                     <div className='mt-3'>Documentation</div>
                                                 </div>
                                             ) : (
                                                 <>
-                                                    <div className='d-flex align-items-center'>
-                                                        <div className='d-flex flex-column align-items-center'>
+                                                    <div className='flex items-center'>
+                                                        <div className='flex flex-column items-center'>
                                                             <IoDocumentTextOutline size={80} />
                                                             <span className='mt-3'>Documentation</span>
                                                         </div>
                                                         <FaPlus size={16} className='mx-2' />
-                                                        <div className='d-flex flex-column align-items-center'>
+                                                        <div className='flex flex-column items-center'>
                                                             <MdOutlineApi className='ml-1' size={80} />
                                                             <span className='mt-3'>API</span>
                                                         </div>
@@ -170,7 +170,7 @@ const OnBoarding = () => {
                         ))}
                     </div>
                 </div>
-                <div className={`input-container position-absolute d-flex align-items-center flex-column p-2 w-100 ${showInput ? 'show-in' : ''}`}>
+                <div className={`input-container position-absolute flex items-center flex-column p-2 w-100 ${showInput ? 'show-in' : ''}`}>
                     {isInputVisible && (
                         <div className='input-group'>
                             <InputGroup className='mb-3'>
@@ -192,7 +192,7 @@ const OnBoarding = () => {
                                     Create
                                 </Button> */}
                             </InputGroup>
-                            <div className='d-flex'>
+                            <div className='flex'>
                                 <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
                             </div>
                         </div>

@@ -219,7 +219,7 @@ const CustomTabs = (props) => {
         if (historySnapshots[tabId]) {
           if (tab.previewMode) {
             return (
-              <div className='flex align-items-center '>
+              <div className='flex items-center '>
                 <LuHistory size={16} />
                 <span className='mr-2 fw-500 font-12' >{historySnapshots[tabId].endpoint.name}</span>
               </div>
@@ -227,7 +227,7 @@ const CustomTabs = (props) => {
           } else {
             return (
               <>
-                <div className='flex align-items-center '>
+                <div className='flex items-center '>
                   <LuHistory className='mr-1' size={16} />
                   <span className='mr-2 fw-500 font-12' >{historySnapshots[tabId].endpoint.name || historySnapshots[tabId].endpoint.BASE_URL + historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</span>
                 </div>
@@ -243,7 +243,7 @@ const CustomTabs = (props) => {
           const endpoint = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='flex justify-content-center fw-500 font-12 align-items-center'>
+              <div className='flex justify-center fw-500 font-12 items-center'>
                 {endpoint.protocolType === 1 && (
                   <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2  request-type-bgcolor`}>
                     {tabState[tabId]?.draft?.data?.method || 'GET'}
@@ -255,7 +255,7 @@ const CustomTabs = (props) => {
             )
           } else {
             return (
-              <div className='flex justify-content-center fw-500 font-12 align-items-center'>
+              <div className='flex justify-center fw-500 font-12 items-center'>
                 {endpoint.protocolType === 1 && (
                   <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
                     {tabState[tabId]?.draft?.data?.method}
@@ -269,7 +269,7 @@ const CustomTabs = (props) => {
         } else {
           const endpoint = tabState?.[tabId]
           return (
-            <div className='flex fw-500 font-12 justify-content-end align-items-end'>
+            <div className='flex fw-500 font-12 justify-content-end items-end'>
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
@@ -284,7 +284,7 @@ const CustomTabs = (props) => {
           const page = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='flex fw-500 font-12 justify-content-end align-items-end'>
+              <div className='flex fw-500 font-12 justify-content-end items-end'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>
                   <>{page.name} </>
@@ -293,7 +293,7 @@ const CustomTabs = (props) => {
             )
           } else {
             return (
-              <div className='flex fw-500 font-12 justify-content-end align-items-end'>
+              <div className='flex fw-500 font-12 justify-content-end items-end'>
                 <IoDocumentTextOutline size={14} className='mr-1' />
                 <span>
                   <>{page.name} </>
@@ -303,7 +303,7 @@ const CustomTabs = (props) => {
           }
         } else {
           return (
-            <div className='flex fw-500 font-12 justify-content-end align-items-end'>
+            <div className='flex fw-500 font-12 justify-content-end items-end'>
               <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
               <span>{'Untiled'}</span>
             </div>
@@ -315,7 +315,7 @@ const CustomTabs = (props) => {
         if (location?.pathname?.split('/')?.[6] === 'settings') {
           return (
             <>
-              <span className='flex fw-500 font-12 align-items-center'>
+              <span className='flex fw-500 font-12 items-center'>
                 <CiSettings size={18} className='setting-icons mr-1' />
                 <span>{collectionName}</span>
               </span>
@@ -323,14 +323,14 @@ const CustomTabs = (props) => {
           )
         } else if (location?.pathname?.split('/')?.[6] === 'runner') {
           return (
-            <div className='flex fw-500 font-12 align-items-center'>
+            <div className='flex fw-500 font-12 items-center'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
         } else {
           return (
-            <div className='flex fw-500 font-12 align-items-center'>
+            <div className='flex fw-500 font-12 items-center'>
               <CiSettings size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
@@ -340,7 +340,7 @@ const CustomTabs = (props) => {
       case 'feedback': {
         return (
           <>
-            <div className='flex fw-500 font-12 align-items-center'>
+            <div className='flex fw-500 font-12 items-center'>
               <IoIosChatboxes className='mr-1' size={16} />
               <span>Feedback</span>
             </div>
@@ -351,7 +351,7 @@ const CustomTabs = (props) => {
         if (automation[tabId]) {
           return (
             <>
-              <div className='flex fw-500 font-12 align-items-center'>
+              <div className='flex fw-500 font-12 items-center'>
                 <BsPlayBtn className='mr-1' size={16} />
                 <span>Runs</span>
               </div>
@@ -386,7 +386,7 @@ const CustomTabs = (props) => {
   //       const endpoint = pages[tabId]
   //       return (
   //         <div className='hover-div' style={styles}>
-  //           <div className='flex align-items-center'>
+  //           <div className='flex items-center'>
   //             {endpoint.protocolType === 1 && (
   //               <div className={`api-label ${tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
   //                 {tabState[tabId]?.draft?.data?.method}{' '}
@@ -510,7 +510,7 @@ const CustomTabs = (props) => {
                 }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
-                <Nav.Link className='p-0 flex align-items-center bg-white pr-2' eventKey={tabId}>
+                <Nav.Link className='p-0 flex items-center bg-white pr-2' eventKey={tabId}>
                   <button
                     className='btn truncate bg-white pr-0'
                     onClick={() => tabService.selectTab(tabId, { navigate, params })}

@@ -210,7 +210,7 @@ export default function Authorization(props) {
             <label className='mb-1 text-grey'>Username</label>
             <input className='form-control' name='username' value={basicAuthData.username} onChange={handleChange} />
             <label className='text-grey' htmlFor='password'>Password</label>
-            <div className='d-flex flex-row align-items-center'>
+            <div className='flex flex-row items-center'>
               <input
                 className='form-control'
                 id='password'

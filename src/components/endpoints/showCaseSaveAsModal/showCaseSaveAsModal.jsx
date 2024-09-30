@@ -53,11 +53,11 @@ export default function ShowCaseSaveAsModal(props) {
 
   return (
     <div className='main_container p-2'>
-      <div className='d-flex justify-content-start align-items-center flex-wrap'>
+      <div className='flex justify-content-start items-center flex-wrap'>
         <span className='font-12'>Save to </span>
         {pathData.map((singleId, index) => {
           return (
-            <div className='d-flex justify-content-start align-items-center'>
+            <div className='flex justify-content-start items-center'>
               {index !== 0 && <span className='ml-1 font-12'>/</span>}
               <div onClick={() => handleGoBack(index)} className='ml-1 tab-line'>
                 {index === 0 ? currentOrg?.name : getName(singleId)}
@@ -68,7 +68,7 @@ export default function ShowCaseSaveAsModal(props) {
       </div>
       <div className='showcase_modal_container'>
         <RenderData data={pathData} setPathData={setPathData} />
-        <div className='mt-5 d-flex align-items-center justify-content-end pb-2 pr-1'>
+        <div className='mt-5 flex items-center justify-content-end pb-2 pr-1'>
           <button onClick={handleSave} className={`btn btn-primary btn-sm font-12 mr-2 ${getDisable()}`}>
             Save
           </button>

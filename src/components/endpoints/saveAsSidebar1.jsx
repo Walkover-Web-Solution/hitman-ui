@@ -43,7 +43,7 @@ const SaveAsPageSidebar = (props) => {
 
   return (
     <div tabIndex={-1} ref={saveAsSidebar} style={saveAsSidebarStyle} className='save-as-sidebar-container'>
-      <div className='custom-collection-modal-container modal-header align-items-center'>
+      <div className='custom-collection-modal-container modal-header items-center'>
         <div className='modal-title h4'>Save Page</div>
         <IconButtons>
           <MdOutlineClose className='font-18' onClick={props.onHide} />

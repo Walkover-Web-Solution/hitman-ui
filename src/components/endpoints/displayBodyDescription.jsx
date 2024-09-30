@@ -113,7 +113,7 @@ class DisplayBodyDescription extends Component {
     const renderTitle = (value, index) => {
       if (value.type === 'array' || value.type === 'object') {
         return (
-          <div className='key-title d-flex align-items-center'>
+          <div className='key-title flex items-center'>
             <label className='mr-2'>{`[${index}]`}</label>
             <label className='data-type'>{value.type}</label>
             {value.type === 'array' && this.displayInput(value, name + '.' + index)}

@@ -96,7 +96,7 @@ class DisplayResponse extends Component {
   }
 
   handleAddExampleRequest = () => {
-      this.props.handleSave(null,null,null,'example');
+    this.props.handleSave(null, null, null, 'example');
   };
 
   openAddForm(obj, index, name) {
@@ -248,7 +248,7 @@ class DisplayResponse extends Component {
           <div className='tab-content ml-0'>
             {this.state.selectedResponseTab === 'body' && (
               <div>
-                <div className='d-flex justify-content-between align-items-center mt-3 mb-1'>
+                <div className='flex justify-between items-center mt-3 mb-1'>
                   <ul className='nav nav-pills body-button rounded'>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
                       <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-3 py-1 font-10 text-black' : 'nav-link px-3 py-1 font-10 text-grey'}>Pretty</a>
@@ -265,10 +265,10 @@ class DisplayResponse extends Component {
                       // style={{ float: "right" }}
                       className='add-to-sample-response'
                     >
-                      <div className='adddescLink d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.handleAddExampleRequest()}>
+                      <div className='adddescLink flex items-center gap-1 icon-button px-2 py-1' onClick={() => this.handleAddExampleRequest()}>
                         <Example /> Save as Example Request
                       </div>
-                      <div className='adddescLink d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.addSampleResponse(this.props.response)}>
+                      <div className='adddescLink flex items-center gap-1 icon-button px-2 py-1' onClick={() => this.addSampleResponse(this.props.response)}>
                         <FaPlus /> Add to Sample Response
                       </div>
                     </div>
@@ -277,7 +277,7 @@ class DisplayResponse extends Component {
                 <div className='tab-content'>
                   {this.state.selectedBodyTab === 'pretty' && <div>
                     <AceEditor
-                      style={{ border: '1px solid rgb(206 213 218)', fontFamily: 'monospace'  }}
+                      style={{ border: '1px solid rgb(206 213 218)', fontFamily: 'monospace' }}
                       className='custom-raw-editor'
                       mode='json'
                       theme='github'
@@ -429,7 +429,7 @@ class DisplayResponse extends Component {
       return (
         <div className='p-2'>
           <AceEditor
-            style={{ border: '1px solid rgb(206 213 218)',fontFamily: 'Inter' }}
+            style={{ border: '1px solid rgb(206 213 218)', fontFamily: 'Inter' }}
             className='custom-raw-editor'
             mode='json'
             theme='github'
@@ -536,9 +536,9 @@ class DisplayResponse extends Component {
                   </Overlay>
                   <div className='resPubclipboardWrapper' ref={this.copyDivRef} onClick={() => this.showCopyMessage()}>
                     <CopyToClipboard text={JSON.stringify(this.props?.response?.data)} onCopy={() => this.setState({ copied: true })}>
-                    <button>
-                    <RiCheckboxMultipleBlankLine/>
-                    </button>
+                      <button>
+                        <RiCheckboxMultipleBlankLine />
+                      </button>
                     </CopyToClipboard>
                   </div>
                 </div>
@@ -546,7 +546,7 @@ class DisplayResponse extends Component {
               {this.showAddForm()}
               <div className='response-viewer'>
                 <div className='response-tabs'>
-                  
+
                 </div>
                 {this.props.response.status && this.displayBodyAndHeaderResponse()}
                 {this.state.selectedResponseTab === 'header' && this.props.response.headers && this.displayHeader()}

@@ -2195,7 +2195,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='custom-tabs clear-both response-container mb-2'>
-          <div className='d-flex justify-content-between align-items-center w-100'>
+          <div className='flex justify-between items-center w-100'>
             <ul className='nav nav-tabs respTabsListing w-100 rounded-0 border-0' id='myTab' role='tablist'>
               <li className='nav-item'>
                 <a
@@ -2582,7 +2582,7 @@ class DisplayEndpoint extends Component {
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
               <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()} />
             </Dropdown.Toggle>
-            <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
+            <Dropdown.Menu id='bg-nested-dropdown' className='flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
               <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
             </Dropdown.Menu>
@@ -2736,7 +2736,7 @@ class DisplayEndpoint extends Component {
         <div className="accordion" id="accordionExample">
           <div className="card">
             <div className="card-header p-0" id="headingOne">
-              <h2 className="mb-0 font-14 d-flex justify-content-between align-items-center" style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <h2 className="mb-0 font-14 flex justify-between items-center"  style={this.state.themes.backgroundStyles} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 <button className='btn fw-600 text-left w-100' type="button">
                   Variables
                 </button>
@@ -2801,7 +2801,7 @@ class DisplayEndpoint extends Component {
     return (
       <div>
         <div className='hm-endpoint-header mb-2'>
-          <div className='d-flex'>
+          <div className='flex'>
             {this.checkProtocolType(1) && (
               <div className='input-group-prepend'>
                 <span className={`api-label api-label-lg input-group-text m-0 p-0 ${this.props?.endpointContent?.data?.method}`}>
@@ -2872,7 +2872,7 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         )}
-        <div className={`d-flex dashboard-url ${this.state.addUrlClass ? 'Url-invalid' : ''} ${this.checkProtocolType(2) ? 'w-100' : ''}`}>
+        <div className={`flex dashboard-url ${this.state.addUrlClass ? 'Url-invalid' : ''} ${this.checkProtocolType(2) ? 'w-100' : ''}`}>
           <HostContainer
             {...this.props}
             endpointId={this.state.endpoint.id}
@@ -2936,7 +2936,7 @@ class DisplayEndpoint extends Component {
 
   renderSwitchBtn() {
     return (
-      <div onClick={this.handleToggle} className='p-0 d-flex justify-content-between align-items-center cursor-pointer'>
+      <div onClick={this.handleToggle} className='p-0 flex justify-between items-center cursor-pointer'>
         <button className='btn text-grey btn-sm font-12'>DOC</button>
         <Form>
           <Form.Check
@@ -3036,7 +3036,7 @@ class DisplayEndpoint extends Component {
             <Dropdown className='rounded' as={ButtonGroup}>
               <button
                 id='api_save_btn'
-                className='btn btn-sm d-flex align-items-center save-button-endpoint px-1'
+                className='btn btn-sm flex items-center save-button-endpoint px-1'
                 type='button'
                 disabled={!this.props?.tabs[this.props?.activeTabId]?.isModified}
                 onClick={() => this.handleSave()}
@@ -3076,8 +3076,8 @@ class DisplayEndpoint extends Component {
             <button
               className={
                 this.state.saveLoader
-                  ? 'btn btn-outline-secondary buttonLoader btn-sm font-12 d-flex align-items-center'
-                  : 'btn save-button-endpoint save-button px-1 btn-sm gap-1 d-flex align-items-center'
+                  ? 'btn btn-outline-secondary buttonLoader btn-sm font-12 flex items-center'
+                  : 'btn save-button-endpoint save-button px-1 btn-sm gap-1 flex items-center'
               }
               type='button'
               id='save-endpoint-button'
@@ -3145,7 +3145,7 @@ class DisplayEndpoint extends Component {
       )
     } else if (this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       return (
-        <div className='d-flex justify-content-center'>
+        <div className='flex justify-center'>
           <OverlayTrigger placement='bottom' overlay={<Tooltip id='edited-by-tooltip'>
             {lastModified &&
               <div className="font-12 text-secondary">
@@ -3162,7 +3162,7 @@ class DisplayEndpoint extends Component {
               </div>
             }
           </Tooltip>}>
-            <button className='text-black-50 btn p-0 d-flex justify-content-center'> Edited  {lastModified}</button>
+            <button className='text-black-50 btn p-0 flex justify-center'> Edited  {lastModified}</button>
           </OverlayTrigger>
         </div>
       )
@@ -3176,14 +3176,14 @@ class DisplayEndpoint extends Component {
           <div>
             <div className='loading'>
               <div className='box bg'></div>
-              <div className='d-flex align-items-center justify-content-between mt-3'>
+              <div className='flex items-center justify-between mt-3'>
                 <div>
                   <div className='new bg rounded-1'></div>
                   <div className='live bg mt-1'></div>
                 </div>
                 <div className='new bg rounded-1'></div>
               </div>
-              <div className='d-flex align-items-center gap-3 mt-2'>
+              <div className='flex items-center gap-3 mt-2'>
                 <div className='api-call bg rounded-1'></div>
                 <div className='bg send rounded-1'></div>
               </div>
@@ -3191,9 +3191,9 @@ class DisplayEndpoint extends Component {
               <div className='bulk-edit bg mt-2 rounded-1'></div>
               <div className='path-var mt-2 bg rounded-1'></div>
               <div className='bulk-edit bg mt-2 rounded-1'></div>
-              <div className='d-flex align-items-center justify-content-between mt-4'>
+              <div className='flex items-center justify-between mt-4'>
                 <div className='response bg rounded-1'></div>
-                <div className='d-flex align-items-center gap-2'>
+                <div className='flex items-center gap-2'>
                   <div className='min-box bg rounded-1'></div>
                   <div className='min-box bg rounded-1'></div>
                 </div>
@@ -3234,7 +3234,7 @@ class DisplayEndpoint extends Component {
         }
         style={this.state.theme.backgroundStyle}
       >
-        <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
+        <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
               className={`hm-endpoint-container mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0 px-3'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
@@ -3249,14 +3249,14 @@ class DisplayEndpoint extends Component {
                 <>
                   {isDashboardRoute(this.props) && (
                     <div className='hm-panel py-3 position-sticky bg-white'>
-                      <div className='d-flex justify-content-between align-items-center'>
+                      <div className='flex justify-between items-center'>
                         <EndpointBreadCrumb
                           setActiveTab={this.setActiveTab}
                           {...this.props}
                           isEndpoint
                           publishLoader={this.state.loading}
                         />
-                        <div className='d-flex gap-1 align-items-center'>
+                        <div className='flex gap-1 items-center'>
                           {this.state.showEndpointFormModal && (
                             <SaveAsSidebar
                               {...this.props}
@@ -3279,7 +3279,7 @@ class DisplayEndpoint extends Component {
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
-                                <Dropdown.Item className='p-0  d-flex justify-content-between align-items-center'>
+                                <Dropdown.Item className='p-0  flex justify-between items-center'>
                                   <span>
                                     {approvedOrRejected
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
@@ -3289,7 +3289,7 @@ class DisplayEndpoint extends Component {
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item
-                                  className='p-0  d-flex justify-content-between align-items-center unpublishBtn'
+                                  className='p-0  flex justify-between items-center unpublishBtn'
                                 >
                                   <span>
                                     {isStateApproved(endpointId, endpointss)
@@ -3331,7 +3331,7 @@ class DisplayEndpoint extends Component {
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view m-auto' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
-                    <div className='d-flex endpoint-name-container justify-content-between mb-3 align-content-center'>
+                    <div className='flex endpoint-name-container justify-between mb-3 align-content-center'>
                       {this.isNotDashboardOrDocView() && (
                         <>
                           <h1 className='endpoint-title mb-0'>{this.props?.endpointContent?.data?.name || ''}</h1>
@@ -3382,10 +3382,10 @@ class DisplayEndpoint extends Component {
 
                     </div>
                   )}
-                  <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
+                  <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container flex' : 'hm-public-endpoint-headers'}>
                     <div className='main-table-wrapper'>
                       {this.isDashboardAndTestingView() ? (
-                        <div className='d-flex justify-content-between align-items-center'>
+                        <div className='flex justify-between items-center'>
                           <div className='headers-params-wrapper custom-tabs w-100'>
                             <ul className='nav nav-tabs border-0 border-bottom w-100 rounded-0 mb-2' id='pills-tab' role='tablist'>
                               {this.checkProtocolType(1) && (
@@ -3847,14 +3847,14 @@ class DisplayEndpoint extends Component {
                   </div>
                 </div>
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
-                  <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
+                  <div className='doc-options flex items-center'>{this.renderDocViewOptions()}</div>
                 )}
               </div>
               {isOnPublishedPage() && (
                 <div className='w-100'>
                   <span className='footer-upper mt-5'>
                     <>
-                      <div className='w-100 d-flex justify-content-center mb-4'>
+                      <div className='w-100 flex justify-center mb-4'>
                         <ApiDocReview {...this.props} />
                       </div>
                     </>
@@ -3886,7 +3886,7 @@ class DisplayEndpoint extends Component {
           <div className='w-100'>
             <span className='footer-lower mt-5'>
               <>
-                <div className='w-100 d-flex flex-column align-items-center mb-4'>
+                <div className='w-100 flex flex-column items-center mb-4'>
                   <ApiDocReview {...this.props} />
                 </div>
               </>

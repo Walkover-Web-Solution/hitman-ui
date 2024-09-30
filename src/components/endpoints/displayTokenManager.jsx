@@ -46,7 +46,7 @@ function AccessTokenManager(props) {
             <p className='ml-3 mt-2 heading-token'>All Tokens</p>
             {Object.keys(tokenDetails).map((tokenId, index) => (
               <div onClick={() => handleTokenClick(tokenId)} className={`token-name-container ${selectedTokenId === tokenId && 'selected-token-state'}`} key={index}>
-                <ListGroup.Item className='tokens-list-item ml-2 d-flex justify-content-between align-items-center'>
+                <ListGroup.Item className='tokens-list-item ml-2 flex justify-between items-center'>
                   <p className='token-name'>{tokenDetails[tokenId].tokenName}</p>
                   <MdDelete onClick={(e) => handleDeleteTokenClick(e, tokenId)} className='delete-token-icon' size={14} />
                 </ListGroup.Item>
@@ -54,7 +54,7 @@ function AccessTokenManager(props) {
             ))}
           </ListGroup>
         </Col>
-        <Col className='mt-2 mb-2 token-details-field-container d-flex flex-column justify-content-between' sm={9}>
+        <Col className='mt-2 mb-2 token-details-field-container flex flex-column justify-between' sm={9}>
           {selectedTokenId && <><div>
                 <h6 className=''>Token Details</h6>
             <TokenDetailsComponent tokenDetails={tokenDetails} selectedTokenId={selectedTokenId} />
@@ -120,7 +120,7 @@ function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
         if (key === 'clientSecret' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;
         if (key === 'accessTokenUrl' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;
         return (
-          <div className='d-flex justify-content-center align-items-center mt-1'>
+          <div className='flex justify-center items-center mt-1'>
             <div className='token-keys-container'>
               <span>{title}</span>
             </div>

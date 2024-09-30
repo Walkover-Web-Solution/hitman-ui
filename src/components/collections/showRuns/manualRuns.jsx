@@ -56,7 +56,7 @@ function ManualRuns() {
         <div className="iteration-details">
           {automation[activeTabId]?.executionOrder.map(id => (
             <>
-              <div className='iteration-details-api d-flex justify-content-between' key={id}>
+              <div className='iteration-details-api flex justify-between' key={id}>
                 <div>
                   <span className={`${pages[id]?.requestType} request-type-bgcolor mr-2`}>{pages[id]?.requestType} </span>
                   <span>{pages[id]?.name}</span>

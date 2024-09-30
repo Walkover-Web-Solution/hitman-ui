@@ -113,7 +113,7 @@ function PublishSidebar(props) {
 
   function RenderFooter() {
     return (
-      <div className='d-flex'>
+      <div className='flex'>
         <Button variant='btn btn-outline' className='m-1 btn-sm font-12' onClick={sendPublishRequest}>
           Publish
         </Button>
@@ -128,7 +128,7 @@ function PublishSidebar(props) {
     <div>
       <div onClick={() => props.closePublishSidebar()} style={darkBackgroundStyle}></div>
       <div style={saveAsSidebarStyle} className='publish-sidebar-container'>
-        <div className='d-flex justify-content-between align-item-center'>
+        <div className='flex justify-between align-item-center'>
           <div className='publish-api-doc-heading'>Bulk Publish</div>
           <RenderFooter />
         </div>

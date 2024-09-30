@@ -11,13 +11,13 @@ export default function RenderFields(props) {
 
     return (
         <div>
-            <div className='d-flex align-items-start schema-data-container' onClick={() => toggleShowState()}>
+            <div className='flex items-start schema-data-container' onClick={() => toggleShowState()}>
                 {props?.fieldData?.args && props?.fieldData?.args.length > 0 &&
                     <IconButton variant='sm'>
                         {!showFieldArg ? <MdKeyboardArrowRight size={18} /> : <MdOutlineKeyboardArrowDown size={18} />}
                     </IconButton>
                 }
-                <div className='d-flex flex-column align-items-start ml-1'>
+                <div className='flex flex-column items-start ml-1'>
                     <div>
                         <span className='field-name'>{props?.fieldData?.name}</span>
                         {props?.fieldData?.type?.name && <span className='schema-input-type ml-1'>{props?.fieldData?.type?.name}</span>}

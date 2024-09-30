@@ -267,7 +267,7 @@ const Page = () => {
             if (pages?.[item.id]?.type === 2) return null;
             const isLastItem = index === pathWithUrls.length - 1;
             return (
-                <div className='d-flex align-items-center' key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}>
+                <div className='flex items-center' key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}>
                     {isLastItem ? (
                         <strong
                             className="fw-500 py-0 px-1 cursor-text"
@@ -295,18 +295,18 @@ const Page = () => {
     }
 
     return (
-        <div className='parent-page-container d-flex flex-column align-items-center w-100'>
-            <div className='page-header position-sticky px-3 py-3 bg-white d-flex align-items-center justify-content-between w-100'>
-                <div className="d-flex justify-content-start align-items-center">
+        <div className='parent-page-container flex flex-col items-center w-full'>
+            <div className='page-header position-sticky px-3 py-3 bg-white flex items-center justify-between w-full'>
+                <div className="flex items-center">
                     {tabs?.[activeTabId]?.status === 'SAVED' &&
-                        <div className="header-page-name d-flex align-items-center fa-1x text-truncate">
+                        <div className="header-page-name flex items-center fa-1x text-truncate">
                             <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={handleCollectionClick}>
                                 {collections?.[pages?.[activeTabId]?.collectionId]?.name}
                             </strong>
                             <p className='p-0 m-0 text-secondary fw-400'>/</p>
                         </div>
                     }
-                    <div className="header-page-name d-flex align-items-center fa-1x">
+                    <div className="header-page-name flex items-center fa-1x">
                         {renderPathLinks()}
                     </div>
                     {
@@ -323,7 +323,7 @@ const Page = () => {
                         </OverlayTrigger>
                     }
                 </div>
-                <div className='header-operations d-flex align-items-center gap-2'>
+                <div className='header-operations flex items-center gap-2'>
                     {tabs?.[activeTabId]?.status !== "NEW" &&
                         <OverlayTrigger placement='bottom' overlay={showTooltips("EditedBy")}>
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
@@ -349,13 +349,13 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item className="p-1 font-12 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
+                                    <Dropdown.Item className="p-1 font-12 px-2 flex justify-between items-center " onClick={publishClick}>
                                         <span>Publish</span>
                                         <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>B</span></> : <span className="font-10">Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
-                                        className="p-1 px-2 font-12 d-flex justify-content-between align-items-center unpublish-page "
+                                        className="p-1 px-2 font-12 flex justify-between items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
                                         <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>U</span></> : <span className="font-10">Ctrl + U</span>}</span>
@@ -369,14 +369,14 @@ const Page = () => {
                 </div>
             </div>
 
-            <div className='page-container h-100 w-100 p-3'>
+            <div className='page-container h-100 w-full p-3'>
                 <textarea
                     ref={textareaRef}
                     onInput={(e) => {
                         setPageName(e.target.value)
                         autoGrow(textareaRef.current)
                     }}
-                    className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-100'
+                    className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-full'
                     type='text'
                     value={pageName}
                     placeholder='Untitled'

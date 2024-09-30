@@ -48,7 +48,7 @@ class CookiesList extends Component {
   renderAddDomain() {
     return (
       <div className='form-group'>
-        <form className='d-flex p-2' onSubmit={(e) => this.handleSubmit(e)}>
+        <form className='flex p-2' onSubmit={(e) => this.handleSubmit(e)}>
           <input
             className='form-control'
             placeholder='Add Domain'
@@ -71,13 +71,13 @@ class CookiesList extends Component {
   renderDomainList() {
     return Object.keys(this.props.domains).length > 0 ? (
       Object.values(this.props.domains).map((domain, index) => (
-        <div key={index} className='d-flex justify-content-between align-items-center'>
+        <div key={index} className='flex justify-between items-center'>
           <div
-            className='cookie-list-parent-item d-flex justify-content-between cursor-pointer w-100'
+            className='cookie-list-parent-item flex justify-between cursor-pointer w-100'
             onClick={() => this.renderCookiesListItem(domain)}
           >
             <div className='mr-5'>{domain.domain}</div>
-            <div className='d-flex justify-content-between align-items-center'>
+            <div className='flex justify-between items-center'>
               <div>{`${Object.keys(domain.cookies || {}).length} cookies`}</div>
             </div>
           </div>

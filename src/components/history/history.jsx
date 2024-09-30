@@ -50,7 +50,7 @@ const History = () => {
       Object.keys(history).length !== 0 && (
         <Dropdown.Item
           key={history.id}
-          className='history-option btn d-flex align-items-center mb-2 pt-2'
+          className='history-option btn flex items-center mb-2 pt-2'
           onClick={() => {
             openHistorySnapshot(history.id)
           }}

@@ -84,7 +84,7 @@ export default function RunAutomation() {
   const renderEndpointName = (endpointId) => {
     const hasIssues = !allPages?.[endpointId]?.description || !allPages?.[endpointId]?.sampleResponse;
     return (
-      <div className='d-flex justify-content-center align-items-center'>
+      <div className='flex justify-center items-center'>
         <span className={`api-label ${allPages?.[endpointId]?.requestType} request-type-bgcolor mr-2`}>
           {allPages?.[endpointId]?.requestType}
         </span>
@@ -268,13 +268,13 @@ export default function RunAutomation() {
           <h3 className='text-left'>Run Automation for {`${collectionName}`}</h3>
         </div>
         {endpointsIds.length === 0 ? (
-          <div className='p-3 d-flex flex-column justify-content-center'>
+          <div className='p-3 flex flex-column justify-center'>
             <span className='data-message'>No Endpoint has been found...</span>
           </div>
         ) : (
-          <div className='p-3 d-flex flex-column'>
-            <div className='d-flex align-items-center justify-content-between'>
-              <div className='checkbox-container d-flex align-items-center'>
+          <div className='p-3 flex flex-column'>
+            <div className='flex items-center justify-between'>
+              <div className='checkbox-container flex items-center'>
                 <span onClick={() => handleSelectAndDeselectAll(true)} className='ml-1 select-all mr-1 cursor-pointer'>
                   Select All
                 </span>
@@ -285,7 +285,7 @@ export default function RunAutomation() {
                 <div className='separation'></div>
               </div>
             </div>
-            <div className='mt-1 d-flex flex-column align-items-start justify-content-center'>
+            <div className='mt-1 flex flex-column items-start justify-center'>
               {endpointsIds.map((endpointId) => {
                 return (
                   <Form.Check
@@ -356,7 +356,7 @@ export default function RunAutomation() {
                 <option>Weekly</option>
               </Form.Control>
             </Form.Group>
-            <div className='d-flex justify-content-between'>
+            <div className='flex justify-between'>
               <Form.Group className='w-50 pr-2'>
                 <Form.Control as='select' value={runFrequency} onChange={(e) => setRunFrequency(e.target.value)}>
                   <option>Every day</option>
@@ -429,7 +429,7 @@ export default function RunAutomation() {
                   <span style={{ color: '#ff8000' }}>
                     Make sure to copy your personal access token now as you will not be able to see this again.
                   </span>
-                  <div className='d-flex mb-3'>
+                  <div className='flex mb-3'>
                     <Form.Control type='text' readOnly value={webhookResponse} />
                     <button className='btn btn-outline-secondary ml-2' onClick={() => copyWebhookResponse()}>
                       {webhookResponseCopied ? (
@@ -458,27 +458,27 @@ export default function RunAutomation() {
         )}
         {runType === 'manual' ? (
           automationLoading ? (
-            <button className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
+            <button className='btn btn-primary btn-sm font-12 flex justify-center items-center'>
               <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
               <span className='ml-1'>Running...</span>
             </button>
           ) : (
-            <button onClick={handleRunAutomation} className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
+            <button onClick={handleRunAutomation} className='btn btn-primary btn-sm font-12 flex justify-center items-center'>
               <IoIosPlay className='mr-1' />
               <span>Run</span>
             </button>
           )
         ) : runType === 'schedule' ? (
-          <button onClick={handleScheduleRun} className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'>
+          <button onClick={handleScheduleRun} className='btn btn-primary btn-sm font-12 flex justify-center items-center'>
             <IoIosPlay className='mr-1' />
             <span>Schedule Run</span>
           </button>
         ) : (
-          <div className='d-flex justify-content-between'>
+          <div className='flex justify-between'>
             <button
               onClick={generateToken}
               disabled={tokenGenerationInProgress}
-              className='btn btn-primary btn-sm font-12 d-flex justify-content-center align-items-center'
+              className='btn btn-primary btn-sm font-12 flex justify-center items-center'
             >
               <RiAiGenerate className='mr-1' />
               <span>Generate Token</span>

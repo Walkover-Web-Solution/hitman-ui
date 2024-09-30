@@ -21,7 +21,7 @@ export default function ShowIndentedSchema(props) {
             {parents.map((parentName, index) => {
                 return (
                     <div key={index}>
-                        <div className='d-flex align-items-center parent-accordion-container' onClick={() => handleArrowClick(parentName)}>
+                        <div className='flex items-center parent-accordion-container' onClick={() => handleArrowClick(parentName)}>
                             <IconButton variant='sm'>
                                 {!queryMutationState?.[parentName] ? <MdKeyboardArrowRight size={18} /> : <MdOutlineKeyboardArrowDown size={18} />}
                             </IconButton>

@@ -141,7 +141,7 @@ class SampleResponse extends Component {
       >
         {isDashboardRoute(this.props) ? (
           <div className='add-sample-response'>
-            <button className='adddescLink align-left d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.openAddForm({}, null, 'Add Sample Response')}>
+            <button className='adddescLink align-left flex items-center gap-1 icon-button px-2 py-1' onClick={() => this.openAddForm({}, null, 'Add Sample Response')}>
             <FaPlus /> Add Sample Response
             </button>
           </div>

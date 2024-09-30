@@ -62,7 +62,7 @@ export default function QueryTab(props) {
                     <div className='loading-schema'>
                         {[1, 2, 3, 4, 5, 6].map((item) => {
                             return (
-                                <div key={item} className='d-flex schema-box-container align-items-center gap-3 mt-2'>
+                                <div key={item} className='flex schema-box-container items-center gap-3 mt-2'>
                                     <div className='schema-box bg rounded-1'></div>
                                     <div className='bg send rounded-1'></div>
                                 </div>
@@ -70,7 +70,7 @@ export default function QueryTab(props) {
                         })}
                     </div>
                     :
-                    <div className='query-schema d-flex flex-column align-items-center justify-content-center'>
+                    <div className='query-schema flex flex-column items-center justify-center'>
                         <VscServerProcess className='text-grey' size={100} />
                         <span className='text-grey'>Explore data available from server</span>
                         <span className='text-grey'>Enter server URL to load schema using introspection and refresh it.</span>
@@ -87,9 +87,9 @@ export default function QueryTab(props) {
     }
 
     return (
-        <div className='d-flex justify-content-start w-100 graphql-container p-3'>
+        <div className='flex justify-content-start w-100 graphql-container p-3'>
             <div className='w-50 h-100 p-2 schema-container bg-white mr-2'>
-                <div className='d-flex justify-content-between align-items-center query-schema-head ml-1'>
+                <div className='flex justify-between items-center query-schema-head ml-1'>
                     <h6 className='text-grey'>Schema</h6>
                     <IconButton>
                         <MdOutlineRefresh className='text-grey' size={18} onClick={callIntrospectionQueryAPI} />

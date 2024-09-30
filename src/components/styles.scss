@@ -796,7 +796,6 @@ button.is_active {
     border-bottom: 0;
   }
   &.editor {
-    border: 1px solid $outline-color;
     background-color: #fff;
     border-radius: $border-radius;
     display: block !important;
@@ -932,15 +931,8 @@ button.is_active {
 .floating-menu {
   position: fixed;
   top: 50%;
-  left: 0; 
+  left: -42px; 
   transform: translateY(-50%); 
-
-  .biplus-icon {
-    position: absolute;
-    top: 50%;
-    left: -47px;
-    transform: translateY(-50%);
-  }
 }
 .bubble-menu {
   display: flex;

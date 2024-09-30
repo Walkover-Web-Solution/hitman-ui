@@ -47,13 +47,13 @@ function PublicPage() {
 
     return (
         <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
-            <div className={`page-wrapper d-flex flex-column ${data ? 'justify-content-between' : 'justify-content-center'}`}>
+            <div className={`page-wrapper flex flex-column ${data ? 'justify-between' : 'justify-center'}`}>
                 {data ? (
-                    <div className='pageText d-flex justify-content-center aling-items-start'>
+                    <div className='pageText flex justify-center aling-items-start'>
                         <RenderPageContent pageContent={data} />
                     </div>
                 ) : (
-                    <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+                    <div className='flex flex-column justify-center items-center empty-heading-for-page'>
                         <IoDocumentTextOutline size={140} color='gray' />
                         <span className='empty-line'>
                             {pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty

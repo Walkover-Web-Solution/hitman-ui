@@ -63,21 +63,21 @@ export default function RenderData(props) {
         const type = getType(singleId)
         if (type === 'collection') {
           return (
-            <div onClick={() => addIdInPathdata(singleId, 'collection')} key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
+            <div onClick={() => addIdInPathdata(singleId, 'collection')} key={index} className='folder-box flex justify-content-start items-center p-1'>
               <FaRegFolderClosed className='text-grey' size='14px' />
               <div className='ml-1 font-12'>{collections?.[singleId]?.name}</div>
             </div>
           )
         } else if (type === 'page') {
           return (
-            <div onClick={() => addIdInPathdata(singleId)} key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
+            <div onClick={() => addIdInPathdata(singleId)} key={index} className='folder-box flex justify-content-start items-center p-1'>
               <IoDocumentTextOutline className='text-grey' size='14px' />
               <div className='ml-1 font-12'>{pages?.[singleId]?.name}</div>
             </div>
           )
         } else if (type === 'version') {
           return pages?.[singleId]?.child.map((childId, childIndex) => (
-            <div onClick={() => addIdInPathdata(childId)} key={childIndex} className='folder-box d-flex justify-content-start align-items-center p-1'>
+            <div onClick={() => addIdInPathdata(childId)} key={childIndex} className='folder-box flex justify-content-start items-center p-1'>
               <IoDocumentTextOutline className='text-grey' size='14px' />
               <div className='ml-1 font-12'>{pages?.[childId]?.name}</div>
             </div>

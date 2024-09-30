@@ -56,10 +56,10 @@ const MoveModal = (props) => {
       </Modal.Header>
 
       <Modal.Body id='custom-delete-modal-body'>
-        <div className='d-flex flex-column align-items-center'>
+        <div className='flex flex-column items-center'>
           {orgsList.map((org, index) => (
             <div
-              className={`organization-box w-100 m-1 p-2 cursor-pointer d-flex justify-content-start align-items-center ${
+              className={`organization-box w-100 m-1 p-2 cursor-pointer flex justify-content-start items-center ${
                 selectedOrganization === org.id && 'selectedOrg'
               } ${props?.moveCollection?.orgId == org.id && 'disabled-org'}`}
               key={index}

@@ -141,12 +141,12 @@ export class DefaultViewModal extends Form {
   renderButtons() {
     return (
       <>
-        <div className='d-flex justify-content-center'>
+        <div className='flex justify-center'>
           {this.renderTestingButton()}
           {this.renderDocButton()}
         </div>
         {this.state.showPageForm.addPage && this.renderCollectionDetailsForm()}
-        <div className='info mt-5 d-flex align-items-center'>
+        <div className='info mt-5 flex items-center'>
          <InfoIcon className='mr-2' alt='' /> 
           <span>You can always choose to Test the API's or make the Testing API description</span>
         </div>

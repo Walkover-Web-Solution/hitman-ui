@@ -54,8 +54,10 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { MdArrowDropDown } from "react-icons/md";
 
-export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false }) {
+export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint = false }) {
 
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser
@@ -141,7 +143,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
         autolink: false
       })
     ],
-    ...(isEndpoint ? [{content: initial}] : []),
+    ...(isEndpoint ? [{ content: initial }] : []),
     onUpdate: ({ editor }) => {
       if (isEndpoint) {
         const html = editor.getHTML();
@@ -269,11 +271,11 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   };
 
   return (
-    <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
+    <div className={`textEditorContainer ${!isInlineEditor ? 'editor border-0' : ''}`}>
 
       {editor && (
 
-        <BubbleMenu className='bubble-menu px-2 border-0 d-flex align-items-center' tippyOptions={{ duration: 100 }} editor={editor} >
+        <BubbleMenu className='bubble-menu px-2 border-0 flex items-center' tippyOptions={{ duration: 100 }} editor={editor} >
           <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : ''}>
             <FaBold />
           </button>
@@ -307,202 +309,535 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
           >
             <GoTasklist />
           </button>
-          <Dropdown>
-            <Dropdown.Toggle className='text-direction' variant="light" id="alignment-dropdown">
-              {alignment === 'left' && <FaAlignLeft />}
-              {alignment === 'center' && <FaAlignCenter />}
-              {alignment === 'right' && <FaAlignRight />}
-              {alignment === 'justify' && <FaAlignJustify />}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => { setAlignment('left'); editor.chain().focus().setTextAlign('left').run(); }}>
-                <FaAlignLeft /> Left
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => { setAlignment('center'); editor.chain().focus().setTextAlign('center').run(); }}>
-                <FaAlignCenter /> Center
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => { setAlignment('right'); editor.chain().focus().setTextAlign('right').run(); }} >
-                <FaAlignRight /> Right
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => { setAlignment('justify'); editor.chain().focus().setTextAlign('justify').run(); }}>
-                <FaAlignJustify /> Justify
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <Dropdown className='create-table'>
-            <Dropdown.Toggle className='btn-light text-direction'>
-              {activeFontFamily()} <BiFontFamily />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('Inter').run()}
-                className={editor.isActive('textStyle', { fontFamily: 'Inter' }) ? 'is-active' : ''}
-                data-test-id="inter">
-                Inter
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('Comic Sans').run()}
-                className={
-                  editor.isActive('textStyle', { fontFamily: 'Comic Sans' })
-                    ? 'is-active'
-                    : ''
-                }
-                data-test-id="comic-sans">
-                Comic Sans
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('serif').run()}
-                className={editor.isActive('textStyle', { fontFamily: 'serif' }) ? 'is-active' : ''}
-                data-test-id="serif">
-                Serif
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('monospace').run()}
-                className={editor.isActive('textStyle', { fontFamily: 'monospace' }) ? 'is-active' : ''}
-                data-test-id="monospace">
-                Monospace
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('cursive').run()}
-                className={editor.isActive('textStyle', { fontFamily: 'cursive' }) ? 'is-active' : ''}
-                data-test-id="cursive">
-                Cursive
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('var(--title-font-family)').run()}
-                className={editor.isActive('textStyle', { fontFamily: 'var(--title-font-family)' }) ? 'is-active' : ''}
-                data-test-id="css-variable">
-                CSS variable
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('"Comic Sans"').run()}
-                className={editor.isActive('textStyle', { fontFamily: '"Comic Sans"' }) ? 'is-active' : ''}
-                data-test-id="comic-sans-quoted">
-                Comic Sans quoted
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <Dropdown className='create-table'>
-            <Dropdown.Toggle className='btn-light text-direction'>
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+            <MenuButton className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {alignment === 'left' && <FaAlignLeft />}
+                {alignment === 'center' && <FaAlignCenter />}
+                {alignment === 'right' && <FaAlignRight />}
+                {alignment === 'justify' && <FaAlignJustify />}
+                <MdArrowDropDown size={18} />
+              </MenuButton>
+            </div>
+
+            <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => { setAlignment('left'); editor.chain().focus().setTextAlign('left').run(); }}
+                      className={`block px-4 py-2 text-sm ${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+                    >
+                      <FaAlignLeft /> Left
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => { setAlignment('center'); editor.chain().focus().setTextAlign('center').run(); }}
+                      className={`block px-4 py-2 text-sm ${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+                    >
+                      <FaAlignCenter /> Center
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => { setAlignment('right'); editor.chain().focus().setTextAlign('right').run(); }}
+                      className={`block px-4 py-2 text-sm ${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+                    >
+                      <FaAlignRight /> Right
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => { setAlignment('justify'); editor.chain().focus().setTextAlign('justify').run(); }}
+                      className={`block px-4 py-2 text-sm ${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+                    >
+                      <FaAlignJustify /> Justify
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </Menu>
+          <Menu as="div" className="relative inline-block text-left create-table">
+            <div>
+              <MenuButton className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {activeFontFamily()} <BiFontFamily />
+                <MdArrowDropDown size={18} />
+              </MenuButton>
+            </div>
+
+            <MenuItems className="absolute right-0 mt-26 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setFontFamily('Inter').run()}
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} ${editor.isActive('textStyle', { fontFamily: 'Inter' }) ? 'is-active' : ''} block px-4 py-2 text-sm`}
+                      data-test-id="inter"
+                    >
+                      Inter
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setFontFamily('Comic Sans').run()}
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} ${editor.isActive('textStyle', { fontFamily: 'Comic Sans' }) ? 'is-active' : ''} block px-4 py-2 text-sm`}
+                      data-test-id="comic-sans"
+                    >
+                      Comic Sans
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setFontFamily('serif').run()}
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} ${editor.isActive('textStyle', { fontFamily: 'serif' }) ? 'is-active' : ''} block px-4 py-2 text-sm`}
+                      data-test-id="serif"
+                    >
+                      Serif
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setFontFamily('monospace').run()}
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} ${editor.isActive('textStyle', { fontFamily: 'monospace' }) ? 'is-active' : ''} block px-4 py-2 text-sm`}
+                      data-test-id="monospace"
+                    >
+                      Monospace
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setFontFamily('cursive').run()}
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} ${editor.isActive('textStyle', { fontFamily: 'cursive' }) ? 'is-active' : ''} block px-4 py-2 text-sm`}
+                      data-test-id="cursive"
+                    >
+                      Cursive
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setFontFamily('var(--title-font-family)').run()}
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} ${editor.isActive('textStyle', { fontFamily: 'var(--title-font-family)' }) ? 'is-active' : ''} block px-4 py-2 text-sm`}
+                      data-test-id="css-variable"
+                    >
+                      CSS variable
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setFontFamily('"Comic Sans"').run()}
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} ${editor.isActive('textStyle', { fontFamily: '"Comic Sans"' }) ? 'is-active' : ''} block px-4 py-2 text-sm`}
+                      data-test-id="comic-sans-quoted"
+                    >
+                      Comic Sans quoted
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </Menu>
+          <Menu as="div" className="relative inline-block text-left">
+          <MenuButton className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <BiFontColor />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <SketchPicker color={color} onChangeComplete={handleTextColor} />
-            </Dropdown.Menu>
-          </Dropdown>
-          <Dropdown className='create-table'>
-            <Dropdown.Toggle className='btn-light text-direction'>
+              <MdArrowDropDown size={18} />
+            </MenuButton>
+
+            <MenuItems className="absolute right-0 mt-26 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="p-2">
+                <SketchPicker color={color} onChangeComplete={handleTextColor} />
+              </div>
+            </MenuItems>
+          </Menu>
+          <Menu as="div" className="relative inline-block text-left">
+          <MenuButton className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <FaTable />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setShowTable(true)}>Create Table</Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().addRowBefore().run()} disabled={!editor.can().addRowBefore()}>
-                Add Row Before
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().addRowAfter().run()} disabled={!editor.can().addRowAfter()}>
-                Add Row After
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().deleteRow().run()} disabled={!editor.can().deleteRow()}>
-                Delete Row
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().deleteColumn().run()} disabled={!editor.can().deleteColumn()}>
-                Delete Column
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().addColumnBefore().run()} disabled={!editor.can().addColumnBefore()}>
-                Add Column Before
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().addColumnAfter().run()} disabled={!editor.can().addColumnAfter()}>
-                Add Column After
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().mergeCells().run()} disabled={!editor.can().mergeCells()}>
-                Merge Cell
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().splitCell().run()} disabled={!editor.can().splitCell()}>
-                Split Cell
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().deleteTable().run()} disabled={!editor.can().deleteTable()}>
-                Delete Table
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <Dropdown>
-            <Dropdown.Toggle className='text-direction' variant="light" id="heading-dropdown">
+              <MdArrowDropDown size={18} />
+            </MenuButton>
+
+            <MenuItems className="absolute mt-26 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
+              <div className="px-1 py-1">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => setShowTable(true)}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Create Table
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().addRowBefore().run()}
+                      disabled={!editor.can().addRowBefore()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Add Row Before
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().addRowAfter().run()}
+                      disabled={!editor.can().addRowAfter()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Add Row After
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().deleteRow().run()}
+                      disabled={!editor.can().deleteRow()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Delete Row
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().deleteColumn().run()}
+                      disabled={!editor.can().deleteColumn()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Delete Column
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().addColumnBefore().run()}
+                      disabled={!editor.can().addColumnBefore()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Add Column Before
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().addColumnAfter().run()}
+                      disabled={!editor.can().addColumnAfter()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Add Column After
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().mergeCells().run()}
+                      disabled={!editor.can().mergeCells()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Merge Cell
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().splitCell().run()}
+                      disabled={!editor.can().splitCell()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Split Cell
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().deleteTable().run()}
+                      disabled={!editor.can().deleteTable()}
+                      className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    >
+                      Delete Table
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </Menu>
+          <Menu as="div" className="relative inline-block text-left">
+            <MenuButton className="inline-flex justify-center items-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <HeadingIcon level={activeHeading} />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {[1, 2, 3, 4, 5, 6].map((level) => (
-                <Dropdown.Item key={level}>
-                  <button
-                    onClick={() => toggleHeading(level)}
-                    className={editor.isActive('heading', { level }) ? 'is-active' : ''}
-                  >
-                    <HeadingIcon level={level} /> Heading{level}
-                  </button>
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-          <Dropdown>
-            <Dropdown.Toggle className='text-direction' variant="light" id="additional-options-dropdown">
+              <MdArrowDropDown size={18} />
+            </MenuButton>
+
+            <MenuItems className="absolute z-10 mt-26 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                {[1, 2, 3, 4, 5, 6].map((level) => (
+                  <MenuItem key={level}>
+                    {({ active }) => (
+                      <button
+                        onClick={() => toggleHeading(level)}
+                        className={`${editor.isActive('heading', { level }) ? 'is-active bg-gray-100' : ''
+                          } block px-4 py-2 text-sm w-full text-left`}
+                      >
+                        <HeadingIcon level={level} /> Heading {level}
+                      </button>
+                    )}
+                  </MenuItem>
+                ))}
+              </div>
+            </MenuItems>
+          </Menu>
+          <Menu as="div" className="relative inline-block text-left">
+          <MenuButton className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <BsThreeDots />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => editor.chain().focus().undo().run()}>
-                <FaUndo /> Undo
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().redo().run()}>
-                <FaRedo /> Redo
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'is-active' : ''}>
-                <FaListUl /> Bullet List
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleOrderedList().run()} className={editor.isActive('orderedList') ? 'is-active' : ''}>
-                <FaListOl /> Numbered List
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleTaskList().run()} className={editor.isActive('taskList') ? 'is-active' : ''}>
-                <GoTasklist /> Task list
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                <FaRulerHorizontal /> Horizontal Rule
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'is-active' : ''}>
-                <FaCode /> Code Block
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'is-active' : ''}>
-                <LuTextQuote /> Quote
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+              <MdArrowDropDown size={18} />
+            </MenuButton>
+
+            <MenuItems className="absolute right-0 mt-26 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="px-1 py-1 ">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().undo().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700`}
+                    >
+                      <FaUndo className="mr-2" /> Undo
+                    </button>
+                  )}
+                </MenuItem>
+
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().redo().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700`}
+                    >
+                      <FaRedo className="mr-2" /> Redo
+                    </button>
+                  )}
+                </MenuItem>
+
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().toggleBulletList().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700 ${editor.isActive('bulletList') ? 'font-bold' : ''}`}
+                    >
+                      <FaListUl className="mr-2" /> Bullet List
+                    </button>
+                  )}
+                </MenuItem>
+
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700 ${editor.isActive('orderedList') ? 'font-bold' : ''}`}
+                    >
+                      <FaListOl className="mr-2" /> Numbered List
+                    </button>
+                  )}
+                </MenuItem>
+
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().toggleTaskList().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700 ${editor.isActive('taskList') ? 'font-bold' : ''}`}
+                    >
+                      <GoTasklist className="mr-2" /> Task List
+                    </button>
+                  )}
+                </MenuItem>
+
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().setHorizontalRule().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700`}
+                    >
+                      <FaRulerHorizontal className="mr-2" /> Horizontal Rule
+                    </button>
+                  )}
+                </MenuItem>
+
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700 ${editor.isActive('codeBlock') ? 'font-bold' : ''}`}
+                    >
+                      <FaCode className="mr-2" /> Code Block
+                    </button>
+                  )}
+                </MenuItem>
+
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                      className={`${active ? 'bg-gray-100' : ''
+                        } group flex items-center w-full px-2 py-2 text-sm text-gray-700 ${editor.isActive('blockquote') ? 'font-bold' : ''}`}
+                    >
+                      <LuTextQuote className="mr-2" /> Quote
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </Menu>
 
         </BubbleMenu>
       )}
 
       {editor && (
         <FloatingMenu className='floating-menu' tippyOptions={{ duration: 100 }} editor={editor}>
-          <Dropdown>
-            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
-              <BiPlus size={18} />
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}>
-                <LuHeading1 /> Heading 1
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}>
-                <LuHeading2 /> Heading 2
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}>
-                <LuHeading3 /> Heading 3
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'is-active' : ''}>
-                <FaListUl /> Bullet List
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleOrderedList().run()} className={editor.isActive('orderedList') ? 'is-active' : ''}>
-                <FaListOl /> Numbered List
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleTaskList().run()} className={editor.isActive('taskList') ? 'is-active' : ''}>
-                <GoTasklist /> Task list
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'is-active' : ''}>
-                <LuTextQuote /> Quote
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setShowImage(true)}>
-                <FaImage /> Images
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          <Menu as="div" className="relative inline-block text-left">
+            <MenuButton className="text-gray-900 bg-gray-300 focus:outline-none hover:bg-gray-400 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm p-1 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 rounded-full">
+                <BiPlus size={18} />
+              </MenuButton>
+
+            <MenuItems className="absolute right-0 mt-26 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="px-1 py-1">
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm ${editor.isActive('heading', { level: 1 }) ? 'is-active' : ''
+                        }`}
+                      onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                    >
+                      <LuHeading1 /> Heading 1
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm ${editor.isActive('heading', { level: 2 }) ? 'is-active' : ''
+                        }`}
+                      onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                    >
+                      <LuHeading2 /> Heading 2
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 ${editor.isActive('heading', { level: 3 }) ? 'is-active' : ''
+                        }`}
+                      onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                    >
+                      <LuHeading3 /> Heading 3
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm ${editor.isActive('bulletList') ? 'is-active' : ''
+                        }`}
+                      onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    >
+                      <FaListUl /> Bullet List
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm ${editor.isActive('orderedList') ? 'is-active' : ''
+                        }`}
+                      onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                    >
+                      <FaListOl /> Numbered List
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm ${editor.isActive('taskList') ? 'is-active' : ''
+                        }`}
+                      onClick={() => editor.chain().focus().toggleTaskList().run()}
+                    >
+                      <GoTasklist /> Task list
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm ${editor.isActive('blockquote') ? 'is-active' : ''
+                        }`}
+                      onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                    >
+                      <LuTextQuote /> Quote
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                      onClick={() => setShowImage(true)}
+                    >
+                      <FaImage /> Images
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </Menu>
 
         </FloatingMenu>
       )}

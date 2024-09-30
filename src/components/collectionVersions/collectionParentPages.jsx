@@ -224,19 +224,19 @@ const CollectionParentPages = (props) => {
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
           <button tabIndex={-1} className={`px-0 w-full ${expanded ? 'expanded' : ''}`}>
             <div
-              className={`active-select flex align-items-center justify-between rounded my-1 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
+              className={`active-select flex items-center justify-between rounded my-1 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
               style={backgroundStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
-                <div className='flex td-name ml-1 align-items-center'>
+              <div className={`flex items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
+                <div className='flex td-name ml-1 items-center'>
                   <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} flex justify-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
                     <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
                     <IoDocumentTextOutline size={18} className='collection-icons' />
                   </span>
                   <div
-                    className={`flex align-items-center name-parent-page ${isOnPublishedPage() ? '' : ''}`}
+                    className={`flex items-center name-parent-page ${isOnPublishedPage() ? '' : ''}`}
                     draggable={!isUserOnPublishedPage}
                     onDragOver={props.handleOnDragOver}
                     onDragStart={() => props.onDragStart(pageId)}
@@ -256,8 +256,8 @@ const CollectionParentPages = (props) => {
               </div>
 
               {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-                <div className='sidebar-item-action flex align-items-center'>
-                  <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
+                <div className='sidebar-item-action flex items-center'>
+                  <div className='flex items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
                     <IconButtons>
                       <FiPlus />
                     </IconButtons>

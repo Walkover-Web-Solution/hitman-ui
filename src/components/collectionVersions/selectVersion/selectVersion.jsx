@@ -49,10 +49,10 @@ const VersionInput = (props) => {
   }
 
   return (
-    <div className='d-flex justify-content-start align-items-center'>
+    <div className='flex justify-content-start items-center'>
       {props?.showEdit === props?.index ? (
         <OutsideClickHandler onOutsideClick={handleOutsideClickOfInputField}>
-          <div className='d-flex justify-content-start align-items-center'>
+          <div className='flex justify-content-start items-center'>
             <input
               type='text'
               className='form-control version-input col-form-label-sm'
@@ -67,7 +67,7 @@ const VersionInput = (props) => {
           </div>
         </OutsideClickHandler>
       ) : (
-        <div className='d-flex justify-content-start align-items-center'>
+        <div className='flex justify-content-start items-center'>
           <div className='version-title'>{pages?.[props?.singleChildId]?.name}</div>
           <BiSolidPencil size={14} className='cursor-pointer ml-1' onClick={handleEditClick} />
           {pages[props?.singleChildId]?.state === 1 && <span class='badge badge-primary ml-1'>Default</span>}
@@ -112,7 +112,7 @@ const AddVersion = (props) => {
   }
 
   return (
-    <div className='version-modal-footer d-flex justify-content-start'>
+    <div className='version-modal-footer flex justify-content-start'>
       <input
         placeholder='Add New Version'
         type='text'
@@ -161,7 +161,7 @@ export default function SelectVersion(props) {
         {pages[props?.parentPageId]?.child?.map((singleChildId, index) => {
           return (
             <div>
-              <div className='d-flex justify-content-between align-items-center'>
+              <div className='flex justify-between items-center'>
                 <VersionInput {...props} setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
                 <div>
                   {pages?.[singleChildId]?.state !== 1 && (

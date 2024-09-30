@@ -39,7 +39,7 @@ const EnvironmentModal = (props) => {
 
   const renderManageEnvironmentModal = () => {
     return Object.keys(environment.environments).map((environmentId) => (
-      <div className='mb-2 d-flex justify-content-center' key={environmentId}>
+      <div className='mb-2 flex justify-center' key={environmentId}>
         <ListGroup.Item style={{ width: '98%', float: 'left' }} key={environmentId} onClick={() => handleEdit(environment.environments[environmentId])}>
           {environment.environments[environmentId]?.name}
         </ListGroup.Item>
@@ -50,9 +50,9 @@ const EnvironmentModal = (props) => {
 
   const renderNoEnvironmentModule = () => {
     return (
-      <div className='align-items-center'>
-        <div className='text-center m-2 align-items-center'>No Environment Available</div>
-        <div className='justify-content-center d-flex text-center'>
+      <div className='items-center'>
+        <div className='text-center m-2 items-center'>No Environment Available</div>
+        <div className='justify-center flex text-center'>
           <button className='btn btn-outline orange p-2' onClick={() => props.handle_environment_modal('Add new Environment')}>
             Add Environment
           </button>

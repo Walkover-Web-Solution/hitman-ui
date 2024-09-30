@@ -81,8 +81,8 @@ const SideBar = () => {
 
     return (
       <>
-        <div className='hm-sidebar-header d-flex justify-content-between mb-2 align-items-center'>
-          <div className='td-header gap-2 d-flex align-items-center'>
+        <div className='hm-sidebar-header flex justify-between mb-2 items-center'>
+          <div className='td-header gap-2 flex items-center'>
             {(collections[collectionKeys[0]]?.favicon || collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
               <div className='hm-sidebar-logo'>
                 <img
@@ -141,7 +141,7 @@ const SideBar = () => {
   const renderSearch = () => {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     return (
-      <div tabIndex={0} className='flex align-items-center border my-1 p-1 gap-2 rounded search-container w-full focus:ring focus:ring-violet-300'>
+      <div tabIndex={0} className='flex items-center border my-1 p-1 gap-2 rounded search-container w-full focus:ring focus:ring-violet-300'>
         <SearchIcon />
         <input
           ref={inputRef}
@@ -204,7 +204,7 @@ const SideBar = () => {
               (page, index) =>
                 Object.keys(page).length !== 0 &&
                 !(page?.type === 2 || page?.type === 0) && (
-                  <div className='btn d-flex align-items-center mb-2' onClick={() => openPage(page.id)} key={index}>
+                  <div className='btn flex items-center mb-2' onClick={() => openPage(page.id)} key={index}>
                     <div>
                       <i className='uil uil-file-alt' aria-hidden='true' />
                     </div>
@@ -244,7 +244,7 @@ const SideBar = () => {
             filteredEndpoints.map(
               (endpoint, index) =>
                 Object.keys(endpoint).length !== 0 && (
-                  <div className='btn d-flex align-items-center mb-2' onClick={() => openEndpoint(endpoint.id)} key={index}>
+                  <div className='btn flex items-center mb-2' onClick={() => openEndpoint(endpoint.id)} key={index}>
                     <div className={`api-label lg-label ${endpoint.requestType}`}>
                       <div className='endpoint-request-div'>{endpoint.requestType}</div>
                     </div>
@@ -271,7 +271,7 @@ const SideBar = () => {
   const renderHistoryItem = (history) => {
     return (
       Object.keys(history).length !== 0 && (
-        <div key={history.id} className='btn d-flex align-items-center mb-2' onClick={() => openHistorySnapshot(history?.id)}>
+        <div key={history.id} className='btn flex items-center mb-2' onClick={() => openHistorySnapshot(history?.id)}>
           <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
             <div className='endpoint-request-div'>{history?.endpoint?.requestType}</div>
           </div>
@@ -322,7 +322,7 @@ const SideBar = () => {
           ) : null}
         </div>
       ) : (
-        <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
+        <div className='flex justify-center items-center h-100 flex-d-col'>
           <img src={NoFound} alt='' />
           <span className='font-weight-700'>No Results</span>
         </div>

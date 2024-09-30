@@ -77,7 +77,7 @@ class UpdateStatus extends Component {
       <div>
         {updateStatusDisplay && (
           <div className='update-status-component px-3 py-2'>
-            <div className='d-flex align-items-center'>
+            <div className='flex items-center'>
               {showSpinner && <Spinner className=' mr-2 ' animation='border' size='sm' />}
               <span className='m-0'>
                 <strong>{message}</strong>

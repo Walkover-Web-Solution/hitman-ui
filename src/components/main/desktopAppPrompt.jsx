@@ -67,7 +67,7 @@ function DesktopAppDownloadModal(props) {
             <li>Extendend capabilites</li>
           </ol>
         </Modal.Body>
-        <Modal.Footer className='text-center justify-content-center'>
+        <Modal.Footer className='text-center justify-center'>
           <button onClick={handleDownloadClick} disabled={isAppInstalled} className='btn btn-primary'>
             Download Desktop App
           </button>

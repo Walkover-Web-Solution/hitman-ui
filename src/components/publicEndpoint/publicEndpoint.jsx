@@ -253,12 +253,12 @@ class PublicEndpoint extends Component {
     const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
-        <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'public-navbar d-flex'}>
+        <div className={this.state.isSticky ? 'flex public-navbar stickyNav' : 'public-navbar flex'}>
           {/* <div className='entityTitle'>
             {this.state.currentEntityName}
           </div> */}
           {isCTAandLinksPresent && (
-            <div className='d-flex align-items-center'>
+            <div className='flex items-center'>
               {links.map((link, index) => (
                 <div key={`link-${index}`}>
                   <label
@@ -315,7 +315,7 @@ class PublicEndpoint extends Component {
               <Modal.Title>API FeedBack</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <form className='form-group d-flex flex-column'>
+              <form className='form-group flex flex-column'>
                 <label>
                   User Name:
                   <input type='text' name='name' className='form-control w-75 mb-2' />
@@ -545,7 +545,7 @@ class PublicEndpoint extends Component {
                   )}
 
                   {/* {this.displayCTAandLink()} */}
-                  {/* <div className='d-flex flex-row justify-content-start'>
+                  {/* <div className='flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}

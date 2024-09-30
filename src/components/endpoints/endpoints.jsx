@@ -176,13 +176,13 @@ const Endpoints = (props) => {
         onDragEnd={(e) => props.onDragEnd(e)}
         style={props.draggingOverId === endpointId ? { borderTop: '3px solid red'} : null}
       >
-        <div className='sidebar-toggle d-flex justify-content-between'>
+        <div className='sidebar-toggle flex justify-between'>
           <button className='pl-0 w-full'>
-            <div className={`side-bar align-items-center flex rounded justify-between ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-              <button className={`flex align-items-center w-full ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
+            <div className={`side-bar items-center flex rounded justify-between ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+              <button className={`flex items-center w-full ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
                 {displayEndpointName(endpointId)}
               </button>
-              <div className='endpoint-icons align-items-center'>
+              <div className='endpoint-icons items-center'>
                 {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
                 </div>
               </div>

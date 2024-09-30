@@ -132,7 +132,7 @@ const CodeTemplate = (props) => {
   }, [codeSnippet])
 
   const getClassForLanguages = (key) => {
-    const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
+    const commonClass = 'mr-2 flex d-mflex flex-column justify-center items-center'
     let classToReturn = key === selectedLanguage ? 'active ' + commonClass : commonClass
     return props.theme !== 'light' ? classToReturn + ' ' : classToReturn
   }
@@ -154,10 +154,10 @@ const CodeTemplate = (props) => {
         >
           <div className='inner-editor'>
             <Col id='code-window-sidebar' xs={12} className='px-3 pt-3 pb-1'>
-              <div className='code-heading mb-3 d-flex align-items-center'>
+              <div className='code-heading mb-3 flex items-center'>
                 <span className={props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
                 {props.showClosebtn && (
-                  <div className='d-flex justify-content-end flex-grow-1'>
+                  <div className='flex justify-content-end flex-grow-1'>
                     <IconButton>
                       <RiCloseLine
                         color='black'
@@ -170,7 +170,7 @@ const CodeTemplate = (props) => {
                   </div>
                 )}
               </div>
-              <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
+              <div className='select-code-wrapper flex items-center mb-3 img'>
                 {primaryLanguages.map((key) => {
                   const LanguageIcon = languages[key].imagePath
                   return (
@@ -189,7 +189,7 @@ const CodeTemplate = (props) => {
                     className={secondaryLanguages.includes(selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}
                   >
                     {primaryLanguages.includes(selectedLanguage) ? (
-                      <div className='d-flex flex-column '>
+                      <div className='flex flex-column '>
                         <span>
                           <BsThreeDots />
                         </span>

@@ -171,7 +171,7 @@ const Redirections = () => {
     const parentPageChildIds = pages?.[pageId]?.child || []
     return (
       <div className='mt-4'>
-        <div className='page-heading-container cursor-pointer d-flex align-items-center' onClick={() => setLatestUrlForPage(pageId)}>
+        <div className='page-heading-container cursor-pointer flex items-center' onClick={() => setLatestUrlForPage(pageId)}>
           <IoDocumentTextOutline size={14} className='mb-1' />
           <span className='ml-1 page-heading page-heading parent-page-heading'>{pages?.[pageId]?.name}</span>
         </div>
@@ -185,7 +185,7 @@ const Redirections = () => {
     return (
       <div className='mt-1'>
         <div className='page-heading-container cursor-pointer' onClick={() => setLatestUrlForPage(subPageId)}>
-          <span className='page-heading page-heading d-flex align-items-center'>
+          <span className='page-heading page-heading flex items-center'>
             <IoDocumentTextOutline size={14} className='mb-1' />
             <span className='ml-1 page-heading page-heading'>{pages?.[subPageId]?.name}</span>
           </span>
@@ -208,7 +208,7 @@ const Redirections = () => {
     }
 
     return (
-      <div className='mt-1 page-heading-container cursor-pointer d-flex align-items-center' onClick={() => setLatestUrlForPage(endpointId)}>
+      <div className='mt-1 page-heading-container cursor-pointer flex items-center' onClick={() => setLatestUrlForPage(endpointId)}>
         <span className='mr-1 page-heading'>{pages?.[endpointId]?.name}</span>
         {getRequestTypeIcon()}
       </div>
@@ -302,15 +302,15 @@ const Redirections = () => {
             </tbody>
           </table>
         ) : (
-          <div className='empty-table-heading d-flex justify-content-center align-items-center'> No Data is present here </div>
+          <div className='empty-table-heading flex justify-center items-center'> No Data is present here </div>
         )}
       </div>
     )
   }
 
   return (
-    <div className='redirections d-flex h-100'>
-      <div className='d-flex justify-content-start sidebar-pages-container mb-4' >
+    <div className='redirections flex h-100'>
+      <div className='flex justify-content-start sidebar-pages-container mb-4' >
         <div className='p-4'>
         <button className='btn position-absolute back-button-api-redirect btn-sm rounded-circle icon-button' onClick={handleBack}>
           <FaArrowLeft />
@@ -319,22 +319,22 @@ const Redirections = () => {
           </div>
       </div>
       <div className='separation'></div>
-      <div className='d-flex justify-content-center redirection-table-container mt-4'>
+      <div className='flex justify-center redirection-table-container mt-4'>
         <div className='main-container'>
           <h3>
             {collections?.[params.collectionId]?.name.charAt(0).toUpperCase() + collections?.[params.collectionId]?.name.slice(1)}{' '}
             Redirections
           </h3>
           <div className='form'>
-            <div className='d-flex justify-content-center flex-grow-1'>
-              <div className='d-flex flex-column flex-grow-1'>
+            <div className='flex justify-center flex-grow-1'>
+              <div className='flex flex-column flex-grow-1'>
                 <input ref={userPathRef} type='text' className=' h-100' id='part2' placeholder='Slug' />
                 {errors.path && <small className='text-danger'>{errors.path}</small>}
                 <span className='mt-1 additional-info'>
                   Domain - <span className='domain-name'>{visiblePath}</span>
                 </span>
               </div>
-              <div className='d-flex flex-column flex-grow-1 ml-2'>
+              <div className='flex flex-column flex-grow-1 ml-2'>
                 <input size='sm' disabled type='text' className='' placeholder='Redirection URL' value={latestUrl} />
                 {errors.latestUrl && <small className='text-danger'>{errors.latestUrl}</small>}
                 <span className='mt-1 additional-info'>Click on the pages and endpoints to add the redirection URL</span>
