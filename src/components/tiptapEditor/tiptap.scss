@@ -1,3 +1,4 @@
+
 .tippy-box {
     border: 0 !important;
 }
@@ -28,60 +29,50 @@
     background-color: white;
     border: 1px solid #e0e0e0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 10px 0;
-    z-index: 1000;
-    position: absolute;
+    z-index: 1;
 
-}
+    ul {
+        list-style: none;
+        width: 100%;
+        max-height: 300px;
+    }
 
-.slash-menu ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-height: 300px;
+    li {
+        padding: 6px 15px;
+        transition: background-color 0.2s;
+        box-sizing: border-box;
+
+        &:focus {
+            outline: none;
+            background-color: #f4f4f4;
+        }
+
+        &:hover {
+            background-color: #f4f4f4;
+        }
+    }
+
+    .slash-menu-icon {
+        margin-right: 22px;
+        margin-left: 10px;
+    }
+
+    .menu-label {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .menu-description {
+        font-size: 12px;
+        color: #888;
+    }
 }
 
 .overflow-auto {
-    scrollbar-color: rgb(0 0 0 / 21%) #f1f1f1;
+    scrollbar-color: rgba(0, 0, 0, 0.21) #f1f1f1;
     scrollbar-width: thin;
-}
-
-.slash-menu li {
-    padding: 6px 15px;
-    transition: background-color 0.2s;
-    box-sizing: border-box;
-}
-
-.slash-menu li:focus {
-    outline: none;
-    background-color: #f4f4f4;
-}
-
-.slash-menu li:hover {
-    background-color: #f4f4f4;
-}
-
-.slash-menu .slash-menu-icon {
-    margin-right: 22px;
-    margin-left: 10px;
-}
-
-.slash-menu .menu-item-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.slash-menu .menu-label {
-    font-weight: 500;
-    font-size: 14px;
-}
-
-.slash-menu .menu-description {
-    font-size: 12px;
-    color: #888;
-    margin-top: 1px;
 }
 
 
