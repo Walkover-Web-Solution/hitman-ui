@@ -229,21 +229,16 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
       const result = await pageApiService.uploadFiles(formData);
       result.data.files.forEach((item) => {
         if (item.type.startsWith('image')) {
-          editor.chain().focus().insertContent(`<img src="${item.url}" alt="${item.originalName}" />`).run();
-        } 
-        else if (item.type.startsWith('video')) {
-          editor.chain().focus().insertContent(`
-            <video controls>
-              <source src="${item.url}" type="${item.type}">
-              Your browser does not support the video tag.
-            </video>
-          `).run();
+          editor.chain().focus().insertContent(`<div><img src="${item.url}" alt="${item.originalName}" /><p></p></div>`).run();
         } 
         else {
           editor.chain().focus().insertContent(`
-            <a href="${item.url}" target="_blank">
-              <strong>Download File: ${item.originalName}</strong>
-            </a>
+            <div>
+              <a href="${item.url}" target="_blank">
+                <strong>Download File: ${item.originalName}</strong>
+              </a>
+              <p></p>
+            </div>
           `).run();
         }
         editor.commands.setTextSelection(editor.state.doc.content.size);
@@ -354,7 +349,19 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
                 setShowLink(false);
               }
               if (showImage && ImageUrl) {
-                editor.chain().focus().setImage({ src: ImageUrl }).run();
+                const fileExtension = ImageUrl.split('.').pop().toLowerCase();
+                const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+                if (imageExtensions.includes(fileExtension)) { 
+                  editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
+                } else {
+                  editor.chain().focus().insertContent(`
+                    <a href="${ImageUrl}" target="_blank">
+                      <strong>Download File: ${ImageUrl.split('/').pop()}</strong>
+                    </a>
+                    <p></p>
+                  `).run();
+                }
+                setImageUrl('');
                 setShowImage(false);
               }
             }}
