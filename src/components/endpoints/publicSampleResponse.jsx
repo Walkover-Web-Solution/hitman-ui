@@ -16,34 +16,11 @@ class PublicSampleResponse extends Component {
       },
       isExpanded: false,
       maxHeight: 300,
-      showExpandButton: true,
     };
-    this.toggleExpand = this.toggleExpand.bind(this);
   }
 
   componentDidMount() {
     this.updateBackgroundStyle();
-    this.checkContentHeight();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.sample_response_array !== this.props.sample_response_array || prevState.isExpanded !== this.state.isExpanded) {
-      this.checkContentHeight();
-    }
-  }
-
-  checkContentHeight() {
-    const contentElement = document.querySelector('.sample-response .tab-pane'); 
-    if (contentElement) {
-        const contentHeight = contentElement.scrollHeight;
-        const { maxHeight } = this.state;
-
-        const shouldShowExpandButton = contentHeight > maxHeight;
-
-        if (shouldShowExpandButton !== this.state.showExpandButton) {
-            this.setState({ showExpandButton: shouldShowExpandButton });
-        }
-    }
   }
 
   updateBackgroundStyle() {
@@ -82,25 +59,25 @@ class PublicSampleResponse extends Component {
     }
   }
 
-  toggleExpand() {
-    this.setState(prevState => ({ isExpanded: !prevState.isExpanded }));
-  }
-
   render() {
-    const { isExpanded, maxHeight, showExpandButton } = this.state;
+    const { maxHeight } = this.state;
     const contentStyle = {
-      maxHeight: isExpanded ? 'none' : `${maxHeight}px`,
-      overflow: 'hidden',
+      maxHeight: `${maxHeight}px`,
     };
     return (
       <>
         <Style>
           {`
           .sample-response nav.nav.nav-tabs a.active {
-                background: ${this.props.publicCollectionTheme};
-                color:#fff;
-                opacity: 0.9;
-              } 
+            background: ${this.props.publicCollectionTheme};
+            color:#fff;
+            opacity: 0.9;
+          }
+
+          .overflow-auto {
+            scrollbar-color: rgb(0 0 0 / 21%) #f1f1f1; 
+            scrollbar-width: thin; 
+          }
           `}
         </Style>
         <div className='pubSampleResponse'>
@@ -125,15 +102,10 @@ class PublicSampleResponse extends Component {
                   }
                 >
 
-                  <div style={contentStyle}>
+                  <div style={contentStyle} className="overflow-auto">
                     <div>{sampleResponse.description}</div>
                     <div >{this.showSampleResponseBody(sampleResponse.data)}</div>
                   </div>
-                  {showExpandButton && (
-                    <div className="expand-btn cursor-pointer " onClick={this.toggleExpand}>
-                      {isExpanded ? 'Show Less' : 'Show More'}
-                    </div>
-                  )}
                 </Tab>
               ))}
             </Tabs>

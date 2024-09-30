@@ -353,7 +353,7 @@ const Page = () => {
                                         <span>Publish</span>
                                         <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>B</span></> : <span className="font-10">Ctrl + B</span>}</span>
                                     </Dropdown.Item>
-                                    {isPublished && <Dropdown.Item
+                                    {pages?.[pageId]?.isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
                                         className="p-1 px-2 font-12 d-flex justify-content-between align-items-center unpublish-page "
                                     >
