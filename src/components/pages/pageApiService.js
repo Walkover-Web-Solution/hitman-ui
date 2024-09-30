@@ -52,14 +52,14 @@ export function dragAndDropApi(body) {
 }
 
 export function deleteFiles(path) {
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/delete/multipleFiles`, {
     data: { imagePath: path },
   });
 }
 
 export function uploadFiles(formData) {
-  const apiUrl = import.meta.env.VITE_API_URL
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/upload/file`, formData);
 }
 
