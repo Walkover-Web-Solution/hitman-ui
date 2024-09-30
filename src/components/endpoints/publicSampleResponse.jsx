@@ -58,9 +58,20 @@ class PublicSampleResponse extends Component {
       }
     }
   }
+  groupByStatus() {
+    const groupedResponses = this.props.sample_response_array.reduce((acc, curr) => {
+      if (!acc[curr.status]) {
+        acc[curr.status] = [];
+      }
+      acc[curr.status].push(curr);
+      return acc;
+    }, {});
+    return groupedResponses;
+  }
 
   render() {
     const { maxHeight } = this.state;
+    const groupedResponses = this.groupByStatus();
     const contentStyle = {
       maxHeight: `${maxHeight}px`,
     };
@@ -85,26 +96,30 @@ class PublicSampleResponse extends Component {
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
           </div>
           <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
-            <Tabs id='uncontrolled-tab-example' aria-hidden="true" >
-              {this.props.sample_response_array.map((sampleResponse, key) => (
+            <Tabs id="uncontrolled-tab-example" aria-hidden="true">
+              {Object.keys(groupedResponses).map((status, key) => (
                 <Tab
                   key={key}
-                  eventKey={sampleResponse.status}
+                  eventKey={status}
                   title={
-                    getHighlightsData(this.props, 'sampleResponse', sampleResponse.status) ? (
+                    getHighlightsData(this.props, 'sampleResponse', status) ? (
                       <span>
-                        {sampleResponse.status}
-                        <i className='fas fa-circle' />
+                        {status}
+                        <i className="fas fa-circle" />
                       </span>
                     ) : (
-                      sampleResponse.status
+                      status
                     )
                   }
                 >
-
-                  <div style={contentStyle} className="overflow-auto">
-                    <div>{sampleResponse.description}</div>
-                    <div >{this.showSampleResponseBody(sampleResponse.data)}</div>
+                  <div style={contentStyle}  className="overflow-auto">
+                    {groupedResponses[status].map((sampleResponse, idx) => (
+                      <div key={idx}>
+                        <div>{sampleResponse.description}</div>
+                        <div>{this.showSampleResponseBody(sampleResponse.data)}</div>
+                        {idx < groupedResponses[status].length - 1 && <hr />}
+                      </div>
+                    ))}
                   </div>
                 </Tab>
               ))}
