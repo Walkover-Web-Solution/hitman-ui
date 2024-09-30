@@ -132,7 +132,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
       }),
       Text,
       Placeholder.configure({
-        placeholder: 'Write your text here …',
+        placeholder: `Write something, type '/' for commands...`,
       }),
       Table.configure({
         resizable: true,
@@ -275,7 +275,7 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
             multiple 
             onChange={(e) => onFileChange(e)} 
           />
-          <div className='custom-or'>OR</div>
+          <div className='custom-or font-14'>OR</div>
         </div>
       </>
   );
@@ -316,21 +316,24 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
           </div>
         ) : (
           <>
-            {showImage && (
-              <div className='form-group mb-0'>
-                <div className='favicon-uploader'>{renderUploadModule()}</div>
-              </div>
-            )}
+            {/* {showImage && (
+              
+            )} */}
             {(showImage || showLink) && (
-              <div className='form-group'>
-                <label>URL</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  value={showImage ? ImageUrl : linkUrl}
-                  onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
-                />
-              </div>
+                <div className='form-group upload-modal'>
+                  <div className='form-group mb-0'>
+                    <div className='favicon-uploader'>{renderUploadModule()}</div>
+                  </div>
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <label className='m-2'>URL</label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      value={showImage ? ImageUrl : linkUrl}
+                      onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
+                    />
+                  </div>
+                </div>
             )}
             {showTable && (
               <div className='row'>
