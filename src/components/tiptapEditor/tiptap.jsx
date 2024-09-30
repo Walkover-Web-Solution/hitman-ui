@@ -219,7 +219,6 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
   }
 
   const handleFileUpload = async (files) => {
-    debugger
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i]);

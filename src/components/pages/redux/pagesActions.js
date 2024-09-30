@@ -197,7 +197,6 @@ export const removeContent = async (collectionPath) => {
   try {
     const res = await pageApiService.deleteFiles(collectionPath);
     toast.success('Content deleted successfully');
-    console.log('Deleted content data:', res.data);
   } catch (error) {
     console.error('Error deleting content:', error);
     toast.error('Error deleting content');
