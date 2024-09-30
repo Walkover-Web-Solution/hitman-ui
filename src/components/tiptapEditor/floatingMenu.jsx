@@ -3,18 +3,18 @@ import { FloatingMenu } from '@tiptap/react';
 import { Dropdown } from 'react-bootstrap';
 import { BiPlus } from 'react-icons/bi';
 import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from 'react-icons/lu';
-import { FaListUl, FaListOl } from 'react-icons/fa';
+import { FaListUl, FaListOl,  FaImage, } from 'react-icons/fa';
 import { GoTasklist } from 'react-icons/go';
 import '../styles.scss'
 import './tiptap.scss'
 
-export default function FloatingMenuComponent({ editor }) {
+export default function FloatingMenuComponent({ editor , showImage , setShowImage }) {
     return (
         <FloatingMenu className="floating-menu" tippyOptions={{ duration: 100 }} editor={editor}>
             <Dropdown>
-                <Dropdown.Toggle variant="light" id="dropdown-basic" className="biplus-icon p-1 rounded-circle">
-                    <BiPlus size={18} />
-                </Dropdown.Toggle>
+                {(!showImage) ? <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
+                  <BiPlus size={18} />
+                </Dropdown.Toggle> : ''}
                 <Dropdown.Menu>
                     <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
                         <LuHeading1 /> Heading 1
@@ -36,6 +36,9 @@ export default function FloatingMenuComponent({ editor }) {
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'is-active' : ''}>
                         <LuTextQuote /> Quote
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setShowImage(true)}>
+                        <FaImage /> Files
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>

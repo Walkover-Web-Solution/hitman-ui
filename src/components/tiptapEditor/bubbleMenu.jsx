@@ -9,13 +9,14 @@ import { BiFontColor, BiFontFamily } from 'react-icons/bi';
 import { SketchPicker } from 'react-color';
 import { BsThreeDots } from 'react-icons/bs';
 import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from 'react-icons/lu';
+import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
+import pageApiService from '../pages/pageApiService'
 
-export default function BubbleMenuComponent({ editor }) {
+export default function BubbleMenuComponent({ editor,pathData,loading,setLoading , showImage , setShowImage }) {
     const [alignment, setAlignment] = useState('left');
     const [color, setColor] = useState("");
     const [showTable, setShowTable] = useState(false)
     const [showLink, setShowLink] = useState(false)
-    const [showImage, setShowImage] = useState(false)
     const [linkUrl, setLinkUrl] = useState('')
     const [ImageUrl, setImageUrl] = useState('')
     const [row, setRow] = useState('3')
@@ -67,6 +68,82 @@ export default function BubbleMenuComponent({ editor }) {
                 return <FaHeading />;
         }
     };
+    const handleFileUpload = async (files) => {
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+        }
+        formData.append('pathData', pathData);
+        setLoading(true);
+        try {
+        const result = await pageApiService.uploadFiles(formData);
+        result.data.files.forEach((item) => {
+            if (item.type.startsWith('image')) {
+            editor.chain().focus().insertContent(`<div><img src="${item.url}" alt="${item.originalName}" /><p></p></div>`).run();
+            } 
+            else {
+            editor.chain().focus().insertContent(`
+                <div>
+                <a href="${item.url}" target="_blank">
+                    <strong>Download File: ${item.originalName}</strong>
+                </a>
+                <p></p>
+                </div>
+            `).run();
+            }
+            editor.commands.setTextSelection(editor.state.doc.content.size);
+        });
+        setLoading(false);
+        setShowImage(false);
+        } catch (error) {
+        setLoading(false);
+        console.error('Error uploading files:', error);
+        }
+    };
+
+    const onFileChange = (e) => {
+        const selectedFiles = e.target.files;
+        if (selectedFiles.length > 0) {
+            handleFileUpload(selectedFiles); 
+        }
+    };
+
+    const getDisabledStyle = (disabled) => (disabled ? { cursor: 'not-allowed', opacity: 0.4 } : { cursor: 'pointer' })
+
+    const renderUploadModule = (disabled) => (
+        <>
+            <div className='favicon-container'>
+            <label className='font-icon' style={getDisabledStyle(disabled)} htmlFor='upload-button'>
+                <UploadIcon />
+            </label>
+            <input
+                type='file'
+                id='upload-button'
+                disabled={disabled}
+                style={{ display: 'none' }}
+                multiple 
+                onChange={(e) => onFileChange(e)} 
+            />
+            <div className='custom-or font-14'>OR</div>
+            </div>
+        </>
+    );
+
+    const checkUrlFileType = async (url) => {
+        try {
+        const response = await fetch(url, { method: 'HEAD' });
+        const contentType = response.headers.get('Content-Type');
+
+        if (contentType && contentType.startsWith('image')) {
+            return true;
+        } else {
+            return false; 
+        }
+        } catch (error) {
+        console.error('Error checking URL:', error);
+        return false; 
+        }
+    };
     function showModal() {
         return (
             <Modal show={showImage || showLink || showTable} onHide={onHide}>
@@ -78,62 +155,105 @@ export default function BubbleMenuComponent({ editor }) {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {(showImage || showLink) && (
-                        <div className='form-group'>
-                            <label>URL</label>
-                            <input
+                   {loading ? (
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: '25vh', flexDirection: 'column' }}>
+                        <div className="spinner-border" role="status" style={{ width: '4rem', height: '4rem', borderWidth: '0.25rem' }}>
+                        <span className="sr-only">Loading...</span>
+                        </div>
+                        <span className="mt-3" style={{ color: '#000', fontSize: '2rem', fontWeight: '500' }}>Loading...</span>
+                    </div>
+                    ) : (
+                    <>
+                        {/* {showImage && (
+                        
+                        )} */}
+                        {(showImage || showLink) && (
+                            <div className='form-group upload-modal'>
+                            <div className='form-group mb-0'>
+                                <div className='favicon-uploader'>{renderUploadModule()}</div>
+                            </div>
+                            <div className='d-flex justify-content-between align-items-center'>
+                                <label className='m-2'>URL</label>
+                                <input
                                 type='text'
                                 className='form-control'
                                 value={showImage ? ImageUrl : linkUrl}
                                 onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
-                            />
-                        </div>
-                    )}
-                    {showTable && (
+                                />
+                            </div>
+                            </div>
+                        )}
+                        {showTable && (
                         <div className='row'>
                             <div className='col-md-6'>
-                                <div className='form-group'>
-                                    <label>Rows</label>
-                                    <input className='form-control' type='integer' value={row} onChange={(e) => setRow(e.target.value)} />
-                                </div>
+                            <div className='form-group'>
+                                <label>Rows</label>
+                                <input
+                                className='form-control'
+                                type='integer'
+                                value={row}
+                                onChange={(e) => setRow(e.target.value)}
+                                />
+                            </div>
                             </div>
                             <div className='col-md-6'>
-                                <div className='form-group'>
-                                    <label>Columns</label>
-                                    <input className='form-control' type='integer' value={column} onChange={(e) => setColumn(e.target.value)} />
-                                </div>
+                            <div className='form-group'>
+                                <label>Columns</label>
+                                <input
+                                className='form-control'
+                                type='integer'
+                                value={column}
+                                onChange={(e) => setColumn(e.target.value)}
+                                />
+                            </div>
                             </div>
                         </div>
+                        )}
+                    </>
                     )}
                 </Modal.Body>
-                <Modal.Footer>
+                {!loading ? (
+                    <Modal.Footer>
                     <button className='btn btn-secondary outline mr-2' onClick={onHide}>
-                        {' '}
                         Close
                     </button>
                     <button
                         className='btn btn-primary'
                         onClick={() => {
-                            if (showTable) {
-                                editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run()
-                                setShowTable(false)
+                        setLoading(true);
+                        if (showTable) {
+                            editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run();
+                            setShowTable(false);
+                        }
+                        if (showLink && linkUrl) {
+                            editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+                            setShowLink(false);
+                        }
+                        if (showImage && ImageUrl) {
+                            checkUrlFileType(ImageUrl).then(isImage => {
+                            if (isImage) {
+                                editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
+                            } else {
+                                editor.chain().focus().insertContent(`
+                                <a href="${ImageUrl}" target="_blank">
+                                    <strong>Download File: ${ImageUrl.split('/').pop()}</strong>
+                                </a>
+                                <p></p>
+                                `).run();
                             }
-                            if (showLink && linkUrl) {
-                                editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run()
-                                setShowLink(false)
-                            }
-                            if (showImage && ImageUrl) {
-                                editor.chain().focus().setImage({ src: ImageUrl }).run()
-                                setShowImage(false)
-                            }
+                            setImageUrl('');
+                            setShowImage(false);
+                            });
+                        }
+                        setLoading(false); 
                         }}
                     >
                         Save
                     </button>
-                </Modal.Footer>
-            </Modal>
-        )
-    }
+                </Modal.Footer>) : (<></>)
+            }
+        </Modal>
+    )}
 
     return (
         <>
@@ -269,7 +389,7 @@ export default function BubbleMenuComponent({ editor }) {
                         <HeadingIcon level={activeHeading} />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                        {[1, 2, 3, 4, 5, 6].map((level) => (
+                        {[1, 2, 3, 4, 5, 6]?.map((level) => (
                             <Dropdown.Item key={level}>
                                 <button
                                     onClick={() => toggleHeading(level)}

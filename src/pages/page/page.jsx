@@ -20,6 +20,7 @@ import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
 import PublishModal from "../../components/publishModal/publishModal";
+import { setPagesPath } from "../../components/pages/redux/pagesActions";
 
 const Page = () => {
 
@@ -50,6 +51,7 @@ const Page = () => {
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].createdAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
+    const [pathData,setPathData] = useState('');
 
     useEffect(() => {
         if (typeof window.SendDataToChatbot === 'function' && tabs[activeTabId]?.type === 'page') {
@@ -93,7 +95,7 @@ const Page = () => {
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId]);
+    }, [orgId, pageId],tabs[activeTabId]);
 
     useEffect(() => {
         return () => {
@@ -249,15 +251,30 @@ const Page = () => {
     }
 
     const getPath = (id, sidebar) => {
-        const orgId = getOrgId()
-        let path = []
+        const orgId = getOrgId();
+        let path = [];
+        let newPath = `${pages?.[activeTabId]?.collectionId}`;
+        let pagePath = [];
+
         while (sidebar?.[id]?.type > 0) {
-            const itemName = sidebar[id].name
-            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
-            id = sidebar?.[id]?.parentId
+            const itemName = sidebar[id].name;
+            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id });
+            id = sidebar?.[id]?.parentId;
         }
-        return path.reverse()
-    }
+        path.forEach((item) => {
+            if (pages?.[item.id]?.type !== 2) {
+                pagePath.push(`/${item.id}`);
+            }
+        });
+        pagePath = pagePath.reverse().join('');
+        newPath = newPath + pagePath;
+        return { pathArray: path.reverse(), newPath };
+    };
+    useEffect(() => {
+        const { newPath } = getPath(activeTabId, pages);
+        setPathData(newPath);  
+        setPagesPath(newPath);
+    }, [activeTabId, pages]); 
 
     const handleStrongChange = (e) => {
         setPageName(e.currentTarget.textContent);
@@ -265,7 +282,8 @@ const Page = () => {
 
 
     const renderPathLinks = () => {
-        const pathWithUrls = getPath(pageId, pages)
+        const { pathArray } = getPath(pageId, pages);
+        const pathWithUrls = pathArray
         return pathWithUrls.map((item, index) => {
             if (pages?.[item.id]?.type === 2) return null;
             const isLastItem = index === pathWithUrls.length - 1;
@@ -389,6 +407,7 @@ const Page = () => {
                         onChange={handleContentChange || false}
                         isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
                         key={activeTabId}
+                        pathData={pathData}
                     />
                 </div>
             </div>
