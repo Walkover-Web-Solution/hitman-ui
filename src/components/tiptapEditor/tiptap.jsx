@@ -280,6 +280,22 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
       </>
   );
 
+  const checkUrlFileType = async (url) => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      const contentType = response.headers.get('Content-Type');
+
+      if (contentType && contentType.startsWith('image')) {
+        return true;
+      } else {
+        return false; 
+      }
+    } catch (error) {
+      console.error('Error checking URL:', error);
+      return false; 
+    }
+  };
+
   function showModal() {
   return (
     <Modal show={showImage || showLink || showTable} onHide={onHide}>
@@ -363,28 +379,20 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, init
                 setShowLink(false);
               }
               if (showImage && ImageUrl) {
-                const fileExtension = ImageUrl.split('.').pop().toLowerCase();
-                const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
-                const videoExtensions = ['mp4', 'webm', 'ogg'];
-                if (imageExtensions.includes(fileExtension)) { 
-                  editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
-                } else if (videoExtensions.includes(fileExtension)) {
-                  editor.chain().focus().insertContent(`
-                    <video controls>
-                      <source src="${ImageUrl}" type="video/${fileExtension}">
-                      Your browser does not support the video tag.
-                    </video>
-                  `).run();
-                } else {
-                  editor.chain().focus().insertContent(`
-                    <a href="${ImageUrl}" target="_blank">
-                      <strong>Download File: ${ImageUrl.split('/').pop()}</strong>
-                    </a>
-                    <p></p>
-                  `).run();
-                }
-                setImageUrl('');
-                setShowImage(false);
+                checkUrlFileType(ImageUrl).then(isImage => {
+                  if (isImage) {
+                    editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
+                  } else {
+                    editor.chain().focus().insertContent(`
+                      <a href="${ImageUrl}" target="_blank">
+                        <strong>Download File: ${ImageUrl.split('/').pop()}</strong>
+                      </a>
+                      <p></p>
+                    `).run();
+                  }
+                  setImageUrl('');
+                  setShowImage(false);
+                });
               }
               setLoading(false); 
             }}
