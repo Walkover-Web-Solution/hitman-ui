@@ -1,15 +1,19 @@
+// NavigationSetter component
+
+'use client'
+
 import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { setNavigate, setParams } from './navigationService'
+import { useRouter, useParams } from 'next/navigation'
+import { setRouter, setParams } from './navigationService'
 
 const NavigationSetter = () => {
-  const navigate = useNavigate()
+  const router = useRouter()
   const params = useParams()
 
   React.useEffect(() => {
-    setNavigate(navigate)
+    setRouter(router)
     setParams(params)
-  }, [navigate, params])
+  }, [router, params])
 
   return null
 }

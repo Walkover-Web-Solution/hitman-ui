@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useRouter, useParams } from 'next/navigation'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
@@ -28,8 +28,8 @@ const SideBar = () => {
 
   const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
 
-  const navigate = useNavigate()
-  const location = useLocation()
+  const router = useRouter();
+  const location = router.pathname;
   const params = useParams()
 
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
@@ -160,12 +160,12 @@ const SideBar = () => {
 
   const openPage = (id) => {
     if (isDashboardRoute({ location })) {
-      navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
+      router.push(`/orgs/${params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      router.push(pathName)
     }
   }
 
@@ -226,12 +226,12 @@ const SideBar = () => {
 
   const openEndpoint = (id) => {
     if (isDashboardRoute({ location })) {
-      navigate(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
+      router.push(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      router.push(pathName)
     }
   }
 
@@ -265,7 +265,7 @@ const SideBar = () => {
   }
 
   const openHistorySnapshot = (id) => {
-    navigate(`/orgs/${params.orgId}/dashboard/history/${id}`, { state: { historySnapshotId: id } })
+    router.push(`/orgs/${params.orgId}/dashboard/history/${id}`, { state: { historySnapshotId: id } })
   }
 
   const renderHistoryItem = (history) => {

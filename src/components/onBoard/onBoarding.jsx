@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router';
+import { useRouter } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, Form } from 'react-bootstrap';
 import './onBoarding.scss'
@@ -20,7 +20,7 @@ import IconButton from '../common/iconButton';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const router = useRouter();
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [isContinueEnabled, setIsContinueEnabled] = useState(false);
     const [showInput, setShowInput] = useState(false);

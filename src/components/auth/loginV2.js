@@ -4,10 +4,10 @@ import './login.scss';
 import TECHDOC from '@/assets/icons/TECHDOC100.svg';
 import TECHDOCC from "@/assets/icons/TECHDOC.svg";
 import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
-import { useRouter } from "next/router"; // Update import
+import { useRouter } from "next/navigation"; // Update import
 
 const LoginV2 = () => {
-  // const navigate = useNavigate();
+  // const router = useRouter();;
 
   const proxyGooglereferenceMapping = {
     local: process.env.NEXT_PROXY_REFERENCE_ID_LOCAL,
@@ -20,7 +20,7 @@ const LoginV2 = () => {
 
     const checkIfUserAlreadyLogin = () => {
       // if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-        // navigate(`/orgs/${getCurrentOrg().id}/dashboard`);
+        // router.push(`/orgs/${getCurrentOrg().id}/dashboard`);
       // } else {
         loadScript();
       // }

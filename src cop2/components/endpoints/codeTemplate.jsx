@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { Dropdown, Col } from 'react-bootstrap'
 import { CopyToClipboard } from 'react-copy-to-clipboard'

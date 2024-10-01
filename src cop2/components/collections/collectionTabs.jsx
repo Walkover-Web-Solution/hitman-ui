@@ -2,7 +2,7 @@ import React from 'react';
 import PublishDocForm from '../publishDocs/publishDocsForm';
 import CollectionRuns from './showRuns/collectionRuns';
 import PublishDocsReview from '../publishDocs/publishDocsReview';
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { getOrgId, isOrgDocType } from '../common/utility'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPageType } from '../tabs/redux/tabsActions'
@@ -11,7 +11,7 @@ import { getCurrentOrg } from '../auth/authServiceV2';
 
 const CollectionTabs = ({ collectionId, onHide }) => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const router = useRouter();
   const orgType = getCurrentOrg()?.meta?.type 
   const metaType = getCurrentOrg()?.meta
   const { activeTabId, pageType } = useSelector((state) => {
@@ -46,7 +46,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
           <a
             className={`nav-link bg-none ${pageType === 'SETTINGS' ? 'active text-black' : 'text-secondary'}`}
             onClick={() => {
-              navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/settings`)
+              router.push(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/settings`)
               handleTabChange('SETTINGS')
             }}
           >
@@ -57,7 +57,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
           <a
             className={`nav-link bg-none ${pageType === 'FEEDBACK' ? 'active text-black' : 'text-secondary'}`}
             onClick={() => {
-              navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/feedback`)
+              router.push(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/feedback`)
               handleTabChange('FEEDBACK')
             }}
           >
@@ -70,7 +70,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
               <a
                 className={`nav-link bg-none ${pageType === 'RUNS' ? 'active text-black' : 'text-secondary'}`}
                 onClick={() => {
-                  navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/runs`)
+                  router.push(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/runs`)
                   handleTabChange('RUNS')
                 }}
               >

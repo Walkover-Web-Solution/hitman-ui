@@ -14,7 +14,7 @@ const DeleteIcon = () => (<svg width='18' height='18' viewBox='0 0 18 18' fill='
 )
 // import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useRouter, useParams } from 'next/navigation'
 import Joi from 'joi'
 import { addUrlWithAdditionalPath, deleteMappedUrl } from './redirectionApiServices'
 import { getUrlPathById } from '../common/utility'
@@ -31,7 +31,7 @@ import { FaArrowLeft } from 'react-icons/fa6'
 const Redirections = () => {
   const params = useParams()
   const userPathRef = useRef(null)
-  const navigate = useNavigate()
+  const router = useRouter();
   const dispatch = useDispatch()
   const orgId = getCurrentOrg()?.id
 
@@ -253,7 +253,7 @@ const Redirections = () => {
     }
   }
   const handleBack = () => {
-    navigate(`/orgs/${orgId}/dashboard`)
+    router.push(`/orgs/${orgId}/dashboard`)
   }
 
   const renderTable = () => {

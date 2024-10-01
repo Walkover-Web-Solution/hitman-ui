@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import SplitPane from '../splitPane/splitPane'
 
@@ -16,7 +16,7 @@ import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken }
 import { ReactComponent as NoCollectionIcon } from '../../assets/icons/collection.svg'
 import 'react-toastify/dist/ReactToastify.css'
 import './main.scss'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import CollectionForm from '../collections/collectionForm'
 import CustomModal from '../customModal/customModal'
 import ShortcutModal from '../shortcutModal/shortcutModal'
@@ -24,7 +24,7 @@ import ShortcutModal from '../shortcutModal/shortcutModal'
 const MainV2 = () => {
   const params = useParams()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const router = useRouter();
   const collections = useSelector((state) => state.collections)
 
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
@@ -47,13 +47,13 @@ const MainV2 = () => {
         let orgId = params.orgId
         if (!orgId) {
           orgId = getOrgList()[0]?.id
-          navigate(`/orgs/${orgId}/dashboard`)
+          router.push(`/orgs/${orgId}/dashboard`)
         } else {
           await fetchAll()
           dispatch(addCollectionAndPages(orgId))
         }
       } else {
-        navigate('/login')
+        router.push('/login')
       }
       setLoading(false)
     }

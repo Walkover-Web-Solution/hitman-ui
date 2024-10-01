@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import {  useRouter, useParams } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder, updateDraft } from './redux/tabsActions.js'
@@ -33,8 +33,8 @@ const CustomTabs = (props) => {
   const interval = useRef(null)
 
   const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
+    const router = useRouter();
+    const location = router.pathname;
 
   const [showSavePromptFor, setShowSavePromptFor] = useState([])
   const [leftScroll, setLeftScroll] = useState(0)

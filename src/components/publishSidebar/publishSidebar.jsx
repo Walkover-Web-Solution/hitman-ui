@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 import { FaSquare, FaCheckSquare, FaMinusSquare } from 'react-icons/fa'
 import { MdArrowDropUp } from 'react-icons/md'
 import { MdOutlineArrowDropDown } from 'react-icons/md'

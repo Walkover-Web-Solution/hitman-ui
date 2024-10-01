@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useRouter, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { IoIosPlay } from 'react-icons/io'
@@ -22,7 +22,7 @@ import IconButton from '../../common/iconButton'
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const router = useRouter();
   const params = useParams()
   const orgId = getCurrentOrg()?.id
   const webhookURL = `${process.env.NEXT_API_URL}/call-webhook`
@@ -234,7 +234,7 @@ export default function RunAutomation() {
   }
 
   const handleBack = () => {
-    navigate(`/orgs/${orgId}/dashboard`)
+    router.push(`/orgs/${orgId}/dashboard`)
   }
 
   const copyWebhookUrl = (text) => {

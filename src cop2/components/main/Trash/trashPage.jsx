@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Table, Button, Form, Alert } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { BiArrowBack } from 'react-icons/bi'
 import { MdSettingsBackupRestore } from 'react-icons/md'
 import { useSelector } from 'react-redux'
@@ -15,7 +15,7 @@ const TrashPage = () => {
   const [collections, setCollections] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [editableRow, setEditableRow] = useState({ id: null, name: '' })
-  const navigate = useNavigate()
+  const router = useRouter();
   const orgId = getCurrentOrg()?.id
   const users = useSelector((state) => state.users.usersList)
 
@@ -35,7 +35,7 @@ const TrashPage = () => {
   }, [orgId])
 
   const handleBack = () => {
-    navigate(`/orgs/${orgId}/dashboard`)
+    router.push(`/orgs/${orgId}/dashboard`)
   }
 
   const handleRestore = async (collectionId, collectionName) => {
