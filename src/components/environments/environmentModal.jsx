@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
 import { ListGroup, Modal } from 'react-bootstrap'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import  DeleteIcon  from '@/assets/icons/delete-icon.svg'
 import environmentsApiService from './environmentsApiService'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useRouter  } from 'next/navigation'
 import './environments.scss'
 import { useSelector } from 'react-redux'
 import { RiDeleteBinLine } from "react-icons/ri";
 
 const EnvironmentModal = (props) => {
   const environment = useSelector((state) => state.environment)
-  const navigate = useNavigate()
-  const location = useLocation()
+    const router = useRouter();
+    const location = router.pathname;
 
   useEffect(() => {
     const fetchEnvironments = async () => {
@@ -24,7 +24,7 @@ const EnvironmentModal = (props) => {
 
       if (location.state && location.state.editedEnvironment) {
         const { environmentId: environmentId, editedEnvironment } = location.state
-        navigate(location.pathname, { replace: true, state: { editedEnvironment: null } })
+        router.push(location.pathname, { replace: true, state: { editedEnvironment: null } })
         envs = [...envs.filter((env) => env.id !== environmentId), { id: environmentId, ...editedEnvironment }]
         await environmentsApiService.updateEnvironment(environmentId, editedEnvironment)
       }

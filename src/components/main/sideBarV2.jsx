@@ -1,21 +1,21 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link,  useRouter, useParams } from 'next/navigation'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
 import { isDashboardRoute, getOnlyUrlPathById, SESSION_STORAGE_KEY, getUrlPathById, isTechdocOwnDomain, isOnPublishedPage } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
-import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
-import { ReactComponent as NoFound } from '../../assets/icons/noCollectionsIcon.svg'
-import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
+import  EmptyHistory from '@/assets/icons/emptyHistroy.svg'
+import  NoFound from '@/assets/icons/noCollectionsIcon.svg'
+import  SearchIcon from '@/assets/icons/search.svg'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import './sidebar.scss'
 import '../../pages/page/page.scss'
-import { ReactComponent as Logo } from '../../assets/web/favicon.svg'
+import  Logo from '@/assets/web/favicon.svg'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Footer from './Footer'
@@ -28,8 +28,8 @@ const SideBar = () => {
 
   const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
 
-  const navigate = useNavigate()
-  const location = useLocation()
+  const router = useRouter();
+  const location = router.pathname;
   const params = useParams()
 
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
@@ -160,12 +160,12 @@ const SideBar = () => {
 
   const openPage = (id) => {
     if (isDashboardRoute({ location })) {
-      navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
+      router.push(`/orgs/${params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      router.push(pathName)
     }
   }
 
@@ -226,12 +226,12 @@ const SideBar = () => {
 
   const openEndpoint = (id) => {
     if (isDashboardRoute({ location })) {
-      navigate(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
+      router.push(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      router.push(pathName)
     }
   }
 
@@ -265,7 +265,7 @@ const SideBar = () => {
   }
 
   const openHistorySnapshot = (id) => {
-    navigate(`/orgs/${params.orgId}/dashboard/history/${id}`, { state: { historySnapshotId: id } })
+    router.push(`/orgs/${params.orgId}/dashboard/history/${id}`, { state: { historySnapshotId: id } })
   }
 
   const renderHistoryItem = (history) => {

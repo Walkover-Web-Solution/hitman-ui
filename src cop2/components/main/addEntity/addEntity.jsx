@@ -3,7 +3,7 @@ import Joi from 'joi-browser'
 import './addEntity.scss'
 import { toTitleCase } from '../../common/utility'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { ReactComponent as HelpIcon } from '../../../assets/icons/helpcircle.svg'
+import  HelpIcon  from '@/assets/icons/helpcircle.svg'
 import { moveToNextStep } from '../../../services/widgetService'
 
 const entityENUM = {

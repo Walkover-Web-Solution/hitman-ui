@@ -1,15 +1,19 @@
-let navigate
+// navigationService.js
+
+'use client'
+
+let router
 let params = {}
 
-export const setNavigate = (nav) => {
-  navigate = nav
+export const setRouter = (r) => {
+  router = r
 }
 
-export const navigateTo = (path, state) => {
-  if (navigate) {
-    navigate(path, { state })
+export const navigateTo = (path, options = {}) => {
+  if (router) {
+    router.push(path, options)
   } else {
-    console.error('Navigate function is not set')
+    console.error('Router is not set')
   }
 }
 

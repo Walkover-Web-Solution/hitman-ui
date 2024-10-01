@@ -1,19 +1,19 @@
-import { ReactComponent as js } from '../../assets/icons/js.svg'
-import { ReactComponent as java } from '../../assets/icons/java.svg'
-import { ReactComponent as shell } from '../../assets/icons/shell.svg'
-import { ReactComponent as node } from '../../assets/icons/node.svg'
-import { ReactComponent as php } from '../../assets/icons/php.svg'
-import { ReactComponent as csharp } from '../../assets/icons/csharp.svg'
-import { ReactComponent as python } from '../../assets/icons/python.svg'
-import { ReactComponent as ruby } from '../../assets/icons/ruby.svg'
-import { ReactComponent as swift }from '../../assets/icons/swift.svg'
-import { ReactComponent as go } from '../../assets/icons/go.svg'
-import { ReactComponent as ocaml } from '../../assets/icons/ocaml.svg'
-import { ReactComponent as objectivec } from '../../assets/icons/objectivec.svg'
-import { ReactComponent as r } from '../../assets/icons/r.svg'
-import { ReactComponent as clojure } from '../../assets/icons/clojure.svg';
-import { ReactComponent as c } from '../../assets/icons/c.svg';
-import { ReactComponent as http } from '../../assets/icons/http.svg';
+import  js  from '@/assets/icons/js.svg'
+import  java  from '@/assets/icons/java.svg'
+import  shell  from '@/assets/icons/shell.svg'
+import  node  from '@/assets/icons/node.svg'
+import  php  from '@/assets/icons/php.svg'
+import  csharp  from '@/assets/icons/csharp.svg'
+import  python  from '@/assets/icons/python.svg'
+import  ruby  from '@/assets/icons/ruby.svg'
+import  swift from '@/assets/icons/swift.svg'
+import  go  from '@/assets/icons/go.svg'
+import  ocaml  from '@/assets/icons/ocaml.svg'
+import  objectivec  from '@/assets/icons/objectivec.svg'
+import  r  from '@/assets/icons/r.svg'
+import  clojure  from '@/assets/icons/clojure.svg';
+import  c  from '@/assets/icons/c.svg';
+import  http  from '@/assets/icons/http.svg';
 
 const primaryLanguages = ['shell', 'axiosNode', 'php', 'python','node']
 const secondaryLanguages = ['c', 'csharp', 'clojure', 'go', 'http', 'java', 'javascript', 'objc', 'ocaml', 'r', 'ruby', 'swift']

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import './cookiesListItem.scss'
-import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg'
+import  DeleteIcon  from '@/assets/icons/delete-icon.svg'
 class CookiesListItem extends Component {
   constructor(props) {
     super(props)

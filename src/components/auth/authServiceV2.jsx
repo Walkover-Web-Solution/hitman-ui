@@ -1,21 +1,16 @@
-"use client"
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import http from "../../services/httpService";
 import { switchOrg } from "../../services/orgApiService";
 import axios from "axios";
 import { setCurrentorganization, setOrganizationList } from "./redux/organizationRedux/organizationAction";
 import { store } from "../../store/store";
 import { setCurrentUser } from "./redux/usersRedux/userAction";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export const tokenKey = "token";
 export const profileKey = "profile";
-const uiURL = process.env.NEXT_UI_URL;
-const proxyUrl = process.env.NEXT_PROXY_URL;
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+const uiURL = process.env.NEXT_PUBLIC_UI_URL;
+const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL;
 
 function isAdmin() {
   return { is_admin: true };
@@ -55,18 +50,18 @@ function logout(redirectUrl = "/login") {
 }
 
 function localStorageCleanUp() {
-  window.localStorage.removeItem(tokenKey);
-  window.localStorage.removeItem(profileKey);
+  localStorage.removeItem(tokenKey);
+  localStorage.removeItem(profileKey);
 }
 
 function logoutRedirection(redirectUrl) {
   const redirectUri = uiURL + redirectUrl;
-  window.location = redirectUri;
+  location = redirectUri;
 }
 
 function getCurrentUser() {
   try {
-    const profile = window.localStorage.getItem(profileKey);
+    const profile = localStorage.getItem(profileKey);
     const parsedProfile = JSON.parse(profile);
     const desiredData = {
       id: parsedProfile.id,
@@ -105,13 +100,14 @@ function getOrgList() {
 
 function getProxyToken() {
   const tokenKey = "token";
-  return window.localStorage.getItem(tokenKey) || "";
+  return localStorage.getItem(tokenKey) || "";
 }
 
 async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect) {
+  debugger
   if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
 
-  window.localStorage.setItem(tokenKey, proxyAuthToken);
+  localStorage.setItem(tokenKey, proxyAuthToken);
   try {
     const response = await fetch(proxyUrl + '/getDetails', {
       headers: {
@@ -124,7 +120,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect
 
     const data = await response.json();
     const userInfo = data.data[0];
-    window.localStorage.setItem(profileKey, JSON.stringify(userInfo));
+    localStorage.setItem(profileKey, JSON.stringify(userInfo));
     store.dispatch(setCurrentUser(userInfo));
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
@@ -136,18 +132,18 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect
 }
 
 function AuthServiceV2() {
-  const query = useQuery();
-  const navigate = useNavigate();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const proxyAuthToken = query.get("proxy_auth_token");
+        const proxyAuthToken = searchParams.get('proxy_auth_token');
         if (proxyAuthToken) {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken , true);
         }
       } catch (err) {
-        navigate("/logout");
+        router.push("/logout");
       }
     };
 

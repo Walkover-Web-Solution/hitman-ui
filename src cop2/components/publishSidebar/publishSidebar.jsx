@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 import { FaSquare, FaCheckSquare, FaMinusSquare } from 'react-icons/fa'
 import { MdArrowDropUp } from 'react-icons/md'
 import { MdOutlineArrowDropDown } from 'react-icons/md'
@@ -12,7 +12,7 @@ import './checkBoxTreeView.scss'
 import './publishSidebar.scss'
 import { Button } from 'react-bootstrap'
 import { GrGraphQl } from 'react-icons/gr'
-import { ReactComponent as Example } from '../../assets/icons/example.svg';
+import  Example from '@/assets/icons/example.svg';
 
 const saveAsSidebarStyle = {
   position: 'fixed',

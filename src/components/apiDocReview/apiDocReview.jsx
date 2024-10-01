@@ -8,7 +8,7 @@ import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
 import { VscStarFull } from "react-icons/vsc";
-import { useLocation, useParams } from 'react-router-dom'
+import { useParams, useRouter} from 'next/navigation'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -30,7 +30,8 @@ const ApiDocReview = (props) => {
   const handleClose = () => setShow(false)
   const params = useParams()
 
-  const location = useLocation()
+    const router = useRouter();
+    const location = router.pathname;
 
   useEffect(() => {
     setParent()

@@ -4,7 +4,7 @@ import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
 import SampleResponseForm from './sampleResponseForm'
 import DeleteModal from '../common/deleteModal'
-import { ReactComponent as DownArrow } from '../../assets/icons/downChevron.svg'
+import  DownArrow  from '@/assets/icons/downChevron.svg'
 import { FiEdit } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa6";
 import { RiDeleteBinLine } from "react-icons/ri";

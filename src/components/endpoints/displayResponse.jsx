@@ -1,5 +1,5 @@
 // import image from "../common/Screenshot 2020-03-21 at 10.53.24 AM.png";
-import { ReactComponent as EmptyResponseImg } from './img/empty-response.svg'
+import  EmptyResponseImg  from './img/empty-response.svg'
 import React, { Component, createRef } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import JSONPretty from 'react-json-pretty'
@@ -16,7 +16,7 @@ import classNames from 'classnames';
 import { FaPlus } from 'react-icons/fa'
 import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
 import JSONPrettyMon from 'react-json-pretty/dist/monikai'
-import { ReactComponent as Example } from '../../assets/icons/example.svg';
+import  Example  from '@/assets/icons/example.svg';
 
 
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useRouter, useParams,  } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import { addExampleRequest, deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
@@ -18,7 +18,7 @@ import { FiEdit2 } from 'react-icons/fi'
 import { MdOutlineContentCopy } from 'react-icons/md'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { ReactComponent as Example } from '../../assets/icons/example.svg';
+import  Example  from '@/assets/icons/example.svg';
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
@@ -26,8 +26,8 @@ const Endpoints = (props) => {
   const [selectedEndpoint, setSelectedEndpoint] = useState(null)
 
   const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
+    const router = useRouter();
+    const location = router.pathname;
   const dispatch = useDispatch()
 
   const { endpoints, tabs, pages, collections } = useSelector((state) => ({
@@ -65,7 +65,7 @@ const Endpoints = (props) => {
       } else if (tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
         tabService.disablePreviewMode(endpoint.id)
       }
-      navigate(`/orgs/${params.orgId}/dashboard/endpoint/${endpoint.id}`, {
+      router.push(`/orgs/${params.orgId}/dashboard/endpoint/${endpoint.id}`, {
         state: {
           title: 'update endpoint',
           endpoint,
@@ -77,7 +77,7 @@ const Endpoints = (props) => {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, endpoint?.id)
       let pathName = getUrlPathById(endpoint?.id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      router.push(pathName)
     }
   }
 

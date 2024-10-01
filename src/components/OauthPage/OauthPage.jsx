@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import {  useRouter} from 'next/navigation'
 
 export default function OauthPage() {
-  const location = useLocation()
+    const router = useRouter();
+    const location = router.pathname;
 
   const queryParams = new URLSearchParams(location.search)
   const code = queryParams.get('code') || ''

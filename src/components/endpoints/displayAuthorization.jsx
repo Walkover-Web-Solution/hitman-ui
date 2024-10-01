@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Auth2Configurations from './authConfiguration/auth2Configurations'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 import { useQuery, useQueryClient } from 'react-query'
 import { useSelector } from 'react-redux'
 import _, { cloneDeep } from 'lodash'
