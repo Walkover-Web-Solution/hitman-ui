@@ -4,45 +4,46 @@ import './login.scss';
 import TECHDOC from '@/assets/icons/TECHDOC100.svg';
 import TECHDOCC from "@/assets/icons/TECHDOC.svg";
 import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
-import { useRouter } from "next/router"; // Update import
+import { useRouter } from "next/navigation"; 
 
 const LoginV2 = () => {
-  // const navigate = useNavigate();
+  const router = useRouter();
 
   const proxyGooglereferenceMapping = {
-    local: process.env.NEXT_PROXY_REFERENCE_ID_LOCAL,
-    test: process.env.NEXT_PROXY_REFERENCE_ID_TEST,
-    prod: process.env.NEXT_PROXY_REFERENCE_ID_PROD,
+    local: process.env.NEXT_PUBLIC_PROXY_REFERENCE_ID_LOCAL,
+    test: process.env.NEXT_PUBLIC_PROXY_REFERENCE_ID_TEST,
+    prod: process.env.NEXT_PUBLIC_PROXY_REFERENCE_ID_PROD,
   };
 
   useEffect(() => {
     let script;
 
     const checkIfUserAlreadyLogin = () => {
-      // if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-        // navigate(`/orgs/${getCurrentOrg().id}/dashboard`);
-      // } else {
+      if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
+        router.push(`/orgs/${getCurrentOrg().id}/dashboard`);
+      } else {
         loadScript();
-      // }
+      }
     };
 
     const loadScript = () => {
       const configuration = {
-        referenceId: proxyGooglereferenceMapping[process.env.NEXT_ENV] || "",
+        referenceId: proxyGooglereferenceMapping[process.env.NEXT_PUBLIC_ENV],
         success: (data) => {
-          console.log("response", data);
+          console.dir("success response", data);
         },
         failure: (error) => {
           console.error("failure reason", error);
         },
       };
       script = document.createElement("script");
+      script.type = 'text/javascript';
       script.src =
         "https://proxy.msg91.com/assets/proxy-auth/proxy-auth.js?time=34093049";
       script.async = true;
       script.onload = () => {
-        if (window.initVerification) {
-          window.initVerification(configuration);
+        if (initVerification) {
+          initVerification(configuration);
         }
       };
       document.body.appendChild(script);
@@ -55,9 +56,9 @@ const LoginV2 = () => {
         document.body.removeChild(script);
       }
     };
-  }, [ proxyGooglereferenceMapping]);
+  }, [ router, proxyGooglereferenceMapping]);
 
-  const env = process.env.NEXT_ENV || "";
+  const env = process.env.NEXT_PUBLIC_ENV || "";
   const divId = proxyGooglereferenceMapping[env];
 
   return (
