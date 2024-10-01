@@ -9,7 +9,6 @@ import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishAction
 import { navigateTo } from '../../../navigationService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
 import tabsActionTypes from '../../tabs/redux/tabsActionTypes'
-import tabService from '../../tabs/tabService'
 import { onPageStateSuccess } from '../../publicEndpoint/redux/publicEndpointsActions'
 import { replaceTab } from '../../tabs/redux/tabsActions'
 
@@ -18,12 +17,10 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     const id = editedEndpoint.id
     const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
+
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
-        if(response.status === 200){
-          tabService.markTabAsSaved(id);
-        }
         dispatch(onEndpointUpdated(response.data))
         if (stopSaveLoader) {
           stopSaveLoader()

@@ -30,7 +30,6 @@ const OnBoarding = () => {
     const historySnapshot = useSelector((state) => state.history)
     const [isContinue, setIsContinue] = useState(true);
     const [isCardClicked, setCardClicked] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
 
     const handleCardClick = (index) => {
         setSelectedIndex(index);
@@ -39,14 +38,14 @@ const OnBoarding = () => {
     };
 
     const handleContinueClick = () => {
-        if (isContinue) {
+        if(isContinue){
             setShowInput(true);
             setIsInputVisible(true);
             setIsContinue(false);
         }
-        else {
+        else{
             handleAddOrg(selectedIndex)
-        }
+        }  
     };
 
     const handleBackClick = () => {
@@ -63,19 +62,17 @@ const OnBoarding = () => {
 
     const handleAddOrg = async (selectedIndex) => {
         try {
-            const validationError = validateName(orgName);
-            if (validationError) {
-                setErrorMessage(validationError);
-                return;
+            if (!validateName(orgName)) {
+                toast.error('Invalid organization name')
+                return
             }
-            setErrorMessage('');
-            await handleNewOrgClick(selectedIndex);
+            await handleNewOrgClick(selectedIndex)
         } catch (e) {
-            toast.error('The company name has already been taken')
+            toast.error('Something went wrong')
         }
     }
 
-    const handleNewOrgClick = async (selectedIndex) => {        
+    const handleNewOrgClick = async (selectedIndex) => {
         const tabIdsToClose = tabs.tabsOrder;
         removeFromLocalStorage(tabIdsToClose);
         dispatch(closeAllTabs(tabIdsToClose));
@@ -114,29 +111,20 @@ const OnBoarding = () => {
     }
 
     const validateName = (orgName) => {
-        if (!orgName.trim()) {
-            return 'Name cannot be empty';
-        }
-        if (orgName.length < 3 || orgName.length > 50) {
-            return 'Name length should be between 3 and 50 characters';
-        }
-        const regex = /^[a-zA-Z0-9_ ]+$/;
-        if (!regex.test(orgName)) {
-            return 'Invalid name: Only letters, numbers, spaces, and underscores are allowed';
-        }
-        return null;
-    };
+        const regex = /^[a-zA-Z0-9_ ]+$/
+        return orgName && regex.test(orgName) && orgName.length >= 3 && orgName.length <= 50
+    }
 
     return (
         <>
-            <button className='btn home-button position-absolute btn-dark btn-sm' onClick={() => redirectToDashboard(getOrgId())}>
+            <button className='btn home-button position-absolute btn-dark btn-sm'onClick={() => redirectToDashboard(getOrgId())}>
                 <IconButton>
                     <IoHomeSharp size={18} />
                 </IconButton>
             </button>
-            {!isContinue && (
+            { !isContinue && (
                 <button className='btn back-button btn-dark position-absolute px-2' onClick={handleBackClick}>
-                    <FaLongArrowAltLeft size={18} />
+                        <FaLongArrowAltLeft size={18} />
                 </button>
             )}
             <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
@@ -185,7 +173,7 @@ const OnBoarding = () => {
                 <div className={`input-container position-absolute d-flex align-items-center flex-column p-2 w-100 ${showInput ? 'show-in' : ''}`}>
                     {isInputVisible && (
                         <div className='input-group'>
-                            <InputGroup className='mb-2'>
+                            <InputGroup className='mb-3'>
                                 <Form.Control
                                     className='rounded'
                                     placeholder='Enter Organization Name'
@@ -197,28 +185,26 @@ const OnBoarding = () => {
                                     onKeyDown={(e) => {
                                         handleKeyPress(e)
                                     }}
-                                    isInvalid={!!errorMessage}
+                                    isInvalid={orgName && !validateName(orgName)}
                                     autoFocus
                                 />
+                                {/* <Button className='ml-2' onClick={() => { handleAddOrg(selectedIndex) }} variant='outline-secondary' id='button-addon2'>
+                                    Create
+                                </Button> */}
                             </InputGroup>
-                            <div>
-                                <div className='d-flex'>
-                                    <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
-                                </div>
-                                <div >
-                                    {errorMessage && <small className='text-danger'>{errorMessage}</small>}
-                                </div>
+                            <div className='d-flex'>
+                                <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
                             </div>
                         </div>
                     )}
                 </div>
-                <Button
+               <Button
                     variant="secondary"
                     className={`btn-Continue btn-btn-lg px-5 mt-5 ${isCardClicked ? 'bg-dark' : ''}`}
                     disabled={!isContinueEnabled}
                     onClick={handleContinueClick}
                 >
-                    {isContinue ? 'Continue' : 'Create'}
+                   {isContinue ? 'Continue' : 'Create'}
                 </Button>
             </div>
         </>

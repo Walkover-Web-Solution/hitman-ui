@@ -305,7 +305,7 @@ const CustomTabs = (props) => {
           return (
             <div className='d-flex fw-500 font-12 justify-content-end align-items-end'>
               <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
-              <span>{'Untitled'}</span>
+              <span>{'Untiled'}</span>
             </div>
           )
         }

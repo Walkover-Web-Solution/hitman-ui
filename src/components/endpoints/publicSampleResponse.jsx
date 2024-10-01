@@ -16,11 +16,34 @@ class PublicSampleResponse extends Component {
       },
       isExpanded: false,
       maxHeight: 300,
+      showExpandButton: true,
     };
+    this.toggleExpand = this.toggleExpand.bind(this);
   }
 
   componentDidMount() {
     this.updateBackgroundStyle();
+    this.checkContentHeight();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.sample_response_array !== this.props.sample_response_array || prevState.isExpanded !== this.state.isExpanded) {
+      this.checkContentHeight();
+    }
+  }
+
+  checkContentHeight() {
+    const contentElement = document.querySelector('.sample-response .tab-pane'); 
+    if (contentElement) {
+        const contentHeight = contentElement.scrollHeight;
+        const { maxHeight } = this.state;
+
+        const shouldShowExpandButton = contentHeight > maxHeight;
+
+        if (shouldShowExpandButton !== this.state.showExpandButton) {
+            this.setState({ showExpandButton: shouldShowExpandButton });
+        }
+    }
   }
 
   updateBackgroundStyle() {
@@ -58,37 +81,26 @@ class PublicSampleResponse extends Component {
       }
     }
   }
-  groupByStatus() {
-    const groupedResponses = this.props.sample_response_array.reduce((acc, curr) => {
-      if (!acc[curr.status]) {
-        acc[curr.status] = [];
-      }
-      acc[curr.status].push(curr);
-      return acc;
-    }, {});
-    return groupedResponses;
+
+  toggleExpand() {
+    this.setState(prevState => ({ isExpanded: !prevState.isExpanded }));
   }
 
   render() {
-    const { maxHeight } = this.state;
-    const groupedResponses = this.groupByStatus();
+    const { isExpanded, maxHeight, showExpandButton } = this.state;
     const contentStyle = {
-      maxHeight: `${maxHeight}px`,
+      maxHeight: isExpanded ? 'none' : `${maxHeight}px`,
+      overflow: 'hidden',
     };
     return (
       <>
         <Style>
           {`
           .sample-response nav.nav.nav-tabs a.active {
-            background: ${this.props.publicCollectionTheme};
-            color:#fff;
-            opacity: 0.9;
-          }
-
-          .overflow-auto {
-            scrollbar-color: rgb(0 0 0 / 21%) #f1f1f1; 
-            scrollbar-width: thin; 
-          }
+                background: ${this.props.publicCollectionTheme};
+                color:#fff;
+                opacity: 0.9;
+              } 
           `}
         </Style>
         <div className='pubSampleResponse'>
@@ -96,31 +108,32 @@ class PublicSampleResponse extends Component {
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
           </div>
           <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
-            <Tabs id="uncontrolled-tab-example" aria-hidden="true">
-              {Object.keys(groupedResponses).map((status, key) => (
+            <Tabs id='uncontrolled-tab-example' aria-hidden="true" >
+              {this.props.sample_response_array.map((sampleResponse, key) => (
                 <Tab
                   key={key}
-                  eventKey={status}
+                  eventKey={sampleResponse.status}
                   title={
-                    getHighlightsData(this.props, 'sampleResponse', status) ? (
+                    getHighlightsData(this.props, 'sampleResponse', sampleResponse.status) ? (
                       <span>
-                        {status}
-                        <i className="fas fa-circle" />
+                        {sampleResponse.status}
+                        <i className='fas fa-circle' />
                       </span>
                     ) : (
-                      status
+                      sampleResponse.status
                     )
                   }
                 >
-                  <div style={contentStyle}  className="overflow-auto">
-                    {groupedResponses[status].map((sampleResponse, idx) => (
-                      <div key={idx}>
-                        <div>{sampleResponse.description}</div>
-                        <div>{this.showSampleResponseBody(sampleResponse.data)}</div>
-                        {idx < groupedResponses[status].length - 1 && <hr />}
-                      </div>
-                    ))}
+
+                  <div style={contentStyle}>
+                    <div>{sampleResponse.description}</div>
+                    <div >{this.showSampleResponseBody(sampleResponse.data)}</div>
                   </div>
+                  {showExpandButton && (
+                    <div className="expand-btn cursor-pointer " onClick={this.toggleExpand}>
+                      {isExpanded ? 'Show Less' : 'Show More'}
+                    </div>
+                  )}
                 </Tab>
               ))}
             </Tabs>

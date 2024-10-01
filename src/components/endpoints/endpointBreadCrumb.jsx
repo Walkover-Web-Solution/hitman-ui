@@ -145,13 +145,13 @@ class EndpointBreadCrumb extends Component {
   }
   handleInputChange(e) {
     const newName = e.currentTarget.textContent;
-    this.setState({ changesMade: true, endpointTitle: newName });
-    if (this.props?.isEndpoint) {
-      const tempData = this.props?.endpointContent || {};
-      tempData.data.name = newName;
-      this.props.setQueryUpdatedData(tempData);
-      this.props.update_name(this.props?.params?.endpointId, newName);
-    }
+      this.setState({ changesMade: true, endpointTitle: newName });
+      if (this.props?.isEndpoint) {
+        const tempData = this.props?.endpointContent || {};
+        tempData.data.name = newName;
+        this.props.setQueryUpdatedData(tempData);
+        this.props.update_name(this.props?.params?.endpointId, newName);
+      }
   }
 
   handleInputBlur(event) {
@@ -182,11 +182,6 @@ class EndpointBreadCrumb extends Component {
         this.props.setQueryUpdatedData(tempData)
         this.props.update_name(this.props?.params?.endpointId, event.currentTarget.textContent)
       }
-    } else {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = event.currentTarget.textContent
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name(this.props?.params?.endpointId, event.currentTarget.textContent)
     }
   }
 
@@ -286,9 +281,9 @@ class EndpointBreadCrumb extends Component {
   handleKeyDownEvent(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      event.target.blur();
-      this.setState({ nameEditable: false });
-      this.handleInputBlur(event);
+        event.target.blur();
+        this.setState({ nameEditable: false });
+        this.handleInputBlur(event);
     }
   }
 
@@ -304,7 +299,7 @@ class EndpointBreadCrumb extends Component {
             {this.props?.tabState[this.props?.activeTabId]?.status === 'NEW' && this.switchProtocolTypeDropdown()}
           </div>
 
-          {this.props.tabState[this.props.activeTabId]?.status !== 'NEW' ? (
+          {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
 
               <div className='text-nowrap-heading breadcrumb-main d-flex align-items-center flex-wrap'>
@@ -342,7 +337,7 @@ class EndpointBreadCrumb extends Component {
               {this.props?.pages?.[this.props?.params?.endpointId]?.name ||
                 this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
                 this.props?.endpointContent?.data?.name
-                && this.props?.pages?.[this.props?.params?.pageId]?.name ||  this.props?.endpointContent?.data?.name || "Untitled"}
+                && this.props?.pages?.[this.props?.params?.pageId]?.name || "Untitled"}
             </strong>
           )}
         </div>

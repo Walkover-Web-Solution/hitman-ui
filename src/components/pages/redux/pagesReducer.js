@@ -115,8 +115,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.response.id]: {
           ...state[action.response.id],
-          ...action.response,
-          updatedAt:action.response.updatedAt
+          ...action.response
         }
       }
 
@@ -259,8 +258,7 @@ function pagesReducer(state = initialState, action) {
           ...state[action.response.id],
           requestType: action.response?.requestType,
           name: action.response?.name,
-          state: action.response?.state,
-          updatedAt: action.response?.updatedAt
+          state: action.response?.state
         }
       }
     case pagesActionTypes.ON_DRAG_DROP: {

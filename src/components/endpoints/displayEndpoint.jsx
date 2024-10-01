@@ -80,8 +80,6 @@ import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPat
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
 import { ReactComponent as Example } from '../../assets/icons/example.svg';
-import PublishModal from '../publishModal/publishModal.jsx'
-
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -424,8 +422,6 @@ class DisplayEndpoint extends Component {
       showPublicEnvironments: false,
       loading: false,
       errorFound: true,
-      contentChanged: false,
-      endpointSaved: false,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -663,7 +659,6 @@ class DisplayEndpoint extends Component {
     }
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
-    this.setState({ contentChanged: true })
   }
 
   setUnsavedTabDataInIDB() {
@@ -1394,9 +1389,9 @@ class DisplayEndpoint extends Component {
         description: endpointContent?.description || "",
         sampleResponse: endpointContent?.sampleResponseArray || []
       }
-      // if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
-      //   return toast.error('Please enter Endpoint name')
-      if (currentTabId && !this.props.pages[currentTabId]) {
+      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
+        return toast.error('Please enter Endpoint name')
+      else if (currentTabId && !this.props.pages[currentTabId]) {
         // endpoint.requestId = currentTabId
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
@@ -1435,11 +1430,7 @@ class DisplayEndpoint extends Component {
               if (closeForm) this.closeEndpointFormModal()
               if (stopLoader) this.setState({ saveAsLoader: false })
             },
-            () => {
-              this.state.saveAsFlag
-              this.setState({ endpointSaved: true })
-            }
-
+            this.state.saveAsFlag
           )
           moveToNextStep(4)
         } else {
@@ -1455,7 +1446,6 @@ class DisplayEndpoint extends Component {
             },
             () => {
               this.setState({ saveLoader: false })
-              this.setState({ endpointSaved: true })
             }
           )
           if (endpoint.description !== '') {
@@ -1463,6 +1453,7 @@ class DisplayEndpoint extends Component {
           } else {
             this.props.endpoints[currentTabId].description = false
           }
+          tabService.markTabAsSaved(currentTabId)
         }
       }
     }
@@ -2386,10 +2377,10 @@ class DisplayEndpoint extends Component {
     return (
       <>
         {this.state.postReqScriptError ? (
-          <div className='script-error text-danger'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div>
+          <div className='script-error'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div>
         ) : null}
         {this.state.preReqScriptError ? (
-          <div className='script-error text-danger'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div>
+          <div className='script-error'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div>
         ) : null}
       </>
     )
@@ -2991,10 +2982,8 @@ class DisplayEndpoint extends Component {
 
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
-    this.setState({ contentChanged: false })
     this.setState({ loading: true })
     this.setState({ publishLoader: true })
-    this.setState({ endpointSaved: false })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
@@ -3139,7 +3128,7 @@ class DisplayEndpoint extends Component {
   renderEndpointUserData(isOnPublishedPage) {
     const { pages, currentEndpointId, users } = this.props
     const updatedById = pages?.[currentEndpointId]?.updatedBy
-    const createdAt = pages?.[currentEndpointId]?.createdAt ? moment(pages[currentEndpointId].createdAt).fromNow() : null
+    const createdAt = pages?.[currentEndpointId]?.createdAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
     const lastModified = pages?.[currentEndpointId]?.updatedAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
 
     const user = users?.find((user) => user.id === updatedById)
@@ -3280,23 +3269,6 @@ class DisplayEndpoint extends Component {
                             />
                           )}
                           {this.renderEndpointUserData()}
-                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' &&
-                            <Dropdown className='ml-1'>
-                              <IconButton>
-                                <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">
-                                  Publish
-                                </Dropdown.Toggle>
-                              </IconButton>
-                              <Dropdown.Menu>
-                                <PublishModal
-                                  onPublish={this.handleApproveEndpointRequest.bind(this)}
-                                  onUnpublish={this.handleRejectEndpointRequest.bind(this)}
-                                  id={endpointId}
-                                  collectionId={this.props?.pages[endpointId]?.collectionId}
-                                  isContentChanged={this.state.endpointSaved}
-                                />
-                              </Dropdown.Menu>
-                            </Dropdown>}
                           {this.renderSaveButton()}
                           <Dropdown className='publish-unpublish-button'>
                             {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
@@ -3306,7 +3278,7 @@ class DisplayEndpoint extends Component {
                             )}
                             <Dropdown.Menu>
                               {this.renderSwitchBtn()}
-                              {/* {isAdmin() && !isStatePending(endpointId, endpointss) && (
+                              {isAdmin() && !isStatePending(endpointId, endpointss) && (
                                 <Dropdown.Item className='p-0  d-flex justify-content-between align-items-center'>
                                   <span>
                                     {approvedOrRejected
@@ -3334,7 +3306,7 @@ class DisplayEndpoint extends Component {
                                 >
                                   {getEntityState(endpointId, endpointss)}
                                 </button>
-                              </Dropdown.Item>)} */}
+                              </Dropdown.Item>)}
 
                             </Dropdown.Menu>
                           </Dropdown>
@@ -3870,10 +3842,9 @@ class DisplayEndpoint extends Component {
                         this.renderDocView()
                       )}
                     </div>
-
+                    {this.isDashboardAndTestingView() && this.renderScriptError()}
                     {this.displayResponse()}
                   </div>
-                  {this.isDashboardAndTestingView() && this.renderScriptError()}
                 </div>
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>

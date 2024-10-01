@@ -3023,7 +3023,11 @@ li.nav-item.cookie-tab a {
 }
 
 .script-error {
-  padding-top: 10px;
+  background: #e74c3c;
+  text-align: center;
+  margin: 1.5rem auto -2.5rem;
+  padding: 10px;
+  color: #fff;
   font-size: 14px;
 }
 
