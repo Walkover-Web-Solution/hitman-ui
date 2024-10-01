@@ -25,7 +25,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
         setSave(true)
     }, [collectionId, id, pages]);
 
-    const visiblePath1 = `${import.meta.env.VITE_UI_URL}/p`
+    const visiblePath1 = `${process.env.NEXT_UI_URL}/p`
     const visiblePath2 = customDomain ? `https://${customDomain}/` : null
 
     const handlePublishClick = () => {

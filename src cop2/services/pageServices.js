@@ -1,6 +1,6 @@
 import http from './httpService'
 
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = process.env.NEXT_API_URL
 
 export const getPageContent = async (orgId, pageId) => {
   const data = await http.get(apiUrl + `/orgs/${orgId}/pages/${pageId}/content`)

@@ -4,7 +4,7 @@ import { ReactComponent as TECHDOCPUBLISH } from '../../assets/icons/TECHDOC.svg
 
 function Footer({ theme }) {
   const domainName = window.location.hostname
-  const domainSrc = import.meta.env.VITE_UI_URL + '?src=' + domainName
+  const domainSrc = process.env.NEXT_UI_URL + '?src=' + domainName
 
   return (
       <div className='footerWrapper'>

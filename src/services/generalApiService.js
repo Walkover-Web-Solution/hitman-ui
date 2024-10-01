@@ -1,6 +1,6 @@
 import http from './httpService'
 
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = process.env.NEXT_API_URL
 
 export function getCollectionsAndPages(orgId, queryParamsString = '') {
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)

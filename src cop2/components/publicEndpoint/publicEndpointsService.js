@@ -10,7 +10,7 @@ const ENTITY_STATUS = {
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return import.meta.env.VITE_API_URL + `/orgs/${orgId}`
+  return process.env.NEXT_API_URL + `/orgs/${orgId}`
 }
 
 export function approveEndpoint(endpointId, uniqueTabId) {

@@ -9,8 +9,8 @@ import { setCurrentUser } from "./redux/usersRedux/userAction";
 
 export const tokenKey = "token";
 export const profileKey = "profile";
-const uiURL = import.meta.env.VITE_UI_URL;
-const proxyUrl = import.meta.env.VITE_PROXY_URL;
+const uiURL = process.env.NEXT_UI_URL;
+const proxyUrl = process.env.NEXT_PROXY_URL;
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);

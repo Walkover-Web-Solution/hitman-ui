@@ -8,8 +8,10 @@ import { setCurrentorganization, setOrganizationList } from "./redux/organizatio
 import { store } from "@/store/store";
 import { setCurrentUser } from "./redux/usersRedux/userAction";
 
-const uiURL = process.env.NEXT_PUBLIC_VITE_UI_URL; // Updated to use Next.js environment variables
-const proxyUrl = process.env.NEXT_PUBLIC_VITE_PROXY_URL; // Updated to use Next.js environment variables
+export const tokenKey = "token";
+export const profileKey = "profile";
+const uiURL = process.env.NEXT_UI_URL;
+const proxyUrl = process.env.NEXT_PROXY_URL;
 
 function useQuery() {
   const router = useRouter();

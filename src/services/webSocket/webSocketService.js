@@ -19,7 +19,7 @@ var CLIENT, CHANNEL
 
 export function initConn(channel) {
   CHANNEL = channel
-  CLIENT = new WebSocketClient(import.meta.env.VITE_RTLAYER_OID, import.meta.env.VITE_RTLAYER_SID)
+  CLIENT = new WebSocketClient(process.env.NEXT_RTLAYER_OID, process.env.NEXT_RTLAYER_SID)
   if (CHANNEL) {
     CLIENT.on('open', subscribe)
     CLIENT.on('message', handleMessage)
