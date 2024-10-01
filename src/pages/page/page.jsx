@@ -19,6 +19,7 @@ import * as Y from "yjs";
 import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
+import { BiSolidCommentDetail } from "react-icons/bi";
 
 const Page = () => {
 
@@ -42,6 +43,9 @@ const Page = () => {
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [hovered, setHovered] = useState(false);
+    const [showInput, setShowInput] = useState(false);
+    const [description, setDescription] = useState("");
 
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
@@ -67,6 +71,11 @@ const Page = () => {
 
         return () => window.removeEventListener('keydown', handleSaveKeydown);
     }, [pageId]);
+
+    useEffect(() => {
+            setHovered(false);
+            setShowInput(false); 
+    }, [activeTabId]);
 
     useEffect(() => {
         if (textareaRef.current) autoGrow(textareaRef.current);
@@ -159,7 +168,7 @@ const Page = () => {
         dispatch(updateDraft(activeTabId, newContent))
     };
     const publishClick = () => {
-            setOpenPublishConfirmationModal(true)
+        setOpenPublishConfirmationModal(true)
     }
 
     const unpublishClick = () => {
@@ -167,6 +176,21 @@ const Page = () => {
             setOpenUnpublishConfirmationModal(true)
         }
     }
+    const handleAddDescriptionClick = () => {
+        setShowInput(true);
+    };
+
+    const handleDescriptionChange = (event) => {
+        setDescription(event.target.value);
+    };
+
+    const handleMouseEnter = () => {
+        setHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+        setHovered(false);
+    };
 
     const renderPublishConfirmationModal = () => {
         return (
@@ -370,20 +394,48 @@ const Page = () => {
             </div>
 
             <div className='page-container h-100 w-100 p-3'>
-                <textarea
-                    ref={textareaRef}
-                    onInput={(e) => {
-                        setPageName(e.target.value)
-                        autoGrow(textareaRef.current)
-                    }}
-                    className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-100'
-                    type='text'
-                    value={pageName}
-                    placeholder='Untitled'
-                    onChange={handlePageNameChange}
-                    onKeyDown={handlePageNameKeyDown}
-                    onBlur={handleSavePageName}
-                />
+                <div
+                    className='page-header position-sticky px-3 py-3 bg-white d-flex align-items-center justify-content-between w-100 position-absolute'
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    <div className="d-flex justify-content-between align-items-center">
+                        <textarea
+                            ref={textareaRef}
+                            onInput={(e) => {
+                                setPageName(e.target.value)
+                                autoGrow(textareaRef.current)
+                            }}
+                            className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-100'
+                            type='text'
+                            value={pageName}
+                            placeholder='Untitled'
+                            onChange={handlePageNameChange}
+                            onKeyDown={handlePageNameKeyDown}
+                            onBlur={handleSavePageName}
+                        />
+                        {hovered && !showInput && (
+                            <button
+                                className="btn text-secondary position-absolute"
+                                style={{top: '8px', right: '430px' }}
+                                onClick={handleAddDescriptionClick}
+                            >
+                               <BiSolidCommentDetail /> Add Description
+                            </button>
+                        )}
+                    </div>
+                </div>
+                {showInput && (
+                    <div className='page-subtitle text-black fa-1x mt-2 w-100'>
+                        <input
+                            type='text'
+                            className='subtitle-input d-flex w-100 pt-2 mb-3 pb-2 font-14'
+                            placeholder='About your Doc'
+                            value={description}
+                            onChange={handleDescriptionChange}
+                        />
+                    </div>
+                )}
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
                         provider={provider}
