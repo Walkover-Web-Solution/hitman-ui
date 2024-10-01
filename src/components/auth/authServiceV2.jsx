@@ -1,6 +1,6 @@
+"use client"
 import React, { useEffect } from "react";
-import http from "../../services/httpService";
-import { switchOrg } from "../../services/orgApiService";
+import { switchOrg } from "@/services/orgApiService";
 import axios from "axios";
 import { setCurrentorganization, setOrganizationList } from "./redux/organizationRedux/organizationAction";
 import { store } from "../../store/store";
@@ -18,9 +18,9 @@ function isAdmin() {
 
 async function getUserData(token) {
   try {
-    const response = await axios.get(proxyUrl + "/getUsers?itemsPerPage=100", {
-      headers: { proxy_auth_token: token }
-    })
+    const response = await axios.get(`${proxyUrl}/getUsers?itemsPerPage=100`, {
+      headers: { proxy_auth_token: token },
+    });
     return response?.data?.data?.data;
   } catch (e) {
     localStorageCleanUp();
@@ -32,8 +32,8 @@ function logout(redirectUrl = "/login") {
   localStorageCleanUp();
   try {
     if (getProxyToken()) {
-      http
-        .delete(proxyUrl + "/logout")
+      axios
+        .delete(`${proxyUrl}/logout`)
         .then(() => {
           logoutRedirection(redirectUrl);
         })
@@ -75,6 +75,7 @@ function getCurrentUser() {
   } catch (err) {
     return null;
   }
+  return null;
 }
 
 function getCurrentOrg() {
@@ -93,7 +94,7 @@ function getOrgList() {
     const organizationList = state?.organizations?.orgList;
     return organizationList;
   } catch (err) {
-    console.error(err)
+    console.error(err);
     return null;
   }
 }
@@ -104,16 +105,16 @@ function getProxyToken() {
 }
 
 async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect) {
-  debugger
   if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
 
   localStorage.setItem(tokenKey, proxyAuthToken);
   try {
-    const response = await fetch(proxyUrl + '/getDetails', {
+    const response = await fetch(`${proxyUrl}/getDetails`, {
       headers: {
-        proxy_auth_token: proxyAuthToken
-      }
+        proxy_auth_token: proxyAuthToken,
+      },
     });
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -124,10 +125,13 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect
     store.dispatch(setCurrentUser(userInfo));
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
+
     const currentOrgId = userInfo.currentCompany?.id;
-    if (currentOrgId && redirect) { switchOrg(currentOrgId, redirect) }
+    if (currentOrgId && redirect) {
+      switchOrg(currentOrgId, redirect);
+    }
   } catch (e) {
-    console.error('Error:', e);
+    console.error("Error:", e);
   }
 }
 
@@ -148,10 +152,10 @@ function AuthServiceV2() {
     };
 
     fetchData();
-  }, []);
+  }, [router]);
 
   return (
-    <div className='custom-loading-container'>
+    <div className="custom-loading-container">
       <progress className="pure-material-progress-linear w-25" />
     </div>
   );
@@ -166,5 +170,5 @@ export {
   getOrgList,
   getProxyToken,
   logout,
-  getDataFromProxyAndSetDataToLocalStorage
+  getDataFromProxyAndSetDataToLocalStorage,
 };

@@ -1,8 +1,8 @@
 import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
-import { SESSION_STORAGE_KEY } from '../../common/utility.js'
-import { navigateTo } from '../../../navigationService.js'
+import { SESSION_STORAGE_KEY } from '@/components/common/utility.js'
+// import { navigateTo } from '../../../navigationService.js'
 import { toast } from 'react-toastify'
 
 export const fetchAllPublicEndpoints = (collectionIdentifier, domain) => {
@@ -14,7 +14,7 @@ export const fetchAllPublicEndpoints = (collectionIdentifier, domain) => {
       })
       .catch((error) => {
         dispatch(onPublicEndpointsFetchedError(error.response ? error.response.data : error))
-        navigateTo({ pathname: '/p/error', collection: true })
+        // navigateTo({ pathname: '/p/error', collection: true })
       })
   }
 }

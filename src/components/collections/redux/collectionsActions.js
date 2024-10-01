@@ -1,4 +1,4 @@
-import { store } from '../../../store/store'
+import { store } from '@/store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'

@@ -1,12 +1,12 @@
 import shortid from 'shortid'
-import { store } from '../../../store/store'
+import { store } from '@/store/store'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
-import { navigateTo } from '../../../navigationService'
-import { getOrgId, isElectron, isOrgDocType } from '../../common/utility'
-import { openModal } from '../../modals/redux/modalsActions'
-import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
-import { getPageContent } from '../../../services/pageServices'
+// import { navigateTo } from '../../../navigationService'
+import { getOrgId, isElectron, isOrgDocType } from '@/components/common/utility'
+import { openModal } from '@/components/modals/redux/modalsActions'
+import { DESKTOP_APP_DOWNLOAD } from '@/components/modals/modalTypes'
+import { getPageContent } from '@/services/pageServices'
 import { toast } from 'react-toastify'
 
 export const fetchTabsFromRedux = () => {
@@ -85,7 +85,7 @@ export const addNewTab = () => {
       })
       dispatch(updateTabDraft(id, draft))
       dispatch(setActiveTabId(id))
-      navigateTo(`/orgs/${orgId}/dashboard/page/new`)
+      // navigateTo(`/orgs/${orgId}/dashboard/page/new`)
     }
   } else {
     return async (dispatch) => {
@@ -101,7 +101,7 @@ export const addNewTab = () => {
         }
       })
       dispatch(setActiveTabId(id))
-      navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
+      // navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
     }
   }
 }

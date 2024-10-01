@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import { store } from '../../../store/store'
+import { store } from '@/store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
