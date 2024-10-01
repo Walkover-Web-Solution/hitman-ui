@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import Head from 'next/head';
 
 export default function Layout({ children }) {
@@ -40,3 +41,5 @@ export default function Layout({ children }) {
     </>
   );
 }
+=======
+>>>>>>> Stashed changes

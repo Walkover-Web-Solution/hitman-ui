@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 "use client"; 
 
 import React, { useEffect } from "react";
@@ -7,9 +8,18 @@ import TECHDOC from "@assets/icons/TECHDOC100.svg";
 import TECHDOCC from "@assets/icons/TECHDOC.svg";
 import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
 // import { useNavigate } from "react-router-dom";
+=======
+import React, { useEffect } from 'react';
+import './auth.scss';
+import './login.scss';
+import TECHDOC from '@/assets/icons/TECHDOC100.svg';
+import TECHDOCC from "@/assets/icons/TECHDOC.svg";
+import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
+import { useRouter } from "next/router"; // Update import
+>>>>>>> Stashed changes
 
 const LoginV2 = () => {
-  const navigate = useNavigate();
+  const router = useRouter(); // Change navigate to router
 
   const proxyGooglereferenceMapping = {
     local: import.meta.env.VITE_PROXY_REFERENCE_ID_LOCAL,
@@ -22,7 +32,7 @@ const LoginV2 = () => {
 
     const checkIfUserAlreadyLogin = () => {
       if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-        navigate(`/orgs/${getCurrentOrg().id}/dashboard`);
+        router.push(`/orgs/${getCurrentOrg().id}/dashboard`);
       } else {
         loadScript();
       }

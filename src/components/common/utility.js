@@ -1,13 +1,13 @@
 import { QueryCache } from 'react-query'
 import * as _ from 'lodash'
 import * as Sentry from '@sentry/react'
-import { store } from '../../store/store'
+import { store } from "@/store/store"
 import Joi from 'joi-browser'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
 import { getCurrentUser } from '../auth/authServiceV2'
 import { bodyTypesEnums, rawTypesEnums } from './bodyTypeEnums'
-import { navigateTo } from '../../navigationService'
+// import { navigateTo } from '../../navigationService'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -673,16 +673,16 @@ function deleteFromReactQuery(deletedIds) {
   }
 }
 
-export const operationsAfterDeletion = (data) => {
-  // if path needs to be changed with new activeId if tabsOrder length > 0
-  if (data?.changePath && data?.tabs?.tabsOrder?.length > 0) {
-    navigateTo(`/orgs/${getOrgId()}/dashboard`)
-  }
-  // when no tabs are opened then redirect to new tab and open new tab
-  if (data?.openNewTab) {
-    navigateTo(`/orgs/${getOrgId()}/dashboard`)
-  }
-}
+// export const operationsAfterDeletion = (data) => {
+//   // if path needs to be changed with new activeId if tabsOrder length > 0
+//   if (data?.changePath && data?.tabs?.tabsOrder?.length > 0) {
+//     navigateTo(`/orgs/${getOrgId()}/dashboard`)
+//   }
+//   // when no tabs are opened then redirect to new tab and open new tab
+//   if (data?.openNewTab) {
+//     navigateTo(`/orgs/${getOrgId()}/dashboard`)
+//   }
+// }
 
 export const trimString = (str) => {
   return str?.trim()
