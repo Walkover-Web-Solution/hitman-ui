@@ -76,4 +76,4 @@ embedded.provisionprofile
 *dump.rdb 
 .DS_Store
 .next
-/.next
+.next/
