@@ -17,6 +17,7 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import { getOrgId, msgText } from "../../../../../../../components/common/utility";
 import ConfirmationModal from "../../../../../../../components/common/confirmationModal";
+import './page.scss'
 
 const Page = () => {
   const { draftContent, page, pages, users, activeTabId, tabs, collections, isPublished } = useSelector((state) => ({
