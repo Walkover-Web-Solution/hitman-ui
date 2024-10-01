@@ -2,8 +2,8 @@ import http from './httpService'
 import { redirectToDashboard } from '@/components/common/utility'
 import { getOrgList, getCurrentOrg, getDataFromProxyAndSetDataToLocalStorage } from '@/components/auth/authServiceV2'
 import { toast } from 'react-toastify'
-import { store } from '../store/store'
-import { removeOrganizationById, setCurrentorganization, setOrganizationList } from '../components/auth/redux/organizationRedux/organizationAction'
+import { store } from '@/store/store'
+import { removeOrganizationById, setCurrentorganization, setOrganizationList } from '@/components/auth/redux/organizationRedux/organizationAction'
 const apiBaseUrl = process.env.NEXT_API_URL
 const proxyUrl = process.env.NEXT_PROXY_URL
 

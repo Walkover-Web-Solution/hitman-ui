@@ -1,12 +1,12 @@
 import { toast } from 'react-toastify'
-import { store } from '../../../store/store'
+import { store } from '@/store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
-import { navigateTo } from '../../../navigationService'
+// import { navigateTo } from '../../../navigationService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
 import tabsActionTypes from '../../tabs/redux/tabsActionTypes'
 import { onPageStateSuccess } from '../../publicEndpoint/redux/publicEndpointsActions'
@@ -156,7 +156,7 @@ export const addPage = (rootParentId, newPage, pageId) => {
         dispatch(onParentPageAdded(response.data))
         const newTab = { id: data.id, type: "page", status: "SAVED", previewMode: false, isModified: false }
         dispatch(replaceTab(pageId, newTab))
-        navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}`)
+        // navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

@@ -1,8 +1,8 @@
-import http from '../../services/httpService'
-import httpService from '../../services/endpointHttpService'
+import http from '@/services/httpService'
+import httpService from '@/services/endpointHttpService'
 import qs from 'qs'
 import { getOrgId } from '../common/utility'
-import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
+import { makeHttpRequestThroughAxios } from '@/services/coreRequestService'
 import { grantTypesEnums } from '../common/authorizationEnums'
 import { introspectionQuery } from './commonIntrospectionQuery'
 

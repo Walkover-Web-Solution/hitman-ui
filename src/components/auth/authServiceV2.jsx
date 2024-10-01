@@ -1,8 +1,8 @@
-"use client"
-import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import http from "../../services/httpService";
-import { switchOrg } from "../../services/orgApiService";
+"use client"; 
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { switchOrg } from "@/services/orgApiService";
 import axios from "axios";
 import { setCurrentorganization, setOrganizationList } from "./redux/organizationRedux/organizationAction";
 import { store } from "../../store/store";
@@ -10,12 +10,8 @@ import { setCurrentUser } from "./redux/usersRedux/userAction";
 
 export const tokenKey = "token";
 export const profileKey = "profile";
-const uiURL = process.env.NEXT_UI_URL;
-const proxyUrl = process.env.NEXT_PROXY_URL;
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+const uiURL = process.env.NEXT_PUBLIC_NEXT_UI_URL;
+const proxyUrl = process.env.NEXT_PUBLIC_NEXT_PROXY_URL;
 
 function isAdmin() {
   return { is_admin: true };
@@ -23,9 +19,9 @@ function isAdmin() {
 
 async function getUserData(token) {
   try {
-    const response = await axios.get(proxyUrl + "/getUsers?itemsPerPage=100", {
-      headers: { proxy_auth_token: token }
-    })
+    const response = await axios.get(`${proxyUrl}/getUsers?itemsPerPage=100`, {
+      headers: { proxy_auth_token: token },
+    });
     return response?.data?.data?.data;
   } catch (e) {
     localStorageCleanUp();
@@ -37,8 +33,8 @@ function logout(redirectUrl = "/login") {
   localStorageCleanUp();
   try {
     if (getProxyToken()) {
-      http
-        .delete(proxyUrl + "/logout")
+      axios
+        .delete(`${proxyUrl}/logout`)
         .then(() => {
           logoutRedirection(redirectUrl);
         })
@@ -55,31 +51,38 @@ function logout(redirectUrl = "/login") {
 }
 
 function localStorageCleanUp() {
-  window.localStorage.removeItem(tokenKey);
-  window.localStorage.removeItem(profileKey);
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(tokenKey);
+    window.localStorage.removeItem(profileKey);
+  }
 }
 
 function logoutRedirection(redirectUrl) {
-  const redirectUri = uiURL + redirectUrl;
-  window.location = redirectUri;
+  const redirectUri = `${uiURL}${redirectUrl}`;
+  if (typeof window !== "undefined") {
+    window.location.href = redirectUri;
+  }
 }
 
 function getCurrentUser() {
-  try {
-    const profile = window.localStorage.getItem(profileKey);
-    const parsedProfile = JSON.parse(profile);
-    const desiredData = {
-      id: parsedProfile.id,
-      name: parsedProfile.name,
-      email: parsedProfile.email,
-      created_at: parsedProfile.created_at,
-      updated_at: parsedProfile.updated_at,
-      is_block: parsedProfile.is_block,
-    };
-    return desiredData;
-  } catch (err) {
-    return null;
+  if (typeof window !== "undefined") {
+    try {
+      const profile = window.localStorage.getItem(profileKey);
+      const parsedProfile = JSON.parse(profile);
+      const desiredData = {
+        id: parsedProfile.id,
+        name: parsedProfile.name,
+        email: parsedProfile.email,
+        created_at: parsedProfile.created_at,
+        updated_at: parsedProfile.updated_at,
+        is_block: parsedProfile.is_block,
+      };
+      return desiredData;
+    } catch (err) {
+      return null;
+    }
   }
+  return null;
 }
 
 function getCurrentOrg() {
@@ -98,64 +101,79 @@ function getOrgList() {
     const organizationList = state?.organizations?.orgList;
     return organizationList;
   } catch (err) {
-    console.error(err)
+    console.error(err);
     return null;
   }
 }
 
 function getProxyToken() {
-  const tokenKey = "token";
-  return window.localStorage.getItem(tokenKey) || "";
+  if (typeof window !== "undefined") {
+    return window.localStorage.getItem(tokenKey) || "";
+  }
+  return "";
 }
 
 async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect) {
-  if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
+  if (!proxyAuthToken) {
+    proxyAuthToken = getProxyToken();
+  }
 
-  window.localStorage.setItem(tokenKey, proxyAuthToken);
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(tokenKey, proxyAuthToken);
+  }
+
   try {
-    const response = await fetch(proxyUrl + '/getDetails', {
+    const response = await fetch(`${proxyUrl}/getDetails`, {
       headers: {
-        proxy_auth_token: proxyAuthToken
-      }
+        proxy_auth_token: proxyAuthToken,
+      },
     });
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const data = await response.json();
     const userInfo = data.data[0];
-    window.localStorage.setItem(profileKey, JSON.stringify(userInfo));
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(profileKey, JSON.stringify(userInfo));
+    }
+
     store.dispatch(setCurrentUser(userInfo));
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
+
     const currentOrgId = userInfo.currentCompany?.id;
-    if (currentOrgId && redirect) { switchOrg(currentOrgId, redirect) }
+    if (currentOrgId && redirect) {
+      switchOrg(currentOrgId, redirect);
+    }
   } catch (e) {
-    console.error('Error:', e);
+    console.error("Error:", e);
   }
 }
 
 function AuthServiceV2() {
-  const query = useQuery();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const proxyAuthToken = query.get("proxy_auth_token");
-        if (proxyAuthToken) {
-          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken , true);
+      const urlParams = new URLSearchParams(window.location.search);
+      const proxyAuthToken = urlParams.get("proxy_auth_token");
+      if (proxyAuthToken) {
+        try {
+          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, true);
+        } catch (err) {
+          router.push("/logout");
         }
-      } catch (err) {
-        navigate("/logout");
       }
     };
 
     fetchData();
-  }, []);
+  }, [router]);
 
   return (
-    <div className='custom-loading-container'>
+    <div className="custom-loading-container">
       <progress className="pure-material-progress-linear w-25" />
     </div>
   );
@@ -170,5 +188,5 @@ export {
   getOrgList,
   getProxyToken,
   logout,
-  getDataFromProxyAndSetDataToLocalStorage
+  getDataFromProxyAndSetDataToLocalStorage,
 };

@@ -1,4 +1,4 @@
-import http from '../../services/httpService'
+import http from '@/services/httpService'
 import { getOrgId } from '../common/utility'
 
 const apiBaseUrl = process.env.NEXT_API_URL
