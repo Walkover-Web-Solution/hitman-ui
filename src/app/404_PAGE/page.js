@@ -1,5 +1,6 @@
+"use client"
 import React from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 function ERROR_404_PAGE() {
   const router = useRouter()
