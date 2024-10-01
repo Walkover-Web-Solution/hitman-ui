@@ -18,7 +18,7 @@ import { FiEdit2 } from 'react-icons/fi'
 import { MdOutlineContentCopy } from 'react-icons/md'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { ReactComponent as Example } from '../../assets/icons/example.svg';
+import  Example  from '@/assets/icons/example.svg';
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })

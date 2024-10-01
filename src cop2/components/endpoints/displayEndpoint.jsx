@@ -49,7 +49,7 @@ import { openModal } from '../modals/redux/modalsActions.js'
 import Axios from 'axios'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-18-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal.jsx'
-import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
+import  DragHandleIcon from '@/assets/icons/drag-handle.svg'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions.js'
 import WarningModal from '../common/warningModal.jsx'
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -79,7 +79,7 @@ import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
-import { ReactComponent as Example } from '../../assets/icons/example.svg';
+import  Example from '@/assets/icons/example.svg';
 import PublishModal from '../publishModal/publishModal.jsx'
 
 

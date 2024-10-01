@@ -13,7 +13,7 @@ const DeleteIcon =() =>( <svg width='18' height='18' viewBox='0 0 18 18' fill='n
   <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
 </svg>
 )
-// import DeleteIcon from '../../../assets/icons/delete-icon.svg'
+// import DeleteIcon from '@/assets/icons/delete-icon.svg'
 class CookiesList extends Component {
   state = {
     domains: [],

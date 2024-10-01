@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ListGroup, Modal } from 'react-bootstrap'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import  DeleteIcon  from '@/assets/icons/delete-icon.svg'
 import environmentsApiService from './environmentsApiService'
 import { useRouter  } from 'next/navigation'
 import './environments.scss'

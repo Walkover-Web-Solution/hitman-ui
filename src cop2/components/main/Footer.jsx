@@ -1,6 +1,6 @@
 import React from 'react'
 import { hexToRgb } from '../common/utility'
-import { ReactComponent as TECHDOCPUBLISH } from '../../assets/icons/TECHDOC.svg'
+import  TECHDOCPUBLISH from '@/assets/icons/TECHDOC.svg'
 
 function Footer({ theme }) {
   const domainName = window.location.hostname

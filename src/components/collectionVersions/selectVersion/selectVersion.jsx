@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg'
+import  DeleteIcon  from '@/assets/icons/delete-icon.svg'
 import { BiSolidPencil } from 'react-icons/bi'
 import { Button } from 'react-bootstrap'
 import { updatePage } from '../../pages/redux/pagesActions'

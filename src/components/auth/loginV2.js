@@ -3,6 +3,8 @@ import './auth.scss';
 import './login.scss';
 import TECHDOC from '@/assets/icons/TECHDOC100.svg';
 import TECHDOCC from "@/assets/icons/TECHDOC.svg";
+// import  TECHDOC from "@assets/icons/TECHDOC100.svg";
+// import  TECHDOCC  from "../../assets/icons/TECHDOC.svg";
 import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
 import { useRouter } from "next/navigation"; // Update import
 

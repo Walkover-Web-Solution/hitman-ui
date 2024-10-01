@@ -12,7 +12,7 @@ const DeleteIcon = () => (<svg width='18' height='18' viewBox='0 0 18 18' fill='
   <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
 </svg>
 )
-// import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+// import  DeleteIcon from '@/assets/icons/delete-icon.svg'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter, useParams } from 'next/navigation'
 import Joi from 'joi'

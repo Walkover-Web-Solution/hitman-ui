@@ -12,7 +12,7 @@ import './checkBoxTreeView.scss'
 import './publishSidebar.scss'
 import { Button } from 'react-bootstrap'
 import { GrGraphQl } from 'react-icons/gr'
-import { ReactComponent as Example } from '../../assets/icons/example.svg';
+import  Example from '@/assets/icons/example.svg';
 
 const saveAsSidebarStyle = {
   position: 'fixed',
