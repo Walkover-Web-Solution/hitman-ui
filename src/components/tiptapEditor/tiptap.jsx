@@ -205,6 +205,14 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           const prevIndex = (activeSlashMenuIndex - 1 + 12) % 12;
           setActiveSlashMenuIndex(prevIndex);
           slashMenuRefs.current[prevIndex]?.focus();
+        }else if (e.key === 'Enter') {
+          e.preventDefault();
+          const blockTypes = [
+            'heading-1', 'heading-2', 'heading-3', 'task-list',
+            'bulletList', 'numberedList', 'left', 'right',
+            'center', 'justify', 'codeBlock', 'blockquote', 'rule'
+          ];
+          insertBlock(blockTypes[activeSlashMenuIndex]);
         }
       };
 
