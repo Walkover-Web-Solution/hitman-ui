@@ -26,7 +26,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
     }, [collectionId, id, pages]);
 
     const visiblePath1 = `${import.meta.env.VITE_UI_URL}/p`
-    const visiblePath2 = customDomain ? `https://${customDomain}/` : null
+    const visiblePath2 = customDomain ? `https://${customDomain}` : null
 
     const handlePublishClick = () => {
         sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
@@ -62,7 +62,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                     <Tooltip className="custom-tooltip" id='link-tooltip'>
                         {
                             <div className="font-12 text-secondary">
-                                <span>&nbsp;{visiblePath2 + disabledValue}</span>
+                                <span>&nbsp;{visiblePath2 + domainValue}</span>
                             </div>
                         }
                     </Tooltip>
@@ -79,6 +79,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                 )
         }
     }
+    const domainValue = disabledValue?.split('&')[0]
 
     return (
         <div className='custom-modal d-flex flex-column align-items-center'>
@@ -94,21 +95,21 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                     <div className="custom-input-wrapper mr-1 ml-1 mt-1 d-flex align-items-center border bg rounded">
                         <div className='align-items-center editable-input cursor-pointer w-50 p-1  border-right bg-white' >
                             <div className='d-flex align-items-center input'>
-                                <div className='value overflow-auto font-14 text-grey'>
+                                <div className='value font-14 text-grey'>
                                     {visiblePath2}
                                 </div>
                             </div>
                         </div>
                         <div className='d-flex justify-content-between flex-grow-1 cursor-pointer'>
                             <OverlayTrigger placement='bottom' overlay={showTooltips("path2")} >
-                                <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey text'>
-                                    {disabledValue}
+                                <div className='disabled-input  p-1 pr-3 text-nowrap font-14 text-grey text'>
+                                {domainValue}
                                 </div>
                             </OverlayTrigger>
                             <div className='d-flex align-items-center copy-buton'>
                                 <div className='align-items-center icon cursor-pointer'>
                                     <CopyToClipboard
-                                        text={visiblePath2 + disabledValue}
+                                        text={visiblePath2 + domainValue}
                                         onCopy={handleCopy}
                                     >
                                         <GoLink className='mx-2' size={14} />
@@ -129,7 +130,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </div>
                         <div className='d-flex justify-content-between cursor-pointer   flex-grow-1'>
                             <OverlayTrigger placement='bottom' overlay={showTooltips("path1")} >
-                                <div className='disabled-input overflow-auto p-1 pr-3 text-nowrap font-14 text-grey text'>
+                                <div className='disabled-input p-1 pr-3 text-nowrap font-14 text-grey text'>
                                     {disabledValue}
                                 </div>
                             </OverlayTrigger>

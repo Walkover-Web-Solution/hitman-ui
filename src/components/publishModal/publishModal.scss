@@ -1,8 +1,12 @@
 .value {
   width: 150px; 
+  overflow-x: auto;
 }
 .text {
   width: 220px;
+}
+.disabled-input {
+  overflow-x: auto;
 }
 
 .text-container {
