@@ -1,10 +1,12 @@
+"use client"; 
+
 import React, { useEffect } from "react";
 import "./auth.scss";
 import "./login.scss";
-import { ReactComponent as TECHDOC } from "../../assets/icons/TECHDOC100.svg";
-import { ReactComponent as TECHDOCC } from "../../assets/icons/TECHDOC.svg";
+import TECHDOC from "@assets/icons/TECHDOC100.svg";
+import TECHDOCC from "@assets/icons/TECHDOC.svg";
 import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const LoginV2 = () => {
   const navigate = useNavigate();
@@ -28,8 +30,7 @@ const LoginV2 = () => {
 
     const loadScript = () => {
       const configuration = {
-        referenceId:
-          proxyGooglereferenceMapping[import.meta.env.VITE_ENV] || "",
+        referenceId: proxyGooglereferenceMapping[import.meta.env.VITE_ENV] || "",
         success: (data) => {
           console.log("response", data);
         },
@@ -66,7 +67,7 @@ const LoginV2 = () => {
       <div className="login__details deatil-sec col-xl-3 col-lg-4 col-md-5 col-sm-6 p-2 p-sm-4 p-xl-5">
         <TECHDOC className="d-none d-sm-block" />
         <h4 className="mt-4">
-          Your company’s technical knowledge deserves a beautiful home
+          Your companys technical knowledge deserves a beautiful home
         </h4>
         <ul className="feature-list mt-3">
           <li>Create-Collaborate-Review-Secure-Publish-Maintain</li>

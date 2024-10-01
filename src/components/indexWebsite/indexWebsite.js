@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/web/logo.svg'
 import { ReactComponent as Giddh } from '../../assets/web/logos/giddh.svg'
 import { ReactComponent as Socket } from '../../assets/web/logos/socket.svg'
