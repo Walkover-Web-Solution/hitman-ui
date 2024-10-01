@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import './inviteTeam.scss'
 import { getCurrentOrg, getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
@@ -14,7 +14,7 @@ function InviteTeam() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const navigate = useNavigate()
+  const router = useRouter();
   const inputRef = useRef(null)
   const orgId = getCurrentOrg()?.id
 
@@ -40,7 +40,7 @@ function InviteTeam() {
   }, [showModal])
 
   const handleBack = () => {
-    navigate(`/orgs/${orgId}/dashboard`)
+    router.push(`/orgs/${orgId}/dashboard`)
   }
 
   const handleInviteClick = () => setShowModal(true)

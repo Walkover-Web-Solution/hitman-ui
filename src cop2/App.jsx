@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route, useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import shortid from 'shortid'
 import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility.js'
@@ -28,7 +28,7 @@ import IconButton from './components/common/iconButton.jsx'
 import './index.scss'
 
 const App = () => {
-  const navigate = useNavigate()
+  const router = useRouter();
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const App = () => {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
-        navigate('/login', { search: `?sokt-auth-token=${data}` })
+        router.push('/login', { search: `?sokt-auth-token=${data}` })
       })
     }
   }, [navigate])

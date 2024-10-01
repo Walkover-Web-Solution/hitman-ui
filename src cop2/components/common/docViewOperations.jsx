@@ -1,7 +1,7 @@
 import React from 'react'
 import { isStateReject, isStateApproved } from './utility'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 
 export function ApproveRejectEntity(props) {
   const { entity, entityId, entityName } = props

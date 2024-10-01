@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useRouter, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap'
 import { ScheduledRunsActions } from './scheduleRunActions';
@@ -19,7 +19,7 @@ import './collectionRuns.scss';
 
 const CollectionRuns = () => {
   const params = useParams();
-  const navigate = useNavigate()
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const [activeTab, setActiveTab] = useState('functional');
@@ -43,16 +43,16 @@ const CollectionRuns = () => {
       isModified: false,
       state: { collectionId: collectionId }
     }))
-    navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runs/${runId}`)
+    router.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/runs/${runId}`)
   }
 
   const openEditCron = async (cronId) => {
     const collectionId = params?.collectionId
-    navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/cron/${cronId}/edit`);
+    router.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/cron/${cronId}/edit`);
   };
 
   const navigateToScheduleRuns = () => {
-    navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runner`);
+    router.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/runner`);
   }
 
   return (

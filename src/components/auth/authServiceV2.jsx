@@ -1,17 +1,16 @@
-"use client"; 
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { switchOrg } from "@/services/orgApiService";
+import React, { useEffect } from "react";
+import http from "../../services/httpService";
+import { switchOrg } from "../../services/orgApiService";
 import axios from "axios";
 import { setCurrentorganization, setOrganizationList } from "./redux/organizationRedux/organizationAction";
 import { store } from "../../store/store";
 import { setCurrentUser } from "./redux/usersRedux/userAction";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export const tokenKey = "token";
 export const profileKey = "profile";
-const uiURL = process.env.NEXT_PUBLIC_NEXT_UI_URL;
-const proxyUrl = process.env.NEXT_PUBLIC_NEXT_PROXY_URL;
+const uiURL = process.env.NEXT_PUBLIC_UI_URL;
+const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL;
 
 function isAdmin() {
   return { is_admin: true };
@@ -19,9 +18,9 @@ function isAdmin() {
 
 async function getUserData(token) {
   try {
-    const response = await axios.get(`${proxyUrl}/getUsers?itemsPerPage=100`, {
-      headers: { proxy_auth_token: token },
-    });
+    const response = await axios.get(proxyUrl + "/getUsers?itemsPerPage=100", {
+      headers: { proxy_auth_token: token }
+    })
     return response?.data?.data?.data;
   } catch (e) {
     localStorageCleanUp();
@@ -33,8 +32,8 @@ function logout(redirectUrl = "/login") {
   localStorageCleanUp();
   try {
     if (getProxyToken()) {
-      axios
-        .delete(`${proxyUrl}/logout`)
+      http
+        .delete(proxyUrl + "/logout")
         .then(() => {
           logoutRedirection(redirectUrl);
         })
@@ -51,38 +50,31 @@ function logout(redirectUrl = "/login") {
 }
 
 function localStorageCleanUp() {
-  if (typeof window !== "undefined") {
-    window.localStorage.removeItem(tokenKey);
-    window.localStorage.removeItem(profileKey);
-  }
+  localStorage.removeItem(tokenKey);
+  localStorage.removeItem(profileKey);
 }
 
 function logoutRedirection(redirectUrl) {
-  const redirectUri = `${uiURL}${redirectUrl}`;
-  if (typeof window !== "undefined") {
-    window.location.href = redirectUri;
-  }
+  const redirectUri = uiURL + redirectUrl;
+  location = redirectUri;
 }
 
 function getCurrentUser() {
-  if (typeof window !== "undefined") {
-    try {
-      const profile = window.localStorage.getItem(profileKey);
-      const parsedProfile = JSON.parse(profile);
-      const desiredData = {
-        id: parsedProfile.id,
-        name: parsedProfile.name,
-        email: parsedProfile.email,
-        created_at: parsedProfile.created_at,
-        updated_at: parsedProfile.updated_at,
-        is_block: parsedProfile.is_block,
-      };
-      return desiredData;
-    } catch (err) {
-      return null;
-    }
+  try {
+    const profile = localStorage.getItem(profileKey);
+    const parsedProfile = JSON.parse(profile);
+    const desiredData = {
+      id: parsedProfile.id,
+      name: parsedProfile.name,
+      email: parsedProfile.email,
+      created_at: parsedProfile.created_at,
+      updated_at: parsedProfile.updated_at,
+      is_block: parsedProfile.is_block,
+    };
+    return desiredData;
+  } catch (err) {
+    return null;
   }
-  return null;
 }
 
 function getCurrentOrg() {
@@ -101,71 +93,57 @@ function getOrgList() {
     const organizationList = state?.organizations?.orgList;
     return organizationList;
   } catch (err) {
-    console.error(err);
+    console.error(err)
     return null;
   }
 }
 
 function getProxyToken() {
-  if (typeof window !== "undefined") {
-    return window.localStorage.getItem(tokenKey) || "";
-  }
-  return "";
+  const tokenKey = "token";
+  return localStorage.getItem(tokenKey) || "";
 }
 
 async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect) {
-  if (!proxyAuthToken) {
-    proxyAuthToken = getProxyToken();
-  }
+  debugger
+  if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
 
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(tokenKey, proxyAuthToken);
-  }
-
+  localStorage.setItem(tokenKey, proxyAuthToken);
   try {
-    const response = await fetch(`${proxyUrl}/getDetails`, {
+    const response = await fetch(proxyUrl + '/getDetails', {
       headers: {
-        proxy_auth_token: proxyAuthToken,
-      },
+        proxy_auth_token: proxyAuthToken
+      }
     });
-
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const data = await response.json();
     const userInfo = data.data[0];
-
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(profileKey, JSON.stringify(userInfo));
-    }
-
+    localStorage.setItem(profileKey, JSON.stringify(userInfo));
     store.dispatch(setCurrentUser(userInfo));
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
-
     const currentOrgId = userInfo.currentCompany?.id;
-    if (currentOrgId && redirect) {
-      switchOrg(currentOrgId, redirect);
-    }
+    if (currentOrgId && redirect) { switchOrg(currentOrgId, redirect) }
   } catch (e) {
-    console.error("Error:", e);
+    console.error('Error:', e);
   }
 }
 
 function AuthServiceV2() {
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const proxyAuthToken = urlParams.get("proxy_auth_token");
-      if (proxyAuthToken) {
-        try {
-          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, true);
-        } catch (err) {
-          router.push("/logout");
+      try {
+        const proxyAuthToken = searchParams.get('proxy_auth_token');
+        if (proxyAuthToken) {
+          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken , true);
         }
+      } catch (err) {
+        router.push("/logout");
       }
     };
 
@@ -188,5 +166,5 @@ export {
   getOrgList,
   getProxyToken,
   logout,
-  getDataFromProxyAndSetDataToLocalStorage,
+  getDataFromProxyAndSetDataToLocalStorage
 };

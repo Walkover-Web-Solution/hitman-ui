@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useRouter, useParams } from 'next/navigation'
 import { isDashboardRoute, openExternalLink, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import collectionsService from './collectionsService'
 import TagManagerModal from './tagModal'
@@ -32,9 +32,9 @@ const Collections = (props) => {
   const organizations = useSelector((state) => state.organizations)
   const dispatch = useDispatch()
 
-  const location = useLocation()
-  const params = useParams()
-  const navigate = useNavigate()
+    const router = useRouter();
+    const location = router.pathname;
+    const params = useParams()
 
   const [showCollectionForm, setShowCollectionForm] = useState(false)
   const [selectedCollection, setSelectedCollection] = useState({})
@@ -124,7 +124,7 @@ const Collections = (props) => {
 
   const openPublishSettings = (collectionId) => {
     if (collectionId) {
-      navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/settings`)
+      router.push(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
   }
 
@@ -157,11 +157,11 @@ const Collections = (props) => {
   }
 
   const openRedirectionsPage = (collection) => {
-    navigate(`/orgs/${params.orgId}/dashboard/collection/${collection.id}/redirections`)
+    router.push(`/orgs/${params.orgId}/dashboard/collection/${collection.id}/redirections`)
   }
 
   const handleApiAutomation = (collectionId) => {
-    navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/runner`)
+    router.push(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/runner`)
   }
 
   const renderBody = (collectionId, collectionState) => {

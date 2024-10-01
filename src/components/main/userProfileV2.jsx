@@ -10,7 +10,7 @@ import { onHistoryRemoved } from '../history/redux/historyAction'
 import { IoIosArrowDown } from 'react-icons/io'
 import CollectionForm from '../collections/collectionForm'
 import { FiUser } from 'react-icons/fi'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import ImportCollectionModal from '../collections/importCollection/importColectionModel'
 import CustomModal from '../customModal/customModal'
 import { isOrgDocType } from '../common/utility'
@@ -23,7 +23,7 @@ const UserProfile = () => {
   const tabs = useSelector((state) => state.tabs)
   const organizationList = useSelector((state) => state.organizations.orgList)
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const router = useRouter();
 
   const [showModal, setShowModal] = useState(false)
   const [modalForTabs, setModalForTabs] = useState(false)
@@ -88,7 +88,7 @@ const UserProfile = () => {
     )
   }
 
-  const handleCreateOrganizationClick = () => navigate('/onBoarding')
+  const handleCreateOrganizationClick = () => router.push('/onBoarding')
 
   const renderUserDetails = () => {
     const { email } = getUserDetails()
@@ -108,7 +108,7 @@ const UserProfile = () => {
 
   const openAccountAndSettings = () => {
     const orgId = getCurrentOrg()?.id
-    navigate(`/orgs/${orgId}/invite`)
+    router.push(`/orgs/${orgId}/invite`)
   }
 
   const renderInviteTeam = () => {
@@ -181,7 +181,7 @@ const UserProfile = () => {
 
   const handleTrashClick = () => {
     const currentOrgId = getCurrentOrg().id
-    navigate(`/orgs/${currentOrgId}/trash`)
+    router.push(`/orgs/${currentOrgId}/trash`)
   }
 
   const renderTrash = () => {
@@ -193,7 +193,7 @@ const UserProfile = () => {
   }
 
   const handleLogout = () => {
-    navigate('/logout')
+    router.push('/logout')
   }
 
   const renderLogout = () => {

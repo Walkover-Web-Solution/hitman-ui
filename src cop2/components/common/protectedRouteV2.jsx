@@ -1,9 +1,10 @@
 import React from 'react'
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Navigate, Outlet,  useRouter} from 'next/navigation'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 
 const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
-  const location = useLocation()
+    const router = useRouter();
+    const location = router.pathname;
   const match = location.pathname.split('/')
   const isOrgInPath = match.includes('orgs') ? true : false
   const currentUser = getCurrentUser()

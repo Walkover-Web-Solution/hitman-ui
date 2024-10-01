@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useRouter, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import { approvePage, draftPage } from "../../components/publicEndpoint/redux/publicEndpointsActions";
@@ -33,7 +33,7 @@ const Page = () => {
     }));
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const router = useRouter();;
     const { pageId, orgId } = useParams();
     const textareaRef = useRef(null);
 
@@ -267,7 +267,7 @@ const Page = () => {
             if (pages?.[item.id]?.type === 2) return null;
             const isLastItem = index === pathWithUrls.length - 1;
             return (
-                <div className='d-flex align-items-center' key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}>
+                <div className='d-flex align-items-center' key={index} onClick={() => router.push(`/${item.path}`, { replace: true })}>
                     {isLastItem ? (
                         <strong
                             className="fw-500 py-0 px-1 cursor-text"
@@ -291,7 +291,7 @@ const Page = () => {
 
     const handleCollectionClick = () => {
         const path = `orgs/${getOrgId()}/dashboard/collection/${pages?.[activeTabId]?.collectionId}/settings`;
-        navigate(`/${path}`, { replace: true });
+        router.push(`/${path}`, { replace: true });
     }
 
     return (

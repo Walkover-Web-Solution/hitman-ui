@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useRouter, useParams } from 'next/navigation'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { Dropdown } from 'react-bootstrap'
 import { GrGraphQl } from 'react-icons/gr'
@@ -21,7 +21,7 @@ function compareByCreatedAt(a, b) {
 
 const History = () => {
   const { orgId } = useParams()
-  const navigate = useNavigate()
+  const router = useRouter();
 
   const historySnapshots = useSelector((state) => state.history)
 
@@ -34,7 +34,7 @@ const History = () => {
   }, [historySnapshots])
 
   const openHistorySnapshot = (id) => {
-    navigate(`/orgs/${orgId}/dashboard/history/${id}`, {
+    router.push(`/orgs/${orgId}/dashboard/history/${id}`, {
       state: { historySnapshotId: id }
     })
   }

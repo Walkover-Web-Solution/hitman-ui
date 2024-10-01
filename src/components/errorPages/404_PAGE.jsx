@@ -1,15 +1,15 @@
 import React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useRouter,  } from 'next/navigation'
 
 function ERROR_404_PAGE() {
-  const navigate = useNavigate()
-  const location = useLocation()
+    const router = useRouter();
+const location = router.pathname;
   const message = location.error?.response?.data
   return (
     <div className='text-center errorPage'>
       <h4>OOPS! 404</h4>
       {message ? <h3>{message}</h3> : null}
-      <button onClick={() => navigate('/')} mat-button>
+      <button onClick={() => router.push('/')} mat-button>
         Return to Dashboard
       </button>
     </div>

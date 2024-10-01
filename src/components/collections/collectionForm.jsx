@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useRouter, useParams } from 'next/navigation';
 import Joi from 'joi-browser';
 import { onEnter, validate } from '../common/utility';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ const CollectionForm = (props) => {
 
   const inputRef = useRef(null);
   const params = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();;
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const collections = useSelector(state => state.collections);
@@ -25,7 +25,7 @@ const CollectionForm = (props) => {
       console.error('collection.data is undefined');
       return;
     }
-    if (collection.success) navigate(`/orgs/${params.orgId}/dashboard/collection/${collection.data.id}/settings`);
+    if (collection.success) router.push(`/orgs/${params.orgId}/dashboard/collection/${collection.data.id}/settings`);
     props.onHide();
   };
 

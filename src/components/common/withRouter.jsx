@@ -1,13 +1,27 @@
 import React from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 function withRouter(Component) {
-    return (props) => {
-        let navigate = useNavigate();
-        let location = useLocation();
-        let params = useParams();
-        return <Component {...props} navigate={navigate} location={location} params={params} />;
+    function ComponentWithRouterProp(props) {
+        const router = useRouter();
+        const location = {
+            pathname: router.pathname,
+            query: router.query,
+            asPath: router.asPath,
+        };
+        const params = router.query;
+
+        return (
+            <Component
+                {...props}
+                router={router}
+                location={location}
+                params={params}
+            />
+        );
     }
+
+    return ComponentWithRouterProp;
 }
 
 export default withRouter;

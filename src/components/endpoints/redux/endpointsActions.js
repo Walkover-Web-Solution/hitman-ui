@@ -36,7 +36,7 @@ export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback,
       .then(async (response) => {
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
-        navigate(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        router.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
         if (props?.params?.endpointId === 'new') {
           dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
         }
@@ -65,7 +65,7 @@ export const addExampleRequest = (navigate, id,editedEndpoint=null, customCallba
       .then(async (response) => {
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
-        navigate(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        router.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }

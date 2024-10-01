@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams, useLocation, useNavigate } from 'react-router-dom'
+import { useParams, useRouter } from 'next/navigation'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility.js'
 import groupsService from './subPageService.jsx'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
@@ -30,9 +30,9 @@ const SubPage = (props) => {
 
   const dispatch = useDispatch()
 
-  const navigate = useNavigate()
+  const router = useRouter();
   const params = useParams()
-  const location = useLocation()
+  const location = router.pathname;
 
   const [showSubPageForm, setShowSubPageForm] = useState({ addPage: false, edit: false, share: false })
   const [theme, setTheme] = useState('')
@@ -221,12 +221,12 @@ const SubPage = (props) => {
   }
 
   const handleRedirect = (id) => {
-    if (isDashboardRoute({ location })) navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
+    if (isDashboardRoute({ location })) router.push(`/orgs/${params.orgId}/dashboard/page/${id}`)
     else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      router.push(pathName)
     }
   }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import {  useRouter, useParams } from 'next/navigation'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility.js'
 import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions.js'
@@ -35,8 +35,8 @@ const CollectionParentPages = (props) => {
   })
 
   const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
+    const router = useRouter();
+    const location = router.pathname;
   const versionDropDownRef = useRef(null)
   const dispatch = useDispatch()
 
@@ -127,11 +127,11 @@ const CollectionParentPages = (props) => {
   }
 
   const handleRedirect = (id) => {
-    if (isDashboardRoute({ location })) return navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
+    if (isDashboardRoute({ location })) return router.push(`/orgs/${params.orgId}/dashboard/page/${id}`)
     sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
     let pathName = getUrlPathById(id, pages)
     pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-    navigate(pathName)
+    router.push(pathName)
   }
 
   const handleToggle = (e, id) => {

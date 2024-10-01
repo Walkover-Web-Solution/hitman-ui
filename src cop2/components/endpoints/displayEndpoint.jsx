@@ -70,7 +70,7 @@ import { background } from '../backgroundColor.js'
 import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 import withRouter from '../common/withRouter.jsx'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb.jsx'
 import { BsCommand, BsThreeDots } from 'react-icons/bs';

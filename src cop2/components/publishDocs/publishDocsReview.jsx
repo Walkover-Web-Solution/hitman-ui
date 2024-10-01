@@ -1,7 +1,7 @@
 import React from 'react'
 import { Accordion, Card, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'next/navigation'
 import { useQuery } from 'react-query'
 import { getFeedbacks } from '../../services/feedbackService'
 

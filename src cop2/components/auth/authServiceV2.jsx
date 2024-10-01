@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams , useRouter } from "next/navigation";
 import http from "../../services/httpService";
 import { switchOrg } from "../../services/orgApiService";
 import axios from "axios";
@@ -13,7 +13,8 @@ const uiURL = process.env.NEXT_UI_URL;
 const proxyUrl = process.env.NEXT_PROXY_URL;
 
 function useQuery() {
-  return new URLSearchParams(useLocation().search);
+  const searchParams = useSearchParams();
+  return searchParams;
 }
 
 function isAdmin() {
@@ -136,7 +137,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect
 
 function AuthServiceV2() {
   const query = useQuery();
-  const navigate = useNavigate();
+  const router = useRouter();;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,7 +147,7 @@ function AuthServiceV2() {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken , true);
         }
       } catch (err) {
-        navigate("/logout");
+        router.push("/logout");
       }
     };
 

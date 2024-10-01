@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { useParams, useRouter,  } from 'next/navigation'
 import { Tab, Nav, Dropdown } from 'react-bootstrap'
 
 import TabContent from '../tabs/tabContent'
@@ -24,8 +24,8 @@ import { GrGraphQl } from "react-icons/gr";
 const ContentPanel = () => {
 
   const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const location = useLocation()
+  const router = useRouter();
+  const location = router.pathname;
   const params = useParams()
 
   const [saveEndpointFlag, setSaveEndpointFlag] = useState(false)
@@ -166,11 +166,11 @@ const ContentPanel = () => {
 
         const collectionLength = Object.keys(collections).length
         if (tab?.type === 'manual-runs') {
-          navigate(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`)
+          router.push(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`)
           return;
         }
         if (collectionLength > 0) {
-          navigate(
+          router.push(
             tab.type !== 'collection'
               ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
               : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
