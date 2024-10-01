@@ -113,18 +113,17 @@ export default function BubbleMenuComponent({ editor,pathData,loading,setLoading
     const renderUploadModule = (disabled) => (
         <>
             <div className='favicon-container'>
-            <label className='font-icon' style={getDisabledStyle(disabled)} htmlFor='upload-button'>
-                <UploadIcon />
-            </label>
-            <input
-                type='file'
-                id='upload-button'
-                disabled={disabled}
-                style={{ display: 'none' }}
-                multiple 
-                onChange={(e) => onFileChange(e)} 
-            />
-            <div className='custom-or font-14'>OR</div>
+                <label className='font-icon mt-2 ml-3' style={getDisabledStyle(disabled)} htmlFor='upload-button'>
+                    <UploadIcon />
+                </label>
+                <input
+                    type='file'
+                    id='upload-button'
+                    disabled={disabled}
+                    style={{ display: 'none' }}
+                    multiple 
+                    onChange={(e) => onFileChange(e)} 
+                />
             </div>
         </>
     );
@@ -157,30 +156,24 @@ export default function BubbleMenuComponent({ editor,pathData,loading,setLoading
                 <Modal.Body>
                    {loading ? (
                     <div className="d-flex justify-content-center align-items-center" style={{ height: '25vh', flexDirection: 'column' }}>
-                        <div className="spinner-border" role="status" style={{ width: '4rem', height: '4rem', borderWidth: '0.25rem' }}>
+                        <div className="spinner-border" role="status" style={{ borderColor: '#6c757d #6c757d #6c757d transparent', width: '4rem', height: '4rem', borderWidth: '0.25rem' }}>
                         <span className="sr-only">Loading...</span>
                         </div>
-                        <span className="mt-3" style={{ color: '#000', fontSize: '2rem', fontWeight: '500' }}>Loading...</span>
                     </div>
                     ) : (
                     <>
-                        {/* {showImage && (
-                        
-                        )} */}
                         {(showImage || showLink) && (
-                            <div className='form-group upload-modal'>
-                            <div className='form-group mb-0'>
-                                <div className='favicon-uploader'>{renderUploadModule()}</div>
-                            </div>
-                            <div className='d-flex justify-content-between align-items-center'>
-                                <label className='m-2'>URL</label>
-                                <input
-                                type='text'
-                                className='form-control'
-                                value={showImage ? ImageUrl : linkUrl}
-                                onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
-                                />
-                            </div>
+                            <div className='form-group upload-modal mt-3'>
+                                <div className='d-flex justify-content-between align-items-center'>
+                                    <div className='favicon-uploader mr-3'>{renderUploadModule()}</div>
+                                    <div className="mr-4 text-muted font-weight-bold">OR</div>
+                                    <input
+                                    type='text'
+                                    className='form-control'
+                                    value={showImage ? ImageUrl : linkUrl}
+                                    onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
+                                    />
+                                </div>
                             </div>
                         )}
                         {showTable && (

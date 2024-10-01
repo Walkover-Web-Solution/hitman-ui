@@ -95,7 +95,7 @@ const Page = () => {
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId],tabs[activeTabId]);
+    }, [orgId, pageId,tabs[activeTabId]]);
 
     useEffect(() => {
         return () => {
