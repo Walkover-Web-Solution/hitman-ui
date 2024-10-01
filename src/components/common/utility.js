@@ -256,7 +256,7 @@ export function formatBytes(bytes, decimals = 2) {
 }
 
 export function isValidDomain() {
-  const domainsList = import.meta.env.VITE_DOMAINS_LIST ? import.meta.env.VITE_DOMAINS_LIST.split(',') : []
+  const domainsList = process.env.NEXT_DOMAINS_LIST ? process.env.NEXT_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   const path = window.location.href.split('/')[3]
   return domainsList.includes(currentDomain) && path !== 'p'
@@ -570,7 +570,7 @@ export function getUrlPathById(id, sidebar) {
   return actualPath
 }
 export function isTechdocOwnDomain() {
-  const domainsList = import.meta.env.VITE_DOMAINS_LIST ? import.meta.env.VITE_DOMAINS_LIST.split(',') : []
+  const domainsList = process.env.NEXT_DOMAINS_LIST ? process.env.NEXT_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   return domainsList.includes(currentDomain)
 }
@@ -673,16 +673,16 @@ function deleteFromReactQuery(deletedIds) {
   }
 }
 
-// export const operationsAfterDeletion = (data) => {
-//   // if path needs to be changed with new activeId if tabsOrder length > 0
-//   if (data?.changePath && data?.tabs?.tabsOrder?.length > 0) {
-//     navigateTo(`/orgs/${getOrgId()}/dashboard`)
-//   }
-//   // when no tabs are opened then redirect to new tab and open new tab
-//   if (data?.openNewTab) {
-//     navigateTo(`/orgs/${getOrgId()}/dashboard`)
-//   }
-// }
+export const operationsAfterDeletion = (data) => {
+  // if path needs to be changed with new activeId if tabsOrder length > 0
+  if (data?.changePath && data?.tabs?.tabsOrder?.length > 0) {
+    navigateTo(`/orgs/${getOrgId()}/dashboard`)
+  }
+  // when no tabs are opened then redirect to new tab and open new tab
+  if (data?.openNewTab) {
+    navigateTo(`/orgs/${getOrgId()}/dashboard`)
+  }
+}
 
 export const trimString = (str) => {
   return str?.trim()

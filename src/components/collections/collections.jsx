@@ -58,7 +58,7 @@ const Collections = (props) => {
   }
 
   const handleGoToDocs = (collection) => {
-    const publicDocsUrl = `${import.meta.env.VITE_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
+    const publicDocsUrl = `${process.env.NEXT_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
 

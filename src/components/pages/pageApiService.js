@@ -1,11 +1,11 @@
 import http from '../../services/httpService'
 import { getOrgId } from '../common/utility'
 
-const apiBaseUrl = import.meta.env.VITE_API_URL
+const apiBaseUrl = process.env.NEXT_API_URL
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return import.meta.env.VITE_API_URL + `/orgs/${orgId}`
+  return process.env.NEXT_API_URL + `/orgs/${orgId}`
 }
 
 function collectionPagesUrl(pageId) {

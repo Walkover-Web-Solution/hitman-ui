@@ -25,7 +25,7 @@ export default function RunAutomation() {
   const navigate = useNavigate()
   const params = useParams()
   const orgId = getCurrentOrg()?.id
-  const webhookURL = `${import.meta.env.VITE_API_URL}/call-webhook`
+  const webhookURL = `${process.env.NEXT_API_URL}/call-webhook`
 
   const { allPages, collectionName, clientData, currentEnvironmentId, allEnviroments, currentUser, users } = useSelector((state) => {
     return {

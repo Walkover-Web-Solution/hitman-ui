@@ -20,7 +20,7 @@ import { toast } from 'react-toastify'
 import IconButton from '../common/iconButton'
 import { MdDelete } from 'react-icons/md'
 
-const MAPPING_DOMAIN = import.meta.env.VITE_TECHDOC_MAPPING_DOMAIN
+const MAPPING_DOMAIN = process.env.NEXT_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
   NULL_STRING: '',
   LABELS: {
@@ -310,7 +310,7 @@ const PublishDocForm = (props) => {
   const renderPublicUrl = () => {
     const collectionId = props.selected_collection_id
     const isCollectionPublished = collections[collectionId]?.isPublic
-    const url = import.meta.env.VITE_PUBLIC_UI_URL + '/p?collectionId=' + collectionId
+    const url = process.env.NEXT_PUBLIC_UI_URL + '/p?collectionId=' + collectionId
     const isDisabled = IsParentPagePublishedInACollection(collections[collectionId]?.rootParentId)
 
     if (!isCollectionPublished) return null

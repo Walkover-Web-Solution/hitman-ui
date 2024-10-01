@@ -1,10 +1,10 @@
 import React from 'react'
-import Layout from './layout';
+import IndexWebsite from '@/components/indexWebsite/indexWebsite';
 
-export default function Home() {
+function page() {
   return (
-    <div>
-      Hello world
-    </div>
-  );
+    <IndexWebsite />
+  )
 }
+
+export default page

@@ -34,7 +34,7 @@ function PublicPage() {
                 threadId: `${currentIdToShow}`,
                 variables: {
                     collectionId: pages[currentIdToShow]?.collectionId,
-                    functionType: import.meta.env.VITE_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
+                    functionType: process.env.NEXT_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
                 }
             })
         }

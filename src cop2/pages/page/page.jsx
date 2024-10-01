@@ -56,7 +56,7 @@ const Page = () => {
                 variables: {
                     Proxy_auth_token: getProxyToken(),
                     collectionId: page?.collectionId,
-                    functionType: import.meta.env.VITE_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
+                    functionType: process.env.NEXT_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
                 }
             })
         }
@@ -75,15 +75,15 @@ const Page = () => {
     }, [page?.name, tabs?.activeTabId?.name, pageId])
 
     const mapping = {
-        local: import.meta.env.VITE_RTC_URL_LOCAL,
-        test: import.meta.env.VITE_RTC_URL_TEST,
-        prod: import.meta.env.VITE_RTC_URL_PROD,
+        local: process.env.NEXT_RTC_URL_LOCAL,
+        test: process.env.NEXT_RTC_URL_TEST,
+        prod: process.env.NEXT_RTC_URL_PROD,
     };
 
     const { ydoc, provider } = useMemo(() => {
         if (tabs[activeTabId].status !== "SAVED") return { ydoc: null, provider: null };
         const ydoc = new Y.Doc();
-        const baseUrl = mapping[import.meta.env.VITE_ENV];
+        const baseUrl = mapping[process.env.NEXT_ENV];
         const provider = new HocuspocusProvider({
             url: `${baseUrl}?orgId=${orgId}`,
             name: `${pageId}`,

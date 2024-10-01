@@ -2,10 +2,10 @@ import http from './httpService'
 import { redirectToDashboard } from '@/components/common/utility'
 import { getOrgList, getCurrentOrg, getDataFromProxyAndSetDataToLocalStorage } from '@/components/auth/authServiceV2'
 import { toast } from 'react-toastify'
-import { store } from '@/store/store'
-import { removeOrganizationById, setCurrentorganization, setOrganizationList } from '@/components/auth/redux/organizationRedux/organizationAction'
-const apiBaseUrl = import.meta.env.VITE_API_URL
-const proxyUrl = import.meta.env.VITE_PROXY_URL
+import { store } from '../store/store'
+import { removeOrganizationById, setCurrentorganization, setOrganizationList } from '../components/auth/redux/organizationRedux/organizationAction'
+const apiBaseUrl = process.env.NEXT_API_URL
+const proxyUrl = process.env.NEXT_PROXY_URL
 
 export function getOrgUpdatedAt(orgId) {
   return http.get(`${apiBaseUrl}/orgs/${orgId}/lastSync`)
@@ -109,11 +109,11 @@ export async function inviteMembers(name, email) {
 
 function proxyGooglereferenceMapping() {
   const envMappings = {
-    local: import.meta.env.VITE_PROXY_REFERENCE_ID_LOCAL,
-    test: import.meta.env.VITE_PROXY_REFERENCE_ID_TEST,
-    prod: import.meta.env.VITE_PROXY_REFERENCE_ID_PROD,
+    local: process.env.NEXT_PROXY_REFERENCE_ID_LOCAL,
+    test: process.env.NEXT_PROXY_REFERENCE_ID_TEST,
+    prod: process.env.NEXT_PROXY_REFERENCE_ID_PROD,
   };
-  return envMappings[import.meta.env.VITE_ENV] || "";
+  return envMappings[process.env.NEXT_ENV] || "";
 }
 
 export async function removeUser(userId) {

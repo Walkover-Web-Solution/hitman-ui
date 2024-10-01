@@ -2,7 +2,7 @@ import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
 import { getOrgId } from '../common/utility'
 
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = process.env.NEXT_API_URL
 const orgId = getOrgId()
 
 function getApiEndpoint() {
