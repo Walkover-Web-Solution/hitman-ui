@@ -3,7 +3,7 @@ import { getOrgId } from '../common/utility'
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return process.env.NEXT_API_URL + `/orgs/${orgId}`
+  return process.env.NEXT_PUBLIC_API_URL + `/orgs/${orgId}`
 }
 
 export function bulkPublish(collectionId, requestData) {

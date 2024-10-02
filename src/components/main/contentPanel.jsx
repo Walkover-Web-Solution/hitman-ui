@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useRouter,  } from 'next/navigation'
+import { useParams, usePathname, useRouter,  } from 'next/navigation'
 import { Tab, Nav, Dropdown } from 'react-bootstrap'
 
 import TabContent from '../tabs/tabContent'
@@ -20,12 +20,13 @@ import { SiCloudflarepages } from "react-icons/si";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdHttp } from "react-icons/md";
 import { GrGraphQl } from "react-icons/gr";
+import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const ContentPanel = () => {
 
   const dispatch = useDispatch()
   const router = useRouter();
-  const location = router.pathname;
+  const location = customPathnameHook();
   const params = useParams()
 
   const [saveEndpointFlag, setSaveEndpointFlag] = useState(false)

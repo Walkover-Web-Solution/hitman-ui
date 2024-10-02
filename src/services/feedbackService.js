@@ -1,5 +1,5 @@
 import http from './httpService'
-const apiUrl = process.env.NEXT_API_URL
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 export const like = async (pageId) => {
   await http.post(apiUrl + `/feedback/positive`,{pageId})

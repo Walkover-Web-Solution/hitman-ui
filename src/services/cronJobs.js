@@ -1,5 +1,5 @@
 import http from './httpService'
-const apiUrl = process.env.NEXT_API_URL
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 export const addCron = async (cronScheduler) => {
   const { collectionId, cron_name, cron_expression, description, environmentId, emails, endpointIds, status } = cronScheduler;

@@ -35,7 +35,6 @@ const MainV2 = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      debugger
       const token = getProxyToken()
       if (!token) {
         setLoading(false)

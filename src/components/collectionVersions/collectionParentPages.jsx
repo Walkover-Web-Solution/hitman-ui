@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {  useRouter, useParams } from 'next/navigation'
+import {  useRouter, useParams, usePathname } from 'next/navigation'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
@@ -23,6 +23,7 @@ import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 import { SlSettings } from "react-icons/sl";
 import { RiDeleteBin6Line } from 'react-icons/ri'
+import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const CollectionParentPages = (props) => {
   const { pages, clientData, collections, organizations } = useSelector((state) => {
@@ -36,7 +37,7 @@ const CollectionParentPages = (props) => {
 
   const params = useParams()
     const router = useRouter();
-    const location = router.pathname;
+    const location = customPathnameHook();
   const versionDropDownRef = useRef(null)
   const dispatch = useDispatch()
 

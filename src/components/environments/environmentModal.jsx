@@ -2,15 +2,16 @@ import React, { useEffect } from 'react'
 import { ListGroup, Modal } from 'react-bootstrap'
 import  DeleteIcon  from '@/assets/icons/delete-icon.svg'
 import environmentsApiService from './environmentsApiService'
-import { useRouter  } from 'next/navigation'
+import { usePathname, useRouter  } from 'next/navigation'
 import './environments.scss'
 import { useSelector } from 'react-redux'
 import { RiDeleteBinLine } from "react-icons/ri";
+import customPathnameHook from '../../customHook/customPathnameHook'
 
 const EnvironmentModal = (props) => {
   const environment = useSelector((state) => state.environment)
     const router = useRouter();
-    const location = router.pathname;
+    const location = customPathnameHook();
 
   useEffect(() => {
     const fetchEnvironments = async () => {

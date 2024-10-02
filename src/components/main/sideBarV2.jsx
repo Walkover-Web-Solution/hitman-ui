@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link,  useRouter, useParams } from 'next/navigation'
+import { Link,  useRouter, useParams, usePathname } from 'next/navigation'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
@@ -19,6 +19,7 @@ import  Logo from '@/assets/web/favicon.svg'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Footer from './Footer'
+import customPathnameHook from '../../customHook/customPathnameHook'
 
 const SideBar = () => {
   const collections = useSelector((state) => state.collections)
@@ -29,7 +30,7 @@ const SideBar = () => {
   const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
 
   const router = useRouter();
-  const location = router.pathname;
+  const location = customPathnameHook();
   const params = useParams()
 
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)

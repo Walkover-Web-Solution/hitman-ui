@@ -50,7 +50,7 @@ const Redirections = () => {
   const [latestUrl, setLatestUrl] = useState('')
   const [errors, setErrors] = useState({})
 
-  const visiblePath = customDomain ? `https://${customDomain}/` : `${process.env.NEXT_UI_URL}/p/`
+  const visiblePath = customDomain ? `https://${customDomain}/` : `${process.env.NEXT_PUBLIC_UI_URL}/p/`
 
   useEffect(() => {
     getAllPagesAndCollection()

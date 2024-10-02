@@ -4,7 +4,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { isDashboardRoute, openExternalLink, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import collectionsService from './collectionsService'
 import TagManagerModal from './tagModal'
-import  EmptyCollections  from '@/assets/icons/emptyCollections.svg'
+import EmptyCollections from '@/assets/icons/emptyCollections.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
 import MoveModal from '../common/moveModal/moveModal'
@@ -25,6 +25,7 @@ import { addPage } from '../pages/redux/pagesActions'
 import { openInNewTab } from '../tabs/redux/tabsActions'
 import { IoIosSettings } from "react-icons/io";
 import { IoDocumentTextOutline, IoPricetagOutline } from 'react-icons/io5'
+import customPathnameHook from '../../customHook/customPathnameHook'
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
@@ -32,9 +33,9 @@ const Collections = (props) => {
   const organizations = useSelector((state) => state.organizations)
   const dispatch = useDispatch()
 
-    const router = useRouter();
-    const location = router.pathname;
-    const params = useParams()
+  const router = useRouter();
+  const location = customPathnameHook()
+  const params = useParams()
 
   const [showCollectionForm, setShowCollectionForm] = useState(false)
   const [selectedCollection, setSelectedCollection] = useState({})
@@ -302,7 +303,7 @@ const Collections = (props) => {
     return (
       <div className='empty-collections text-center mt-4'>
         <div>
-          <EmptyCollections/>
+          <EmptyCollections />
           {/* <img src={emptyCollections} alt='' /> */}
         </div>
         <div className='content'>

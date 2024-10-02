@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useRouter, useParams, } from 'next/navigation'
+import { useRouter, useParams, usePathname, } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import { addExampleRequest, deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
@@ -19,6 +19,7 @@ import { MdOutlineContentCopy } from 'react-icons/md'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import Example from '@/assets/icons/example.svg';
+import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
@@ -27,7 +28,7 @@ const Endpoints = (props) => {
 
   const params = useParams()
   const router = useRouter();
-  const location = router.pathname;
+  const location = customPathnameHook();
   const dispatch = useDispatch()
 
   const { endpoints, tabs, pages, collections } = useSelector((state) => ({

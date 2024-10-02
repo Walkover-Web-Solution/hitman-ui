@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import '../src/components/main/responsive.scss'
 
-if (process.env.NEXT_ENV !== 'local') {
+if (process.env.NEXT_PUBLIC_ENV !== 'local') {
   sentryIntegration()
 }
 

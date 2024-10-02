@@ -1,11 +1,12 @@
 "use client"
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import customPathnameHook from '@/customHook/customPathnameHook'
 
 function ERROR_404_PAGE() {
-    const router = useRouter();
-const location = router.pathname;
+  const router = useRouter();
+  const location = customPathnameHook();
   const message = location?.error?.response?.data
   return (
     <div className='text-center errorPage'>

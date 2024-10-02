@@ -20,7 +20,7 @@ import { toast } from 'react-toastify'
 import IconButton from '../common/iconButton'
 import { MdDelete } from 'react-icons/md'
 
-const MAPPING_DOMAIN = process.env.NEXT_TECHDOC_MAPPING_DOMAIN
+const MAPPING_DOMAIN = process.env.NEXT_PUBLIC_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
   NULL_STRING: '',
   LABELS: {

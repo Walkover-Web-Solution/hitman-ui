@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import {  useRouter, useParams } from 'next/navigation'
+import {  useRouter, useParams, usePathname } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder, updateDraft } from './redux/tabsActions.js'
@@ -24,6 +24,7 @@ import { LuPlus } from "react-icons/lu";
 import './tabs.scss'
 import { openModal } from '../modals/redux/modalsActions.js'
 import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes.js'
+import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const CustomTabs = (props) => {
   const dispatch = useDispatch()
@@ -34,7 +35,7 @@ const CustomTabs = (props) => {
 
   const params = useParams()
     const router = useRouter();
-    const location = router.pathname;
+    const location = customPathnameHook();
 
   const [showSavePromptFor, setShowSavePromptFor] = useState([])
   const [leftScroll, setLeftScroll] = useState(0)

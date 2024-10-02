@@ -24,7 +24,7 @@ export default function RunAutomation({ params }) {
   const dispatch = useDispatch()
   const router = useRouter();
   const orgId = getCurrentOrg()?.id
-  const webhookURL = `${process.env.NEXT_API_URL}/call-webhook`
+  const webhookURL = `${process.env.NEXT_PUBLIC_API_URL}/call-webhook`
 
   const { allPages, collectionName, clientData, currentEnvironmentId, allEnviroments, currentUser, users } = useSelector((state) => {
     return {

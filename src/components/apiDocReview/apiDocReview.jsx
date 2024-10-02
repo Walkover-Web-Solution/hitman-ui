@@ -8,7 +8,8 @@ import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
 import { VscStarFull } from "react-icons/vsc";
-import { useParams, useRouter} from 'next/navigation'
+import { useParams, usePathname, useRouter} from 'next/navigation'
+import customPathnameHook from '../../customHook/customPathnameHook'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -31,7 +32,7 @@ const ApiDocReview = (props) => {
   const params = useParams()
 
     const router = useRouter();
-    const location = router.pathname;
+    const location = customPathnameHook();
 
   useEffect(() => {
     setParent()

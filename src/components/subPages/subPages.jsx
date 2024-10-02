@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility.js'
 import groupsService from './subPageService.jsx'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
@@ -19,6 +19,7 @@ import './subpages.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 import { openInNewTab } from '../tabs/redux/tabsActions.js'
 import { RiDeleteBin6Line } from 'react-icons/ri'
+import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const SubPage = (props) => {
   const { pages, clientData, collections, organizations } = useSelector((state) => ({
@@ -32,7 +33,7 @@ const SubPage = (props) => {
 
   const router = useRouter();
   const params = useParams()
-  const location = router.pathname;
+  const location = customPathnameHook();
 
   const [showSubPageForm, setShowSubPageForm] = useState({ addPage: false, edit: false, share: false })
   const [theme, setTheme] = useState('')

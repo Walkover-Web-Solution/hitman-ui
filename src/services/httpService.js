@@ -6,7 +6,7 @@ import { logout, getProxyToken } from '../components/auth/authServiceV2'
 // import { navigateTo } from '../navigationService'
 import { isDashboardRoute } from '../components/common/utility'
 
-// axios.defaults.baseURL = process.env.NEXT_API_URL
+// axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL
 
 let instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
@@ -48,7 +48,6 @@ function addProxyToken() {
 }
 
 async function getMethod(url, config = null) {
-  debugger
   instance = addProxyToken()
   if (url.includes('undefined')) {
     return
