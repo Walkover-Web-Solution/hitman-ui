@@ -94,8 +94,6 @@ export const msgText = {
 }
 
 export function isDashboardRoute(props, sidebar = false) {
-  // now our own domain will only be considered as dashboard route
-  debugger
   if (
     isTechdocOwnDomain() &&
     (props.location.pathname.includes('/dashboard') ||
@@ -571,7 +569,6 @@ export function getUrlPathById(id, sidebar) {
   return actualPath
 }
 export function isTechdocOwnDomain() {
-  debugger
   const domainsList = process.env.NEXT_PUBLIC_DOMAINS_LIST ? process.env.NEXT_PUBLIC_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   return domainsList.includes(currentDomain)
