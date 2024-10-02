@@ -35,6 +35,7 @@ const MainV2 = () => {
 
   useEffect(() => {
     const initialize = async () => {
+      debugger
       const token = getProxyToken()
       if (!token) {
         setLoading(false)
@@ -43,8 +44,10 @@ const MainV2 = () => {
 
       let users = await getUserData(token)
       if (users) dispatch(addUserData(users))
-
-      if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
+      const isUser = getCurrentUser();
+      const isOrg = getOrgList();
+      const isCurrentOrg = getCurrentOrg();
+      if (isOrg && isUser && isCurrentOrg) {
         let orgId = params.orgId
         if (!orgId) {
           orgId = getOrgList()[0]?.id

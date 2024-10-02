@@ -17,7 +17,7 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
         queryParamsString = queryParamsString.slice(0, -1);
       }
       generalApiService
-        .getCollectionsAndPages(orgId, queryParamsString)
+        .getCollectionsAndPages(orgId)
         .then((response) => {
           dispatch({ type: generalActionsTypes.ADD_COLLECTIONS, data: response.data.collections })
           dispatch({ type: generalActionsTypes.ADD_PAGES, data: response.data.pages })

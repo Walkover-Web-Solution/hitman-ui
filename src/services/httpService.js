@@ -48,6 +48,7 @@ function addProxyToken() {
 }
 
 async function getMethod(url, config = null) {
+  debugger
   instance = addProxyToken()
   if (url.includes('undefined')) {
     return

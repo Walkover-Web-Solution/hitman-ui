@@ -1,14 +1,15 @@
 import http from './httpService'
 
-const apiUrl = process.env.NEXT_API_URL
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-export function getCollectionsAndPages(orgId, queryParamsString = '') {
-  return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
+export async function getCollectionsAndPages(orgId, queryParamsString = '') {
+  const data = await http.get(apiUrl + `/orgs/${orgId}/getSideBarData`)
+  return data;
 }
 
 export async function moveCollectionsAndPages(moveToOrgId, collection, flag = true) {
   const { id, orgId, name } = collection
-  return http.put(apiUrl + `/orgs/${orgId}/collections/${id}`, { orgId: moveToOrgId, name, collectionMoved : true });
+  return http.put(apiUrl + `/orgs/${orgId}/collections/${id}`, { orgId: moveToOrgId, name, collectionMoved: true });
 }
 
 export function getPublishedContentByPath(queryParamsString = '') {
@@ -26,7 +27,7 @@ export async function runAutomation(details) {
 }
 
 export async function generateDescription(endpointIds) {
-  let data = await http.post(apiUrl + '/generate-description', {endpointIds})
+  let data = await http.post(apiUrl + '/generate-description', { endpointIds })
   return data;
 }
 

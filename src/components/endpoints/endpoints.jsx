@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useRouter, useParams,  } from 'next/navigation'
+import { useRouter, useParams, } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import { addExampleRequest, deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
@@ -18,7 +18,7 @@ import { FiEdit2 } from 'react-icons/fi'
 import { MdOutlineContentCopy } from 'react-icons/md'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import  Example  from '@/assets/icons/example.svg';
+import Example from '@/assets/icons/example.svg';
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
@@ -26,8 +26,8 @@ const Endpoints = (props) => {
   const [selectedEndpoint, setSelectedEndpoint] = useState(null)
 
   const params = useParams()
-    const router = useRouter();
-    const location = router.pathname;
+  const router = useRouter();
+  const location = router.pathname;
   const dispatch = useDispatch()
 
   const { endpoints, tabs, pages, collections } = useSelector((state) => ({
@@ -40,7 +40,7 @@ const Endpoints = (props) => {
 
   const handleDelete = (endpoint) => {
     dispatch(deleteEndpoint(endpoint))
-    tabService.removeTab(tabs.activeTabId, { navigate, params, location })
+    tabService.removeTab(tabs.activeTabId, { router, params, location })
   }
 
   const handleModalActionType = (actionType, endpointId) => {
@@ -49,7 +49,7 @@ const Endpoints = (props) => {
   }
 
   const handleDuplicate = (endpointId) => dispatch(duplicateEndpoint(endpoints[endpointId]))
-  const handleAddExampleRequest = (endpointId) => dispatch(addExampleRequest(navigate, endpointId))
+  const handleAddExampleRequest = (endpointId) => dispatch(addExampleRequest(router, endpointId))
 
   const closeDeleteEndpointModal = () => {
     setShowEndpointForm((prev) => ({ ...prev, delete: false }))
@@ -57,7 +57,7 @@ const Endpoints = (props) => {
 
   const handleDisplay = (endpoint, groupId, collectionId, previewMode) => {
     window.scroll(0, 0)
-    if (isDashboardRoute({ location, navigate }, true)) {
+    if (isDashboardRoute({ location, router }, true)) {
       if (!tabs.tabs[endpoint.id]) {
         const previewTabId = Object.keys(tabs.tabs).filter((tabId) => tabs.tabs[tabId].previewMode === true)[0]
         if (previewTabId) dispatch(closeTab(previewTabId))
@@ -115,7 +115,7 @@ const Endpoints = (props) => {
       </div>
       <div className='dropdown-menu dropdown-menu-right'>
         <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2 className='text-grey' size={15} /> Rename </div>
-          <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleAddExampleRequest(endpointId)}> <Example className='text-grey' size={15} /> Add example </div>
+        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleAddExampleRequest(endpointId)}> <Example className='text-grey' size={15} /> Add example </div>
         <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-grey' size={15} /> Duplicate </div>
         <div
           className='dropdown-item d-flex font-14 align-items-center text-danger delete-endpoint-btn'
@@ -128,7 +128,7 @@ const Endpoints = (props) => {
 
   const displaySingleEndpoint = (endpointId) => {
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, router }) && params.endpointId === endpointId ? 'selected' : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let collectionId = pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = collections[collectionId]?.theme
@@ -158,7 +158,7 @@ const Endpoints = (props) => {
                   {displayEndpointName(endpointId)}
                 </button>
                 <div className='endpoint-icons align-items-center'>
-                  {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
+                  {isDashboardRoute({ router, location }, true) && displayEndpointOptions(endpointId)}
                 </div>
               </div>
             </button>
