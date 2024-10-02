@@ -180,7 +180,7 @@ const ContentPanel = () => {
         }
       }
     }
-  }, [dispatch, tabs, endpoints, pages, historySnapshots, collections, params, location.pathname, navigate])
+  }, [tabs, endpoints, pages, historySnapshots, collections, params])
 
   const handleSaveEndpoint = (flag, tabId) => {
     setSaveEndpointFlag(flag)
