@@ -1,9 +1,14 @@
-import React from 'react'
+"use client";
+import { useEffect } from "react";
+import { logout } from "@/components/auth/authServiceV2";
 
-function page() {
-  return (
-    <div>page</div>
-  )
-}
+const Logout = () => {
+  useEffect(() => {
+    const redirectURI = "/login";
+    logout(redirectURI);
+  }, []);
 
-export default page
+  return null;
+};
+
+export default Logout;

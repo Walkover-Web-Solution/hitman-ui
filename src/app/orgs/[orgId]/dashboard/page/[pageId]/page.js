@@ -2,21 +2,21 @@
 import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { setTabIsModified, updateDraft, updateNewTabName } from "../../../../../../../components/tabs/redux/tabsActions";
-import { approvePage, draftPage } from "../../../../../../../components/publicEndpoint/redux/publicEndpointsActions";
-import Tiptap from "../../../../../../../components/tiptapEditor/tiptap";
+import { setTabIsModified, updateDraft, updateNewTabName } from "@/components/tabs/redux/tabsActions";
+import { approvePage, draftPage } from "@/components/pages/redux/pagesActions";
+import Tiptap from "@/components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
-import { updatePageName } from '../../../../../../../components/pages/redux/pagesActions';
-import SaveAsPageSidebar from '../../../../../../../components/endpoints/saveAsSidebar1';
-import IconButton from '../../../../../../../components/common/iconButton';
+import { updatePageName } from '@/components/pages/redux/pagesActions';
+import SaveAsPageSidebar from '@/components/endpoints/saveAsPageSidebar1';
+import IconButton from '@/components/common/iconButton';
 import { GoDotFill } from "react-icons/go";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
-import { getOrgId, msgText } from "../../../../../../../components/common/utility";
-import ConfirmationModal from "../../../../../../../components/common/confirmationModal";
+import { getOrgId, msgText } from "@/components/common/utility";
+import ConfirmationModal from "@/components/common/confirmationModal";
 import './page.scss'
 
 const Page = () => {

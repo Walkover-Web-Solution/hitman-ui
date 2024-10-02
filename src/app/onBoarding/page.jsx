@@ -9,7 +9,7 @@ import { FaLongArrowAltLeft, FaPlus } from "react-icons/fa";
 import { navigation } from 'next/navigation';
 import { createOrg, switchOrg } from '@/services/orgApiService'
 import { addIsExpandedAction } from '@/store/clientData/clientDataActions';
-// import styles from './onBoarding.module.scss' // Assuming you're using CSS Modules, adjust the path as needed
+import './onBoarding.scss' 
 import { getOrgId, redirectToDashboard } from '@/components/common/utility';
 import IconButton from '@/components/common/iconButton';
 import { addPage } from '@/components/pages/redux/pagesActions';

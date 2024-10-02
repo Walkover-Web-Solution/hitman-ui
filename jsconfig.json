@@ -6,7 +6,7 @@
       "@/services/*": ["src/services/*"],
       "@/store/*": ["src/store/*"],
       "@/utilities/*": ["src/utilities/*"],
-      "@/assets/*": ["src/assets/*"],
+      "@/assets/*": ["src/assets/*"]
     }
   }
 }

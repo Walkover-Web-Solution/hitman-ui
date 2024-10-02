@@ -14,7 +14,7 @@ import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import './sidebar.scss'
-import '../../pages/page/page.scss'
+// import '../../pages/page/page.scss'
 import  Logo from '@/assets/web/favicon.svg'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
