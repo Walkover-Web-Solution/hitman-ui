@@ -1,5 +1,6 @@
-@import '../../../../../../../components/main/variables.scss';
+@use '../../../../../../components/main/variables.scss' as *;
 
+// ... existing code ...
 .parent-page-container {
   .page-header {
     top: 0;

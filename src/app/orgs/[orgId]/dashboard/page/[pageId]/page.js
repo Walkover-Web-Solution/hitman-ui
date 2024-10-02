@@ -10,7 +10,7 @@ import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
 import { updatePageName } from '@/components/pages/redux/pagesActions';
-import SaveAsPageSidebar from '@/components/endpoints/saveAsPageSidebar1';
+import SaveAsPageSidebar from '@/components/endpoints/saveAsSidebar1';
 import IconButton from '@/components/common/iconButton';
 import { GoDotFill } from "react-icons/go";
 import { HocuspocusProvider } from "@hocuspocus/provider";
