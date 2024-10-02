@@ -100,7 +100,7 @@ const CustomTabs = (props) => {
 
   const openTabAtIndex = (index) => {
     const { tabsOrder } = tabs
-    if (tabsOrder[index]) tabService.selectTab(tabsOrder[index], { navigate, params })
+    if (tabsOrder[index]) tabService.selectTab(tabsOrder[index], { router, params })
   }
 
   const handleOpenNextTab = () => {
@@ -187,7 +187,7 @@ const CustomTabs = (props) => {
       } else {
         // Check if there's only one tab left before removing
         if (Object.keys(tabsData).length > 1) {
-          tabService.removeTab(tabIds[i], { navigate, params })
+          tabService.removeTab(tabIds[i], { router, params })
         }
       }
     }
@@ -514,7 +514,7 @@ const CustomTabs = (props) => {
                 <Nav.Link className='p-0 d-flex align-items-center bg-white pr-2' eventKey={tabId}>
                   <button
                     className='btn truncate bg-white pr-0'
-                    onClick={() => tabService.selectTab(tabId, { navigate, params })}
+                    onClick={() => tabService.selectTab(tabId, { router, params })}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
                     }}
