@@ -7,6 +7,7 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
 
   try {
     return (dispatch) => {
+      console.log(queryParams, 1234)
       let queryParamsString = `?`
       // setting query params value
       for (let key in queryParams) {
@@ -17,7 +18,7 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
         queryParamsString = queryParamsString.slice(0, -1);
       }
       generalApiService
-        .getCollectionsAndPages(orgId)
+        .getCollectionsAndPages(orgId, queryParamsString)
         .then((response) => {
           dispatch({ type: generalActionsTypes.ADD_COLLECTIONS, data: response.data.collections })
           dispatch({ type: generalActionsTypes.ADD_PAGES, data: response.data.pages })

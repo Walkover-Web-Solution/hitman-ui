@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import customPathnameHook from '../../customHook/customPathnameHook';
+import { useRouter } from 'next/navigation'
 
 export default function OauthPage() {
     const router = useRouter();
-    const location = customPathnameHook();
+    const location = window.location;
 
   const queryParams = new URLSearchParams(location.search)
   const code = queryParams.get('code') || ''

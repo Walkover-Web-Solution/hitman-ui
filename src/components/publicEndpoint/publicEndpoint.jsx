@@ -1,3 +1,4 @@
+"use client"
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
@@ -100,6 +101,7 @@ class PublicEndpoint extends Component {
   }
 
   async componentDidMount() {
+    debugger
     // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false
@@ -112,8 +114,8 @@ class PublicEndpoint extends Component {
     })
 
     let url = new URL(window.location.href)
-    if (this.props?.location?.search) {
-      var queryParams = new URLSearchParams(this.props.location.search)
+    if (window.location?.search) {
+      var queryParams = new URLSearchParams(window.location.search)
     }
 
     // even if user copy paste other published collection with collection Id in the params change it
@@ -153,7 +155,6 @@ class PublicEndpoint extends Component {
         queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi2[key])}&`
       }
     }
-
     // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1)
 

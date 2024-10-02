@@ -7,7 +7,7 @@ import { getCurrentUser } from '../auth/authServiceV2';
 import { updateContent } from '../pages/redux/pagesActions';
 import CollectionTabs from '../collections/collectionTabs';
 import ManualRuns from '../collections/showRuns/manualRuns';
-import Page from '../../app/orgs/[orgId]/dashboard/page/[pageId]/page';
+import Page from '../../pages/page/page';
 
 const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag, save_page_flag, selected_tab_id }) => {
   const queryClient = useQueryClient();

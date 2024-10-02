@@ -12,6 +12,7 @@ function withRouter(Component) {
     const location = {
       pathname: usePathname(),
       query: useSearchParams(),
+      navigate: (path, options) => router.push(path, undefined, options),
     };
     const params = useParams();
 

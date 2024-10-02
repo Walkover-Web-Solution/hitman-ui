@@ -17,44 +17,46 @@ export default function RootLayout({ children }) {
 
     return (
         <html lang="en">
-            <body>
-                <ReduxProvider>
-                    {children}
-                </ReduxProvider>
-            </body>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-            <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-            <script src="https://unpkg.com/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
+            <head>
+                <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css" />
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+                <script src="https://unpkg.com/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
                         (function(c,l,a,r,i,t,y){
                             c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
                             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
                         })(window, document, "clarity", "script", "k6owas5pe9");
                     `,
-                }}
-            />
-            <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css" />
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
+                    }}
+                />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
                         if (typeof module === 'object') {
                             window.module = module;
                             module = undefined;
                         }
                     `,
-                }}
-            />
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
+                    }}
+                />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
                         if (window.module) module = window.module;
                     `,
-                }}
-            />
+                    }}
+                />
+            </head>
+            <body>
+                <ReduxProvider>
+                    {children}
+                </ReduxProvider>
+            </body>
         </html>
     );
 }
