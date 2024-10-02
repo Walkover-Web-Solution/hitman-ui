@@ -1,12 +1,12 @@
 "use client"
+
 import React from 'react'
 import { useRouter } from 'next/navigation'
 
 function ERROR_404_PAGE() {
-  const router = useRouter()
-  const { query } = router
-  const message = query.error?.response?.data
-
+    const router = useRouter();
+const location = router.pathname;
+  const message = location?.error?.response?.data
   return (
     <div className='text-center errorPage'>
       <h4>OOPS! 404</h4>
