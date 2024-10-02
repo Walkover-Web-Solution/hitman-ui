@@ -12,7 +12,8 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { BiLogoGraphql } from 'react-icons/bi'
 import { addCollectionAndPages } from '@/components/redux/generalActions'
 import './redirections.scss'
-import { FaLongArrowAltLeft } from 'react-icons/fa'
+
+import Protected from "@/components/common/Protected";
 import { getCurrentOrg } from '@/components/auth/authServiceV2'
 import { FaArrowLeft } from 'react-icons/fa6'
 const DeleteIcon = () => (<svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -351,4 +352,4 @@ const Redirections = () => {
   )
 }
 
-export default Redirections
+export default Protected(Redirections)
