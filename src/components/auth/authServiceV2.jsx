@@ -2,9 +2,9 @@
 import React, { useEffect } from "react";
 import { switchOrg } from "@/services/orgApiService";
 import axios from "axios";
-import { setCurrentorganization, setOrganizationList } from "./redux/organizationRedux/organizationAction";
-import { store } from "../../store/store";
-import { setCurrentUser } from "./redux/usersRedux/userAction";
+import { setCurrentorganization, setOrganizationList } from "@/components/auth/redux/organizationRedux/organizationAction";
+import { store } from "@/store/store";
+import { setCurrentUser } from "@/components/auth/redux/usersRedux/userAction";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export const tokenKey = "token";

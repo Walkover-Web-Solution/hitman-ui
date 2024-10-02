@@ -1,5 +1,7 @@
+"use client";
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import  Logo from '@/assets/web/logo.svg'
 import  Giddh from '@/assets/web/logos/giddh.svg'
 import  Socket from '@/assets/web/logos/socket.svg'
@@ -45,7 +47,7 @@ export default function IndexWebsite() {
                 <button className='btn web_btn-primary web_btn-rg web_btn'>Get Started for free</button>
               </a>
             </div>
-            <img src={heroImg} alt='Hero Image' /> {/* Use the imported image */}
+            <Image src={heroImg} alt='Hero Image' />
           </div>
         </div>
         <div className='web_bg-sec py-5'>
