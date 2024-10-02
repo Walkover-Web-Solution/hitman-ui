@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRouter, useParams } from 'react-router';
+import { useRouter, useParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap'
 import { ScheduledRunsActions } from './scheduleRunActions';
