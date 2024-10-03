@@ -585,10 +585,10 @@ class DisplayEndpoint extends Component {
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
     }
-    if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
+    if ((isMac && event.metaKey && event.key === "m") || (!isMac && event.ctrlKey && event.key === "m") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       this.setState({ openPublishConfirmationModal: true })
     }
-    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && this.props.pages[this.endpointId]?.isPublished) {
+    if ((isMac && event.metaKey && event.key === "q") || (!isMac && event.ctrlKey && event.key === "q") && this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && this.props.pages[this.endpointId]?.isPublished) {
       event.preventDefault();
       this.setState({ openUnPublishConfirmationModal: true })
     }
