@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Input from '../common/input'
 import { trimString } from '../common/utility'
 import IconButtons from '../common/iconButton'
@@ -28,6 +28,7 @@ const SaveAsSidebar = (props) => {
   const title = data.name
   const saveAsSidebar = useRef(null)
   const inputRef = useRef(null)
+  const disptach = useDispatch()
 
   const pages = useSelector((state) => state.pages)
 
@@ -56,8 +57,9 @@ const SaveAsSidebar = (props) => {
       } else {
         props.setQueryUpdatedData({
           ...props.endpointContent,
-          data: { ...props.endpointContent.data, name: 'Untitled' }
+          data: { ...props.endpointContent.data, name: e.currentTarget.value }
         })
+        disptach(updateNameOfPages(props?.params?.endpointId, e.currentTarget.value))
       }
     }
   }
@@ -87,7 +89,7 @@ const SaveAsSidebar = (props) => {
     )
   }
 
-  const renderSaveAsExistingEndpointInput = () => {
+  const   renderSaveAsExistingEndpointInput = () => {
     return (
       <Input
         value={data.name}
@@ -113,7 +115,8 @@ const SaveAsSidebar = (props) => {
         <form className='desc-box form-parent' onSubmit={props.handleSubmit}>
           <div className='p-form-group mb-3'>
             {props?.params?.endpointId === 'new' ? renderEndpointNameInput() : renderSaveAsExistingEndpointInput()}
-            {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
+            {title?.trim() === ''  ? <small className='text-danger'>Please enter the title</small> : <div />}
+            {title?.trim() === 'Untitled'  ? <small className='text-danger'>Please change the title</small> : <div />}
           </div>
         </form>
         <ShowCaseSaveAsModal save_endpoint={props.save_endpoint} name={data.name} description={data.description} onHide={props.onHide} />

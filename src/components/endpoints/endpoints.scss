@@ -2030,3 +2030,9 @@ table#custom-generic-table {
     color: white !important;
   }
 }
+
+.public-button {
+  &::after {
+    content: none !important;
+  }
+}
