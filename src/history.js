@@ -1,6 +1,6 @@
+"use client"
 import React from 'react'
-import { useParams } from 'react-router-dom'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { setNavigate, setParams } from './navigationService'
 
 const NavigationSetter = () => {

@@ -1,13 +1,13 @@
-let navigate
+let router
 let params = {}
 
 export const setNavigate = (nav) => {
-  navigate = nav
+  router = nav
 }
 
 export const navigateTo = (path, state) => {
-  if (navigate) {
-    navigate(path, { state })
+  if (router) {
+    router.push(path, { state })
   } else {
     console.error('Navigate function is not set')
   }

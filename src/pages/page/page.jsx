@@ -20,7 +20,7 @@ import * as Y from "yjs";
 import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Page = () => {
 
@@ -33,6 +33,7 @@ const Page = () => {
         tabs: state.tabs.tabs,
         collections: state.collections,
     }));
+    const router = useRouter();
 
     const dispatch = useDispatch();
     const pathName = usePathname()
@@ -295,7 +296,7 @@ const Page = () => {
 
     const handleCollectionClick = () => {
         const path = `orgs/${getOrgId()}/dashboard/collection/${pages?.[activeTabId]?.collectionId}/settings`;
-        navigate.push(`/${path}`, { replace: true });
+        router.push(`/${path}`, { replace: true });
     }
 
     return (

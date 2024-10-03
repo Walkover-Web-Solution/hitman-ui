@@ -1,3 +1,4 @@
+import NavigationSetter from "src/history";
 import Providers from "./providers/providers";
 
 export const metadata = {
@@ -52,6 +53,7 @@ export default function RootLayout({ children }) {
                 <Providers>
                     {children}
                 </Providers>
+                <NavigationSetter />
             </body>
         </html>
     );
