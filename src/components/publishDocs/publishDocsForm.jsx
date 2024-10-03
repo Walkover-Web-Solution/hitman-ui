@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomColorPicker from './customColorPicker'
 import Joi from 'joi-browser'
@@ -312,6 +312,7 @@ const PublishDocForm = (props) => {
     const isCollectionPublished = collections[collectionId]?.isPublic
     const url = process.env.NEXT_PUBLIC_UI_URL + '/p?collectionId=' + collectionId
     const isDisabled = IsParentPagePublishedInACollection(collections[collectionId]?.rootParentId)
+    const tooltipRef = useRef(null) // Create a ref for the tooltip
 
     if (!isCollectionPublished) return null
 
@@ -323,7 +324,7 @@ const PublishDocForm = (props) => {
         </div>
         <OverlayTrigger
           overlay={
-            <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
+            <Tooltip ref={tooltipRef} id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
               At least one endpoint/page is to be published to enable this link.
             </Tooltip>
           }

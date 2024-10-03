@@ -17,7 +17,6 @@ function CombinedCollections(props) {
       {childIds.map((singleId) => {
         const type = pages?.[singleId]?.type || null
         const commonProps = {
-          key: singleId,
           ...props,
           handleOnDragOver: props.handleOnDragOver,
           onDragStart: props.onDragStart,
@@ -29,7 +28,6 @@ function CombinedCollections(props) {
         }
 
         const endpointProps = {
-          key: singleId,
           onDragStart: props.onDragStart,
           onDrop: props.onDrop,
           onDragEnter: props.onDragEnter,
@@ -40,13 +38,12 @@ function CombinedCollections(props) {
 
         switch (type) {
           case 1:
-            return <CollectionParentPages {...commonProps} rootParentId={singleId} />
+            return <CollectionParentPages key={singleId} {...commonProps} rootParentId={singleId} />
           case 3:
-            return <SubPage {...commonProps} rootParentId={singleId} />
+            return <SubPage key={singleId} {...commonProps} rootParentId={singleId} />
           case 4:
-            return <Endpoints {...endpointProps} endpointId={singleId} />
           case 5:
-            return <Endpoints {...endpointProps} endpointId={singleId} />
+            return <Endpoints key={singleId} {...endpointProps} endpointId={singleId} />
           default:
             break
         }

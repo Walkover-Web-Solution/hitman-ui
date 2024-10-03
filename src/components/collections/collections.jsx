@@ -22,7 +22,6 @@ import { Card } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
 import { addPage } from '../pages/redux/pagesActions'
-import { openInNewTab } from '../tabs/redux/tabsActions'
 import { IoIosSettings } from "react-icons/io";
 import { IoDocumentTextOutline, IoPricetagOutline } from 'react-icons/io5'
 import customPathnameHook from '../../customHook/customPathnameHook'

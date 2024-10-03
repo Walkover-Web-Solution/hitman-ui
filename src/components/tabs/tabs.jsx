@@ -488,7 +488,6 @@ const CustomTabs = (props) => {
           </div>
           {tabsOrder.map((tabId) => (
             <div
-              className=''
               key={tabId}
               ref={(newRef) => {
                 scrollRef.current[tabId] = newRef
@@ -502,12 +501,12 @@ const CustomTabs = (props) => {
                 onDrop={(e) => onDrop(e, tabId)}
                 className={tabs?.activeTabId === tabId ? 'active' : 'text-black-50'}
                 onMouseEnter={() => {
-                  setShowPreview(true)
-                  setPreviewId(tabId)
+                  setShowPreview(true);
+                  setPreviewId(tabId);
                 }}
                 onMouseLeave={() => {
-                  setShowPreview(false)
-                  setPreviewId(null)
+                  setShowPreview(false);
+                  setPreviewId(null);
                 }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
@@ -516,7 +515,7 @@ const CustomTabs = (props) => {
                     className='btn truncate bg-white pr-0'
                     onClick={() => tabService.selectTab(tabId, { router, params })}
                     onDoubleClick={() => {
-                      tabService.disablePreviewMode(tabId)
+                      tabService.disablePreviewMode(tabId);
                     }}
                   >
                     <div className={`d-flex ${tabs?.activeTabId === tabId ? 'tab-name' : ''}`} >
