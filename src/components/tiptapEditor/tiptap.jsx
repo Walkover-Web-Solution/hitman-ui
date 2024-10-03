@@ -62,15 +62,15 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const [activeSlashMenuIndex, setActiveSlashMenuIndex] = useState(0);
   const slashMenuRefs = useRef([]);
-  const [showPageDropdown, setShowPageDropdown] = useState(false);
-  const [selectedPage, setSelectedPage] = useState('');
-  const [pages, setPages] = useState([
-    { id: 1, title: 'Getting Started' },
-    { id: 2, title: 'Weekly To-do List' },
-    { id: 3, title: 'Monthly Budget' },
-    { id: 4, title: 'Tasks' },
-    // Add more pages or fetch dynamically
-  ]);
+  // const [showPageDropdown, setShowPageDropdown] = useState(false);
+  // const [selectedPage, setSelectedPage] = useState('');
+  // const [pages, setPages] = useState([
+  //   { id: 1, title: 'Getting Started' },
+  //   { id: 2, title: 'Weekly To-do List' },
+  //   { id: 3, title: 'Monthly Budget' },
+  //   { id: 4, title: 'Tasks' },
+  //   // Add more pages or fetch dynamically
+  // ]);
 
   const editor = useEditor({
     editorProps: {
@@ -280,9 +280,9 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       case 'justify':
         editor.chain().focus().setTextAlign(type).run();
         break;
-      case 'link':
-        setShowPageDropdown(true);
-        break;
+      // case 'link':
+      //   setShowPageDropdown(true);
+      //   break;
       default:
         break;
     }
@@ -400,17 +400,17 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
                 <span className="menu-description mt-1 font-12">Visually divide blocks</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[13] = el} onClick={() => insertBlock('link')} >
+            {/* <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[13] = el} onClick={() => insertBlock('link')} >
               <LuFileSymlink className=' mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Link to Page</span>
                 <span className="menu-description mt-1 font-12">Link to an existing page</span>
               </div>
-            </li>
+            </li> */}
           </ul>
         </div>
       )}
-      {showPageDropdown && (
+      {/* {showPageDropdown && (
         <div className="dropdown bg-white position-absolute" style={{ top: `${slashMenuPosition.top + 30}px`, left: `${slashMenuPosition.left}px` }}>
           <ul>
             {pages.map((page) => (
@@ -420,7 +420,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
             ))}
           </ul>
         </div>
-      )}
+      )} */}
       <EditorContent editor={editor} />
     </div>
   )

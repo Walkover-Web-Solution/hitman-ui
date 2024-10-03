@@ -416,13 +416,13 @@ const Page = () => {
                         />
                         {hovered && !showInput && (
                             <button
-                                className="btn text-secondary position-absolute"
+                                className="btn text-secondary position-absolute description-button"
                                 style={{top: '8px', right: '430px' }}
                                 onClick={handleAddDescriptionClick}
                             >
                                <BiSolidCommentDetail /> Add Description
                             </button>
-                        )}
+                         )} 
                     </div>
                 </div>
                 {showInput && (

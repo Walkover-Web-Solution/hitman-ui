@@ -46,7 +46,7 @@ const TagInput = () => {
         Tags
       </label>
 
-      <div className="tag-list">
+      <div className="tag-list d-flex">
         {tags.map((tag, index) => (
           <div key={index} className="tag align-items-center p-1 font-14 ml-2 mt-2">
             {tag}
@@ -56,7 +56,7 @@ const TagInput = () => {
           </div>
         ))}
         <input
-          className="tag-input-field p-1 font-14 w-100"
+          className="tag-input-field p-1 font-14"
           type="text"
           value={inputValue}
           onChange={handleInputChange}
