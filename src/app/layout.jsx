@@ -1,4 +1,4 @@
-import ReduxProvider from "./reduxProvider/reduxProvider";
+import Providers from "./providers/providers";
 
 export const metadata = {
     title: "Create Next App",
@@ -49,9 +49,9 @@ export default function RootLayout({ children }) {
                 />
             </head>
             <body>
-                <ReduxProvider>
+                <Providers>
                     {children}
-                </ReduxProvider>
+                </Providers>
             </body>
         </html>
     );
