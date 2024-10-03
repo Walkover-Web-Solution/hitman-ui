@@ -1,3 +1,4 @@
+"use client"
 import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +20,7 @@ import * as Y from "yjs";
 import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const Page = () => {
 
@@ -34,8 +35,10 @@ const Page = () => {
     }));
 
     const dispatch = useDispatch();
-    const navigate = useRouter();
-    const { pageId, orgId } = useParams();
+    const pathName = usePathname()
+    const segments = pathName.split('/');
+    const orgId = segments[2]; 
+    const pageId = segments[5]; 
     const textareaRef = useRef(null);
 
     const [sidebar, setSidebar] = useState(false);
