@@ -1,12 +1,4 @@
 import ReduxProvider from "./reduxProvider/reduxProvider";
-import '../index.scss'
-import '../components/main/global-style.scss'
-import '../components/main/main.scss'
-import '../components/main/responsive.scss'
-import '../components/main/sidebar.scss'
-import '../components/main/updateStatus.scss'
-import '../components/main/userProfile.scss'
-import 'bootstrap/dist/css/bootstrap.css'
 
 export const metadata = {
     title: "Create Next App",
@@ -47,7 +39,11 @@ export default function RootLayout({ children }) {
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
-                        if (window.module) module = window.module;
+                        if (typeof window !== 'undefined') {
+                            import('jquery').then(() => {
+                                import('bootstrap/dist/js/bootstrap.js');
+                            });
+                        }
                     `,
                     }}
                 />

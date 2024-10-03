@@ -173,7 +173,7 @@ const ContentPanel = () => {
         if (collectionLength > 0) {
           router.push(
             tab.type !== 'collection'
-              ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '' : ''}`
               : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           );
         } else {
