@@ -1,6 +1,5 @@
-'use client'
-import React from 'react'
-// import { isOnPublishedPage } from '../../common/utility'
+'use client';
+import React from 'react';
 
 export default function HoverBox(props) {
     return (

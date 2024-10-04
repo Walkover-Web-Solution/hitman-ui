@@ -8,8 +8,8 @@ import { Slide, ToastContainer } from 'react-toastify'
 import IconButton from '@/components/common/iconButton';
 import { MdClose } from 'react-icons/md'
 import '../../../components/main/responsive.scss'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/js/bootstrap.js'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap/dist/js/bootstrap.js'
 import '../../../index.scss'
 import 'react-toastify/dist/ReactToastify.css'
 import "../login/auth.scss";

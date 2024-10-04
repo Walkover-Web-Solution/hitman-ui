@@ -1,3 +1,19 @@
+import '../../components/main/responsive.scss'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap/dist/js/bootstrap.js'
+import '../../index.scss'
+import 'react-toastify/dist/ReactToastify.css'
+import "../(other)/login/auth.scss";
+import "../(other)/login/login.scss";
+import "../(other)/orgs/[orgId]/invite/inviteTeam.scss"
+import "../../components/publicEndpoint/publicEndpoint.scss"
+import "../(other)/orgs/[orgId]/trash/trash.scss"
+import '../(other)/onBoarding/onBoarding.scss'
+import "../../components/indexWebsite/indexWebsite.scss"
+import "../(other)/orgs/[orgId]/collection/[collectionId]/redirections/redirections.scss"
+import "../(other)/orgs/[orgId]/collection/[collectionId]/runner/runAutomation.scss"
+import "../../components/main/main.scss"
+import "../../components/tabs/tabs.scss"
 
 
 export const metadata = {

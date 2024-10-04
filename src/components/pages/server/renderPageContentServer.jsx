@@ -1,5 +1,6 @@
 import React from 'react';
 import RenderPageContentClient from '../client/RenderPageContentClient';
+import { getPublishedContentByIdAndType } from './utility';
 
 export default async function RenderPageContentServer({ pageContent, pageId }) {
   // Fetch page name and content
@@ -35,7 +36,6 @@ export default async function RenderPageContentServer({ pageContent, pageId }) {
 
 async function addIdsToHeadings(html) {
   // Dynamically import 'jsdom' only on the server
-  if (typeof window === 'undefined') {
   const { JSDOM } = await import('jsdom');
 
   const dom = new JSDOM(html);
@@ -52,17 +52,28 @@ async function addIdsToHeadings(html) {
   const htmlWithIds = document.body.innerHTML;
 
   return { htmlWithIds, headings, innerText };
- }else {
-  return {htmlWithIds: '<h1>Heading 1</h1><p>Some content...</p><h2>Heading 2</h2><p>More content...</p>', headings : 'hello', innerText :'nothing'}
- }
 }
 
+
+
 async function fetchPageData(pageId) {
-  // Implement your data fetching logic here.
-  // This function should return an object with pageName and content.
-  // Replace the following mock data with actual data fetching:
-  return {
-    pageName: 'Page Name',
-    content: '<h1>Heading 1</h1><p>Some content...</p><h2>Heading 2</h2><p>More content...</p>',
-  };
+  try {
+    pageId = 'PgQby2XivxFV'
+debugger
+    // Use the service function to get published content
+    const contentType = 1; // Set the content type as needed
+    const content = await getPublishedContentByIdAndType(pageId, contentType);
+
+    // You can extend this to fetch the page name if available in the API response
+    return {
+      pageName: 'Page Name', // Replace with actual page name from API if available
+      content: content,
+    };
+  } catch (error) {
+    console.error('Error fetching page data:', error);
+    return {
+      pageName: 'Page Name',
+      content: '',
+    };
+  }
 }
