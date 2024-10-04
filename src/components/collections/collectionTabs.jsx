@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import PublishDocForm from '../publishDocs/publishDocsForm';
 import CollectionRuns from './showRuns/collectionRuns';

@@ -101,10 +101,11 @@ function getOrgList() {
 
 function getProxyToken() {
   const tokenKey = "token";
-  if(typeof window !== 'undefined'){
+  // Check if running in a browser environment
+  if (typeof window !== 'undefined') {
     return localStorage.getItem(tokenKey) || "";
   }
-  return null;
+  return null; // Return null if not in a browser
 }
 
 async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect) {

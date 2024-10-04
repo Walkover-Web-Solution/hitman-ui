@@ -1,3 +1,4 @@
+"use client";
 import axios from 'axios'
 import logger from './logService'
 import 'react-toastify/dist/ReactToastify.css'

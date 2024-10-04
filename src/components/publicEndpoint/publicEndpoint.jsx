@@ -101,7 +101,6 @@ class PublicEndpoint extends Component {
   }
 
   async componentDidMount() {
-    debugger
     // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false

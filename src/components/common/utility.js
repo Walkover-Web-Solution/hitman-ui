@@ -1,3 +1,4 @@
+"use client";
 import { QueryCache } from 'react-query'
 import * as _ from 'lodash'
 import * as Sentry from '@sentry/react'
@@ -409,17 +410,22 @@ export function getUserProfile() {
 }
 
 export function getCurrentUserSSLMode() {
-  let sslModeData = window.localStorage.getItem('ssl-mode')
-  const user = getUserProfile() || {}
-  try {
-    sslModeData = JSON.parse(sslModeData)
-    const { identifier } = user
-    return sslModeData?.[identifier]
-  } catch (e) { }
+  // Check if running in a browser environment
+  if (typeof window !== 'undefined') {
+    let sslModeData = localStorage.getItem('ssl-mode')
+    const user = getUserProfile() || {}
+    try {
+      sslModeData = JSON.parse(sslModeData)
+      const { identifier } = user
+      return sslModeData?.[identifier]
+    } catch (e) { }
+  }
+  return null; // Return null if not in a browser
 }
 
 export function setCurrentUserSSLMode(sslModeFlag) {
-  let sslModeData = window.localStorage.getItem('ssl-mode') || '{}'
+  if (typeof window !== 'undefined') {
+  let sslModeData = localStorage.getItem('ssl-mode') || '{}'
   const user = getUserProfile() || {}
   const { identifier } = user
   try {
@@ -427,6 +433,7 @@ export function setCurrentUserSSLMode(sslModeFlag) {
     const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
   } catch (e) { }
+}
 }
 
 export function compareAlphabetically(a, b, data) {

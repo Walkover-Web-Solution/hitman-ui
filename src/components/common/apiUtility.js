@@ -1,3 +1,4 @@
+"use client";
 import { getCurrentOrg, getCurrentUser } from "../auth/authServiceV2";
 
 export async function getParseCurlData(curl) {

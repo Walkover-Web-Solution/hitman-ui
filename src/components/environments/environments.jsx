@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react'
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import EnvironmentModal from './environmentModal.jsx'

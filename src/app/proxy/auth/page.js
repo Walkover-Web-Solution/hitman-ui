@@ -101,9 +101,8 @@ function getOrgList() {
 
 function getProxyToken() {
   const tokenKey = "token";
-  if(typeof window !== 'undefined'){
+  // if(typeof window !== 'undefined')
     return localStorage.getItem(tokenKey) || "";
-  }
   return null;
 }
 

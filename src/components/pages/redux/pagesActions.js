@@ -1,3 +1,4 @@
+"use client";
 import { toast } from 'react-toastify'
 import { store } from '@/store/store'
 import pageApiService from '../pageApiService'
@@ -7,7 +8,6 @@ import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import { navigateTo } from '../../../navigationService'
-import { useRouter } from 'next/navigation'
 
 import { getCurrentOrg } from '../../auth/authServiceV2'
 import tabsActionTypes from '../../tabs/redux/tabsActionTypes'

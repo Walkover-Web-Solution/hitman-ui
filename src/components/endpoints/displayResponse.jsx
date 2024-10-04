@@ -1,3 +1,4 @@
+"use client";
 // import image from "../common/Screenshot 2020-03-21 at 10.53.24 AM.png";
 import  EmptyResponseImg  from './img/empty-response.svg'
 import React, { Component, createRef } from 'react'

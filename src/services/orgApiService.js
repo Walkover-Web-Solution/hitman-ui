@@ -1,3 +1,4 @@
+"use client";
 import http from './httpService'
 import { redirectToDashboard } from '@/components/common/utility'
 import { getOrgList, getCurrentOrg, getDataFromProxyAndSetDataToLocalStorage } from '@/components/auth/authServiceV2'

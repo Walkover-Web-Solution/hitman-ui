@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, forwardRef } from 'react'
 import { Button, Dropdown, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Avatar from 'react-avatar'

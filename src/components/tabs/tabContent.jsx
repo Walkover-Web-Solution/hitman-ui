@@ -1,3 +1,4 @@
+"use client";
 import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useQueryClient } from 'react-query';

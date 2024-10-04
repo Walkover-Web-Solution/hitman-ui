@@ -1,3 +1,4 @@
+"use client";
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -395,7 +396,7 @@ class DisplayEndpoint extends Component {
       bodyDescription: {},
       fieldDescription: {},
       sampleResponseFlagArray: [],
-      theme: '',
+      themes: '',
       loader: false,
       saveLoader: false,
       codeEditorVisibility: false,
@@ -3232,7 +3233,7 @@ class DisplayEndpoint extends Component {
               ? 'mainContentWrapperPublic hideCodeEditor'
               : 'mainContentWrapperPublic '
         }
-        style={this.state.theme.backgroundStyle}
+        style={this.state.themes.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
