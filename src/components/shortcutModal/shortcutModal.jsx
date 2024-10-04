@@ -10,9 +10,9 @@ const ShortcutModal = () => {
     const shortcuts = [
         { name: 'Save', key: isMac ? [<BsCommand key="cmd" />, 'S'] : ['Ctrl', 'S'] },
         { name: 'Open Tab', key: isMac ? [<PiControlBold key="ctrl" />, 'N'] : ['Alt', 'N'] },
-        { name: 'Publish', key: isMac ? [<BsCommand key="cmd" />, 'B'] : ['Ctrl', 'B'] },
+        { name: 'Publish', key: isMac ? [<BsCommand key="cmd" />, 'M'] : ['Ctrl', 'M'] },
         { name: 'Close Tab', key: isMac ? [<PiControlBold key="ctrl" />, 'W'] : ['Alt', 'W'] },
-        { name: 'Unpublish', key: isMac ? [<BsCommand key="cmd" />, 'U'] : ['Ctrl', 'U'] },
+        { name: 'Unpublish', key: isMac ? [<BsCommand key="cmd" />, 'Q'] : ['Ctrl', 'Q'] },
         { name: 'Switch Tab', key: isMac ? [<PiControlBold key="ctrl" />, 'T'] : ['Alt', 'T'] },
         { name: 'Show Shortcuts', key: isMac ? [<BsCommand key="cmd" />, '/'] : ['Ctrl', '/'] },
 

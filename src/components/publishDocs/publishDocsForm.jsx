@@ -33,6 +33,7 @@ const publishDocFormEnum = {
 
 const PublishDocForm = (props) => {
   const dispatch = useDispatch()
+  const tooltipRef = useRef(null)
 
   const { collections, isPublishSliderOpen, tabs, pages, environment, publicEnv } = useSelector((state) => ({
     collections: state.collections,
@@ -312,7 +313,6 @@ const PublishDocForm = (props) => {
     const isCollectionPublished = collections[collectionId]?.isPublic
     const url = process.env.NEXT_PUBLIC_UI_URL + '/p?collectionId=' + collectionId
     const isDisabled = IsParentPagePublishedInACollection(collections[collectionId]?.rootParentId)
-    const tooltipRef = useRef(null) // Create a ref for the tooltip
 
     if (!isCollectionPublished) return null
 

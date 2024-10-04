@@ -43,7 +43,8 @@ const Collections = (props) => {
   const [showOrgModal, setShowOrgModal] = useState(false)
   const [automationSelectedCollectionId, setAutomationSelectedCollectionId] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-
+  const [gtmId, setGtmId] =  useState(null);
+  
   const closeCollectionForm = () => {
     setShowCollectionForm(false)
   }
@@ -157,11 +158,11 @@ const Collections = (props) => {
   }
 
   const openRedirectionsPage = (collection) => {
-    router.push(`/orgs/${params.orgId}/dashboard/collection/${collection.id}/redirections`)
+    router.push(`/orgs/${params.orgId}/collection/${collection.id}/redirections`)
   }
 
   const handleApiAutomation = (collectionId) => {
-    router.push(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/runner`)
+    router.push(`/orgs/${params.orgId}/collection/${collectionId}/runner`)
   }
 
   const renderBody = (collectionId, collectionState) => {

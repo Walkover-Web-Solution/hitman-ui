@@ -13,6 +13,7 @@ import { getCurrentOrg } from '../../auth/authServiceV2'
 import tabsActionTypes from '../../tabs/redux/tabsActionTypes'
 import { onPageStateSuccess } from '../../publicEndpoint/redux/publicEndpointsActions'
 import { replaceTab } from '../../tabs/redux/tabsActions'
+import tabService from '@/components/tabs/tabService'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -23,6 +24,9 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
+        if(response.status === 200){
+          tabService.markTabAsSaved(id);
+        }
         dispatch(onEndpointUpdated(response.data))
         if (stopSaveLoader) {
           stopSaveLoader()

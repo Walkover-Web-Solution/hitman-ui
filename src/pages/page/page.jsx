@@ -110,11 +110,11 @@ const Page = () => {
             event.preventDefault();
             handleSavePage();
         }
-        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b") && tabs[activeTabId]?.status !== "NEW") {
+        if ((isMac && event.metaKey && event.key === "m") || (!isMac && event.ctrlKey && event.key === "m") && tabs[activeTabId]?.status !== "NEW") {
             event.preventDefault();
             publishClick();
         }
-        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u") && tabs[activeTabId]?.status !== "NEW") {
+        if ((isMac && event.metaKey && event.key === "q") || (!isMac && event.ctrlKey && event.key === "q") && tabs[activeTabId]?.status !== "NEW") {
             event.preventDefault();
             unpublishClick();
         }
@@ -356,14 +356,14 @@ const Page = () => {
                                 <Dropdown.Menu>
                                     <Dropdown.Item className="p-1 font-12 px-2 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>B</span></> : <span className="font-10">Ctrl + B</span>}</span>
+                                        <span className="text-black-50" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>M</span></> : <span className="font-10">Ctrl + M</span>}</span>
                                     </Dropdown.Item>
                                     {pages?.[pageId]?.isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
                                         className="p-1 px-2 font-12 d-flex justify-content-between align-items-center unpublish-page "
                                     >
                                         <span className="text-danger">Unpublish</span>
-                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>U</span></> : <span className="font-10">Ctrl + U</span>}</span>
+                                        <span className="text-black-50">{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand size={11} className='cmd-icons' />+ <span className='font-12 d-inline-block'>Q</span></> : <span className="font-10">Ctrl + Q</span>}</span>
                                     </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>

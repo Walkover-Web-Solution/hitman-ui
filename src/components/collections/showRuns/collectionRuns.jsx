@@ -52,7 +52,7 @@ const CollectionRuns = () => {
   };
 
   const navigateToScheduleRuns = () => {
-    router.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/runner`);
+    router.push(`/orgs/${orgId}/collection/${collectionId}/runner`);
   }
 
   return (

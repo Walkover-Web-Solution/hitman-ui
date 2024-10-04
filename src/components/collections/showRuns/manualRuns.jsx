@@ -15,6 +15,7 @@ function ManualRuns() {
       pages: state.pages
     }
   })
+  debugger
   const collectionId = params?.collectionId
   const averageResponseTime = useMemo(() => {
     const responseTime = automation[activeTabId]?.responseTime || 0;
@@ -27,7 +28,7 @@ function ManualRuns() {
       <h1> {collections[collectionId]?.name} - Run results</h1>
       <div className="run-details">
         <span>Ran on {formatDate(automation[activeTabId]?.date)}</span>
-        <a className='ml-2' href={`/orgs/:orgId/dashboard/collection/${collectionId}/runs`}>View all runs</a>
+        <a className='ml-2' href={`/orgs/:orgId/collection/${collectionId}/runs`}>View all runs</a>
       </div>
       <table>
         <thead>

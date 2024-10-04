@@ -1,3 +1,7 @@
+$border-color: #e0e0e0;
+$background-color : #f4f4f4;
+$scrollbar-color: #f1f1f1;
+
 .tippy-box {
     border: 0 !important;
 }
@@ -21,6 +25,37 @@
             transform: rotate(0) !important;
         }
     }
+}
+
+.slash-menu {
+    width: 260px;
+    border: 1px solid $border-color ;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    z-index: 1;
+
+    ul {
+        list-style: none;
+        max-height: 300px;
+
+        li {
+            &:focus {
+                outline: none;
+                background-color:$background-color;
+            }
+            &:hover {
+                background-color: $background-color;
+            }
+            .menu-description {
+                color: #888;
+            }
+        }
+    }
+}
+
+.overflow-auto {
+    scrollbar-color: rgba(0, 0, 0, 0.21) $scrollbar-color;
+    scrollbar-width: thin;
 }
 
 
