@@ -7,6 +7,7 @@
   "main": "public/electron.js",
   "dependencies": {
     "@hocuspocus/provider": "^2.13.5",
+    "@next/bundle-analyzer": "^14.2.14",
     "@reduxjs/toolkit": "^2.2.7",
     "@sentry/react": "^7.88.0",
     "@tiptap/extension-collaboration": "^2.6.4",
@@ -102,6 +103,7 @@
     "rtlayer-client": "^1.0.1",
     "sass": "^1.69.4",
     "serve": "^14.2.2",
+    "sharp": "^0.33.5",
     "shortid": "^2.2.15",
     "to-json-schema": "^0.2.5",
     "universal-cookie": "^4.0.4",
@@ -130,6 +132,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/eslint-parser": "^7.25.7",
     "@svgr/webpack": "^8.1.0",
     "@vitejs/plugin-react": "^4.3.1",
     "electron": "^13.1.1",
