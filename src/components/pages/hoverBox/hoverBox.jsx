@@ -1,10 +1,11 @@
+'use client'
 import React from 'react'
-import { isOnPublishedPage } from '../../common/utility'
+// import { isOnPublishedPage } from '../../common/utility'
 
 export default function HoverBox(props) {
     return (
         <React.Fragment>
-            {isOnPublishedPage() && props?.headings.length > 0 && (
+            { props?.headings.length > 0 && (
                 <div className='heading-main position-fixed'>
                     <div className='editor-headings p-2 rounded-sm position-fixed d-flex flex-column'>
                         {props?.headings.map((heading) => (

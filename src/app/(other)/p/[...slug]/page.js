@@ -1,6 +1,6 @@
 "use client";
 import React from 'react'
-import PublicEndpoint from '../../components/publicEndpoint/publicEndpoint'
+import PublicEndpoint from '../../../../components/publicEndpoint/publicEndpoint'
 
 export default function Page() {
     return (
