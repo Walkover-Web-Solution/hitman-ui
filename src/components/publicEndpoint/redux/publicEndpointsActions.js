@@ -1,3 +1,4 @@
+'use client'
 import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'

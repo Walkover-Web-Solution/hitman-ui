@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect } from 'react'
 import { isOnPublishedPage, SESSION_STORAGE_KEY } from '../../components/common/utility'
 import RenderPageContent from '../../components/pages/renderPageContent'

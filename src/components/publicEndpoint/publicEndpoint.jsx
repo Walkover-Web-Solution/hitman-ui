@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
@@ -22,6 +22,7 @@ import withRouter from '../common/withRouter.jsx'
 import PublicPage from '../../pages/publicPage/publicPage.jsx'
 import IconButton from '../common/iconButton.jsx'
 
+// client
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
@@ -59,6 +60,7 @@ const withQuery = (WrappedComponent) => {
   }
 }
 
+// client
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
@@ -68,6 +70,7 @@ const mapStateToProps = (state) => {
   }
 }
 
+// client
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>

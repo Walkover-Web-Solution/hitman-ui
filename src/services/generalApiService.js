@@ -1,3 +1,4 @@
+'use client'
 import http from './httpService'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
