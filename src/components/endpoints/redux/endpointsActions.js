@@ -8,6 +8,7 @@ import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { addChildInParent } from '../../pages/redux/pagesActions'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { navigateTo } from '../../../navigationService'
 
 export const formatResponseToSend = (response) => {
   return {
@@ -36,7 +37,7 @@ export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback,
       .then(async (response) => {
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
-        router.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        navigateTo(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
         if (props?.params?.endpointId === 'new') {
           dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
         }

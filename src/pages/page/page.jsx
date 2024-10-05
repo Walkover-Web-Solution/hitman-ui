@@ -21,6 +21,7 @@ import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
 import { usePathname, useRouter } from "next/navigation";
+import { navigateTo } from "src/navigationService";
 
 const Page = () => {
 
@@ -272,7 +273,7 @@ const Page = () => {
             if (pages?.[item.id]?.type === 2) return null;
             const isLastItem = index === pathWithUrls.length - 1;
             return (
-                <div className='d-flex align-items-center' key={index} onClick={() => navigate.push(`/${item.path}`, { replace: true })}>
+                <div className='d-flex align-items-center' key={index} onClick={() => router.push(`/${item.path}`)}>
                     {isLastItem ? (
                         <strong
                             className="fw-500 py-0 px-1 cursor-text"

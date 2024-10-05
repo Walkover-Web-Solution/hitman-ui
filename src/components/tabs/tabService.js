@@ -67,7 +67,7 @@ function selectTab(tabId, props) {
         navigatePath = `/orgs/${props.params.orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`;
         break;
       default:
-        navigatePath = `/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab?.isModified ? '/edit' : ''}`;
+        navigatePath = `/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}`;
     }
   }
   props.router.push(navigatePath);

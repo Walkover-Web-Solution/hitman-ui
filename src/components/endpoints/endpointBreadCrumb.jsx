@@ -10,6 +10,7 @@ import withRouter from '../common/withRouter'
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { GoDotFill } from 'react-icons/go'
 import { RxSlash } from "react-icons/rx";
+import { navigateTo } from 'src/navigationService'
 
 
 const mapStateToProps = (state) => {
@@ -232,6 +233,7 @@ class EndpointBreadCrumb extends Component {
 
 
   getPath(id, sidebar) {
+    debugger
     const orgId = getOrgId()
     let path = []
     while (sidebar?.[id]?.type > 0) {
@@ -246,14 +248,14 @@ class EndpointBreadCrumb extends Component {
     if (isLastItem) {
       this.setState({ nameEditable: true })
     } else {
-      this.props.navigate(`/${item.path}`, { replace: true });
+      navigateTo(`/${item.path}`);
     }
   }
 
   renderPathLinks() {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData();
     const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages);
-
+    debugger
     return pathWithUrls.map((item, index) => {
       if (this.props.pages?.[item.id]?.type === 2) return null;
       const isLastItem = index === pathWithUrls.length - 1;
@@ -309,7 +311,7 @@ class EndpointBreadCrumb extends Component {
 
               <div className='text-nowrap-heading breadcrumb-main d-flex align-items-center flex-wrap'>
                 {this.collectionName && (
-                  <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={() => this.props.navigate(`/${path}`, { replace: true })}>{this.collectionName}</strong>
+                  <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={() => navigateTo(`/${path}`)}>{this.collectionName}</strong>
                 )}
                 <p className='p-0 m-0 text-secondary fw-400'>/</p>
                 {this.renderPathLinks()}
