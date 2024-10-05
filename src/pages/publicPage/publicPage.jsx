@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect } from 'react'
 import { isOnPublishedPage, SESSION_STORAGE_KEY } from '../../components/common/utility'
 import RenderPageContent from '../../components/pages/renderPageContent'
@@ -45,7 +46,7 @@ function PublicPage(props) {
     }
 
     return (
-        <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
+        <div className={`custom-display-page ${true ? 'custom-display-public-page' : ''}`}>
             <div className={`page-wrapper d-flex flex-column ${data ? 'justify-content-between' : 'justify-content-center'}`}>
                 {props?.pageContentDataSSR?.contents || data ? (
                     <div className='pageText d-flex justify-content-center aling-items-start'>

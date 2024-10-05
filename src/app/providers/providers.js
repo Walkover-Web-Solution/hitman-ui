@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import 'bootstrap/dist/js/bootstrap.js'
+// import 'bootstrap/dist/js/bootstrap.js'
 import { persistor, store } from '../../store/store'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { PersistGate } from 'redux-persist/lib/integration/react'
