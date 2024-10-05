@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomColorPicker from './customColorPicker'
 import Joi from 'joi-browser'
 import { Button, Tooltip, OverlayTrigger, Modal, Form, Dropdown } from 'react-bootstrap'
-import  UploadIcon from '@/assets/icons/uploadIcon.svg'
+import UploadIcon from '@/assets/icons/uploadIcon.svg'
 import { onCollectionUpdated, updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
@@ -19,6 +19,7 @@ import collectionsApiService from '../collections/collectionsApiService'
 import { toast } from 'react-toastify'
 import IconButton from '../common/iconButton'
 import { MdDelete } from 'react-icons/md'
+import Editor from '../codeeditor/editor'
 
 const MAPPING_DOMAIN = process.env.NEXT_PUBLIC_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -61,6 +62,9 @@ const PublishDocForm = (props) => {
   const [showCreateEnvForm, setShowCreateEnvForm] = useState(false)
   const [showCopyEnvModal, setShowCopyEnvModal] = useState(false)
   const [selectedEnv, setSelectedEnv] = useState(null)
+  const [showEditor, setShowEditor] = useState(false)
+  const [header, setHeader] = useState('')
+  const [footer, setFooter] = useState('')
   const [rows, setRows] = useState([
     { checked: false, variable: '', value: '', isEnabled: true },
     { checked: false, variable: '', value: '', isEnabled: true }
@@ -86,6 +90,9 @@ const PublishDocForm = (props) => {
         setBinaryFile(favicon)
       }
     }
+  }
+  const handleToggle = () => {
+    setShowEditor((prevState) => !prevState)
   }
 
   const unPublishCollection = (selectedCollection) => {
@@ -148,7 +155,9 @@ const PublishDocForm = (props) => {
     collection.favicon = binaryFile
     collection.docProperties = {
       defaultTitle: newData.title.trim(),
-      defaultLogoUrl: newData.logoUrl.trim()
+      defaultLogoUrl: newData.logoUrl.trim(),
+      defaultheader: header,
+      defaultfooter: footer
     }
     delete collection.isPublic
     let newErrors = validate({ ...data })
@@ -557,10 +566,10 @@ const PublishDocForm = (props) => {
                       <tr>
                         <th className='text-center'>
                           <Dropdown>
-                          <IconButton>
-                            <Dropdown.Toggle className='select-check p-0 bg-transparent text-dark border-0' id="dropdown-basic">
-                              Select
-                            </Dropdown.Toggle>
+                            <IconButton>
+                              <Dropdown.Toggle className='select-check p-0 bg-transparent text-dark border-0' id="dropdown-basic">
+                                Select
+                              </Dropdown.Toggle>
                             </IconButton>
                             <Dropdown.Menu>
                               <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, checked: true })))}>Select All</Dropdown.Item>
@@ -571,17 +580,17 @@ const PublishDocForm = (props) => {
                         <th width={140}>Key</th>
                         <th>Value</th>
                         <th className='text-center'>
-                        <Dropdown>
-                          <IconButton>
-                          <Dropdown.Toggle className='select-check p-0 bg-transparent text-dark border-0' variant="success" id="dropdown-basic">
-                            Editable
-                          </Dropdown.Toggle >
-                          </IconButton>
-                          <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: true })))}>Editable All</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: false })))}>Disable All</Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
+                          <Dropdown>
+                            <IconButton>
+                              <Dropdown.Toggle className='select-check p-0 bg-transparent text-dark border-0' variant="success" id="dropdown-basic">
+                                Editable
+                              </Dropdown.Toggle >
+                            </IconButton>
+                            <Dropdown.Menu>
+                              <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: true })))}>Editable All</Dropdown.Item>
+                              <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: false })))}>Disable All</Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
                         </th>
                         <th className='text-center'>Delete</th>
                       </tr>
@@ -664,6 +673,17 @@ const PublishDocForm = (props) => {
             {renderInput('logoUrl', false, false, binaryFile, '')}
           </div>
           <div className='color-picker'>{renderColorPicker()}</div>
+          <div>
+            <Button onClick={handleToggle} id='publish_collection_btn' variant='btn btn-outline' className='m-1 btn-sm font-12 mb-1'>
+              {showEditor ? 'Close Header/Footer' : 'Customize your Header/Footer'}
+            </Button>
+            {showEditor && (
+              <div>
+                <Editor header={header} setHeader={setHeader} footer={footer} setFooter={setFooter} />
+              </div>
+            )}
+          </div>
+
           {renderActionButtons(publishCheck)}
         </div>
       </div>
