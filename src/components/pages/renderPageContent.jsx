@@ -36,13 +36,13 @@ export default function RenderPageContent(props) {
 
     return (
         <React.Fragment>
-            {innerText?.length > 0 &&
+            {innerText?.length > 0 || props?.pageContentDataSSR?.contents &&
                 <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-50 tiptap'>
                     <div className='mb-4 page-text-render w-100 d-flex justify-content-between align-items-center'>
-                        <span className='page-name font-weight-bold mt-5 border-0 w-100 d-flex align-items-center'>{pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</span>
+                        <span className='page-name font-weight-bold mt-5 border-0 w-100 d-flex align-items-center'>{props?.pageContentDataSSR?.name || pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</span>
                     </div>
                     <div className="page-text-render w-100 d-flex justify-content-center">
-                        <div className='w-100'><div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds }} /></div>
+                        <div className='w-100'><div className='page-content-body' dangerouslySetInnerHTML={{ __html: props?.pageContentDataSSR?.contents || htmlWithIds }} /></div>
                         <HoverBox scrollToHeading={scrollToHeading} headings={headings} />
                     </div>
                 </div>

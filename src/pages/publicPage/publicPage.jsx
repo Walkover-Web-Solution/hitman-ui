@@ -47,9 +47,9 @@ function PublicPage(props) {
     return (
         <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
             <div className={`page-wrapper d-flex flex-column ${data ? 'justify-content-between' : 'justify-content-center'}`}>
-                {data || props?.pageContentSSR ? (
+                {props?.pageContentDataSSR?.contents || data ? (
                     <div className='pageText d-flex justify-content-center aling-items-start'>
-                        <RenderPageContent pageContentSSR={props?.pageContentSSR} pageContent={data} />
+                        <RenderPageContent pageContentDataSSR={props?.pageContentDataSSR} pageContent={data} />
                     </div>
                 ) : (
                     <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>

@@ -395,8 +395,8 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
-    let type = this.props?.pages?.[idToRender]?.type
+    let idToRender = this.props?.pageContentDataSSR?.id || sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
+    let type = this.props?.pageContentDataSSR?.type || this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
@@ -519,8 +519,8 @@ class PublicEndpoint extends Component {
 
                   {(type == 1 || type == 3) && (
                     <PublicPage
+                    
                       {...this.props}
-                      pageContentSSR={this.props?.pageContentSSR}
                       fetch_entity_name={this.fetchEntityName.bind(this)}
                       publicCollectionTheme={collectionTheme}
                     />
