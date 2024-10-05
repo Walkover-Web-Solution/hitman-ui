@@ -8,7 +8,7 @@ import { GoTasklist } from 'react-icons/go';
 import '../styles.scss'
 import './tiptap.scss'
 
-export default function FloatingMenuComponent({ editor , showImage , setShowImage }) {
+export default function FloatingMenuComponent({ editor , showImage , setShowImage , pathName }) {
     return (
         <FloatingMenu className="floating-menu" tippyOptions={{ duration: 100 }} editor={editor}>
             <Dropdown>
@@ -39,6 +39,9 @@ export default function FloatingMenuComponent({ editor , showImage , setShowImag
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => setShowImage(true)}>
                         <FaImage /> Files
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => editor.chain().focus().setBreadcrumb(pathName).run()}>
+                        <FaImage /> BreadCrumb
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>

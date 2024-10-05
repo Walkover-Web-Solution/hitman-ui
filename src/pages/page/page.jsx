@@ -52,6 +52,7 @@ const Page = () => {
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
     const [pathData,setPathData] = useState('');
+    const [pathName,setPathName] = useState('');
 
     useEffect(() => {
         if (typeof window.SendDataToChatbot === 'function' && tabs[activeTabId]?.type === 'page') {
@@ -254,7 +255,12 @@ const Page = () => {
         const orgId = getOrgId();
         let path = [];
         let newPath = `${pages?.[activeTabId]?.collectionId}`;
-        let pagePath = [];
+        let pagePath = [], pagesName = [];
+ 
+        let collectionName = collections?.[pages?.[activeTabId]?.collectionId]?.name ?? '';
+        if (!collectionName) {
+            collectionName = 'untitled';
+        }
 
         while (sidebar?.[id]?.type > 0) {
             const itemName = sidebar[id].name;
@@ -264,22 +270,27 @@ const Page = () => {
         path.forEach((item) => {
             if (pages?.[item.id]?.type !== 2) {
                 pagePath.push(`/${item.id}`);
+                pagesName.push(`/${item.name}`);
             }
         });
+
+        pagesName = pagesName.reverse().join('');
+        collectionName = collectionName + pagesName;
         pagePath = pagePath.reverse().join('');
         newPath = newPath + pagePath;
-        return { pathArray: path.reverse(), newPath };
+        return { pathArray: path.reverse(), newPath, collectionName };
     };
+
     useEffect(() => {
-        const { newPath } = getPath(activeTabId, pages);
+        const { newPath,collectionName } = getPath(activeTabId, pages);
         setPathData(newPath);  
         setPagesPath(newPath);
+        setPathName(newPath);
     }, [activeTabId, pages]); 
 
     const handleStrongChange = (e) => {
         setPageName(e.currentTarget.textContent);
     };
-
 
     const renderPathLinks = () => {
         const { pathArray } = getPath(pageId, pages);
@@ -408,6 +419,7 @@ const Page = () => {
                         isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
                         key={activeTabId}
                         pathData={pathData}
+                        pathName={pathName}
                     />
                 </div>
             </div>
