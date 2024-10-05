@@ -9,10 +9,10 @@ export default async function Page({ params, searchParams }) {
     const slug = params
     console.log('Query Params:', queryParams);
     console.log('Path:', slug);
-    const queryParamsString = '?collectionId=YecLEi9wSYig&public=true'
-    // const response = await generalApiService.getPublishedContentByPath('collectionId=YecLEi9wSYig')
+    const queryParamsString = '?collectionId=YecLEi9wSYig&public=true&path=sms/sms-logs'
     const response = await fetch(apiUrl + `/getPublishedDataByPath${queryParamsString}`)
-    console.log(response)
+    const data = await response.json();
+    console.log(data)
 
     return (
         <div>
