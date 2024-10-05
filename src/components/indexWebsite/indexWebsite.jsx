@@ -1,6 +1,4 @@
-"use client";
 import React from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import  Logo from '@/assets/web/logo.svg'
 import  Giddh from '@/assets/web/logos/giddh.svg'
