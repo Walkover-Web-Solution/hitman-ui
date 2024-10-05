@@ -42,12 +42,100 @@ import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
+import { Node } from '@tiptap/core';
+import { Navigate, useNavigate } from 'react-router'
+import { getOrgId } from '../common/utility'
 
-export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData }) {
+export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData, pathName }) {
 
-  const { currentUser } = useSelector((state) => ({
-    currentUser: state.users.currentUser
+  const { currentUser, pages, collections } = useSelector((state) => ({
+    currentUser: state.users.currentUser,
+    pages: state.pages,
+    collections: state.collections,
   }));
+
+  const navigate = useNavigate();
+
+  const Breadcrumb = Node.create({
+  name: 'breadcrumb',
+  group: 'block',
+  atom: true,
+
+  addAttributes() {
+    return {
+      path: {
+        default: [],  // The breadcrumb path as an array of IDs
+      },
+    };
+  },
+
+  parseHTML() {
+    return [
+      {
+        tag: 'div[data-breadcrumb]',
+      },
+    ];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    const { path } = HTMLAttributes;
+
+    if (!Array.isArray(path)) {
+      return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }];
+    }
+
+    const breadcrumbElements = [];
+    path.forEach((segment, index) => {
+      let segmentName;
+      if (index === 0) {
+        segmentName = collections[segment]?.name || segment; 
+      } else {
+        segmentName = pages[segment]?.name || segment;
+      }
+
+      breadcrumbElements.push([
+        'button',
+        {  
+          class: 'breadcrumb-segment',  // Use class for styling
+          id: index === 0 ? `collection/${segment}` : `pages/${segment}`,
+          // Remove inline styles; handle them with CSS
+        }, 
+        segmentName
+      ]);
+
+      if (index < path.length - 1) {
+        breadcrumbElements.push(['span', { class: 'breadcrumb-separator' }, ' / ']);
+      }
+    });
+
+    return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }, ...breadcrumbElements];
+  },
+
+  addCommands() {
+    return {
+      setBreadcrumb: (path) => ({ commands }) => {
+        const breadcrumbSegments = path.split('/');
+        return commands.insertContent({
+          type: this.name,
+          attrs: { path: breadcrumbSegments },  // Pass breadcrumb segments (IDs)
+        });
+      },
+    };
+  },
+});
+
+// Event handler for breadcrumb button click
+function handleBreadcrumbClick(event) {
+  const orgID = getOrgId();
+  const breadcrumbSegmentId = event.target.getAttribute('id');
+  const Id = breadcrumbSegmentId.split('/');
+  if (Id[0] === 'collection') {
+    navigate(`/orgs/${orgID}/dashboard/collection/${Id[1]}/settings`);
+  } else {
+    navigate(`/orgs/${orgID}/dashboard/page/${Id[1]}`);
+  }
+}
+
 
   const getRandomColor = () => {
     const colors = [
@@ -84,7 +172,15 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: 'textEditor'
+        class: 'textEditor',
+      },
+      handleClick(view, pos, event) {
+        const target = event.target;
+        if (target.classList.contains('breadcrumb-segment')) {
+          handleBreadcrumbClick(event);  
+          return true;
+        }
+        return false;
       },
       handleKeyDown(view, event) {
         if (event.key === '/') {
@@ -132,6 +228,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     },
     extensions: [
       StarterKit,
+      Breadcrumb,
       Blockquote,
       Underline,
       Highlight,
@@ -305,7 +402,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
 
       {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} />}
 
-      {editor && <FloatingMenuComponent editor={editor} showImage={showImage} setShowImage={setShowImage} />}
+      {editor && <FloatingMenuComponent editor={editor} pathName={pathName} showImage={showImage} setShowImage={setShowImage} />}
 
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{
