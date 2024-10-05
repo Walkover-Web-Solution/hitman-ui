@@ -3,7 +3,6 @@ import http from './httpService'
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 export async function getCollectionsAndPages(orgId, queryParamsString = '') {
-  console.log(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
 }
 

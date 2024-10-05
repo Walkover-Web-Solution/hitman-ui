@@ -25,7 +25,7 @@ import IconButton from '../common/iconButton.jsx'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
-
+    console.log(props?.serverData)
     const setQueryUpdatedData = (type, id, data) => {
       queryClient.setQueryData([type, id], data)
       return
@@ -101,7 +101,6 @@ class PublicEndpoint extends Component {
   }
 
   async componentDidMount() {
-    // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false
       if (window.scrollY > 20) {
@@ -116,33 +115,25 @@ class PublicEndpoint extends Component {
     if (window.location?.search) {
       var queryParams = new URLSearchParams(window.location.search)
     }
-
-    // even if user copy paste other published collection with collection Id in the params change it
     if (queryParams?.has('collectionId')) {
       var collectionId = queryParams.get('collectionId')
       sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
     } else if (sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID) != null) {
       var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
     }
-
     this.setState({ publicCollectionId: collectionId })
-
     var queryParamApi2 = {}
-    // example `https://localhost:300/path`
-    // [info] part 2 get sidebar data and collection data  also set queryParmas for 2nd api call
+
     if (isTechdocOwnDomain()) {
-      // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
-      queryParamApi2.path = url.pathname.slice(3) // ignoring '/p/' in pathName
+      queryParamApi2.path = url.pathname.slice(3)
       this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true })
     } else if (!isTechdocOwnDomain()) {
-      // external case
-      queryParamApi2.custom_domain = window.location.hostname // setting hostname
-      queryParamApi2.path = url.pathname.slice(1) // ignoring '/' in pathname
+      queryParamApi2.custom_domain = window.location.hostname
+      queryParamApi2.path = url.pathname.slice(1)
       this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname })
     }
 
-    // setting version if present
     if (queryParams?.has('version')) {
       queryParamApi2.versionName = queryParams.get('version')
     }
@@ -150,13 +141,10 @@ class PublicEndpoint extends Component {
     let queryParamsString = '?'
     for (let key in queryParamApi2) {
       if (queryParamApi2.hasOwnProperty(key)) {
-        // Check if the property belongs to the object (not inherited)
         queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi2[key])}&`
       }
     }
-    // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1)
-
     try {
       const response = await generalApiService.getPublishedContentByPath(queryParamsString)
       this.setDataToReactQueryAndSessionStorage(response)
@@ -171,7 +159,7 @@ class PublicEndpoint extends Component {
       if (event.state) {
         const url = new URL(window.location.href);
         const queryParams = this.props?.location?.search ? new URLSearchParams(this.props.location.search) : null;
-        
+
         let collectionId = queryParams?.get('collectionId') || sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID);
         if (collectionId) {
           sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId);
@@ -205,7 +193,7 @@ class PublicEndpoint extends Component {
         }
       }
     };
-    
+
     const currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
       try {
@@ -465,17 +453,17 @@ class PublicEndpoint extends Component {
         >
           <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
             <IconButton onClick={() => {
-                  this.handleShowSideBar()
-                }}>
+              this.handleShowSideBar()
+            }}>
               <MdDehaze
                 id='hamburgerIcon'
                 className='icon-active fw-bold'
               />
             </IconButton>
             <IconButton onClick={() => {
-                  this.handleShowSideBar()
-                }}>
-              <MdClose 
+              this.handleShowSideBar()
+            }}>
+              <MdClose
                 id='closeIcon'
                 className='icon-none'
               />
@@ -533,6 +521,7 @@ class PublicEndpoint extends Component {
                   {(type == 1 || type == 3) && (
                     <PublicPage
                       {...this.props}
+                      pageContentSSR={this.props?.pageContentSSR}
                       fetch_entity_name={this.fetchEntityName.bind(this)}
                       publicCollectionTheme={collectionTheme}
                     />

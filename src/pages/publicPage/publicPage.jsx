@@ -17,8 +17,7 @@ const queryConfig = {
     staleTime: 600000, retry: 2
 }
 
-function PublicPage() {
-
+function PublicPage(props) {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
 
     const { pages } = useSelector((state) => ({
@@ -48,9 +47,9 @@ function PublicPage() {
     return (
         <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
             <div className={`page-wrapper d-flex flex-column ${data ? 'justify-content-between' : 'justify-content-center'}`}>
-                {data ? (
+                {data || props?.pageContentSSR ? (
                     <div className='pageText d-flex justify-content-center aling-items-start'>
-                        <RenderPageContent pageContent={data} />
+                        <RenderPageContent pageContentSSR={props?.pageContentSSR} pageContent={data} />
                     </div>
                 ) : (
                     <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
