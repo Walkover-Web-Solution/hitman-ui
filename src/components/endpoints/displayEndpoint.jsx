@@ -50,7 +50,7 @@ import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-18-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
-import  DragHandleIcon  from '@/assets/icons/drag-handle.svg'
+import DragHandleIcon from '@/assets/icons/drag-handle.svg'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -81,7 +81,7 @@ import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPat
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
 import PublishModal from '../publishModal/publishModal.jsx'
-import  Example  from '@/assets/icons/example.svg';
+import Example from '@/assets/icons/example.svg';
 
 
 const shortid = require('shortid')
@@ -126,7 +126,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     add_endpoint: (newEndpoint, rootParentID, callback, props) =>
       dispatch(addEndpoint(ownProps.navigate, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
-    example_request: (id,editedEndpoint, callback) => dispatch(addExampleRequest(ownProps.navigate,id,editedEndpoint, callback)),
+    example_request: (id, editedEndpoint, callback) => dispatch(addExampleRequest(ownProps.navigate, id, editedEndpoint, callback)),
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
@@ -2852,7 +2852,7 @@ class DisplayEndpoint extends Component {
       PUT: 'put-button',
       PATCH: 'patch-button',
       DELETE: 'delete-button',
-      EXAMPLE : <Example/>
+      EXAMPLE: <Example />
     }
     return (
       <div className={`input-group-prepend ${this.props?.endpointContent?.currentView === 'doc' ? 'w-100' : ''}`}>
@@ -3065,7 +3065,7 @@ class DisplayEndpoint extends Component {
                     <Dropdown.Item
                       className='px-2'
                       onClick={() =>
-                        this.handleSave(null,null,null,'example')
+                        this.handleSave(null, null, null, 'example')
                       }
                     >
                       Save As Example Request
@@ -3280,8 +3280,8 @@ class DisplayEndpoint extends Component {
                               endpointContent={this.props?.endpointContent}
                             />
                           )}
-                          {this.renderEndpointUserData()}
-                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' &&
+                          {!window.location.href.includes('history') && this.renderEndpointUserData()}
+                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && !window.location.href.includes('history') &&
                             <Dropdown className='ml-1'>
                               <IconButton>
                                 <Dropdown.Toggle className='public-button p-0 text-grey' variant="default" id="dropdown-basic">

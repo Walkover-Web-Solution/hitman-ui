@@ -35,13 +35,14 @@ const PublishDocForm = (props) => {
   const dispatch = useDispatch()
   const tooltipRef = useRef(null)
 
-  const { collections, isPublishSliderOpen, tabs, pages, environment, publicEnv } = useSelector((state) => ({
+  const { collections, isPublishSliderOpen, tabs, pages, environment, publicEnv, metaType } = useSelector((state) => ({
     collections: state.collections,
     isPublishSliderOpen: state.modals.publishData,
     tabs: state.tabs,
     pages: state.pages,
     environment: state.environment,
-    publicEnv: state?.collections[state?.tabs?.activeTabId]?.environment
+    publicEnv: state?.collections[state?.tabs?.activeTabId]?.environment,
+    metaType: state?.organizations?.currentOrg?.meta?.type
   }))
   const [data, setData] = useState({
     title: '',
@@ -509,7 +510,7 @@ const PublishDocForm = (props) => {
           {publishCheck && renderPublicUrl()}
           <div className='small-input mt-2'>
             {renderInput('title', false, 'brand name', false)}
-            <div className='form-group mb-4'>
+            {Object.keys(environment.environments).length !==0 && metaType !==0 &&  <div className='form-group mb-4'>
               <label>Select Environment</label>
               {publicEnv === null || Object.keys(publicEnv)?.length === 0 ? (
                 <Dropdown>
@@ -541,7 +542,7 @@ const PublishDocForm = (props) => {
                   style={{ cursor: 'pointer', border: '1px solid #ced4da', padding: '5px', borderRadius: '4px' }}
                 />
               )}
-            </div>
+            </div>}
             {renderInput('domain', false, 'docs.example.com', false)}
           </div>
           {showCreateEnvForm && (

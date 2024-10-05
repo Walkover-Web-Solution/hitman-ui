@@ -195,14 +195,15 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
         }
       };
       const handleArrowNavigation = (e) => {
+        // const totalMenuItems = slashMenuRefs.current.length;
         if (e.key === 'ArrowDown') {
           e.preventDefault();
-          const nextIndex = (activeSlashMenuIndex + 1) % 12;
+          const nextIndex = (activeSlashMenuIndex + 1) % 13;
           setActiveSlashMenuIndex(nextIndex);
           slashMenuRefs.current[nextIndex]?.focus();
         } else if (e.key === 'ArrowUp') {
           e.preventDefault();
-          const prevIndex = (activeSlashMenuIndex - 1 + 12) % 12;
+          const prevIndex = (activeSlashMenuIndex - 1 + 13) % 13;
           setActiveSlashMenuIndex(prevIndex);
           slashMenuRefs.current[prevIndex]?.focus();
         } else if (e.key === 'Enter') {

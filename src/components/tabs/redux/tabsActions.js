@@ -100,6 +100,7 @@ export const addNewTab = () => {
           state: {}
         }
       })
+      // dispatch(updateTabDraft(id, draft))
       dispatch(setActiveTabId(id))
       navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
     }

@@ -15,7 +15,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
     const { pages, customDomain, isPublished} = useSelector((state) => ({
         pages: state.pages,
         customDomain: state.collections?.[collectionId]?.customDomain || '',
-        isPublished: state?.pages[state.tabs.activeTabId].isPublished,
+        isPublished: state?.pages[state.tabs.activeTabId]?.isPublished,
     }));
 
     useEffect(() => {

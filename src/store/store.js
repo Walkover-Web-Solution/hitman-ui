@@ -1,3 +1,4 @@
+"use client"
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import {thunk} from 'redux-thunk'
 import collectionsReducer from '@/components/collections/redux/collectionsReducer'
@@ -16,9 +17,7 @@ import userReducer from '@/components/auth/redux/usersRedux/userReducer'
 import organizationReducer from '@/components/auth/redux/organizationRedux/organizationReducer'
 import automationReducer from '@/components/collections/runAutomation/redux/runAutomationReducer'
 import createNewPublicEnvReducer from '@/components/publishDocs/redux/publicEnvReducer'
-
-// const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-
+const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const rootReducer = combineReducers({
   collections: collectionsReducer,
   pages: pagesReducer,
@@ -35,14 +34,11 @@ const rootReducer = combineReducers({
   automation : automationReducer,
   publicEnv : createNewPublicEnvReducer
 })
-
 const persistConfig = {
   key: 'root',
   storage
 }
-
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-const store = createStore(persistedReducer, applyMiddleware(thunk))
+const store = createStore(persistedReducer, storeEnhancers(applyMiddleware(thunk)))
 const persistor = persistStore(store)
-
 export { store, persistor }

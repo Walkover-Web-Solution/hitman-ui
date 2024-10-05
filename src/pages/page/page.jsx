@@ -1,6 +1,5 @@
 "use client"
 import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
-import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import { approvePage, draftPage } from "../../components/publicEndpoint/redux/publicEndpointsActions";
@@ -272,7 +271,7 @@ const Page = () => {
             if (pages?.[item.id]?.type === 2) return null;
             const isLastItem = index === pathWithUrls.length - 1;
             return (
-                <div className='d-flex align-items-center' key={index} onClick={() => navigate.push(`/${item.path}`, { replace: true })}>
+                <div className='d-flex align-items-center' key={index} onClick={() => router.push(`/${item.path}`, { replace: true })}>
                     {isLastItem ? (
                         <strong
                             className="fw-500 py-0 px-1 cursor-text"
