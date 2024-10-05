@@ -1,4 +1,19 @@
-
+import React from 'react'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'react-toastify/dist/ReactToastify.css'
+import '../index.scss'
+import "../components/auth/auth.scss";
+import "./(other)/login/login.scss";
+import './(other)/onBoarding/onBoarding.scss';
+import "./(other)/orgs/[orgId]/trash/trash.scss"
+import "./(other)/orgs/[orgId]/invite/inviteTeam.scss"
+import "./(other)/orgs/[orgId]/collection/[collectionId]/redirections/redirections.scss"
+import "./(other)/orgs/[orgId]/collection/[collectionId]/runner/runAutomation.scss"
+import '../components/main/responsive.scss'
+import "../components/publicEndpoint/publicEndpoint.scss"
+import "../components/main/main.scss"
+import "../components/indexWebsite/indexWebsite.scss"
+import "../components/tabs/tabs.scss"
 
 export const metadata = {
     title: "Techdoc",
@@ -50,7 +65,7 @@ export default function RootLayout({ children }) {
                 />
             </head>
             <body>
-                    {children}
+                {children}
             </body>
         </html>
     );
