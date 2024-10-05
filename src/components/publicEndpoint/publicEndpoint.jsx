@@ -25,7 +25,6 @@ import IconButton from '../common/iconButton.jsx'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
-    console.log(props?.serverData)
     const setQueryUpdatedData = (type, id, data) => {
       queryClient.setQueryData([type, id], data)
       return
