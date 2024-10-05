@@ -7,7 +7,6 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
 
   try {
     return (dispatch) => {
-      console.log(queryParams, 1234)
       let queryParamsString = `?`
       // setting query params value
       for (let key in queryParams) {
