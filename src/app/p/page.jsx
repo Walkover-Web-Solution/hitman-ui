@@ -1,6 +1,6 @@
 import React from 'react';
-import PublicEndpoint from '../../../components/publicEndpoint/publicEndpoint'
-import Providers from '../../providers/providers';
+import Providers from '../providers/providers';
+import PublicEndpoint from '@/components/publicEndpoint/publicEndpoint';
 
 
 export default async function Page({ params, searchParams }) {
