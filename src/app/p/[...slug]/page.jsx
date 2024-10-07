@@ -6,24 +6,32 @@ export default async function Page({ params, searchParams }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const queryParams = searchParams;
     const slug = params.slug;
-    let queryParamApi2 = {};
-    queryParamApi2.collectionId = searchParams.collectionId;
-    queryParamApi2.path = slug.join('/');
+    let queryParamApi = {};
+    queryParamApi.collectionId = searchParams.collectionId;
+    if(slug){
+        queryParamApi.path = slug.join('/');
+    }
+    else {
+        queryParamApi.path = ''
+    }
     if (queryParams.version) {
-        queryParamApi2.versionName = queryParams.version;
+        queryParamApi.versionName = queryParams.version;
     }
     let queryParamsString = '?';
-    for (let key in queryParamApi2) {
-        if (queryParamApi2.hasOwnProperty(key)) {
-            queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi2[key])}&`;
+    for (let key in queryParamApi) {
+        if (queryParamApi.hasOwnProperty(key)) {
+            queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi[key])}&`;
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
     const response = await fetch(apiUrl + `/getPublishedDataByPath${queryParamsString}`);
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    let data
+    if (response.status === 200) {
+        data = await response.json();
     }
-    const data = await response.json();
+    else {
+        console.error('Data not found')
+    }
 
     return (
         <div>
