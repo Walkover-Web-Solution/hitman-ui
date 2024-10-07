@@ -43,15 +43,13 @@ import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
 import { Node } from '@tiptap/core';
-import { Navigate, useNavigate } from 'react-router'
-import { getOrgId } from '../common/utility'
+import { useNavigate } from 'react-router'
+import { getOrgId, isOnPublishedPage } from '../common/utility'
 
 export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData, pathName }) {
 
-  const { currentUser, pages, collections } = useSelector((state) => ({
+  const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser,
-    pages: state.pages,
-    collections: state.collections,
   }));
 
   const navigate = useNavigate();
@@ -64,7 +62,10 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     addAttributes() {
       return {
         path: {
-          default: [],  
+          default: [],
+        },
+        pathName: {
+          default: [],
         },
       };
     },
@@ -78,25 +79,19 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     },
 
     renderHTML({ HTMLAttributes }) {
-      const { path } = HTMLAttributes;
-
-      if (!Array.isArray(path)) {
+      const { path, pathName } = HTMLAttributes;
+      if (!Array.isArray(path) || !Array.isArray(pathName)) {
         return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }];
       }
-
       const breadcrumbElements = [];
       path.forEach((segment, index) => {
         let segmentName;
-        if(segment === 'undefined'){
+        if (segment === 'undefined') {
           segmentName = 'untitled'; 
+        } else {
+          segmentName = pathName[index] || segment;
         }
-        else{
-            if (index === 0) {
-              segmentName = collections[segment]?.name || segment; 
-            } else {
-              segmentName = pages[segment]?.name || segment;
-            } 
-        }
+
         breadcrumbElements.push([
           'button',
           {  
@@ -105,20 +100,26 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           }, 
           segmentName
         ]);
+
         if (index < path.length - 1) {
           breadcrumbElements.push(['span', { class: 'breadcrumb-separator' }, ' / ']);
         }
       });
+
       return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }, ...breadcrumbElements];
     },
 
     addCommands() {
       return {
-        setBreadcrumb: (path) => ({ commands }) => {
-          const breadcrumbSegments = path.split('/');
+        setBreadcrumb: (pathData, pathName) => ({ commands }) => {
+          const breadcrumbSegments = Array.isArray(pathData) ? pathData : pathData.split('/');
+          const breadcrumbNames = Array.isArray(pathName) ? pathName : pathName.split('/');
           return commands.insertContent({
             type: this.name,
-            attrs: { path: breadcrumbSegments },
+            attrs: {
+              path: breadcrumbSegments,
+              pathName: breadcrumbNames,
+            },
           });
         },
       };
@@ -129,10 +130,9 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     const orgID = getOrgId();
     const breadcrumbSegmentId = event.target.getAttribute('id');
     const Id = breadcrumbSegmentId.split('/');
-    if(Id[1] === 'undefined'){
+    if (Id[1] === 'undefined') {
       navigate(`/orgs/${orgID}/dashboard/page/new`);
-    }
-    else{
+    } else {
       if (Id[0] === 'collection') {
         navigate(`/orgs/${orgID}/dashboard/collection/${Id[1]}/settings`);
       } else {
@@ -140,6 +140,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       }
     }
   }
+
   const getRandomColor = () => {
     const colors = [
       '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',
@@ -405,7 +406,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
 
       {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} />}
 
-      {editor && <FloatingMenuComponent editor={editor} pathName={pathName} showImage={showImage} setShowImage={setShowImage} />}
+      {editor && <FloatingMenuComponent editor={editor} pathData={pathData} pathName={pathName} showImage={showImage} setShowImage={setShowImage} />}
 
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{
