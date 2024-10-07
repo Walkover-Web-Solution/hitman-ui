@@ -8,12 +8,12 @@ import { openInNewTab } from '../../tabs/redux/tabsActions';
 import tabStatusTypes from '../../tabs/tabStatusTypes';
 import cronstrue from 'cronstrue';
 import moment from 'moment'
-import { BsThreeDots } from 'react-icons/bs'
-import { MdOutlineMotionPhotosPaused } from "react-icons/md";
-import { RiDeleteBinLine } from 'react-icons/ri'
-import { GrResume } from "react-icons/gr";
-import { HiDocumentReport } from "react-icons/hi";
-import { MdModeEdit } from "react-icons/md";
+import BsThreeDots from 'react-icons/bs/BsThreeDots'
+import MdOutlineMotionPhotosPaused from "react-icons/md/MdOutlineMotionPhotosPaused"
+import RiDeleteBinLine from 'react-icons/ri/RiDeleteBinLine'
+import GrResume from "react-icons/gr/GrResume"
+import HiDocumentReport from "react-icons/hi/HiDocumentReport"
+import MdModeEdit from "react-icons/md/MdModeEdit"
 import IconButtons from '../../common/iconButton'
 import './collectionRuns.scss';
 

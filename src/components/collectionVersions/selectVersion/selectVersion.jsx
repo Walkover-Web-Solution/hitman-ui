@@ -1,17 +1,17 @@
 import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import  DeleteIcon  from '@/assets/icons/delete-icon.svg'
-import { BiSolidPencil } from 'react-icons/bi'
 import { Button } from 'react-bootstrap'
 import { updatePage } from '../../pages/redux/pagesActions'
 import { addParentPageVersion } from '../redux/collectionVersionsActions'
 import { deletePage } from '../../pages/redux/pagesActions'
 import { onDefaultVersion } from '../redux/collectionVersionsActions'
 import OutsideClickHandler from 'react-outside-click-handler'
-import './selectVersion.scss'
 import { toast } from 'react-toastify'
 import { getOrgId } from '../../common/utility'
-import { RiDeleteBinLine } from "react-icons/ri";
+import BiSolidPencil from 'react-icons/bi/BiSolidPencil'
+import RiDeleteBinLine from "react-icons/ri/RiDeleteBinLine";
+import './selectVersion.scss'
 
 const VersionInput = (props) => {
   const { pages } = useSelector((state) => {

@@ -5,7 +5,7 @@ import environmentsApiService from './environmentsApiService'
 import { usePathname, useRouter  } from 'next/navigation'
 import './environments.scss'
 import { useSelector } from 'react-redux'
-import { RiDeleteBinLine } from "react-icons/ri";
+import RiDeleteBinLine from "react-icons/ri/RiDeleteBinLine";
 import customPathnameHook from '../../customHook/customPathnameHook'
 
 const EnvironmentModal = (props) => {

@@ -3,13 +3,12 @@ import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { getOrgId, isElectron, trimString } from '../common/utility'
 import { updateNameOfPages } from '../pages/redux/pagesActions'
-import { MdHttp } from 'react-icons/md'
-import { GrGraphQl } from 'react-icons/gr'
 import { updateTab } from '../tabs/redux/tabsActions'
 import withRouter from '../common/withRouter'
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { GoDotFill } from 'react-icons/go'
-import { RxSlash } from "react-icons/rx";
+import MdHttp from 'react-icons/md/MdHttp'
+import GrGraphQl from 'react-icons/gr/GrGraphQl'
+import GoDotFill from 'react-icons/go/GoDotFill'
 import { navigateTo } from 'src/navigationService'
 
 

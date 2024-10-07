@@ -22,26 +22,26 @@ import FontFamily from '@tiptap/extension-font-family'
 import Dropcursor from '@tiptap/extension-dropcursor'
 import Typography from '@tiptap/extension-typography'
 import FloatingMenuComponent from './floatingMenu'
-import '../styles.scss'
-import './tiptap.scss'
-import {
-  FaListUl,
-  FaListOl,
-  FaRulerHorizontal,
-  FaAlignLeft,
-  FaAlignCenter,
-  FaAlignRight,
-  FaAlignJustify,
-  FaHeading,
-  FaCode,
-} from 'react-icons/fa'
-import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from "react-icons/lu";
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
-import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
+import GoTasklist from "react-icons/go/GoTasklist";
+import FaListUl from 'react-icons/fa/FaListUl'
+import FaListOl from 'react-icons/fa/FaListOl'
+import FaRulerHorizontal from 'react-icons/fa/FaRulerHorizontal'
+import FaAlignLeft from 'react-icons/fa/FaAlignLeft'
+import FaAlignCenter from 'react-icons/fa/FaAlignCenter'
+import FaAlignRight from 'react-icons/fa/FaAlignRight'
+import FaAlignJustify from 'react-icons/fa/FaAlignJustify'
+import FaCode from 'react-icons/fa/FaCode'
+import LuHeading1 from "react-icons/lu/LuHeading1"
+import LuHeading2 from "react-icons/lu/LuHeading2"
+import LuHeading3 from "react-icons/lu/LuHeading3"
+import LuTextQuote from "react-icons/lu/LuTextQuote"
 import BubbleMenuComponent from './bubbleMenu'
+import '../styles.scss'
+import './tiptap.scss'
 
 export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData }) {
 

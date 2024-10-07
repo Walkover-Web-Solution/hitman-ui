@@ -6,7 +6,7 @@ import { PersistGate } from 'redux-persist/lib/integration/react'
 import { Provider } from 'react-redux'
 import { Slide, ToastContainer } from 'react-toastify'
 import IconButton from '@/components/common/iconButton';
-import { MdClose } from 'react-icons/md'
+import MdClose from 'react-icons/md/MdClose'
 
 const queryClient = new QueryClient()
 

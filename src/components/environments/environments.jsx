@@ -5,18 +5,18 @@ import EnvironmentModal from './environmentModal.jsx'
 import  EyeIcon  from '@/assets/icons/eye.svg'
 import  EyeDisabledIcon  from '@/assets/icons/eyeDisabled.svg'
 import IconButton from '../common/iconButton.jsx'
-import { IoIosArrowDown } from 'react-icons/io'
 import ImportEnvironmentModal from './ImportEnvironmentModal.jsx'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchEnvironments, fetchEnvironmentsFromLocalStorage, setEnvironmentId } from './redux/environmentsActions'
 import EnvironmentVariables from './environmentVariables.jsx'
 import DeleteModal from '../common/deleteModal.jsx'
 import './environments.scss'
-import { FaCheck } from "react-icons/fa6";
 import { getCurrentUser } from '../auth/authServiceV2.jsx'
-import { BiExport } from 'react-icons/bi'
 import exportEnvironmentApi from './exportEnvironmentApi.js'
-import { FaGlobeAmericas } from 'react-icons/fa'
+import IoIosArrowDown from 'react-icons/io/IoIosArrowDown'
+import FaCheck from "react-icons/fa6/FaCheck"
+import BiExport from 'react-icons/bi/BiExport'
+import FaGlobeAmericas from 'react-icons/fa/FaGlobeAmericas'
 
 const Environments = () => {
 

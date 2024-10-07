@@ -53,7 +53,6 @@ import ConfirmationModal from '../common/confirmationModal'
 import DragHandleIcon from '@/assets/icons/drag-handle.svg'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
-import { RiDeleteBinLine } from "react-icons/ri";
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import { useQuery, useQueryClient } from 'react-query'
@@ -64,7 +63,6 @@ import { statesEnum } from '../common/utility'
 import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizationEnums.js'
 import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
-import { LiaSaveSolid } from 'react-icons/lia'
 import QueryTab from './queryTab/queryTab.jsx'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
@@ -72,16 +70,16 @@ import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'next/navigation'
-import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
-import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
-import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
-import { IoIosArrowUp } from "react-icons/io";
 import PublishModal from '../publishModal/publishModal.jsx'
 import Example from '@/assets/icons/example.svg';
+import BsThreeDots from 'react-icons/bs/BsThreeDots';
+import FaPlus from 'react-icons/fa/FaPlus'
+import MdExpandMore from 'react-icons/md/MdExpandMore'
+import IoIosArrowUp from "react-icons/io/IoIosArrowUp";
 
 
 const shortid = require('shortid')

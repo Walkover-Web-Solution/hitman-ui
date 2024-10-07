@@ -10,7 +10,7 @@ import { getParseCurlData } from '../common/apiUtility'
 import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
-import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import HiOutlineExclamationCircle from "react-icons/hi2/HiOutlineExclamationCircle";
 import { convertTextToHTML } from '../../utilities/htmlConverter'
 
 const mapStateToProps = (state) => {

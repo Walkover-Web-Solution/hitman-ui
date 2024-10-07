@@ -5,7 +5,7 @@ import 'ace-builds/src-noconflict/theme-github'
 // import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
-import { BiSolidBot } from "react-icons/bi";
+import BiSolidBot from "react-icons/bi/BiSolidBot";
 
 export class Script extends Component {
   constructor(props) {

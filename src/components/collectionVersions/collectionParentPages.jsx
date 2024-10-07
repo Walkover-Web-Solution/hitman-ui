@@ -13,16 +13,17 @@ import IconButtons from '../common/iconButton'
 import CustomModal from '../customModal/customModal'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
-import { MdExpandMore } from 'react-icons/md'
-import { FiEdit2, FiPlus } from 'react-icons/fi'
-import { BsThreeDots } from 'react-icons/bs'
-import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
-import { SlSettings } from "react-icons/sl";
-import { RiDeleteBin6Line } from 'react-icons/ri'
+import MdExpandMore from 'react-icons/md/MdExpandMore'
+import FiEdit2 from 'react-icons/fi/FiEdit2'
+import FiPlus from 'react-icons/fi/FiPlus'
+import BsThreeDots from 'react-icons/bs/BsThreeDots'
+import IoDocumentTextOutline from 'react-icons/io5/IoDocumentTextOutline'
+import SlSettings from "react-icons/sl/SlSettings"
+import RiDeleteBin6Line from 'react-icons/ri/RiDeleteBin6Line'
 import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const CollectionParentPages = (props) => {

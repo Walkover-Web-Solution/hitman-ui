@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { FaRegFolderClosed } from "react-icons/fa6";
-import { IoDocumentTextOutline } from 'react-icons/io5'
+import FaRegFolderClosed from "react-icons/fa6/FaRegFolderClosed";
+import IoDocumentTextOutline from 'react-icons/io5/IoDocumentTextOutline'
 
 export default function RenderData(props) {
   const { pages, collections } = useSelector((state) => {

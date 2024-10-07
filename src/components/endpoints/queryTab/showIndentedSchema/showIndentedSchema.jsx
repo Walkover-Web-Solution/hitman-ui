@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { MdKeyboardArrowRight } from "react-icons/md";
 import IconButton from '../../../common/iconButton';
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import MdKeyboardArrowRight from "react-icons/md/MdKeyboardArrowRight"
+import MdOutlineKeyboardArrowDown from "react-icons/md/MdOutlineKeyboardArrowDown"
 import RenderFields from './renderFields/renderFields';
 import './showIndentedSchema.scss';
 

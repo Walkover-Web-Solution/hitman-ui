@@ -6,13 +6,11 @@ import { approvePage, draftPage } from "../../components/publicEndpoint/redux/pu
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { BsCommand, BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
 import { updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
 import IconButton from '../../components/common/iconButton';
 import { getProxyToken } from "../../components/auth/authServiceV2";
-import { GoDotFill } from "react-icons/go";
 import { functionTypes } from "../../components/common/functionType";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
@@ -20,9 +18,9 @@ import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
 import { useRouter,useParams } from "next/navigation";
-import { navigateTo } from "src/navigationService";
-import { setPagesPath } from "../../components/pages/redux/pagesActions";
-
+import GoDotFill from "react-icons/go/GoDotFill";
+import BsCommand from 'react-icons/bs/BsCommand';
+import BsThreeDots from 'react-icons/bs/BsThreeDots';
 
 const Page = () => {
 

@@ -5,11 +5,14 @@ import { isDashboardRoute, SESSION_STORAGE_KEY } from '../common/utility'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
-import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
-import { VscStarFull } from "react-icons/vsc";
-import { useParams, usePathname, useRouter} from 'next/navigation'
+import BiLike from 'react-icons/bi/BiLike'
+import BiDislike from 'react-icons/bi/BiDislike'
+import BiSolidLike from 'react-icons/bi/BiSolidLike'
+import BiSolidDislike from 'react-icons/bi/BiSolidDislike'
+import VscStarFull from "react-icons/vsc/VscStarFull";
+import { useParams} from 'next/navigation'
 import customPathnameHook from '../../customHook/customPathnameHook'
 
 const LIKE = 'like'
@@ -32,7 +35,6 @@ const ApiDocReview = (props) => {
   const handleClose = () => setShow(false)
   const params = useParams()
 
-    const router = useRouter();
     const location = customPathnameHook();
 
   useEffect(() => {

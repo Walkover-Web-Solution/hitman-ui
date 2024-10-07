@@ -9,7 +9,7 @@ import Joi from 'joi-browser'
 import { validate, onEnter } from '../common/utility'
 import './environments.scss'
 import { getCurrentUser } from '../auth/authServiceV2'
-import { RiDeleteBinLine } from 'react-icons/ri'
+import RiDeleteBinLine from 'react-icons/ri/RiDeleteBinLine'
 
 const EnvironmentVariables = ({ title, show, onHide, environment: initialEnvironment }) => {
   const [environment, setEnvironment] = useState({

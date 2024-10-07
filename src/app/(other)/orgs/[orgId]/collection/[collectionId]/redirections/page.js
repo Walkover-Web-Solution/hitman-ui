@@ -1,6 +1,5 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react'
-// import  DeleteIcon from '@/assets/icons/delete-icon.svg'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter, useParams } from 'next/navigation'
 import Joi from 'joi'
@@ -8,14 +7,15 @@ import { addUrlWithAdditionalPath, deleteMappedUrl } from '@/components/collecti
 import { getUrlPathById } from '@/components/common/utility'
 import { addOldUrlOfPage, deleteOldUrlOfPage } from '@/components/pages/redux/pagesActions'
 import { toast } from 'react-toastify'
-import { IoDocumentTextOutline } from 'react-icons/io5'
-import { BiLogoGraphql } from 'react-icons/bi'
 import { addCollectionAndPages } from '@/components/redux/generalActions'
-import './redirections.scss'
 
 import Protected from "@/components/common/Protected";
 import { getCurrentOrg } from '@/components/auth/authServiceV2'
-import { FaArrowLeft } from 'react-icons/fa6'
+import IoDocumentTextOutline from 'react-icons/io5/IoDocumentTextOutline'
+import BiLogoGraphql from 'react-icons/bi/BiLogoGraphql'
+import FaArrowLeft from 'react-icons/fa6FaArrowLeft'
+import './redirections.scss'
+
 const DeleteIcon = () => (<svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
   <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
   <path

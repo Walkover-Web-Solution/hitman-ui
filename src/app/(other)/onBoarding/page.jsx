@@ -3,10 +3,11 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, Form, InputGroup } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { IoHomeSharp, IoDocumentTextOutline } from "react-icons/io5";
-import { MdOutlineApi } from "react-icons/md";
-import { FaLongArrowAltLeft, FaPlus } from "react-icons/fa";
-import { navigation } from 'next/navigation';
+import IoHomeSharp from "react-icons/io5/IoHomeSharp";
+import IoDocumentTextOutline from "react-icons/io5/IoDocumentTextOutline";
+import MdOutlineApi from "react-icons/md/MdOutlineApi";
+import FaLongArrowAltLeft from "react-icons/fa/FaLongArrowAltLeft";
+import FaPlus from "react-icons/fa/FaPlus";
 import { createOrg, switchOrg } from '@/services/orgApiService'
 import { addIsExpandedAction } from '@/store/clientData/clientDataActions';
 import './onBoarding.scss' 

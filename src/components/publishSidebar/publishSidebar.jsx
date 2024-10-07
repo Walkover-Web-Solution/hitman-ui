@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'next/navigation'
-import { FaSquare, FaCheckSquare, FaMinusSquare } from 'react-icons/fa'
-import { MdArrowDropUp } from 'react-icons/md'
-import { MdOutlineArrowDropDown } from 'react-icons/md'
 import TreeView, { flattenTree } from 'react-accessible-treeview'
 import { modifyCheckBoxDataToSend, modifyDataForBulkPublish } from '../common/utility'
 import { bulkPublish } from './redux/bulkPublishAction'
@@ -11,7 +8,12 @@ import { toast } from 'react-toastify'
 import './checkBoxTreeView.scss'
 import './publishSidebar.scss'
 import { Button } from 'react-bootstrap'
-import { GrGraphQl } from 'react-icons/gr'
+import FaSquare from 'react-icons/fa/FaSquare'
+import FaCheckSquare from 'react-icons/fa/FaCheckSquare'
+import FaMinusSquare from 'react-icons/fa/FaMinusSquare'
+import MdArrowDropUp from 'react-icons/md/MdArrowDropUp'
+import MdOutlineArrowDropDown from 'react-icons/md/MdOutlineArrowDropDown'
+import GrGraphQl from 'react-icons/gr/GrGraphQl'
 import  Example from '@/assets/icons/example.svg';
 
 const saveAsSidebarStyle = {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Input from '../common/input'
 import { trimString } from '../common/utility'
 import IconButtons from '../common/iconButton'
-import { MdOutlineClose } from 'react-icons/md'
+import MdOutlineClose from 'react-icons/md/MdOutlineClose'
 import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal1'
 import './endpoints.scss'
 

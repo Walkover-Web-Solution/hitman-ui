@@ -8,7 +8,7 @@ import { Badge } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 import { hexToRgb, isDashboardAndTestingView, isOnPublishedPage } from '../common/utility'
 import { background } from '../backgroundColor.js'
-import { FaLongArrowAltUp } from 'react-icons/fa'
+import FaLongArrowAltUp from 'react-icons/fa/FaLongArrowAltUp'
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import './publishModal.scss'
-import { useParams } from 'react-router';
 import { getUrlPathById, SESSION_STORAGE_KEY } from '../common/utility';
 import { useSelector } from 'react-redux';
-import { GoLink } from "react-icons/go";
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
+import GoLink from "react-icons/go/GoLink";
+import './publishModal.scss'
 
 function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged }) {
 

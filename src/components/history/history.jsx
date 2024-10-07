@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useRouter, useParams } from 'next/navigation'
 import  EmptyHistory  from '@/assets/icons/emptyHistroy.svg'
 import { Dropdown } from 'react-bootstrap'
-import { GrGraphQl } from 'react-icons/gr'
+import GrGraphQl from 'react-icons/gr/GrGraphQl'
 import './history.scss'
 
 function compareByCreatedAt(a, b) {

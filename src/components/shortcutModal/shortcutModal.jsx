@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { BsCommand } from 'react-icons/bs';
-import { PiControlBold } from "react-icons/pi";
+import BsCommand from 'react-icons/bs/BsCommand';
+import PiControlBold from "react-icons/pi/PiControlBold";
 import './shortcutModal.scss'
 
 const ShortcutModal = () => {

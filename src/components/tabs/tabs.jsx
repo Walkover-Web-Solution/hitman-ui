@@ -10,16 +10,16 @@ import TabOptions from './tabOptions'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import IconButtons from '../common/iconButton'
 import { Nav, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { IoIosChatboxes } from 'react-icons/io'
-import { VscCloseAll } from "react-icons/vsc";
-import { CiSettings } from 'react-icons/ci'
-import { GrFormClose } from 'react-icons/gr'
-import { IoDocumentTextOutline } from 'react-icons/io5'
-import { LuHistory } from 'react-icons/lu'
-import { GrGraphQl } from 'react-icons/gr'
-import { TbSettingsAutomation } from 'react-icons/tb'
-import { BsPlayBtn } from "react-icons/bs";
-import { LuPlus } from "react-icons/lu";
+import IoIosChatboxes from 'react-icons/io/IoIosChatboxes'
+import VscCloseAll from "react-icons/vsc/VscCloseAll"
+import CiSettings from 'react-icons/ci/CiSettings'
+import GrFormClose from 'react-icons/gr/GrFormClose'
+import IoDocumentTextOutline from 'react-icons/io5/IoDocumentTextOutline'
+import LuHistory from 'react-icons/lu/LuHistory'
+import GrGraphQl from 'react-icons/gr/GrGraphQl'
+import TbSettingsAutomation from 'react-icons/tb/TbSettingsAutomation'
+import BsPlayBtn from "react-icons/bs/BsPlayBtn"
+import LuPlus from "react-icons/lu/LuPlus"
 
 import './tabs.scss'
 import { openModal } from '../modals/redux/modalsActions.js'

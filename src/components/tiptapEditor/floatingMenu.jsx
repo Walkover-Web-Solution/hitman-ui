@@ -1,10 +1,14 @@
 import React from 'react';
 import { FloatingMenu } from '@tiptap/react';
 import { Dropdown } from 'react-bootstrap';
-import { BiPlus } from 'react-icons/bi';
-import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from 'react-icons/lu';
-import { FaListUl, FaListOl,  FaImage, } from 'react-icons/fa';
-import { GoTasklist } from 'react-icons/go';
+import BiPlus from 'react-icons/bi/BiPlus';
+import LuHeading1 from 'react-icons/lu/LuHeading1';
+import LuHeading2 from 'react-icons/lu/LuHeading2';
+import LuHeading3 from 'react-icons/lu/LuHeading3';
+import LuTextQuote from 'react-icons/lu/LuTextQuote';
+import FaListUl from 'react-icons/fa/FaListUl';
+import FaListOl from 'react-icons/fa/FaListOl';
+import GoTasklist from 'react-icons/go/GoTasklist';
 import '../styles.scss'
 import './tiptap.scss'
 

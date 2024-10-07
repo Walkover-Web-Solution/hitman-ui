@@ -14,8 +14,8 @@ import { connect } from 'react-redux'
 import AceEditor from 'react-ace'
 import { background } from '../backgroundColor'
 import classNames from 'classnames';
-import { FaPlus } from 'react-icons/fa'
-import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
+import FaPlus from 'react-icons/fa/FaPlus'
+import RiCheckboxMultipleBlankLine from 'react-icons/ri/RiCheckboxMultipleBlankLine'
 import JSONPrettyMon from 'react-json-pretty/dist/monikai'
 import  Example  from '@/assets/icons/example.svg';
 

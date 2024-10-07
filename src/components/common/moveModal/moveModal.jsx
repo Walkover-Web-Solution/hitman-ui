@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
-import { FiUsers } from 'react-icons/fi'
 import generalApiService from '../../../services/generalApiService'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCollectionRequest } from '../../collections/redux/collectionsActions'
-import './moveModal.scss'
 import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../utility'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import FiUsers from 'react-icons/fi/FiUsers'
+import './moveModal.scss'
 
 const MoveModal = (props) => {
   const { orgs, currentOrgType  } = useSelector((state) => {

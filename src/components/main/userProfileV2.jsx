@@ -8,15 +8,15 @@ import { switchOrg, fetchOrganizations, leaveOrganization } from '../../services
 import { toast } from 'react-toastify'
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
-import { IoIosArrowDown } from 'react-icons/io'
 import CollectionForm from '../collections/collectionForm'
-import { FiUser } from 'react-icons/fi'
 import { useRouter } from 'next/navigation'
 import ImportCollectionModal from '../collections/importCollection/importColectionModel'
 import CustomModal from '../customModal/customModal'
 import { isOrgDocType } from '../common/utility'
-import { FaCheck } from "react-icons/fa6";
-import { IoExit } from 'react-icons/io5'
+import FiUser from 'react-icons/fi/FiUser'
+import IoIosArrowDown from 'react-icons/io/IoIosArrowDown'
+import FaCheck from "react-icons/fa6/FaCheck"
+import IoExit from 'react-icons/io5/IoExit'
 import './userProfile.scss'
 import ConfirmationModal from '../common/confirmationModal'
 

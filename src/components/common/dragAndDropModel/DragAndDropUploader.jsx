@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useDispatch } from 'react-redux';
-import { CiImport } from "react-icons/ci";
-import './dragAndDropUploader.scss';
 import { importEnvironment } from '../../environments/redux/environmentsActions';
 import { importCollection } from '../../collections/redux/collectionsActions';
 import { addIsExpandedAction } from '../../../store/clientData/clientDataActions';
+import CiImport from "react-icons/ci/CiImport";
+import './dragAndDropUploader.scss';
 
 
 const DragAndDropUploader = ({ onClose, view, importType }) => {

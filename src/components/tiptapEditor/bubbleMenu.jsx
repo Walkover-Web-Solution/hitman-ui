@@ -1,14 +1,38 @@
 import React, { useState } from 'react';
 import { BubbleMenu } from '@tiptap/react';
-import { SketchPicker } from 'react-color';
-import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaHighlighter, FaLink, FaAlignLeft, FaAlignRight, FaAlignJustify, FaAlignCenter, FaTable, FaUndo, FaRedo, FaListUl, FaListOl, FaRulerHorizontal, FaCode, FaHeading } from 'react-icons/fa';
-import { GoTasklist } from 'react-icons/go';
-import { Dropdown, Modal } from 'react-bootstrap';
-import { BiFontColor, BiFontFamily } from 'react-icons/bi';
-import { BsThreeDots } from 'react-icons/bs';
-import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from 'react-icons/lu';
 import  UploadIcon from '@/assets/icons/uploadIcon.svg'
 import pageApiService from '../pages/pageApiService'
+import { Dropdown, Modal } from 'react-bootstrap';
+import { SketchPicker } from 'react-color';
+import GoTasklist from 'react-icons/go/GoTasklist';
+import BiFontColor from 'react-icons/bi/BiFontColor';
+import BiFontFamily from 'react-icons/bi/BiFontFamily';
+import FaBold from 'react-icons/fa/FaBold';
+import FaItalic from 'react-icons/fa/FaItalic';
+import FaStrikethrough from 'react-icons/fa/FaStrikethrough';
+import FaUnderline from 'react-icons/fa/FaUnderline';
+import FaHighlighter from 'react-icons/fa/FaHighlighter';
+import FaLink from 'react-icons/fa/FaLink';
+import FaAlignLeft from 'react-icons/fa/FaAlignLeft';
+import FaAlignRight from 'react-icons/fa/FaAlignRight';
+import FaAlignJustify from 'react-icons/fa/FaAlignJustify';
+import FaAlignCenter from 'react-icons/fa/FaAlignCenter';
+import FaTable from 'react-icons/fa/FaTable';
+import FaUndo from 'react-icons/fa/FaUndo';
+import FaRedo from 'react-icons/fa/FaRedo';
+import FaListUl from 'react-icons/fa/FaListUl';
+import FaListOl from 'react-icons/fa/FaListOl';
+import FaRulerHorizontal from 'react-icons/fa/FaRulerHorizontal';
+import FaCode from 'react-icons/fa/FaCode';
+import FaHeading from 'react-icons/fa/FaHeading';
+import BsThreeDots from 'react-icons/bs/BsThreeDots';
+import LuHeading1 from 'react-icons/lu/LuHeading1';
+import LuHeading2 from 'react-icons/lu/LuHeading2';
+import LuHeading3 from 'react-icons/lu/LuHeading3';
+import LuHeading4 from 'react-icons/lu/LuHeading4';
+import LuHeading5 from 'react-icons/lu/LuHeading5';
+import LuHeading6 from 'react-icons/lu/LuHeading6';
+import LuTextQuote from 'react-icons/lu/LuTextQuote';
 import '../styles.scss'
 import './tiptap.scss'
 

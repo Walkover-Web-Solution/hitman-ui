@@ -15,12 +15,12 @@ import { updateStateOfCurlSlider } from '../modals/redux/modalsActions.js'
 
 import './main.scss'
 import 'react-tabs/style/react-tabs.css'
-import { IoCodeSlashOutline } from 'react-icons/io5'
-import { SiAmazonapigateway } from "react-icons/si";
-import { SiCloudflarepages } from "react-icons/si";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { MdHttp } from "react-icons/md";
-import { GrGraphQl } from "react-icons/gr";
+import IoCodeSlashOutline from 'react-icons/io5/IoCodeSlashOutline'
+import SiAmazonapigateway from "react-icons/si/SiAmazonapigateway"
+import SiCloudflarepages from "react-icons/si/SiCloudflarepages"
+import IoDocumentTextOutline from "react-icons/io5/IoDocumentTextOutline"
+import MdHttp from "react-icons/md/MdHttp"
+import GrGraphQl from "react-icons/gr/GrGraphQl"
 import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const ContentPanel = () => {

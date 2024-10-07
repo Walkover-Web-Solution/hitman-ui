@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Input from '../common/input'
 import { trimString } from '../common/utility'
 import IconButtons from '../common/iconButton'
-import { MdOutlineClose } from 'react-icons/md'
+import MdOutlineClose from 'react-icons/md/MdOutlineClose'
 import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal'
 import './endpoints.scss'
 

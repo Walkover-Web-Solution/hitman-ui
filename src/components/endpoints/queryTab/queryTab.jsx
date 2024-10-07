@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react'
 import AceEditor from 'react-ace'
-import { MdOutlineRefresh } from "react-icons/md";
 import IconButton from '../../common/iconButton';
-import { VscServerProcess } from "react-icons/vsc";
+import MdOutlineRefresh from "react-icons/md/MdOutlineRefresh"
+import VscServerProcess from "react-icons/vsc/VscServerProcess"
 import { getSchemaThroughIntrospectionQuery } from '../endpointApiService';
 import ShowIndentedSchema from './showIndentedSchema/showIndentedSchema';
 import { toast } from 'react-toastify';

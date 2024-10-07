@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, ListGroup, Row, Col } from 'react-bootstrap'
-import { MdDelete } from "react-icons/md";
+import MdDelete from "react-icons/md/MdDelete";
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteToken } from '../../store/tokenData/tokenDataActions';
 import './endpoints.scss';

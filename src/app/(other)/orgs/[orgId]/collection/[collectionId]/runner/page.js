@@ -4,20 +4,21 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { IoIosPlay } from 'react-icons/io'
 import { updateEndpointCheckStatus, updateAllEndpointCheckStatus } from '@/store/clientData/clientDataActions'
 import { toast } from 'react-toastify'
 import './runAutomation.scss'
 import { addCron, addWebhook } from '@/services/cronJobs'
 import { generateCronExpression } from '@/components/common/utility'
-import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
-import { FaExclamationCircle } from 'react-icons/fa'
 import { runAutomations, generateDescription } from '@/components/collections/runAutomation/redux/runAutomationActions'
-import { FiCopy } from 'react-icons/fi'
-import { AiOutlineExclamationCircle } from "react-icons/ai";
-import { FaArrowLeft } from "react-icons/fa6";
-import { IoInformationCircle } from "react-icons/io5";
 import { getCurrentOrg } from '@/components/auth/authServiceV2'
+import FaExclamationCircle from 'react-icons/fa/FaExclamationCircle'
+import RiAiGenerate from 'react-icons/ri/RiAiGenerate'
+import RiCheckboxMultipleLine from 'react-icons/ri/RiCheckboxMultipleLine'
+import IoIosPlay from 'react-icons/io/IoIosPlay'
+import FiCopy from 'react-icons/fi/FiCopy'
+import AiOutlineExclamationCircle from "react-icons/ai/AiOutlineExclamationCircle";
+import FaArrowLeft from "react-icons/fa6/FaArrowLeft";
+import IoInformationCircle from "react-icons/io5/IoInformationCircle";
 
 export default function RunAutomation({ params }) {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
