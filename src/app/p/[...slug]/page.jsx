@@ -2,13 +2,13 @@ import PublicEndpoint from "@/components/publicEndpoint/publicEndpoint";
 import Providers from "src/app/providers/providers";
 import PublicPage from 'src/pages/publicPage/publicPage'
 
-export default async function Page({ params, searchParams }) {
+export default async function Page({ params, searchParams, customDomain }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const queryParams = searchParams;
     const slug = params.slug;
     let queryParamApi = {};
-    queryParamApi.collectionId = searchParams.collectionId;
-    if(slug){
+    queryParamApi.collectionId = searchParams?.collectionId || '';
+    if (slug) {
         queryParamApi.path = slug.join('/');
     }
     else {
@@ -16,6 +16,9 @@ export default async function Page({ params, searchParams }) {
     }
     if (queryParams.version) {
         queryParamApi.versionName = queryParams.version;
+    }
+    if (customDomain) {
+        queryParamApi.custom_domain = customDomain
     }
     let queryParamsString = '?';
     for (let key in queryParamApi) {

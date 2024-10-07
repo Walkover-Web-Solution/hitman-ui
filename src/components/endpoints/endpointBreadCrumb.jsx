@@ -233,7 +233,6 @@ class EndpointBreadCrumb extends Component {
 
 
   getPath(id, sidebar) {
-    debugger
     const orgId = getOrgId()
     let path = []
     while (sidebar?.[id]?.type > 0) {
@@ -255,7 +254,6 @@ class EndpointBreadCrumb extends Component {
   renderPathLinks() {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData();
     const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages);
-    debugger
     return pathWithUrls.map((item, index) => {
       if (this.props.pages?.[item.id]?.type === 2) return null;
       const isLastItem = index === pathWithUrls.length - 1;
