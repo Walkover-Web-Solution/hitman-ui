@@ -36,16 +36,16 @@ function PublicPage(props) {
                             {props?.pageContentDataSSR?.name} is empty
                         </span>
                         <span className='mt-1 d-inline-block Modified-at font-12'>
-                            {/* <Providers>
+                            <Providers>
                                 <DisplayUserAndModifiedData />
-                            </Providers> */}
+                            </Providers>
                         </span>
                     </div>
                 )}
                 {props?.pageContentDataSSR?.contents && <div className='my-5'>
-                    {/* <Providers>
+                    <Providers>
                         <ApiDocReview />
-                    </Providers> */}
+                    </Providers>
                 </div>}
             </div>
         </div>
