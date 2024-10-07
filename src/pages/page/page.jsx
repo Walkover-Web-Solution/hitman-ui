@@ -381,7 +381,7 @@ const Page = () => {
                                     onPublish={handlePublish}
                                     onUnpublish={handleUnPublish}
                                     id={activeTabId}
-                                    collectionId={pages[activeTabId].collectionId}
+                                    collectionId={pages[activeTabId]?.collectionId}
                                     isContentChanged={isContentChanged}
                                 />
                             </Dropdown.Menu>

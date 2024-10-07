@@ -57,86 +57,89 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const navigate = useNavigate();
 
   const Breadcrumb = Node.create({
-  name: 'breadcrumb',
-  group: 'block',
-  atom: true,
+    name: 'breadcrumb',
+    group: 'block',
+    atom: true,
 
-  addAttributes() {
-    return {
-      path: {
-        default: [],  // The breadcrumb path as an array of IDs
-      },
-    };
-  },
+    addAttributes() {
+      return {
+        path: {
+          default: [],  
+        },
+      };
+    },
 
-  parseHTML() {
-    return [
-      {
-        tag: 'div[data-breadcrumb]',
-      },
-    ];
-  },
+    parseHTML() {
+      return [
+        {
+          tag: 'div[data-breadcrumb]',
+        },
+      ];
+    },
 
-  renderHTML({ HTMLAttributes }) {
-    const { path } = HTMLAttributes;
+    renderHTML({ HTMLAttributes }) {
+      const { path } = HTMLAttributes;
 
-    if (!Array.isArray(path)) {
-      return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }];
+      if (!Array.isArray(path)) {
+        return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }];
+      }
+
+      const breadcrumbElements = [];
+      path.forEach((segment, index) => {
+        let segmentName;
+        if(segment === 'undefined'){
+          segmentName = 'untitled'; 
+        }
+        else{
+            if (index === 0) {
+              segmentName = collections[segment]?.name || segment; 
+            } else {
+              segmentName = pages[segment]?.name || segment;
+            } 
+        }
+        breadcrumbElements.push([
+          'button',
+          {  
+            class: 'breadcrumb-segment',
+            id: index === 0 ? `collection/${segment}` : `pages/${segment}`,
+          }, 
+          segmentName
+        ]);
+        if (index < path.length - 1) {
+          breadcrumbElements.push(['span', { class: 'breadcrumb-separator' }, ' / ']);
+        }
+      });
+      return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }, ...breadcrumbElements];
+    },
+
+    addCommands() {
+      return {
+        setBreadcrumb: (path) => ({ commands }) => {
+          const breadcrumbSegments = path.split('/');
+          return commands.insertContent({
+            type: this.name,
+            attrs: { path: breadcrumbSegments },
+          });
+        },
+      };
+    },
+  });
+
+  function handleBreadcrumbClick(event) {
+    const orgID = getOrgId();
+    const breadcrumbSegmentId = event.target.getAttribute('id');
+    const Id = breadcrumbSegmentId.split('/');
+    if(Id[1] === 'undefined'){
+      navigate(`/orgs/${orgID}/dashboard/page/new`);
     }
-
-    const breadcrumbElements = [];
-    path.forEach((segment, index) => {
-      let segmentName;
-      if (index === 0) {
-        segmentName = collections[segment]?.name || segment; 
+    else{
+      if (Id[0] === 'collection') {
+        navigate(`/orgs/${orgID}/dashboard/collection/${Id[1]}/settings`);
       } else {
-        segmentName = pages[segment]?.name || segment;
+        navigate(`/orgs/${orgID}/dashboard/page/${Id[1]}`);
       }
-
-      breadcrumbElements.push([
-        'button',
-        {  
-          class: 'breadcrumb-segment',  // Use class for styling
-          id: index === 0 ? `collection/${segment}` : `pages/${segment}`,
-          // Remove inline styles; handle them with CSS
-        }, 
-        segmentName
-      ]);
-
-      if (index < path.length - 1) {
-        breadcrumbElements.push(['span', { class: 'breadcrumb-separator' }, ' / ']);
-      }
-    });
-
-    return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }, ...breadcrumbElements];
-  },
-
-  addCommands() {
-    return {
-      setBreadcrumb: (path) => ({ commands }) => {
-        const breadcrumbSegments = path.split('/');
-        return commands.insertContent({
-          type: this.name,
-          attrs: { path: breadcrumbSegments },  // Pass breadcrumb segments (IDs)
-        });
-      },
-    };
-  },
-});
-
-// Event handler for breadcrumb button click
-function handleBreadcrumbClick(event) {
-  const orgID = getOrgId();
-  const breadcrumbSegmentId = event.target.getAttribute('id');
-  const Id = breadcrumbSegmentId.split('/');
-  if (Id[0] === 'collection') {
-    navigate(`/orgs/${orgID}/dashboard/collection/${Id[1]}/settings`);
-  } else {
-    navigate(`/orgs/${orgID}/dashboard/page/${Id[1]}`);
+    }
   }
-}
-
-
   const getRandomColor = () => {
     const colors = [
       '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',
