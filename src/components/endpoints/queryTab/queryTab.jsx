@@ -60,7 +60,7 @@ export default function QueryTab(props) {
             <React.Fragment>
                 {loadingStateForSchema ?
                     <div className='loading-schema'>
-                        {[1, 2, 3, 4, 5, 6].map((item) => {
+                        {[1, 2, 3, 4, 5, 6]?.map((item) => {
                             return (
                                 <div key={item} className='d-flex schema-box-container align-items-center gap-3 mt-2'>
                                     <div className='schema-box bg rounded-1'></div>

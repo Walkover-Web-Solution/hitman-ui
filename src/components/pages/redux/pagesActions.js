@@ -194,6 +194,21 @@ export const onPageAddedError = (error, newPage) => {
   }
 }
 
+let pathData = '';
+export const setPagesPath = (newValue) => {
+  pathData = newValue;
+};
+
+export const removeContent = async (collectionPath) => {
+  try {
+    const res = await pageApiService.deleteFiles(collectionPath);
+    toast.success('Content deleted successfully');
+  } catch (error) {
+    console.error('Error deleting content:', error);
+    toast.error('Error deleting content');
+  }
+};
+
 export const deletePage = (page) => {
   page.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
@@ -206,6 +221,7 @@ export const deletePage = (page) => {
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
             // after deletion operation
+            removeContent(pathData);
             operationsAfterDeletion(data)
             toast.success('Deleted succesfully')
           })

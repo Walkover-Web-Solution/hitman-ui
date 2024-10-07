@@ -2,6 +2,7 @@ import { store } from '@/store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import pageApiService from '../../pages/pageApiService'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
 import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
@@ -158,6 +159,16 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
   }
 }
 
+export const removeContent = async (collectionPath) => {
+  try {
+    const res = await pageApiService.deleteFiles(collectionPath);
+    toast.success('Content deleted successfully');
+  } catch (error) {
+    console.error('Error deleting content:', error);
+    toast.error('Error deleting content');
+  }
+};
+
 export const deleteCollection = (collection) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
@@ -172,6 +183,7 @@ export const deleteCollection = (collection) => {
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
             // after deletion operation
+            removeContent(collection?.id);
             operationsAfterDeletion(data)
             toast.success('Collection deleted successfully')
           })

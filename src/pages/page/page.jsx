@@ -19,8 +19,10 @@ import * as Y from "yjs";
 import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter,useParams } from "next/navigation";
 import { navigateTo } from "src/navigationService";
+import { setPagesPath } from "../../components/pages/redux/pagesActions";
+
 
 const Page = () => {
 
@@ -36,12 +38,9 @@ const Page = () => {
     const router = useRouter();
 
     const dispatch = useDispatch();
-    const pathName = usePathname()
-    const segments = pathName.split('/');
-    const orgId = segments[2]; 
-    const pageId = segments[5]; 
     const textareaRef = useRef(null);
-
+    const params = useParams()
+    const{orgId, pageId} = params
     const [sidebar, setSidebar] = useState(false);
     const [pageName, setPageName] = useState(page?.name);
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
@@ -52,6 +51,7 @@ const Page = () => {
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
+    const [pathData,setPathData] = useState('');
 
     useEffect(() => {
         if (typeof window.SendDataToChatbot === 'function' && tabs[activeTabId]?.type === 'page') {
@@ -86,6 +86,7 @@ const Page = () => {
     };
 
     const { ydoc, provider } = useMemo(() => {
+        
         if (tabs[activeTabId].status !== "SAVED") return { ydoc: null, provider: null };
         const ydoc = new Y.Doc();
         const baseUrl = mapping[process.env.NEXT_PUBLIC_ENV];
@@ -95,14 +96,14 @@ const Page = () => {
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId]);
+    }, [orgId, pageId,tabs[activeTabId]]);
 
-    useEffect(() => {
-        return () => {
-            if (provider) provider.destroy();
-            if (ydoc) ydoc.destroy();
-        };
-    }, [provider, ydoc, pageId]);
+    // useEffect(() => {
+    //     return () => {
+    //         if (provider) provider.destroy();
+    //         if (ydoc) ydoc.destroy();
+    //     };
+    // }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
         const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
@@ -251,15 +252,30 @@ const Page = () => {
     }
 
     const getPath = (id, sidebar) => {
-        const orgId = getOrgId()
-        let path = []
+        const orgId = getOrgId();
+        let path = [];
+        let newPath = `${pages?.[activeTabId]?.collectionId}`;
+        let pagePath = [];
+
         while (sidebar?.[id]?.type > 0) {
-            const itemName = sidebar[id].name
-            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
-            id = sidebar?.[id]?.parentId
+            const itemName = sidebar[id].name;
+            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id });
+            id = sidebar?.[id]?.parentId;
         }
-        return path.reverse()
-    }
+        path.forEach((item) => {
+            if (pages?.[item.id]?.type !== 2) {
+                pagePath.push(`/${item.id}`);
+            }
+        });
+        pagePath = pagePath.reverse().join('');
+        newPath = newPath + pagePath;
+        return { pathArray: path.reverse(), newPath };
+    };
+    useEffect(() => {
+        const { newPath } = getPath(activeTabId, pages);
+        setPathData(newPath);  
+        setPagesPath(newPath);
+    }, [activeTabId, pages]); 
 
     const handleStrongChange = (e) => {
         setPageName(e.currentTarget.textContent);
@@ -267,7 +283,8 @@ const Page = () => {
 
 
     const renderPathLinks = () => {
-        const pathWithUrls = getPath(pageId, pages)
+        const { pathArray } = getPath(pageId, pages);
+        const pathWithUrls = pathArray
         return pathWithUrls.map((item, index) => {
             if (pages?.[item.id]?.type === 2) return null;
             const isLastItem = index === pathWithUrls.length - 1;
@@ -399,6 +416,7 @@ const Page = () => {
                         onChange={handleContentChange || false}
                         isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
                         key={activeTabId}
+                        pathData={pathData}
                     />
                 </div>
             </div>

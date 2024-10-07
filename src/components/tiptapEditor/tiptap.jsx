@@ -43,7 +43,7 @@ import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
 
-export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint = false }) {
+export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData }) {
 
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser
@@ -61,6 +61,25 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const [showSlashMenu, setShowSlashMenu] = useState(false);
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const [activeSlashMenuIndex, setActiveSlashMenuIndex] = useState(0);
+  const [loading,setLoading] = useState(false);
+  const [showImage, setShowImage] = useState(false)
+
+  const NonEditableLink = Link.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      contenteditable: {
+        default: 'false',
+        parseHTML: () => 'false',
+        renderHTML: () => {
+          return {
+            contenteditable: 'false',
+          }
+        },
+      },
+    }
+  },
+})
   const slashMenuRefs = useRef([]);
   const editor = useEditor({
     editorProps: {
@@ -138,7 +157,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       }),
       Text,
       Placeholder.configure({
-        placeholder: 'Write your text here …'
+        placeholder: `Write something, type '/' for commands...`,
       }),
       Table.configure({
         resizable: true,
@@ -146,28 +165,32 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           class: 'my-custom-class'
         }
       }),
-      TableCell,
-      ...(!isEndpoint ? [
-        CollaborationCursor.configure({
-          provider,
-          user: {
-            name: currentUser?.name || 'Anonymous',
-            color: getRandomColor(),
-          },
-        }),
-        Collaboration.configure({
-          document: ydoc,
-        })
-      ] : []),
+      ...(isEndpoint
+        ? []
+        : provider && ydoc
+        ? [
+            CollaborationCursor.configure({
+              provider,
+              user: {
+                name: currentUser?.name || 'Anonymous',
+                color: getRandomColor(),
+              },
+            }),
+            Collaboration.configure({
+              document: ydoc,
+            }),
+          ]
+        : []),
       TableRow,
+      TableCell,
       TableHeader,
-      Link.configure({
+      NonEditableLink.configure({
         linkOnPaste: true,
         openOnClick: true,
-        autolink: false
-      })
+        autolink: false,
+      }),
     ],
-    ...(isEndpoint ? [{ content: initial }] : []),
+    ...(isEndpoint ? { content: initial } : {}),
     onUpdate: ({ editor }) => {
       if (isEndpoint) {
         const html = editor.getHTML();
@@ -280,9 +303,9 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
 
-      {editor && <BubbleMenuComponent editor={editor} />}
+      {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} />}
 
-      {editor && <FloatingMenuComponent editor={editor} />}
+      {editor && <FloatingMenuComponent editor={editor} showImage={showImage} setShowImage={setShowImage} />}
 
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{

@@ -237,7 +237,14 @@ class EndpointBreadCrumb extends Component {
     let path = []
     while (sidebar?.[id]?.type > 0) {
       const itemName = sidebar[id].name
-      path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
+      const itemType = sidebar[id].type
+      if(itemType === 4 || itemType === 5)
+      {
+        path.push({ name: itemName, path: `orgs/${orgId}/dashboard/endpoint/${id}`, id: id })
+      }
+      else{
+        path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
+      }
       id = sidebar?.[id]?.parentId
     }
     return path.reverse()
