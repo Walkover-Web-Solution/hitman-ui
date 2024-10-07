@@ -27,9 +27,9 @@ export default async function Page({ params, searchParams }) {
 
     return (
         <div>
-            {/* <Providers>
+            <Providers>
                 <PublicEndpoint />
-            </Providers> */}
+            </Providers>
             {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
         </div>
     );
