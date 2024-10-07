@@ -427,129 +427,38 @@ class PublicEndpoint extends Component {
     const staticColors = background['background_mainPage']
 
     const backgroundStyles = {
-      backgroundImage: `
-        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+      backgroundImage: ` linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColors}, ${staticColors})
       `
     }
 
     return (
-      <>
-        {/* [info] part 1 style component */}
-        <Style>
-          {`
-          .link {
-            &:hover {
-              color: ${collectionTheme};
-            }
-  
-          }
-        `}
-        </Style>
-        <main
-          role='main'
-          className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
-        >
-          <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
-            <IconButton onClick={() => {
-              this.handleShowSideBar()
-            }}>
-              <MdDehaze
-                id='hamburgerIcon'
-                className='icon-active fw-bold'
-              />
-            </IconButton>
-            <IconButton onClick={() => {
-              this.handleShowSideBar()
-            }}>
-              <MdClose
-                id='closeIcon'
-                className='icon-none'
-              />
-            </IconButton>
-            {/* <span className='logo-name' id="logoName"> 
-             {this.props.collections[collectionKeys[0]]?.favicon && (
-                <img
-                    className='hamberger-img'
-                    id='publicLogo'
-                    alt='public-logo'
-                    src={
-                      this.props.collections[collectionKeys[0]]?.favicon
-                        ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
-                        : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
-                    }
-                    // onError={() => { this.setState({ publicLogoError: true })}}
-                    width='20'
-                    height='20'
-                  />
-                 )} */}
-            {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
-
-            {/* </span> */}
-            {/* Original icons */}
-          </span>
-          {/* [info] part 3 */}
-          <SplitPane split='vertical' className={'split-sidebar-public'}>
-            {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className='hm-sidebar' style={backgroundStyle}>
-              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
-            </div>
-            {/*  [info] part 3 subpart 1 sidebar data right content */}
-            <div
-              className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-            // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
-            >
-              {idToRender ? (
-                <div
-                  onScroll={(e) => {
-                    if (e.target.scrollTop > 20) {
-                      this.setState({ isSticky: true })
-                    } else {
-                      this.setState({ isSticky: false })
-                    }
-                  }}
-                >
-                  {(type == 4 || type == 5) && (
-                    <DisplayEndpoint
-                      {...this.props}
-                      fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={collectionTheme}
-                    />
-                  )}
-
-                  {(type == 1 || type == 3) && (
-                    <PublicPage
-                    
-                      {...this.props}
-                      fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={collectionTheme}
-                    />
-                  )}
-
-                  {!type && idToRender == 'undefined' && (
-                    <ERROR_404_PUBLISHED_PAGE
-                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
-                    />
-                  )}
-
-                  {/* {this.displayCTAandLink()} */}
-                  {/* <div className='d-flex flex-row justify-content-start'>
-                      <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
-                      <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
-                    </div> */}
-                  {this.state.openReviewModal && this.reviewModal()}
-                </div>
-              ) : (
-                <>
-                  <div className='custom-loading-container'>
-                    <progress class='pure-material-progress-linear w-25' />
-                  </div>
-                </>
-              )}
-            </div>
-          </SplitPane>
-        </main>
-      </>
+      <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
+        <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
+          <IconButton onClick={() => this.handleShowSideBar()}>
+            <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' />
+          </IconButton>
+          <IconButton onClick={() => this.handleShowSideBar()}>
+            <MdClose id='closeIcon' className='icon-none' />
+          </IconButton>
+        </span>
+        <SplitPane split='vertical' className={'split-sidebar-public'}>
+          <div className='hm-sidebar' style={backgroundStyle}>
+            {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
+          </div>
+          <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}>
+            {idToRender ? (
+              <div>
+                {(type == 4 || type == 5) && <DisplayEndpoint {...this.props} fetch_entity_name={this.fetchEntityName.bind(this)} publicCollectionTheme={collectionTheme} />}
+                {!type && idToRender == 'undefined' && <ERROR_404_PUBLISHED_PAGE error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'} />}
+                {this.state.openReviewModal && this.reviewModal()}
+              </div>
+            ) : (
+              <div className='custom-loading-container'><progress class='pure-material-progress-linear w-25' /></div>
+            )}
+          </div>
+        </SplitPane>
+      </main>
     )
   }
 }

@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect, useRef } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { isDashboardRoute, SESSION_STORAGE_KEY } from '../common/utility'
