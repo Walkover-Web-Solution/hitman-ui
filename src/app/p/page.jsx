@@ -1,16 +1,39 @@
-import React from 'react';
-import Providers from '../providers/providers';
-import PublicEndpoint from '@/components/publicEndpoint/publicEndpoint';
-
+import PublicEndpoint from "@/components/publicEndpoint/publicEndpoint";
+import Providers from "src/app/providers/providers";
+import PublicPage from 'src/pages/publicPage/publicPage'
 
 export default async function Page({ params, searchParams }) {
-    const queryParams = searchParams
-    console.log('Query Params:', queryParams);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const queryParams = searchParams;
+    const slug = params.slug;
+    let queryParamApi2 = {};
+    queryParamApi2.collectionId = searchParams.collectionId;
+    queryParamApi2.path = slug.join('/');
+    if (queryParams.version) {
+        queryParamApi2.versionName = queryParams.version;
+    }
+    let queryParamsString = '?';
+    for (let key in queryParamApi2) {
+        if (queryParamApi2.hasOwnProperty(key)) {
+            queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi2[key])}&`;
+        }
+    }
+    queryParamsString = queryParamsString.slice(0, -1);
+    const response = await fetch(apiUrl + `/getPublishedDataByPath${queryParamsString}`);
+    let data
+    if (response.status === 200) {
+        data = await response.json();
+    }
+    else {
+        throw new Error(`HTTP error! statzus: ${response.status}`);
+    }
+
     return (
         <div>
             <Providers>
                 <PublicEndpoint />
             </Providers>
+            {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
         </div>
     );
 }
