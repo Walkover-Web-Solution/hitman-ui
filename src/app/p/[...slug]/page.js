@@ -1,5 +1,6 @@
 import PublicEndpoint from "@/components/publicEndpoint/publicEndpoint";
 import Providers from "src/app/providers/providers";
+import PublicPage from 'src/pages/publicPage/publicPage'
 
 export default async function Page({ params, searchParams }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -27,8 +28,9 @@ export default async function Page({ params, searchParams }) {
     return (
         <div>
             <Providers>
-                <PublicEndpoint pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />
+                <PublicEndpoint />
             </Providers>
+            {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
         </div>
     );
 }
