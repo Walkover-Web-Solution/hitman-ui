@@ -1,12 +1,12 @@
+"use client"
 import React, { useMemo } from 'react';
 import './manualRuns.scss';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router';
 import moment from 'moment'
+import { usePathname } from 'next/navigation';
 
 const formatDate = (date) => moment(date).format('MMMM D, YYYY [at] HH:mm:ss');
 function ManualRuns() {
-  const params = useParams()
   const { automation, activeTabId, collections, pages } = useSelector((state) => {
     return {
       automation: state.automation,
@@ -15,8 +15,10 @@ function ManualRuns() {
       pages: state.pages
     }
   })
-  debugger
-  const collectionId = params?.collectionId
+  const pathName = usePathname()
+  const segments = pathName.split('/');
+  const orgId = segments[2]; 
+  const collectionId = segments[5]; 
   const averageResponseTime = useMemo(() => {
     const responseTime = automation[activeTabId]?.responseTime || 0;
     const executionOrderLength = automation[activeTabId]?.executionOrder.length || 1;
@@ -28,7 +30,7 @@ function ManualRuns() {
       <h1> {collections[collectionId]?.name} - Run results</h1>
       <div className="run-details">
         <span>Ran on {formatDate(automation[activeTabId]?.date)}</span>
-        <a className='ml-2' href={`/orgs/:orgId/collection/${collectionId}/runs`}>View all runs</a>
+        <a className='ml-2' href={`/orgs/${orgId}/dashboard/collection/${collectionId}/runs`}>View all runs</a>
       </div>
       <table>
         <thead>

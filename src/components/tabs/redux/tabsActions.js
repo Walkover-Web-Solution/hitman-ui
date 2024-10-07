@@ -85,7 +85,7 @@ export const addNewTab = () => {
       })
       dispatch(updateTabDraft(id, draft))
       dispatch(setActiveTabId(id))
-      navigateTo(`/orgs/${orgId}/dashboard/page/new`)
+      navigateTo(`/orgs/${orgId}/dashboard/page/${id}`)
     }
   } else {
     return async (dispatch) => {
@@ -102,7 +102,7 @@ export const addNewTab = () => {
       })
       // dispatch(updateTabDraft(id, draft))
       dispatch(setActiveTabId(id))
-      navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
+      navigateTo(`/orgs/${orgId}/dashboard/endpoint/${id}`)
     }
   }
 }

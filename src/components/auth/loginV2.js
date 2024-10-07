@@ -19,12 +19,14 @@ const LoginV2 = () => {
     let script;
 
     const checkIfUserAlreadyLogin = () => {
-      if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
+      if (getCurrentOrg()) {
         router.push(`/orgs/${getCurrentOrg().id}/dashboard`);
+        return;
       } else {
         loadScript();
       }
     };
+    checkIfUserAlreadyLogin();
 
     const loadScript = () => {
       const configuration = {
@@ -49,14 +51,13 @@ const LoginV2 = () => {
       document.body.appendChild(script);
     };
 
-    checkIfUserAlreadyLogin();
 
     return () => {
       if (script) {
         document.body.removeChild(script);
       }
     };
-  }, [ router, proxyGooglereferenceMapping]);
+  }, [ router]);
 
   const env = process.env.NEXT_PUBLIC_ENV || "";
   const divId = proxyGooglereferenceMapping[env];

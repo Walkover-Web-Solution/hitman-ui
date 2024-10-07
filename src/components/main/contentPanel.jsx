@@ -155,33 +155,33 @@ const ContentPanel = () => {
       }
 
     }
-    if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
-      const { orgId } = params
-      if (tabs?.tabsOrder?.length) {
-        const { tabs: tabsData, activeTabId, tabsOrder } = tabs
+if (router.pathname === `/orgs/${params.orgId}/dashboard`) {
+  const { orgId } = params;
+  if (tabs?.tabsOrder?.length) {
+    const { tabs: tabsData, activeTabId, tabsOrder } = tabs;
 
-        let tabId = activeTabId
-        if (!tabsData[tabId]) tabId = tabsOrder[0]
+    let tabId = activeTabId;
+    if (!tabsData[tabId]) tabId = tabsOrder[0];
 
-        const tab = tabsData[tabId]
-        if (tabId !== activeTabId) dispatch(setActiveTabId(tabId))
+    const tab = tabsData[tabId];
+    if (tabId !== activeTabId) dispatch(setActiveTabId(tabId));
 
-        const collectionLength = Object.keys(collections).length
-        if (tab?.type === 'manual-runs') {
-          router.push(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`)
-          return;
-        }
-        if (collectionLength > 0) {
-          router.push(
-            tab.type !== 'collection'
-              ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '' : ''}`
-              : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-          );
-        } else {
-          dispatch(addNewTab())
-        }
-      }
+    const collectionLength = Object.keys(collections).length;
+    if (tab?.type === 'manual-runs') {
+      router.push(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`);
+      return;
     }
+    if (collectionLength > 0) {
+      router.push(
+        tab.type !== 'collection'
+          ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? tabId : tabId}`
+          : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+      );
+    } else {
+      dispatch(addNewTab());
+    }
+  }
+}
   }, [tabs, endpoints, pages, historySnapshots, collections, params])
 
   const handleSaveEndpoint = (flag, tabId) => {
