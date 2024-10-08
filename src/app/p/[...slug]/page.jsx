@@ -38,7 +38,7 @@ export default async function Page({ params, searchParams, customDomain }) {
     }
     const headerFooter = async () => { 
         const result = await axios.post(apiUrl + '/get-collection-data', {
-            collectionId: 'uafDmBh5LPyr'
+            collectionId: queryParamApi.collectionId
         });
         console.log(result.data.collection.headerCode,"header")
         return result.data.collection;
