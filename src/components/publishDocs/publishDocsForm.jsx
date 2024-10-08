@@ -19,7 +19,7 @@ import collectionsApiService from '../collections/collectionsApiService'
 import { toast } from 'react-toastify'
 import IconButton from '../common/iconButton'
 import { MdDelete } from 'react-icons/md'
-import Editor from '@/components/codeeditor/editor'
+import Editor from '@/components/codeEditor/editor'
 
 const MAPPING_DOMAIN = process.env.NEXT_PUBLIC_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {

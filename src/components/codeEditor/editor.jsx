@@ -7,7 +7,7 @@ import 'ace-builds/src-noconflict/mode-html'
 // Import a theme (for editor styling)
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import { defaultheader, defaultfooter } from './defaultblock';
+import { defaultheader, defaultfooter } from './defaultBlock';
 
 
 
