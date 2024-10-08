@@ -123,8 +123,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:test": "dotenv -e .env.test npm run build",
-    "build:prod": "dotenv -e .env.test npm run build"
+    "build:test": "dotenv -e .env.test next build",
+    "build:prod": "dotenv -e .env.test next build"
   },
   "browserslist": [
     ">0.2%",
