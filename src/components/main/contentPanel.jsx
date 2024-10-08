@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, usePathname, useRouter,  } from 'next/navigation'
-import { Tab, Nav, Dropdown } from 'react-bootstrap'
+import { useParams, useRouter,  } from 'next/navigation'
+import { Tab, Nav } from 'react-bootstrap'
 
 import TabContent from '../tabs/tabContent'
 import CustomTabs from '../tabs/tabs'
@@ -50,8 +50,8 @@ const ContentPanel = () => {
   }, [dispatch])
 
   useEffect(() => {
+    debugger
     const { endpointId, pageId, historyId, collectionId, runId } = params
-
     if (tabs.loaded) {
       if (endpointId && endpointId !== 'new') {
         if (tabs.tabs[endpointId]) {

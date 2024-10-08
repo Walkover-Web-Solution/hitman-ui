@@ -124,7 +124,7 @@
     "start": "next start",
     "lint": "next lint",
     "build:test": "dotenv -e .env.test npm run build",
-    "build:prod": "dotenv -e .env.prod npm run build"
+    "build:pages": "npx @cloudflare/next-on-pages"
   },
   "browserslist": [
     ">0.2%",
@@ -133,6 +133,7 @@
   ],
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.7",
+    "@cloudflare/next-on-pages": "^1.13.5",
     "@svgr/webpack": "^8.1.0",
     "@vitejs/plugin-react": "^4.3.1",
     "electron": "^13.1.1",

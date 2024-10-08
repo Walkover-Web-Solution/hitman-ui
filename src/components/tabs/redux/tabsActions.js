@@ -108,7 +108,7 @@ export const addNewTab = () => {
 }
 
 
-export const closeTab = (tabId, history) => {
+export const closeTab = (tabId) => {
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_TAB, tabId })
   }

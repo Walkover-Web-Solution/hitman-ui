@@ -15,6 +15,13 @@ export default function Providers({ children }) {
         import('bootstrap/dist/js/bootstrap.js')
             .catch(err => console.error('Error loading bootstrap.js:', err));
     }
+    // if (!store){
+    //     console.error('Redux store is not available');
+    //     return (
+    //     <div>Loading...</div>
+    //     )
+    // }
+    // else
     return (
         <Provider store={store}>
             <div id="root">

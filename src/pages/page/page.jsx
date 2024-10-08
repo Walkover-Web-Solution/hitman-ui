@@ -26,7 +26,7 @@ import { setPagesPath } from "../../components/pages/redux/pagesActions";
 
 const Page = () => {
 
-    const { draftContent, page, pages, users, activeTabId, tabs, collections, isPublished } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, collections } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[state.tabs.activeTabId],
         pages: state.pages,

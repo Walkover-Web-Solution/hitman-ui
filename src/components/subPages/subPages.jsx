@@ -17,7 +17,6 @@ import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './subpages.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
-import { openInNewTab } from '../tabs/redux/tabsActions.js'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import customPathnameHook from '../../customHook/customPathnameHook.js'
 
