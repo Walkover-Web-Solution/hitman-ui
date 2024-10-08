@@ -1,4 +1,4 @@
-const defaultheader = `<!DOCTYPE html>
+const defaultHeader = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -84,7 +84,7 @@ const defaultheader = `<!DOCTYPE html>
 </html>
 `
 
-const defaultfooter = `<!DOCTYPE html>
+const defaultFooter = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -122,4 +122,4 @@ const defaultfooter = `<!DOCTYPE html>
 </body>
 </html>`
 
-export { defaultheader, defaultfooter }
+export { defaultHeader, defaultFooter }

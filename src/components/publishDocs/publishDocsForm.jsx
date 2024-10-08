@@ -156,8 +156,8 @@ const PublishDocForm = (props) => {
     collection.docProperties = {
       defaultTitle: newData.title.trim(),
       defaultLogoUrl: newData.logoUrl.trim(),
-      defaultheader: header,
-      defaultfooter: footer
+      defaultHeader: header,
+      defaultFooter: footer
     }
     delete collection.isPublic
     let newErrors = validate({ ...data })

@@ -1,4 +1,5 @@
 import PublicEndpoint from "@/components/publicEndpoint/publicEndpoint";
+import axios from "axios";
 import Providers from "src/app/providers/providers";
 import PublicPage from 'src/pages/publicPage/publicPage'
 
@@ -35,13 +36,26 @@ export default async function Page({ params, searchParams, customDomain }) {
     else {
         console.error('Data not found')
     }
+    const headerFooter = async () => { 
+        const result = await axios.post(apiUrl + '/get-collection-data', {
+            collectionId: 'uafDmBh5LPyr'
+        });
+        console.log(result.data.collection.headerCode,"header")
+        return result.data.collection;
+    }
+
+    const content = await headerFooter();
 
     return (
         <div>
-            <Providers>
-                <PublicEndpoint />
-            </Providers>
-            {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+            <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultHeader }} />
+            <div>
+                <Providers>
+                    <PublicEndpoint />
+                </Providers>
+                {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+            </div>
+            <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultFooter}} />
         </div>
     );
 }

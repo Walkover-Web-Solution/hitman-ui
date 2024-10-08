@@ -21,6 +21,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Footer from './Footer'
 import customPathnameHook from '../../customHook/customPathnameHook'
+import { globalSearch } from '../pages/pageApiService';
+import { debounce } from 'lodash';
 
 const SideBar = () => {
   const collections = useSelector((state) => state.collections)
@@ -109,9 +111,21 @@ const SideBar = () => {
     )
   }
 
-  const handleOnChange = (e) => {
+  const debouncedSearch = useCallback(debounce(async (searchTerm) => {
+    if(searchTerm.length > 2){
+      const result = await globalSearch(searchTerm); 
+      setFilteredPages(result.data.results);
+    }
+}, 1000), []);
+
+  const handleOnChange = async (e) => {
     const searchTerm = e.target.value.toLowerCase()
     const newData = { ...searchData, filter: e.target.value }
+
+    if (searchTerm === '') {
+      setFilteredPages([]);
+  }
+
     let filteredHistorySnapshot = []
     if (historySnapshot) {
       filteredHistorySnapshot = Object.values(historySnapshot).filter(
@@ -122,22 +136,25 @@ const SideBar = () => {
       )
     }
     let filteredEndpoints = []
-    let filteredPages = []
     const sideBarData = pages
     for (let key in sideBarData) {
       let o = sideBarData[key]
-      if (
-        o.name?.toLowerCase().includes(searchTerm) ||
-        o.BASE_URL?.toLowerCase().includes(searchTerm) ||
-        o.uri?.toLowerCase().includes(searchTerm)
-      ) {
-        sideBarData[key]?.type === 4 ? filteredEndpoints.push(sideBarData[key]) : filteredPages.push(sideBarData[key])
+      if (sideBarData[key]?.type === 4 ) {
+        if (
+          o.name?.toLowerCase().includes(searchTerm) ||
+          o.BASE_URL?.toLowerCase().includes(searchTerm) ||
+          o.uri?.toLowerCase().includes(searchTerm)
+        ) {
+          filteredEndpoints.push(sideBarData[key])
+        }
+      }else{
+       debouncedSearch(searchTerm);
       }
+      
     }
     setSearchData(newData)
     setFilteredHistorySnapshot(filteredHistorySnapshot)
     setFilteredEndpoints(filteredEndpoints)
-    setFilteredPages(filteredPages)
   }
 
   const renderSearch = () => {
@@ -311,7 +328,7 @@ const SideBar = () => {
   }
 
   const renderSearchList = () => {
-    if (searchData.filter !== '') {
+    if (searchData.filter.length > 2) {
       return filteredPages.length > 0 || filteredEndpoints.length > 0 || filteredHistorySnapshot.length > 0 ? (
         <div className='searchResult'>
           {filteredPages.length > 0 ? renderPagesList() : null}

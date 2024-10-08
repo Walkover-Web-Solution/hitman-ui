@@ -7,13 +7,13 @@ import 'ace-builds/src-noconflict/mode-html'
 // Import a theme (for editor styling)
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import { defaultheader, defaultfooter } from './defaultblock';
+import { defaultHeader, defaultFooter } from './defaultblock';
 
 
 
 const Editor = ({ header, setHeader, footer, setFooter }) => {
-  const [code, setCode] = useState(defaultheader);
-  const [code2, setCode2] = useState(defaultfooter);
+  const [code, setCode] = useState(defaultHeader);
+  const [code2, setCode2] = useState(defaultFooter);
 
   const handleChange = (newCode) => {
     setCode(newCode); 
