@@ -19,7 +19,7 @@ import { useQueryClient, useMutation } from 'react-query'
 import { MdDehaze, MdClose } from 'react-icons/md'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
-import PublicPage from '../../pages/publicPage/publicPage.jsx'
+import PublicPage from '../../appPages/publicPage/publicPage.jsx'
 import IconButton from '../common/iconButton.jsx'
 
 const withQuery = (WrappedComponent) => {

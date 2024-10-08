@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { persistor, store } from '../../store/store'
+import { persistor, store } from '@/store/store'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import { Provider } from 'react-redux'
@@ -15,13 +15,6 @@ export default function Providers({ children }) {
         import('bootstrap/dist/js/bootstrap.js')
             .catch(err => console.error('Error loading bootstrap.js:', err));
     }
-    // if (!store){
-    //     console.error('Redux store is not available');
-    //     return (
-    //     <div>Loading...</div>
-    //     )
-    // }
-    // else
     return (
         <Provider store={store}>
             <div id="root">
