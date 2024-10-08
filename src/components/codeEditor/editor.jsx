@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import AceEditor from 'react-ace'
 import './editor.scss'
 
