@@ -15,17 +15,13 @@ import "../components/main/main.scss"
 import "../components/indexWebsite/indexWebsite.scss"
 import "../components/tabs/tabs.scss"
 
-export const metadata = {
-    title: "Techdoc",
-    description: "Build API Documentation",
-};
-
 export default function RootLayout({ children }) {
 
     return (
         <html lang="en">
             <head>
                 <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css" />
+                <link id='favicon' rel="icon" href="/favicon.svg" />
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
                 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
