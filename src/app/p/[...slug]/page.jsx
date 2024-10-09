@@ -36,7 +36,7 @@ export default async function Page({ params, searchParams, customDomain }) {
     else {
         console.error('Data not found')
     }
-    const headerFooter = async () => { 
+    const headerFooter = async () => {
         const result = await axios.post(apiUrl + '/get-collection-data', {
             collectionId: queryParamApi.collectionId
         });
@@ -47,18 +47,20 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <div>
-             <div className='navbar-public'>
-            <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader }} />
-            </div>
-            <div className="main-public-container d-flex max-width-container">
-                <Providers>
-                    <PublicEndpoint />
-                </Providers>
-                <div className="hm-right-content">
-                {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+            <div>
+                <div className='navbar-public'>
+                    {content.defaultHeader !== '' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader }} />}
                 </div>
+                <div className="main-public-container d-flex max-width-container">
+                    <Providers>
+                        <PublicEndpoint />
+                    </Providers>
+                    <div className="hm-right-content">
+                        {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+                    </div>
+                </div>
+                {content.defaultFooter !== ' ' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter }} />}
             </div>
-            <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter}} />
         </div>
     );
 }

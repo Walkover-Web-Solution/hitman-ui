@@ -23,6 +23,8 @@ import { BiSolidCommentDetail } from "react-icons/bi";
 import { useRouter, useParams } from "next/navigation";
 import { navigateTo } from "src/navigationService";
 import { setPagesPath } from "../../components/pages/redux/pagesActions";
+import TagInput from "@/components/publishModal/tagInput";
+import { updatePage } from "@/components/pages/pageApiService";
 
 
 const Page = () => {
@@ -154,7 +156,7 @@ const Page = () => {
 
     const handleSavePageName = () => {
         if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) {
-            dispatch(updatePageName(page.id, pageName));
+            dispatch(updatePageName(page.id,{name:pageName}));
         }
     };
 
@@ -201,6 +203,18 @@ const Page = () => {
 
     const handleDescriptionChange = (event) => {
         setDescription(event.target.value);
+    };
+
+    const handleSaveDescription = () => {
+        const updatedPageData = {
+            ...page[page.id], 
+            id:page.id,
+            meta:{
+                description:description 
+            }
+        };
+    
+        dispatch(updatePage({updatedPageData})); 
     };
 
     const handleMouseEnter = () => {
@@ -461,7 +475,7 @@ const Page = () => {
                         {hovered && !showTags && (
                             <button
                                 className="btn text-secondary position-absolute description-button"
-                                style={{ top: '8px', right: '430px' }}
+                                style={{ top: '8px', right: '330px' }}
                                 onClick={handleAddTagsClick}    
                             >
                                 <BiSolidCommentDetail /> Add Tags
@@ -477,20 +491,11 @@ const Page = () => {
                             placeholder='About your Doc'
                             value={description}
                             onChange={handleDescriptionChange}
+                            onBlur={handleSaveDescription}
                         />
                     </div>
                 )}
-                {showTags && (
-                    <div className='page-subtitle text-black fa-1x mt-2 w-100'>
-                        <input
-                            type='text'
-                            className='subtitle-input d-flex w-100 pt-2 mb-3 pb-2 font-14'
-                            placeholder='Tags'
-                            value={tags}
-                            onChange={handleTagsChange}
-                        />
-                    </div>
-                )}
+                {showTags && <TagInput/>}
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
                         provider={provider}
