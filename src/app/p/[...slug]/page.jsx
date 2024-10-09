@@ -54,7 +54,9 @@ export default async function Page({ params, searchParams, customDomain }) {
                 <Providers>
                     <PublicEndpoint />
                 </Providers>
+                <div className="hm-right-content">
                 {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+                </div>
             </div>
             <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter}} />
         </div>

@@ -8,13 +8,6 @@
         margin-right: auto;
         min-height: 100vh;
 
-        @media screen and (max-width: 1500px) {
-
-            .main-page-content {
-                width: 60% !important;
-            }
-        }
-
         .page-text-render {
             gap: 120px;
 
@@ -98,6 +91,7 @@
     justify-content: space-between;
     padding-top: 15px;
     position: relative;
+    scrollbar-width: none;
 
     // min-height: calc(100vh - 70px);
     button {
