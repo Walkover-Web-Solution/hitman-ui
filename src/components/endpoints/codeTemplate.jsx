@@ -20,6 +20,7 @@ import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/theme-github'
 import './endpoints.scss'
 import { HTTPSnippet } from 'httpsnippet-lite'
+import 'ace-builds/src-noconflict/theme-nord_dark'
 
 const CodeTemplate = (props) => {
   const [theme, setTheme] = useState('')
@@ -245,7 +246,7 @@ const CodeTemplate = (props) => {
                   height={editorHeight}
                   ref={codeTemplateRef}
                   mode={languages[selectedLanguage].mode}
-                  theme={props.theme === 'light' ? 'kuroir' : 'tomorrow_night'}
+                  theme={props.theme === 'light' ? 'kuroir' : 'nord_dark'}
                   highlightActiveLine={false}
                   focus={false}
                   value={codeSnippet}

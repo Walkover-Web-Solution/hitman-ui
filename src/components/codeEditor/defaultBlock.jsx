@@ -14,8 +14,6 @@ const defaultHeader = `<!DOCTYPE html>
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background-color: #ffffff;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         .logo {
@@ -98,8 +96,6 @@ const defaultFooter = `<!DOCTYPE html>
             line-height: 1.5;
         }
         .footer {
-            background-color: #f6f6f6;
-            padding: 40px 20px;
             color: #050505;
         }
         .footer-content {
@@ -108,7 +104,6 @@ const defaultFooter = `<!DOCTYPE html>
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            font-size: 40px;
         }
 
     </style>

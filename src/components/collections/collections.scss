@@ -251,3 +251,11 @@ div.fixed {
   font-size: 7px;
 }
 
+.split-sidebar-public {
+  &:has(.mainContentWrapperPublic) {
+    flex: 1 1 0%;
+    .hm-right-content {
+      flex: inherit;
+    }
+  }
+}

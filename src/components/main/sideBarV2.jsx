@@ -455,8 +455,8 @@ const SideBar = () => {
         <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1' : ''}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
-        </div>
         {isOnPublishedPage() && (<Footer />)}
+        </div>
       </>
     )
   }

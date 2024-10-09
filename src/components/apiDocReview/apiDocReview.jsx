@@ -205,9 +205,10 @@ const ApiDocReview = (props) => {
   return (
     !isDashboardRoute({ location }) && (
       <>
-        <div className='position-relative'>
-          <p className='d-flex justify-content-center Modified-at mb-1'>Was this page helpful?</p>
-          <div className='d-flex justify-content-center like-unline font-18'>
+        <div className='position-relative d-flex justify-content-center'>
+          <div className='d-inline-flex justify-content-center align-items-center gap-2 border px-2 rounded'>
+          <p className='d-flex justify-content-center Modified-at mb-0'>Was this page helpful?</p>
+          <div className='d-flex justify-content-center gap-2 like-unline font-18'>
             <OverlayTrigger placement='bottom' overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}>
               <div
                 className='cursor-pointer'
@@ -228,6 +229,7 @@ const ApiDocReview = (props) => {
                 {showSolidDislike ? <BiSolidDislike size={20} /> : <BiDislike size={20} />}
               </div>
             </OverlayTrigger>
+          </div>
           </div>
           {feedbackGiven && renderFeedbackResponse()}
         </div>
