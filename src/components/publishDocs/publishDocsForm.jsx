@@ -156,8 +156,8 @@ const PublishDocForm = (props) => {
     collection.docProperties = {
       defaultTitle: newData.title.trim(),
       defaultLogoUrl: newData.logoUrl.trim(),
-      defaultheader: header,
-      defaultfooter: footer
+      defaultHeader: header,
+      defaultFooter: footer
     }
     delete collection.isPublic
     let newErrors = validate({ ...data })
@@ -521,7 +521,7 @@ const PublishDocForm = (props) => {
             {renderInput('title', false, 'brand name', false)}
             {Object.keys(environment.environments).length !==0 && metaType !==0 &&  <div className='form-group mb-4'>
               <label>Select Environment</label>
-              {publicEnv === null || Object.keys(publicEnv)?.length === 0 ? (
+              {publicEnv === null || Object.keys(publicEnv || {}).length === 0 ? (
                 <Dropdown>
                   <Dropdown.Toggle className='justify-content-between bg-white border w-100 font-12' variant="light" id='dropdown-basic'>
                     {'Select Environment'}

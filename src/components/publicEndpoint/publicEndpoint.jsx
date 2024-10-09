@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
@@ -10,7 +10,15 @@ import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
 import SplitPane from '../splitPane/splitPane.jsx'
 import '../collectionVersions/collectionVersions.scss'
-import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import {
+  setTitle,
+  setFavicon,
+  comparePositions,
+  hexToRgb,
+  isTechdocOwnDomain,
+  SESSION_STORAGE_KEY,
+  isOnPublishedPage
+} from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import { addCollectionAndPages } from '../redux/generalActions'
@@ -156,47 +164,47 @@ class PublicEndpoint extends Component {
   async componentDidUpdate(prevProps) {
     window.onpopstate = async (event) => {
       if (event.state) {
-        const url = new URL(window.location.href);
-        const queryParams = this.props?.location?.search ? new URLSearchParams(this.props.location.search) : null;
+        const url = new URL(window.location.href)
+        const queryParams = this.props?.location?.search ? new URLSearchParams(this.props.location.search) : null
 
-        let collectionId = queryParams?.get('collectionId') || sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID);
+        let collectionId = queryParams?.get('collectionId') || sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
         if (collectionId) {
-          sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId);
+          sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
         }
 
-        this.setState({ publicCollectionId: collectionId });
+        this.setState({ publicCollectionId: collectionId })
 
-        const queryParamApi2 = {};
+        const queryParamApi2 = {}
         if (isTechdocOwnDomain()) {
-          queryParamApi2.collectionId = collectionId;
-          queryParamApi2.path = url.pathname.slice(3);
-          this.props.add_collection_and_pages(null, { collectionId, public: true });
+          queryParamApi2.collectionId = collectionId
+          queryParamApi2.path = url.pathname.slice(3)
+          this.props.add_collection_and_pages(null, { collectionId, public: true })
         } else {
-          queryParamApi2.custom_domain = window.location.hostname;
-          queryParamApi2.path = url.pathname.slice(1);
-          this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname });
+          queryParamApi2.custom_domain = window.location.hostname
+          queryParamApi2.path = url.pathname.slice(1)
+          this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname })
         }
 
         if (queryParams?.has('version')) {
-          queryParamApi2.versionName = queryParams.get('version');
+          queryParamApi2.versionName = queryParams.get('version')
         }
 
-        const queryParamsString = new URLSearchParams(queryParamApi2).toString();
+        const queryParamsString = new URLSearchParams(queryParamApi2).toString()
 
         try {
-          const response = await generalApiService.getPublishedContentByPath(`?${queryParamsString}`);
-          this.setDataToReactQueryAndSessionStorage(response);
+          const response = await generalApiService.getPublishedContentByPath(`?${queryParamsString}`)
+          this.setDataToReactQueryAndSessionStorage(response)
         } catch (e) {
-          sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined');
-          this.setState({ idToRenderState: 'undefined' });
+          sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined')
+          this.setState({ idToRenderState: 'undefined' })
         }
       }
-    };
+    }
 
-    const currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
+    const currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
       try {
-        const response = await generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type);
+        const response = await generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
         if (this.props.pages?.[currentIdToShow]?.type == 4) {
           // Example: Handle endpoint case
           // this.props.mutationFn.mutate({ type: 'endpoint', id: currentIdToShow, content: response });
@@ -205,7 +213,7 @@ class PublicEndpoint extends Component {
           // this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response });
         }
       } catch (e) {
-        console.error("Failed to fetch content", e);
+        console.error('Failed to fetch content', e)
       }
     }
   }
@@ -395,7 +403,10 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    let idToRender = this.props?.pageContentDataSSR?.id || sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
+    let idToRender =
+      this.props?.pageContentDataSSR?.id ||
+      sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) ||
+      this.state.idToRenderState
     let type = this.props?.pageContentDataSSR?.type || this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
@@ -408,7 +419,7 @@ class PublicEndpoint extends Component {
         ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
         : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
       const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
-      setTitle(docTitle)
+      // setTitle(docTitle)
       setFavicon(docFaviconLink)
       var collectionName = this.props.collections[collectionId]?.name
       var collectionTheme = this.props.collections[collectionId]?.theme
@@ -433,31 +444,55 @@ class PublicEndpoint extends Component {
     }
 
     return (
-      <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
-        <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
-          <IconButton onClick={() => this.handleShowSideBar()}>
-            <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' />
-          </IconButton>
-          <IconButton onClick={() => this.handleShowSideBar()}>
-            <MdClose id='closeIcon' className='icon-none' />
-          </IconButton>
-        </span>
-        <SplitPane split='vertical' className={'split-sidebar-public'}>
-          <div className='hm-sidebar' style={backgroundStyle}>
-            {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
+      <main
+        role='main'
+        className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
+      >
+
+          <div className='d-flex max-width-container mx-auto'>
+            <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
+              <IconButton onClick={() => this.handleShowSideBar()}>
+                <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' />
+              </IconButton>
+              <IconButton onClick={() => this.handleShowSideBar()}>
+                <MdClose id='closeIcon' className='icon-none' />
+              </IconButton>
+            </span>
+        </div>
+          <div split='vertical' className={'split-sidebar-public max-width-container mx-auto d-flex'}>
+            <div className='hm-sidebar' 
+            // style={backgroundStyle}
+            >
+              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
+            </div>
+            <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content overflow-auto'}>
+              {idToRender ? (
+                <div>
+                  {(type == 4 || type == 5) && (
+                    <DisplayEndpoint
+                      {...this.props}
+                      fetch_entity_name={this.fetchEntityName.bind(this)}
+                      publicCollectionTheme={collectionTheme}
+                    />
+                  )}
+                  {!type && idToRender == 'undefined' && (
+                    <ERROR_404_PUBLISHED_PAGE
+                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
+                    />
+                  )}
+                  {this.state.openReviewModal && this.reviewModal()}
+                </div>
+              ) : (
+                <div className='custom-loading-container'>
+                  <progress class='pure-material-progress-linear w-25' />
+                </div>
+              )}
+            </div>
           </div>
-          <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}>
-            {idToRender ? (
-              <div>
-                {(type == 4 || type == 5) && <DisplayEndpoint {...this.props} fetch_entity_name={this.fetchEntityName.bind(this)} publicCollectionTheme={collectionTheme} />}
-                {!type && idToRender == 'undefined' && <ERROR_404_PUBLISHED_PAGE error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'} />}
-                {this.state.openReviewModal && this.reviewModal()}
-              </div>
-            ) : (
-              <div className='custom-loading-container'><progress class='pure-material-progress-linear w-25' /></div>
-            )}
-          </div>
-        </SplitPane>
+        <div
+          className='preview-content max-width-container mx-auto'
+          dangerouslySetInnerHTML={{ __html: this.props.collections[collectionId]?.docProperties?.defaultfooter }}
+        />
       </main>
     )
   }

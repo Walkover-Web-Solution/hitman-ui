@@ -7,12 +7,13 @@ import { useSelector } from 'react-redux';
 import { GoLink } from "react-icons/go";
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
+import TagInput from './tagInput';
 
 function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged }) {
 
     const [disabledValue, setDisabledValue] = useState(null);
     const [save, setSave] = useState(true)
-    const { pages, customDomain, isPublished} = useSelector((state) => ({
+    const { pages, customDomain, isPublished } = useSelector((state) => ({
         pages: state.pages,
         customDomain: state.collections?.[collectionId]?.customDomain || '',
         isPublished: state?.pages[state.tabs.activeTabId]?.isPublished,
@@ -91,7 +92,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </div>
                         <div className='create d-flex align-items-center pb-4 font-12 text-grey'> Create a website with Techdoc </div>
                     </div>
-                ) : ( customDomain &&
+                ) : (customDomain &&
                     <div className="custom-input-wrapper mr-1 ml-1 mt-1 d-flex align-items-center border bg rounded">
                         <div className='align-items-center editable-input cursor-pointer w-50 p-1  border-right bg-white' >
                             <div className='d-flex align-items-center input'>
@@ -147,7 +148,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </div>
                     </div>
                 )}
-
+               {isPublished && <TagInput /> } 
             </div>
             <div className='d-flex align-items-center justify-content-end gap-2 mt-4 '>
                 {!isPublished ? <Button className="cursor-pointer btn-sm font-12" onClick={handlePublishClick}>

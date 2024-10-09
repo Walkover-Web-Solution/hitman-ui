@@ -51,7 +51,7 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 }
 
 export const updatePageName = (id, updatedName) => {
-  const dataToSend = { name: updatedName }
+  const dataToSend = { name: updatedName}
   return async (dispatch) => {
     const res = await pageApiService.updatePage(id, dataToSend)
     if (res) {
@@ -83,7 +83,8 @@ export const updatePage = (editedPage) => {
       state: editedPage.state,
       collectionId: editedPage.collectionId,
       urlMappingFlag: editedPage.urlMappingFlag,
-      prevUrlName: editedPage.prevUrlName
+      prevUrlName: editedPage.prevUrlName,
+      meta: editedPage.meta
     }
     pageApiService
       .updatePage(editedPage.id, dataToSend)

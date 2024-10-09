@@ -1,25 +1,30 @@
 import PublicEndpoint from "@/components/publicEndpoint/publicEndpoint";
+import axios from "axios";
 import Providers from "src/app/providers/providers";
-import PublicPage from 'src/appPages/publicPage/publicPage'
+import PublicPage from 'src/appPages/publicPage/publicPage';
 
-export default async function Page({ params, searchParams, customDomain }) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const queryParams = searchParams;
+let apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+export async function headerFooter({ params, searchParams, customDomain }) {
     const slug = params.slug;
-    let queryParamApi = {};
-    queryParamApi.collectionId = searchParams?.collectionId || '';
+    let queryParamApi = {
+        collectionId: searchParams?.collectionId || '',
+    };
+
     if (slug) {
         queryParamApi.path = slug.join('/');
+    } else {
+        queryParamApi.path = '';
     }
-    else {
-        queryParamApi.path = ''
+
+    if (searchParams.version) {
+        queryParamApi.versionName = searchParams.version;
     }
-    if (queryParams.version) {
-        queryParamApi.versionName = queryParams.version;
-    }
+
     if (customDomain) {
-        queryParamApi.custom_domain = customDomain
+        queryParamApi.custom_domain = customDomain;
     }
+
     let queryParamsString = '?';
     for (let key in queryParamApi) {
         if (queryParamApi.hasOwnProperty(key)) {
@@ -27,21 +32,76 @@ export default async function Page({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
-    const response = await fetch(apiUrl + `/getPublishedDataByPath${queryParamsString}`);
-    let data
-    if (response.status === 200) {
-        data = await response.json();
-    }
-    else {
-        console.error('Data not found')
+    const response = await axios.get(`${apiUrl}/get-collection-data${queryParamsString}`);
+    return response?.data?.collection; 
+};
+
+async function fetchPageData({ params, searchParams, customDomain }) {
+    const slug = params.slug;
+    let queryParamApi = {
+        collectionId: searchParams?.collectionId || '',
+    };
+
+    if (slug) {
+        queryParamApi.path = slug.join('/');
+    } else {
+        queryParamApi.path = '';
     }
 
+    if (searchParams.version) {
+        queryParamApi.versionName = searchParams.version;
+    }
+
+    if (customDomain) {
+        queryParamApi.custom_domain = customDomain;
+    }
+
+    let queryParamsString = '?';
+    for (let key in queryParamApi) {
+        if (queryParamApi.hasOwnProperty(key)) {
+            queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi[key])}&`;
+        }
+    }
+    queryParamsString = queryParamsString.slice(0, -1);
+
+
+    const response = await fetch(apiUrl + `/getPublishedDataByPath${queryParamsString}`);
+    if (response.status === 200) {
+        return response.json();
+    } else {
+        console.error('Data not found');
+        return null;
+    }
+}
+
+
+export async function generateMetadata({ params, searchParams, customDomain }) {
+    const data = await fetchPageData({ params, searchParams, customDomain });
+    return {
+        title: data?.publishedContent?.name || '',
+        description: data?.publishedContent?.description || '',
+    };
+}
+
+export default async function Page({ params, searchParams, customDomain }) {
+    const data = await fetchPageData({ params, searchParams, customDomain });
+    const content = await headerFooter({ params, searchParams, customDomain }); 
     return (
         <div>
-            <Providers>
-                <PublicEndpoint />
-            </Providers>
-            {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+            <div>
+                <div className='navbar-public'>
+                    {content.defaultHeader !== '' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader }} />}
+                </div>
+                <div className="main-public-container d-flex max-width-container">
+                    <Providers>
+                        <PublicEndpoint />
+                    </Providers>
+                    <div className="hm-right-content">
+                        {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+                    </div>
+                </div>
+                {content.defaultFooter !== ' ' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter }} />}
+            </div>
         </div>
     );
 }

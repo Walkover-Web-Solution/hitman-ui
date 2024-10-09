@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AceEditor from 'react-ace'
 import './editor.scss'
 
@@ -7,13 +7,24 @@ import 'ace-builds/src-noconflict/mode-html'
 // Import a theme (for editor styling)
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import { defaultheader, defaultfooter } from './defaultBlock';
-
+import { defaultHeader, defaultFooter } from './defaultblock';
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router'
 
 
 const Editor = ({ header, setHeader, footer, setFooter }) => {
-  const [code, setCode] = useState(defaultheader);
-  const [code2, setCode2] = useState(defaultfooter);
+  const urlSegments = window.location.pathname.split('/'); 
+  const collectionId = urlSegments[urlSegments.indexOf('collection') + 1];
+  const headerFromRedux = useSelector((state) => state.collections[collectionId]?.docProperties?.defaultHeader); 
+  const footerFromRedux = useSelector((state) => state.collections[collectionId]?.docProperties?.defaultFooter);
+  const [code, setCode] = useState(null);
+  const [code2, setCode2] = useState(null);
+
+  useEffect(() => {
+    setCode(headerFromRedux!== "" ? headerFromRedux : defaultHeader)
+    setCode2(footerFromRedux!=="" ? footerFromRedux: defaultFooter)
+  },[headerFromRedux, footerFromRedux])
+
 
   const handleChange = (newCode) => {
     setCode(newCode); 

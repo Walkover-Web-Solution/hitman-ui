@@ -1,9 +1,4 @@
-const defaultheader = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notion-style Navbar</title>
+const defaultHeader = `
     <style>
         body {
             margin: 0;
@@ -14,8 +9,6 @@ const defaultheader = `<!DOCTYPE html>
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background-color: #ffffff;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         .logo {
@@ -61,7 +54,6 @@ const defaultheader = `<!DOCTYPE html>
             color: #ffffff;
         }
     </style>
-</head>
 <body>
     <nav class="navbar">
         <div class="logo">
@@ -80,26 +72,16 @@ const defaultheader = `<!DOCTYPE html>
             <a href="#" class="btn btn-primary">Get Techdoc</a>
         </div>
     </nav>
-</body>
-</html>
 `
 
-const defaultfooter = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notion-style Footer</title>
+const defaultFooter = `
     <style>
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
             font-size: 14px;
             line-height: 1.5;
         }
         .footer {
-            background-color: #f6f6f6;
-            padding: 40px 20px;
             color: #050505;
         }
         .footer-content {
@@ -108,11 +90,9 @@ const defaultfooter = `<!DOCTYPE html>
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            font-size: 40px;
         }
 
     </style>
-</head>
 <body>
     <footer class="footer">
         <div class="footer-content">
@@ -120,6 +100,6 @@ const defaultfooter = `<!DOCTYPE html>
         </div>
     </footer>
 </body>
-</html>`
+`
 
-export { defaultheader, defaultfooter }
+export { defaultHeader, defaultFooter }
