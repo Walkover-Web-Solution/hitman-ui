@@ -50,7 +50,7 @@ const ContentPanel = () => {
   }, [dispatch])
 
   useEffect(() => {
-    debugger
+    
     const { endpointId, pageId, historyId, collectionId, runId } = params
     if (tabs.loaded) {
       if (endpointId && endpointId !== 'new') {

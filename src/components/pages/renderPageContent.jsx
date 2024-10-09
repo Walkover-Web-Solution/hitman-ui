@@ -30,9 +30,9 @@ export default function RenderPageContent(props) {
     }
 
     return (
-        <div>
+        <>
             {props?.pageContentDataSSR?.contents &&
-                <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-50 tiptap'>
+                <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-75 tiptap'>
                     <div className='mb-4 page-text-render w-100 d-flex justify-content-between align-items-center'>
                         <span className='page-name font-weight-bold mt-5 border-0 w-100 d-flex align-items-center'>{props?.pageContentDataSSR?.name}</span>
                     </div>
@@ -42,6 +42,6 @@ export default function RenderPageContent(props) {
                     </div>
                 </div>
             }
-        </div>
+        </>
     )
 }

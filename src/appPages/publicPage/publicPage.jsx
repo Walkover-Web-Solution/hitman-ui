@@ -26,7 +26,7 @@ function PublicPage(props) {
     // }, [currentIdToShow])
 
     return (
-        <div className={`custom-display-page custom-display-public-page `}>
+        <div className={`custom-display-page custom-display-public-page  overflow-auto`}>
             <div className={`page-wrapper d-flex flex-column ${props?.pageContentDataSSR?.contents ? 'justify-content-between' : 'justify-content-center'}`}>
                 {props?.pageContentDataSSR?.contents ? (
                     <div className='pageText d-flex justify-content-center aling-items-start'>

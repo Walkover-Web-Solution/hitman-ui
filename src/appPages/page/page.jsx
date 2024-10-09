@@ -19,9 +19,12 @@ import * as Y from "yjs";
 import './page.scss'
 import { getOrgId, msgText } from "../../components/common/utility";
 import ConfirmationModal from "../../components/common/confirmationModal";
-import { useRouter,useParams } from "next/navigation";
+import { BiSolidCommentDetail } from "react-icons/bi";
+import { useRouter, useParams } from "next/navigation";
 import { navigateTo } from "src/navigationService";
 import { setPagesPath } from "../../components/pages/redux/pagesActions";
+import TagInput from "@/components/publishModal/tagInput";
+import { updatePage } from "@/components/pages/pageApiService";
 
 
 const Page = () => {
@@ -40,18 +43,24 @@ const Page = () => {
     const dispatch = useDispatch();
     const textareaRef = useRef(null);
     const params = useParams()
-    const{orgId, pageId} = params
+    const { orgId, pageId } = params
     const [sidebar, setSidebar] = useState(false);
     const [pageName, setPageName] = useState(page?.name);
     const [openPublishConfirmationModal, setOpenPublishConfirmationModal] = useState(false);
     const [openUnpublishConfirmationModal, setOpenUnpublishConfirmationModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [hovered, setHovered] = useState(false);
+    const [showInput, setShowInput] = useState(false);
+    const [description, setDescription] = useState("");
+    const [tags, setTags] = useState("");
+    const [showTags, setShowTags] = useState(false)
 
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
-    const [pathData,setPathData] = useState('');
+    const [pathData, setPathData] = useState('');
+    
 
     useEffect(() => {
         if (typeof window.SendDataToChatbot === 'function' && tabs[activeTabId]?.type === 'page') {
@@ -74,6 +83,12 @@ const Page = () => {
     }, [pageId]);
 
     useEffect(() => {
+        setHovered(false);
+        setShowInput(false);
+        setShowTags(false)
+    }, [activeTabId]);
+
+    useEffect(() => {
         if (textareaRef.current) autoGrow(textareaRef.current);
         if (tabs[activeTabId].status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
         setPageName(page?.name || 'Untitled');
@@ -86,7 +101,7 @@ const Page = () => {
     };
 
     const { ydoc, provider } = useMemo(() => {
-        
+
         if (tabs[activeTabId].status !== "SAVED") return { ydoc: null, provider: null };
         const ydoc = new Y.Doc();
         const baseUrl = mapping[process.env.NEXT_PUBLIC_ENV];
@@ -96,7 +111,7 @@ const Page = () => {
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId,tabs[activeTabId]]);
+    }, [orgId, pageId, tabs[activeTabId]]);
 
     // useEffect(() => {
     //     return () => {
@@ -141,7 +156,7 @@ const Page = () => {
 
     const handleSavePageName = () => {
         if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) {
-            dispatch(updatePageName(page.id, pageName));
+            dispatch(updatePageName(page.id,{name:pageName}));
         }
     };
 
@@ -165,7 +180,7 @@ const Page = () => {
         dispatch(updateDraft(activeTabId, newContent))
     };
     const publishClick = () => {
-            setOpenPublishConfirmationModal(true)
+        setOpenPublishConfirmationModal(true)
     }
 
     const unpublishClick = () => {
@@ -173,6 +188,42 @@ const Page = () => {
             setOpenUnpublishConfirmationModal(true)
         }
     }
+    
+    const handleTagsChange = (event) => {
+        setTags(event.target.value); 
+    }
+
+    const handleAddTagsClick = () => {
+        setShowTags(true);
+    };
+
+    const handleAddDescriptionClick = () => {
+        setShowInput(true);
+    };
+
+    const handleDescriptionChange = (event) => {
+        setDescription(event.target.value);
+    };
+
+    const handleSaveDescription = () => {
+        const updatedPageData = {
+            ...page[page.id], 
+            id:page.id,
+            meta:{
+                description:description 
+            }
+        };
+    
+        dispatch(updatePage({updatedPageData})); 
+    };
+
+    const handleMouseEnter = () => {
+        setHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+        setHovered(false);
+    };
 
     const renderPublishConfirmationModal = () => {
         return (
@@ -273,9 +324,9 @@ const Page = () => {
     };
     useEffect(() => {
         const { newPath } = getPath(activeTabId, pages);
-        setPathData(newPath);  
+        setPathData(newPath);
         setPagesPath(newPath);
-    }, [activeTabId, pages]); 
+    }, [activeTabId, pages]);
 
     const handleStrongChange = (e) => {
         setPageName(e.currentTarget.textContent);
@@ -392,20 +443,59 @@ const Page = () => {
             </div>
 
             <div className='page-container h-100 w-100 p-3'>
-                <textarea
-                    ref={textareaRef}
-                    onInput={(e) => {
-                        setPageName(e.target.value)
-                        autoGrow(textareaRef.current)
-                    }}
-                    className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-100'
-                    type='text'
-                    value={pageName}
-                    placeholder='Untitled'
-                    onChange={handlePageNameChange}
-                    onKeyDown={handlePageNameKeyDown}
-                    onBlur={handleSavePageName}
-                />
+                <div
+                    className='page-header position-sticky px-3 py-3 bg-white d-flex align-items-center justify-content-between w-100 position-absolute'
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                >
+                    <div className="d-flex justify-content-between align-items-center">
+                        <textarea
+                            ref={textareaRef}
+                            onInput={(e) => {
+                                setPageName(e.target.value)
+                                autoGrow(textareaRef.current)
+                            }}
+                            className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-100'
+                            type='text'
+                            value={pageName}
+                            placeholder='Untitled'
+                            onChange={handlePageNameChange}
+                            onKeyDown={handlePageNameKeyDown}
+                            onBlur={handleSavePageName}
+                        />
+                        {hovered && !showInput && (
+                            <button
+                                className="btn text-secondary position-absolute description-button"
+                                style={{ top: '8px', right: '430px' }}
+                                onClick={handleAddDescriptionClick}    
+                            >
+                                <BiSolidCommentDetail /> Add Description
+                            </button>
+                        )}
+                        {hovered && !showTags && (
+                            <button
+                                className="btn text-secondary position-absolute description-button"
+                                style={{ top: '8px', right: '330px' }}
+                                onClick={handleAddTagsClick}    
+                            >
+                                <BiSolidCommentDetail /> Add Tags
+                            </button>
+                        )}
+                    </div>
+                </div>
+                {showInput && (
+                    <div className='page-subtitle text-black fa-1x mt-2 w-100'>
+                        <input
+                            type='text'
+                            className='subtitle-input d-flex w-100 pt-2 mb-3 pb-2 font-14'
+                            placeholder='About your Doc'
+                            value={description}
+                            onChange={handleDescriptionChange}
+                            onBlur={handleSaveDescription}
+                        />
+                    </div>
+                )}
+                {showTags && <TagInput/>}
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
                         provider={provider}
