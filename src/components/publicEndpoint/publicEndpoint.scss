@@ -970,14 +970,6 @@ $loader-dot-color: #2196f3;
   }
 }
 
-.navbar-public {
-  .preview-content {
-    > * {
-      background-color: #007bff!important;
-    }
-  }
-}
-
 .main-public-container {
   &:has(.custom-display-page) {
     margin-inline: auto;

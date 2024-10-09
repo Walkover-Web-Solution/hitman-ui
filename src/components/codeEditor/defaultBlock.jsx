@@ -1,9 +1,4 @@
-const defaultHeader = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notion-style Navbar</title>
+const defaultHeader = `
     <style>
         body {
             margin: 0;
@@ -59,7 +54,6 @@ const defaultHeader = `<!DOCTYPE html>
             color: #ffffff;
         }
     </style>
-</head>
 <body>
     <nav class="navbar">
         <div class="logo">
@@ -78,20 +72,12 @@ const defaultHeader = `<!DOCTYPE html>
             <a href="#" class="btn btn-primary">Get Techdoc</a>
         </div>
     </nav>
-</body>
-</html>
 `
 
-const defaultFooter = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notion-style Footer</title>
+const defaultFooter = `
     <style>
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
             font-size: 14px;
             line-height: 1.5;
         }
@@ -107,7 +93,6 @@ const defaultFooter = `<!DOCTYPE html>
         }
 
     </style>
-</head>
 <body>
     <footer class="footer">
         <div class="footer-content">
@@ -115,6 +100,6 @@ const defaultFooter = `<!DOCTYPE html>
         </div>
     </footer>
 </body>
-</html>`
+`
 
 export { defaultHeader, defaultFooter }

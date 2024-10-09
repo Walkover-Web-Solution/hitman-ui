@@ -47,7 +47,7 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <div>
-             <div className='navbar-public bg-primary'>
+             <div className='navbar-public'>
             <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader }} />
             </div>
             <div className="main-public-container d-flex max-width-container">
