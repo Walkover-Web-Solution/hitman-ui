@@ -40,7 +40,6 @@ export default async function Page({ params, searchParams, customDomain }) {
         const result = await axios.post(apiUrl + '/get-collection-data', {
             collectionId: queryParamApi.collectionId
         });
-        console.log(result.data.collection.headerCode,"header")
         return result.data.collection;
     }
 
@@ -48,14 +47,16 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <div>
-            <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultHeader }} />
-            <div>
+             <div className='navbar-public bg-primary'>
+            <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader }} />
+            </div>
+            <div className="main-public-container d-flex max-width-container">
                 <Providers>
                     <PublicEndpoint />
                 </Providers>
                 {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
             </div>
-            <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultFooter}} />
+            <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter}} />
         </div>
     );
 }

@@ -244,8 +244,13 @@ form.add-new-domain-form {
 
 // Overall layout
 .hm-wrapper {
-  display: flex;
-  font-size: 14px;
+  &:has(.mainContentWrapperPublic) {
+    width: 100vw;
+    font-size: 14px;
+  }
+}
+.max-width-container {
+  max-width: 1500px;
 }
 
 .hm-sidebar {
@@ -962,5 +967,19 @@ $loader-dot-color: #2196f3;
   100% {
     background-size: 400% 100%;
     background-position: left -102% top 0%;
+  }
+}
+
+.navbar-public {
+  .preview-content {
+    > * {
+      background-color: #007bff!important;
+    }
+  }
+}
+
+.main-public-container {
+  &:has(.custom-display-page) {
+    margin-inline: auto;
   }
 }
