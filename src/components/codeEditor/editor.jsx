@@ -8,12 +8,23 @@ import 'ace-builds/src-noconflict/mode-html'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/src-noconflict/ext-language_tools'
 import { defaultHeader, defaultFooter } from './defaultblock';
-
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router'
 
 
 const Editor = ({ header, setHeader, footer, setFooter }) => {
-  const [code, setCode] = useState(defaultHeader);
-  const [code2, setCode2] = useState(defaultFooter);
+  const urlSegments = window.location.pathname.split('/'); 
+  const collectionId = urlSegments[urlSegments.indexOf('collection') + 1];
+  const headerFromRedux = useSelector((state) => state.collections[collectionId]?.docProperties?.defaultHeader); 
+  const footerFromRedux = useSelector((state) => state.collections[collectionId]?.docProperties?.defaultFooter);
+  const [code, setCode] = useState(null);
+  const [code2, setCode2] = useState(null);
+
+  useEffect(() => {
+    setCode(headerFromRedux!== "" ? headerFromRedux : defaultHeader)
+    setCode2(footerFromRedux!=="" ? footerFromRedux: defaultFooter)
+  },[headerFromRedux, footerFromRedux])
+
 
   const handleChange = (newCode) => {
     setCode(newCode); 

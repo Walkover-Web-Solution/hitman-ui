@@ -12,13 +12,8 @@ import  NoFound from '@/assets/icons/noCollectionsIcon.svg'
 import  SearchIcon from '@/assets/icons/search.svg'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import './sidebar.scss'
-// import '../../pages/page/page.scss'
-import  Logo from '@/assets/web/favicon.svg'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import Footer from './Footer'
 import customPathnameHook from '../../customHook/customPathnameHook'
 import { globalSearch } from '../pages/pageApiService';

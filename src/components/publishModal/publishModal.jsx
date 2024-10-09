@@ -148,7 +148,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </div>
                     </div>
                 )}
-                <TagInput />
+               {isPublished && <TagInput /> } 
             </div>
             <div className='d-flex align-items-center justify-content-end gap-2 mt-4 '>
                 {!isPublished ? <Button className="cursor-pointer btn-sm font-12" onClick={handlePublishClick}>

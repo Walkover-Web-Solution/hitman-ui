@@ -48,14 +48,14 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <div>
-            <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultHeader }} />
+            {content.defaultHeader !== '' && <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultHeader }} />}
             <div>
                 <Providers>
                     <PublicEndpoint />
                 </Providers>
                 {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
             </div>
-            <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultFooter}} />
+            {content.defaultFooter!== ' ' && <div className='preview-content' dangerouslySetInnerHTML={{ __html: content.defaultFooter}} />}
         </div>
     );
 }
