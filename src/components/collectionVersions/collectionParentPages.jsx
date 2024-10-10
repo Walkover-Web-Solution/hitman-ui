@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {  useRouter, useParams, usePathname } from 'next/navigation'
+import { useRouter, useParams, usePathname } from 'next/navigation'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
@@ -36,8 +36,8 @@ const CollectionParentPages = (props) => {
   })
 
   const params = useParams()
-    const router = useRouter();
-    const location = customPathnameHook();
+  const router = useRouter();
+  const location = customPathnameHook();
   const versionDropDownRef = useRef(null)
   const dispatch = useDispatch()
 
@@ -205,6 +205,7 @@ const CollectionParentPages = (props) => {
   }
 
   const renderBody = (pageId) => {
+    debugger
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId
@@ -216,7 +217,7 @@ const CollectionParentPages = (props) => {
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: isHovered || isSelected ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
+      backgroundImage: (isHovered || isSelected) && isOnPublishedPage() ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
     }
 
     return (

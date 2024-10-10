@@ -132,7 +132,7 @@ const SubPage = (props) => {
 
     const backgroundStyle = {
       backgroundImage:
-        isHovered || isSelected
+        (isHovered || isSelected) && isOnPublishedPage()
           ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})`
           : ''
     }
