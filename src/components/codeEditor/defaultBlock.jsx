@@ -1,6 +1,6 @@
 const defaultHeader = `
     <header>
-  <div style="background-color: black" class="w-100 p-4">
+  <div style="background-color: rgb(55, 53, 47)" class="w-100 p-4">
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex justify-content-between align-items-center">
           <img class='mr-2' width="40" src="https://techdoc.walkover.in/favicon.svg"/>

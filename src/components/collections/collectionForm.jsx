@@ -12,7 +12,7 @@ const CollectionForm = (props) => {
 
   const inputRef = useRef(null);
   const params = useParams();
-  const router = useRouter();;
+  const router = useRouter();
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const collections = useSelector(state => state.collections);

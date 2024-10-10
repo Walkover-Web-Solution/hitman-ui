@@ -61,7 +61,9 @@ export default function RootLayout({ children }) {
                 />
             </head>
             <body>
-                {children}
+                <div id="root">
+                    {children}
+                </div>
             </body>
         </html>
     );

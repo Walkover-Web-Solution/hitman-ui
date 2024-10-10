@@ -1,6 +1,14 @@
-import React from 'react'
-import MainV2 from '../../../../../components/main/MainV2'
+"use client"
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function page() {
-    return null;
+
+    const router = useRouter();
+    
+    useEffect(() => {
+        router.push('/page')
+    }, [])
+
+    return <></>;
 }

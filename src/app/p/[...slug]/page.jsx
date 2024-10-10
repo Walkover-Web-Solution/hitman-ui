@@ -32,8 +32,14 @@ export async function headerFooter({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
-    const response = await axios.get(`${apiUrl}/get-collection-data${queryParamsString}`);
-    return response?.data?.collection; 
+    let response
+    try {
+        response = await axios.get(`${apiUrl}/get-collection-data${queryParamsString}`);
+    }
+    catch (error) {
+        throw error
+    }
+    return response?.data?.collection;
 };
 
 async function fetchPageData({ params, searchParams, customDomain }) {
@@ -63,21 +69,31 @@ async function fetchPageData({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
-
-
-    const response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
-
+    let response;
+    try {
+        response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
+    }
+    catch (error) {
+        console.error(error);
+        throw error;
+    }
     if (response.status === 200) {
         return response.data
     } else {
         console.error('Data not found');
-        return null;
+        throw new Error('Data not found');
     }
 }
 
-
 export async function generateMetadata({ params, searchParams, customDomain }) {
-    const data = await fetchPageData({ params, searchParams, customDomain });
+    let data = {}
+    try {
+        data = await fetchPageData({ params, searchParams, customDomain });
+    }
+    catch {
+        data.error = true
+    }
+    if (data.error) return null;
     return {
         title: data?.publishedContent?.name || '',
         description: data?.publishedContent?.description || '',
@@ -85,24 +101,42 @@ export async function generateMetadata({ params, searchParams, customDomain }) {
 }
 
 export default async function Page({ params, searchParams, customDomain }) {
-    const data = await fetchPageData({ params, searchParams, customDomain });
-    const content = await headerFooter({ params, searchParams, customDomain }); 
+    let data = {}, content = {}
+    try {
+        data = await fetchPageData({ params, searchParams, customDomain });
+    }
+    catch (error) {
+        data.error = true;
+    }
+    try {
+        content = await headerFooter({ params, searchParams, customDomain });
+    }
+    catch (error) {
+        content.error = true
+    }
+
     return (
         <div>
-            <div>
-                <div className='navbar-public position-sticky top-0'>
-                    {content.defaultHeader !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />}
-                </div>
-                <div className="main-public-container d-flex max-width-container">
-                    <Providers>
-                        <PublicEndpoint />
-                    </Providers>
+            {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
+                <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
+            </div>}
+            {!data.error ? <div className="main-public-container d-flex max-width-container">
+                <Providers>
+                    <PublicEndpoint />
+                </Providers>
+                {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) &&
                     <div className="hm-right-content w-100">
-                        {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent || ''} />}
+                        <PublicPage pageContentDataSSR={data?.publishedContent || ''} />
+                    </div>}
+            </div>
+                :
+                <div className="d-flex h-100vh w-100vw justify-content-center align-items-center w-100">
+                    <div>
+                        <p>404 | Not Found</p>
                     </div>
                 </div>
-                {content.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
-            </div>
+            }
+            {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
         </div>
     );
 }

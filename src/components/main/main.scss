@@ -2090,35 +2090,42 @@ html body div#sokt-sso-modal {
 }
 
 .buttonLoader {
-  position: relative; 
+  position: relative;
 
 }
+
 .cmd-icon {
   margin-right: 2px !important;
   margin-bottom: 1px;
 }
+
 .u-icon {
   margin-top: 1px;
 }
+
 .b-icon {
   margin-top: 2px;
 }
+
 .unpublishBtn {
   .button {
     transition: none !important;
   }
+
   &:hover {
     background-color: $alert-color !important;
-    span{
+
+    span {
       color: white !important;
     }
+
     .button {
       color: white !important;
       transition: none !important;
     }
   }
- 
-  
+
+
 }
 
 @keyframes buttonLoader {
@@ -3699,6 +3706,7 @@ body .doc-secs-container {
 .mid-part {
   width: 100%;
   padding: 1.25rem 2.25rem;
+
   @media screen and (max-width: 1160px) {
     padding: 0;
   }
@@ -4313,4 +4321,16 @@ body .tox {
 
 .navbar-public {
   z-index: 9999;
+}
+
+#root {
+  width: 100%;
+}
+
+.w-100vw {
+  width: 100vw;
+}
+
+.h-100vh {
+  height: 100vh;
 }

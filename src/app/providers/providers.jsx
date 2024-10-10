@@ -17,7 +17,6 @@ export default function Providers({ children }) {
     }
     return (
         <Provider store={store}>
-            <div id="root">
                 <ToastContainer
                     position='bottom-left'
                     autoClose={1500}
@@ -38,7 +37,6 @@ export default function Providers({ children }) {
                         {children}
                     </QueryClientProvider>
                 </PersistGate>
-            </div>
         </Provider>
     )
 }

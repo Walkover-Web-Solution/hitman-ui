@@ -118,6 +118,7 @@ class PublicEndpoint extends Component {
       this.setState({ isSticky: sticky })
     })
 
+
     let url = new URL(window.location.href)
     if (window.location?.search) {
       var queryParams = new URLSearchParams(window.location.search)
@@ -446,49 +447,48 @@ class PublicEndpoint extends Component {
     return (
       <main
         role='main'
-        className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
+        className={'mainpublic-endpoint-main hm-wrapper stickyCode'}
       >
-
-          <div className='d-flex max-width-container mx-auto'>
-            <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
-              <IconButton onClick={() => this.handleShowSideBar()}>
-                <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' />
-              </IconButton>
-              <IconButton onClick={() => this.handleShowSideBar()}>
-                <MdClose id='closeIcon' className='icon-none' />
-              </IconButton>
-            </span>
+        <div className='d-flex max-width-container mx-auto'>
+          <span ref={this.iconRef} style={backgroundStyles} className={'hamberger-icon'}>
+            <IconButton onClick={() => this.handleShowSideBar()}>
+              <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' />
+            </IconButton>
+            <IconButton onClick={() => this.handleShowSideBar()}>
+              <MdClose id='closeIcon' className='icon-none' />
+            </IconButton>
+          </span>
         </div>
-          <div split='vertical' className={'split-sidebar-public max-width-container mx-auto d-flex border-bottom pb-5'}>
-            <div className='hm-sidebar border-right pt-3' 
-            // style={backgroundStyle}
-            >
-              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
-            </div>
-            <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content overflow-auto'}>
-              {idToRender ? (
-                <div>
-                  {(type == 4 || type == 5) && (
-                    <DisplayEndpoint
-                      {...this.props}
-                      fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={collectionTheme}
-                    />
-                  )}
-                  {!type && idToRender == 'undefined' && (
-                    <ERROR_404_PUBLISHED_PAGE
-                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
-                    />
-                  )}
-                  {this.state.openReviewModal && this.reviewModal()}
-                </div>
-              ) : (
-                <div className='custom-loading-container'>
-                  <progress class='pure-material-progress-linear w-25' />
-                </div>
-              )}
-            </div>
+        <div split='vertical' className={'split-sidebar-public max-width-container mx-auto d-flex border-bottom pb-5'}>
+          <div className='hm-sidebar border-right pt-3'
+          // style={backgroundStyle}
+          >
+            {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
           </div>
+          <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content overflow-auto'}>
+            {idToRender ? (
+              <div>
+                {(type == 4 || type == 5) && (
+                  <DisplayEndpoint
+                    {...this.props}
+                    fetch_entity_name={this.fetchEntityName.bind(this)}
+                    publicCollectionTheme={collectionTheme}
+                  />
+                )}
+                {!type && idToRender == 'undefined' && (
+                  <ERROR_404_PUBLISHED_PAGE
+                    error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
+                  />
+                )}
+                {this.state.openReviewModal && this.reviewModal()}
+              </div>
+            ) : (
+              <div className='custom-loading-container'>
+                <progress class='pure-material-progress-linear w-25' />
+              </div>
+            )}
+          </div>
+        </div>
         <div
           className='preview-content max-width-container mx-auto'
           dangerouslySetInnerHTML={{ __html: this.props.collections[collectionId]?.docProperties?.defaultfooter }}
