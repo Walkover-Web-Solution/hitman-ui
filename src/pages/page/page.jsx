@@ -276,7 +276,6 @@ const Page = () => {
 
         pagesName = pagesName.reverse().join('');
         collectionName = collectionName + pagesName;
-        console.log(collectionName);
         pagePath = pagePath.reverse().join('');
         newPath = newPath + pagePath;
         return { pathArray: path.reverse(), newPath, collectionName };

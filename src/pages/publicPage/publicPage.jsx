@@ -27,6 +27,31 @@ function PublicPage() {
 
     let { data } = useQuery(['pageContent', currentIdToShow], getPagePublishedData, queryConfig)
 
+    const removeBreadCollections = (html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const breadcrumbContainers = doc.querySelectorAll('.breadcrumb-container');
+
+        breadcrumbContainers.forEach(container => {
+            const breadcrumbSegments = container.querySelectorAll('.breadcrumb-segment');
+
+            breadcrumbSegments.forEach(button => {
+                if (button.id.startsWith('collection/')) {
+                    const nextElement = button.nextElementSibling;
+                    button.remove();
+                    if (nextElement && nextElement.classList.contains('breadcrumb-separator')) {
+                    nextElement.remove();
+                    }
+                }
+            });
+        });
+
+        return doc.body.innerHTML;
+    };
+
+
+    data = removeBreadCollections(data);
+    
     useEffect(() => {
         if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (pages?.[currentIdToShow]?.type === 1 || pages?.[currentIdToShow]?.type === 3)) {
             window.SendDataToChatbot({
