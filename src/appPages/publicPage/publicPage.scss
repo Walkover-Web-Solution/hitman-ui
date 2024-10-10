@@ -2,7 +2,8 @@
 
 .custom-display-public-page {
     max-width: 100% !important;
-   height: 100vh !important;
+    height: 100vh !important;
+
     .page-wrapper {
         margin-left: auto;
         margin-right: auto;
@@ -35,7 +36,7 @@
             .heading-main {
                 z-index: 200;
                 right: 0;
-                height: 500px;
+                max-height: 500px;
                 width: 20%;
 
                 @media screen and (max-width: 1500px) {

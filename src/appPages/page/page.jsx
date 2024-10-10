@@ -60,7 +60,7 @@ const Page = () => {
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
     const [pathData, setPathData] = useState('');
-    
+
 
     useEffect(() => {
         if (typeof window.SendDataToChatbot === 'function' && tabs[activeTabId]?.type === 'page') {
@@ -156,7 +156,7 @@ const Page = () => {
 
     const handleSavePageName = () => {
         if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) {
-            dispatch(updatePageName(page.id,{name:pageName}));
+            dispatch(updatePageName(page.id, { name: pageName }));
         }
     };
 
@@ -188,9 +188,9 @@ const Page = () => {
             setOpenUnpublishConfirmationModal(true)
         }
     }
-    
+
     const handleTagsChange = (event) => {
-        setTags(event.target.value); 
+        setTags(event.target.value);
     }
 
     const handleAddTagsClick = () => {
@@ -207,14 +207,14 @@ const Page = () => {
 
     const handleSaveDescription = () => {
         const updatedPageData = {
-            ...page[page.id], 
-            id:page.id,
-            meta:{
-                description:description 
+            ...page[page.id],
+            id: page.id,
+            meta: {
+                description: description
             }
         };
-    
-        dispatch(updatePage({updatedPageData})); 
+
+        dispatch(updatePage({ updatedPageData }));
     };
 
     const handleMouseEnter = () => {
@@ -402,19 +402,19 @@ const Page = () => {
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     }
-                    <IconButton>
-                        <div className='button'>
-                            <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
-                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs[activeTabId]?.status === "NEW" ? (
+
+                    <div className='button'>
+                        <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
+                            {tabs[activeTabId]?.isModified ? <IconButton><button className="btn p-0" onClick={handleSavePage}>Save</button></IconButton> : tabs[activeTabId]?.status === "NEW" ?
+                                <IconButton>
                                     <button className="btn p-0 text-black-60 disabled">
                                         Unsaved
                                     </button>
-                                ) : (
-                                    <></>
-                                )}</button>}
-                            </OverlayTrigger>
-                        </div>
-                    </IconButton>
+                                </IconButton>
+                                : <></>
+                            }
+                        </OverlayTrigger>
+                    </div>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
                             <Dropdown>
@@ -444,11 +444,11 @@ const Page = () => {
 
             <div className='page-container h-100 w-100 p-3'>
                 <div
-                    className='page-header position-sticky px-3 py-3 bg-white d-flex align-items-center justify-content-between w-100 position-absolute'
+                    className='page-header bg-white d-flex align-items-center justify-content-between w-100'
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                 >
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex w-100 justify-content-between position-relative align-items-center">
                         <textarea
                             ref={textareaRef}
                             onInput={(e) => {
@@ -464,22 +464,22 @@ const Page = () => {
                             onBlur={handleSavePageName}
                         />
                         {hovered && !showInput && (
-                            <button
+                            <div
                                 className="btn text-secondary position-absolute description-button"
-                                style={{ top: '8px', right: '430px' }}
-                                onClick={handleAddDescriptionClick}    
+                                style={{ top: '0px', left: '0px' }}
+                                onClick={handleAddDescriptionClick}
                             >
                                 <BiSolidCommentDetail /> Add Description
-                            </button>
+                            </div>
                         )}
                         {hovered && !showTags && (
-                            <button
+                            <div
                                 className="btn text-secondary position-absolute description-button"
-                                style={{ top: '8px', right: '330px' }}
-                                onClick={handleAddTagsClick}    
+                                style={{ top: '0px', left: '150px' }}
+                                onClick={handleAddTagsClick}
                             >
                                 <BiSolidCommentDetail /> Add Tags
-                            </button>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -495,7 +495,7 @@ const Page = () => {
                         />
                     </div>
                 )}
-                {showTags && <TagInput/>}
+                {showTags && <TagInput />}
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
                         provider={provider}
@@ -510,7 +510,8 @@ const Page = () => {
                     />
                 </div>
             </div>
-            {sidebar &&
+            {
+                sidebar &&
                 <SaveAsPageSidebar
                     pageId={activeTabId}
                     name={pageName}
@@ -519,7 +520,7 @@ const Page = () => {
                     handleSubmit={() => setSidebar(false)}
                 />
             }
-        </div>
+        </div >
     );
 };
 

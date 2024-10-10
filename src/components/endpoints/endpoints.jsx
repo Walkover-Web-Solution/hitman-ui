@@ -137,7 +137,7 @@ const Endpoints = (props) => {
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: isHovered || isSelected ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
+      backgroundImage: (isHovered || isSelected) && isOnPublishedPage() ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
     }
 
     return (
