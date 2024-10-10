@@ -7,9 +7,8 @@ import 'ace-builds/src-noconflict/mode-html'
 // Import a theme (for editor styling)
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import { defaultHeader, defaultFooter } from './defaultblock';
+import { defaultHeader, defaultFooter } from './defaultBlock';
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router'
 
 
 const Editor = ({ header, setHeader, footer, setFooter }) => {
