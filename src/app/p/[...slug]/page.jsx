@@ -65,9 +65,10 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     queryParamsString = queryParamsString.slice(0, -1);
 
 
-    const response = await fetch(apiUrl + `/getPublishedDataByPath${queryParamsString}`);
+    const response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
+
     if (response.status === 200) {
-        return response.json();
+        return response.data
     } else {
         console.error('Data not found');
         return null;
@@ -97,7 +98,7 @@ export default async function Page({ params, searchParams, customDomain }) {
                         <PublicEndpoint />
                     </Providers>
                     <div className="hm-right-content">
-                        {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent?.publishedPage || ''} />}
+                        {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent || ''} />}
                     </div>
                 </div>
                 {content.defaultFooter !== ' ' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter }} />}
