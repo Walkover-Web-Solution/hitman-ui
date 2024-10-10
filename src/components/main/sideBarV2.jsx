@@ -107,10 +107,8 @@ const SideBar = () => {
   }
 
   const debouncedSearch = useCallback(debounce(async (searchTerm) => {
-    if(searchTerm.length > 2){
       const result = await globalSearch(searchTerm); 
       setFilteredPages(result.data.results);
-    }
 }, 1000), []);
 
   const handleOnChange = async (e) => {

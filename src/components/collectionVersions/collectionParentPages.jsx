@@ -204,8 +204,7 @@ const CollectionParentPages = (props) => {
     dispatch(setDefaultversionId(payload))
   }
 
-  const renderBody = (pageId) => {
-    debugger
+  const renderBody = (pageId) => { 
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId
