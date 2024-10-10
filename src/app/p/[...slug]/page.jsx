@@ -90,18 +90,18 @@ export default async function Page({ params, searchParams, customDomain }) {
     return (
         <div>
             <div>
-                <div className='navbar-public'>
-                    {content.defaultHeader !== '' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />}
+                <div className='navbar-public position-sticky top-0'>
+                    {content.defaultHeader !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />}
                 </div>
                 <div className="main-public-container d-flex max-width-container">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>
-                    <div className="hm-right-content">
+                    <div className="hm-right-content w-100">
                         {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent || ''} />}
                     </div>
                 </div>
-                {content.defaultFooter !== '' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
+                {content.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
             </div>
         </div>
     );

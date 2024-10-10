@@ -153,7 +153,7 @@ const CodeTemplate = (props) => {
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')
           }}
         >
-          <div className='inner-editor'>
+          <div className='inner-editor pt-3'>
             <Col id='code-window-sidebar' xs={12} className='px-3 pt-3 pb-1'>
               <div className='code-heading mb-3 d-flex align-items-center'>
                 <span className={props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>

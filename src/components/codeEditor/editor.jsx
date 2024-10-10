@@ -12,28 +12,28 @@ import { useSelector } from 'react-redux'
 
 
 const Editor = ({ header, setHeader, footer, setFooter }) => {
-  const urlSegments = window.location.pathname.split('/'); 
+  const urlSegments = window.location.pathname.split('/');
   const collectionId = urlSegments[urlSegments.indexOf('collection') + 1];
-  const headerFromRedux = useSelector((state) => state.collections[collectionId]?.docProperties?.defaultHeader); 
+  const headerFromRedux = useSelector((state) => state.collections[collectionId]?.docProperties?.defaultHeader);
   const footerFromRedux = useSelector((state) => state.collections[collectionId]?.docProperties?.defaultFooter);
   const [code, setCode] = useState(null);
   const [code2, setCode2] = useState(null);
 
   useEffect(() => {
-    setCode(headerFromRedux!== "" ? headerFromRedux : defaultHeader)
-    setCode2(footerFromRedux!=="" ? footerFromRedux: defaultFooter)
-  },[headerFromRedux, footerFromRedux])
+    setCode(headerFromRedux !== "" ? headerFromRedux : defaultHeader)
+    setCode2(footerFromRedux !== "" ? footerFromRedux : defaultFooter)
+  }, [headerFromRedux, footerFromRedux])
 
 
   const handleChange = (newCode) => {
-    setCode(newCode); 
+    setCode(newCode);
     setHeader(newCode);
   }
 
   const handleChange2 = (newCode) => {
-  setCode2(newCode); 
-   setFooter(newCode);
-    
+    setCode2(newCode);
+    setFooter(newCode);
+
   }
 
   return (

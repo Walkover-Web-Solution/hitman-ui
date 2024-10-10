@@ -1671,7 +1671,6 @@ table#custom-generic-table {
   min-width: 432px;
   border-left: 1px solid $lightblackborder;
   border-right: 1px solid $lightblackborder;
-  border-bottom: 1px solid $lightblackborder;
   transition: 300ms;
 
   @media screen and (max-width: 1300px) {
@@ -1737,10 +1736,6 @@ table#custom-generic-table {
 
   .inner-editor {
     height: 100%;
-
-    #code-window-sidebar {
-      border-top: 1px solid rgba(128, 128, 128, 0.219);
-    }
 
     .editor-body-wrapper {
       height: 100%;

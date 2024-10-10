@@ -3357,7 +3357,7 @@ class DisplayEndpoint extends Component {
                   setActiveTab={this.setActiveTab}
                 />
               )}
-              <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view m-auto' : 'testing-view')}>
+              <div className={'clear-both pt-3' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view m-auto' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
                     <div className='d-flex endpoint-name-container justify-content-between mb-3 align-content-center'>

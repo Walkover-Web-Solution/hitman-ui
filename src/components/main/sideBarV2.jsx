@@ -1,23 +1,30 @@
-"use client";
+'use client'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link,  useRouter, useParams, usePathname } from 'next/navigation'
+import { Link, useRouter, useParams, usePathname } from 'next/navigation'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
-import { isDashboardRoute, getOnlyUrlPathById, SESSION_STORAGE_KEY, getUrlPathById, isTechdocOwnDomain, isOnPublishedPage } from '../common/utility'
+import {
+  isDashboardRoute,
+  getOnlyUrlPathById,
+  SESSION_STORAGE_KEY,
+  getUrlPathById,
+  isTechdocOwnDomain,
+  isOnPublishedPage
+} from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
-import  EmptyHistory from '@/assets/icons/emptyHistroy.svg'
-import  NoFound from '@/assets/icons/noCollectionsIcon.svg'
-import  SearchIcon from '@/assets/icons/search.svg'
+import EmptyHistory from '@/assets/icons/emptyHistroy.svg'
+import NoFound from '@/assets/icons/noCollectionsIcon.svg'
+import SearchIcon from '@/assets/icons/search.svg'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import './sidebar.scss'
 import Footer from './Footer'
 import customPathnameHook from '../../customHook/customPathnameHook'
-import { globalSearch } from '../pages/pageApiService';
-import { debounce } from 'lodash';
+import { globalSearch } from '../pages/pageApiService'
+import { debounce } from 'lodash'
 
 const SideBar = () => {
   const collections = useSelector((state) => state.collections)
@@ -27,8 +34,8 @@ const SideBar = () => {
 
   const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
 
-  const router = useRouter();
-  const location = customPathnameHook();
+  const router = useRouter()
+  const location = customPathnameHook()
   const params = useParams()
 
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
@@ -38,6 +45,7 @@ const SideBar = () => {
   const [filteredHistorySnapshot, setFilteredHistorySnapshot] = useState([])
   const [filteredEndpoints, setFilteredEndpoints] = useState([])
   const [filteredPages, setFilteredPages] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef(null)
 
   useEffect(() => {
@@ -51,10 +59,16 @@ const SideBar = () => {
   }, [])
 
   const handleShortcutKeys = (event) => {
-    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0; 
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
     const isContentEditable = event.target.getAttribute('contentEditable') === 'true'
     const isPageFocused = document.activeElement.closest('.parent-page-container')
-    if (!isPageFocused && ((isMac && event.metaKey && event.key === "k") || (!isMac && event.ctrlKey && event.key === "k")) && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && !isContentEditable) {
+    if (
+      !isPageFocused &&
+      ((isMac && event.metaKey && event.key === 'k') || (!isMac && event.ctrlKey && event.key === 'k')) &&
+      event.target.tagName !== 'INPUT' &&
+      event.target.tagName !== 'TEXTAREA' &&
+      !isContentEditable
+    ) {
       event.preventDefault()
       inputRef.current.focus()
     }
@@ -97,29 +111,30 @@ const SideBar = () => {
                 />
               </div>
             )}
-            <h1 className='hm-sidebar-title mb-0 font-20 fw-800'>
-              {publishedCollectionTitle || collectionName || ''}
-            </h1>
+            <h1 className='hm-sidebar-title mb-0 font-20 fw-800'>{publishedCollectionTitle || collectionName || ''}</h1>
           </div>
         </div>
       </>
     )
   }
 
-  const debouncedSearch = useCallback(debounce(async (searchTerm) => {
-    if(searchTerm.length > 2){
-      const result = await globalSearch(searchTerm); 
-      setFilteredPages(result.data.results);
-    }
-}, 1000), []);
+  const debouncedSearch = useCallback(
+    debounce(async (searchTerm) => {
+      setIsLoading(true)
+      const result = await globalSearch(searchTerm)
+      setFilteredPages(result.data.results)
+      setIsLoading(false)
+    }, 1000),
+    []
+  )
 
   const handleOnChange = async (e) => {
     const searchTerm = e.target.value.toLowerCase()
     const newData = { ...searchData, filter: e.target.value }
 
     if (searchTerm === '') {
-      setFilteredPages([]);
-  }
+      setFilteredPages([])
+    }
 
     let filteredHistorySnapshot = []
     if (historySnapshot) {
@@ -134,7 +149,7 @@ const SideBar = () => {
     const sideBarData = pages
     for (let key in sideBarData) {
       let o = sideBarData[key]
-      if (sideBarData[key]?.type === 4 ) {
+      if (sideBarData[key]?.type === 4) {
         if (
           o.name?.toLowerCase().includes(searchTerm) ||
           o.BASE_URL?.toLowerCase().includes(searchTerm) ||
@@ -142,10 +157,9 @@ const SideBar = () => {
         ) {
           filteredEndpoints.push(sideBarData[key])
         }
-      }else{
-       debouncedSearch(searchTerm);
+      } else {
+        debouncedSearch(searchTerm)
       }
-      
     }
     setSearchData(newData)
     setFilteredHistorySnapshot(filteredHistorySnapshot)
@@ -153,7 +167,7 @@ const SideBar = () => {
   }
 
   const renderSearch = () => {
-    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
     return (
       <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
@@ -324,9 +338,16 @@ const SideBar = () => {
 
   const renderSearchList = () => {
     if (searchData.filter.length > 2) {
-      return filteredPages.length > 0 || filteredEndpoints.length > 0 || filteredHistorySnapshot.length > 0 ? (
+      if (isLoading) {
+        return (
+          <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
+            <span className='font-weight-700'>Loading...</span>
+          </div>
+        )
+      }
+      return filteredPages?.length > 0 || filteredEndpoints.length > 0 || filteredHistorySnapshot.length > 0 ? (
         <div className='searchResult'>
-          {filteredPages.length > 0 ? renderPagesList() : null}
+          {filteredPages?.length > 0 ? renderPagesList() : null}
           {filteredEndpoints.length > 0 ? renderEndpointsList() : null}
           {filteredHistorySnapshot.length > 0 ? (
             <div>
@@ -455,7 +476,7 @@ const SideBar = () => {
         <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1' : ''}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
-        {isOnPublishedPage() && (<Footer />)}
+          {isOnPublishedPage() && <Footer />}
         </div>
       </>
     )
