@@ -222,36 +222,34 @@ $scrollbar-color: #f1f1f1;
         }
     }
     .breadcrumb-container {
-    display: inline-block;
-    padding: 5px;
-    background: #f1f1f1;
-    border-radius: 5px;
-}
-
-.breadcrumb-segment {
-    color: #333;
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 4px 6px; /* Add padding for better spacing */
-    transition: opacity 0.3s ease, border-radius 0.3s ease; /* Smooth transition for opacity and border-radius */
-    border-radius: 4px; /* Keep the border-radius consistent */
-    opacity: 1; /* Default opacity */
-}
-
-.breadcrumb-segment + .breadcrumb-segment::before {
-    content: '/';
-    margin: 0 5px;
-    color: #333; /* Separator color */
-}
-
-.breadcrumb-segment:hover {
-    opacity: 0.5; /* Decrease opacity on hover */
-    border-radius: 4px; /* Ensure the border-radius remains consistent */
-}
-
-.breadcrumb-separator {
-    padding: 0 5px; /* Space around the separator */
-    color: #333; /* Adjust separator color */
-}
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+        background: #f1f1f1;
+        border-radius: 5px;
+    }
+    .breadcrumb-segment {
+        color: #333;
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 4px 6px; 
+        transition: opacity 0.3s ease, border-radius 0.3s ease;
+        border-radius: 4px; 
+        opacity: 1; 
+    }
+    .breadcrumb-segment + .breadcrumb-segment::before {
+        content: '/';
+        margin: 0 5px;
+        color: #333; 
+    }
+    .breadcrumb-segment:hover {
+        opacity: 0.5; 
+        border-radius: 4px; 
+    }
+    .breadcrumb-separator {
+        padding: 0 5px; 
+        color: #333;
+    }
 }

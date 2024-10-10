@@ -25,6 +25,30 @@ function PublicPage(props) {
     //     }
     // }, [currentIdToShow])
 
+    const removeBreadCollections = (html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const breadcrumbContainers = doc.querySelectorAll('.breadcrumb-container');
+
+        breadcrumbContainers.forEach(container => {
+            const breadcrumbSegments = container.querySelectorAll('.breadcrumb-segment');
+
+            breadcrumbSegments.forEach(button => {
+                if (button.id.startsWith('collection/')) {
+                    const nextElement = button.nextElementSibling;
+                    button.remove();
+                    if (nextElement && nextElement.classList.contains('breadcrumb-separator')) {
+                    nextElement.remove();
+                    }
+                }
+            });
+        });
+
+        return doc.body.innerHTML;
+    };
+
+    props?.pageContentDataSSR?.contents = removeBreadCollections(props?.pageContentDataSSR?.contents);
+
     return (
         <div className={`custom-display-page custom-display-public-page  overflow-auto`}>
             <div className={`page-wrapper d-flex flex-column ${props?.pageContentDataSSR?.contents ? 'justify-content-between' : 'justify-content-center'}`}>

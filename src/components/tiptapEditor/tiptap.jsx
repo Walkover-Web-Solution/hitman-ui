@@ -32,10 +32,9 @@ import {
   FaAlignCenter,
   FaAlignRight,
   FaAlignJustify,
-  FaHeading,
   FaCode,
 } from 'react-icons/fa'
-import {LuFileSymlink, LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from "react-icons/lu";
+import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from "react-icons/lu";
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
@@ -44,7 +43,7 @@ import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
 import { Node } from '@tiptap/core';
 import { useNavigate } from 'react-router'
-import { getOrgId, isOnPublishedPage } from '../common/utility'
+import { getOrgId } from '../common/utility'
 
 export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData, pathName }) {
 
