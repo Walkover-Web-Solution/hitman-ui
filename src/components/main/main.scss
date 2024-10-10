@@ -3564,6 +3564,7 @@ body .btn-group-custom {
   position: sticky;
   top: 60px;
   background-color: white;
+  overflow: auto;
 
   span {
     text-overflow: ellipsis;
