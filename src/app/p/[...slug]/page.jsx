@@ -91,7 +91,7 @@ export default async function Page({ params, searchParams, customDomain }) {
         <div>
             <div>
                 <div className='navbar-public'>
-                    {content.defaultHeader !== '' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader }} />}
+                    {content.defaultHeader !== '' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />}
                 </div>
                 <div className="main-public-container d-flex max-width-container">
                     <Providers>
@@ -101,7 +101,7 @@ export default async function Page({ params, searchParams, customDomain }) {
                         {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) && <PublicPage pageContentDataSSR={data?.publishedContent || ''} />}
                     </div>
                 </div>
-                {content.defaultFooter !== ' ' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter }} />}
+                {content.defaultFooter !== '' && <div className='preview-content max-width-container mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
             </div>
         </div>
     );
