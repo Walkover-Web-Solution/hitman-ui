@@ -12,7 +12,7 @@ localStorageGet()
     }, []);
 
     const localStorageGet = () =>{
-      if (typeof window !== 'undefined' && !localStorage.getItem("proxy_token")) {
+      if (typeof window !== 'undefined' && !localStorage.getItem("token ")) {
         router.replace('/');
         return null;
       }

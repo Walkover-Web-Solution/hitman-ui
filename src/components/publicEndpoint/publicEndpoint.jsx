@@ -459,8 +459,8 @@ class PublicEndpoint extends Component {
               </IconButton>
             </span>
         </div>
-          <div split='vertical' className={'split-sidebar-public max-width-container mx-auto d-flex'}>
-            <div className='hm-sidebar' 
+          <div split='vertical' className={'split-sidebar-public max-width-container mx-auto d-flex border-bottom pb-5'}>
+            <div className='hm-sidebar border-right pt-3' 
             // style={backgroundStyle}
             >
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
