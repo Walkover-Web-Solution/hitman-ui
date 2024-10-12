@@ -125,6 +125,96 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     },
   });
 
+  const Video = Node.create({
+    name: 'video',
+    group: 'block',
+    atom: true,
+
+    addAttributes() {
+      return {
+        src: {
+          default: null,
+        },
+        isEmbed: {
+          default: false, 
+        },
+      };
+    },
+
+    parseHTML() {
+      return [
+        {
+          tag: 'iframe',
+        },
+        {
+          tag: 'video',
+        },
+      ];
+    },
+
+    renderHTML({ HTMLAttributes }) {
+      const { src, isEmbed } = HTMLAttributes;
+
+      if (isEmbed) {
+        return [
+          'iframe',
+          {
+            src,
+            width: '560',
+            height: '315',
+            frameborder: '0',
+            allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+            allowfullscreen: 'true',
+          },
+        ];
+      }
+
+      return [
+        'video',
+        {
+          controls: true,
+          width: '560',
+          height: '315',
+          ...HTMLAttributes,
+        },
+      ];
+    },
+
+    addCommands() {
+      return {
+        setVideo: (url) => ({ commands }) => {
+          let isEmbed = false;
+          const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\/.+\/))([a-zA-Z0-9_-]{11})(?:&.*)?/);
+          const vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/);
+
+          if (youtubeMatch) {
+            isEmbed = true;
+            url = `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+          } else if (vimeoMatch) {
+            isEmbed = true;
+            url = `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+          } else {
+            const videoExtensions = ['.mp4', '.webm', '.ogg'];
+            const isVideoFile = videoExtensions.some(ext => url.endsWith(ext));
+
+            if (!isVideoFile) {
+              alert("Unsupported video format. Please provide a valid video URL.");
+              return false;
+            }
+          }
+
+          return commands.insertContent({
+            type: this.name,
+            attrs: {
+              src: url,
+              isEmbed,
+            },
+          });
+        },
+      };
+    },
+  });
+
   function handleBreadcrumbClick(event) {
     const orgID = getOrgId();
     const breadcrumbSegmentId = event.target.getAttribute('id');
@@ -152,8 +242,10 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const [showSlashMenu, setShowSlashMenu] = useState(false);
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const [activeSlashMenuIndex, setActiveSlashMenuIndex] = useState(0);
-  const [loading,setLoading] = useState(false);
-  const [showImage, setShowImage] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [showFiles, setShowFiles] = useState(false);
 
   const NonEditableLink = Link.extend({
   addAttributes() {
@@ -230,6 +322,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       },
     },
     extensions: [
+      Video,
       StarterKit,
       Breadcrumb,
       Blockquote,
@@ -403,9 +496,9 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
 
-      {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} />}
+      {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles} />}
 
-      {editor && <FloatingMenuComponent editor={editor} pathData={pathData} pathName={pathName} showImage={showImage} setShowImage={setShowImage} />}
+      {editor && <FloatingMenuComponent editor={editor} pathData={pathData} pathName={pathName} showImage={showImage} setShowImage={setShowImage}  showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles}  />}
 
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{
