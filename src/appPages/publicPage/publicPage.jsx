@@ -1,31 +1,14 @@
-import React from 'react'
-import RenderPageContent from '../../components/pages/renderPageContent'
-import DisplayUserAndModifiedData from '../../components/common/userService'
-import { IoDocumentTextOutline } from 'react-icons/io5'
-import ApiDocReview from '../../components/apiDocReview/apiDocReview'
-import Providers from '../../app/providers/providers'
-import './publicPage.scss'
-
+"use client"
+import React from 'react';
+import RenderPageContent from '../../components/pages/renderPageContent';
+import DisplayUserAndModifiedData from '../../components/common/userService';
+import { IoDocumentTextOutline } from 'react-icons/io5';
+import ApiDocReview from '../../components/apiDocReview/apiDocReview';
+import Providers from '../../app/providers/providers';
+import './publicPage.scss';
 
 function PublicPage(props) {
-    // let currentIdToShow
-    // if (typeof window !== 'undefined') {
-    //     currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
-    // }
-    // useEffect(() => {
-    //     if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (pages?.[currentIdToShow]?.type === 1 || pages?.[currentIdToShow]?.type === 3)) {
-    //         window.SendDataToChatbot({
-    //             bridgeName: 'page',
-    //             threadId: `${currentIdToShow}`,
-    //             variables: {
-    //                 collectionId: pages[currentIdToShow]?.collectionId,
-    //                 functionType: import.meta.env.VITE_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
-    //             }
-    //         })
-    //     }
-    // }, [currentIdToShow])
-
-    const removeBreadCollections = (html) => {
+   /*  const removeBreadCollections = (html) => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const breadcrumbContainers = doc.querySelectorAll('.breadcrumb-container');
@@ -38,23 +21,26 @@ function PublicPage(props) {
                     const nextElement = button.nextElementSibling;
                     button.remove();
                     if (nextElement && nextElement.classList.contains('breadcrumb-separator')) {
-                    nextElement.remove();
+                        nextElement.remove();
                     }
                 }
             });
         });
 
         return doc.body.innerHTML;
-    };
+    }; */
 
-    props?.pageContentDataSSR?.contents = removeBreadCollections(props?.pageContentDataSSR?.contents);
+    // Create a new variable for the modified content
+    const modifiedContent = props?.pageContentDataSSR?.contents
+        /* ? removeBreadCollections(props.pageContentDataSSR.contents)
+        : null; */
 
     return (
-        <div className={`custom-display-page custom-display-public-page  overflow-auto`}>
-            <div className={`page-wrapper d-flex flex-column ${props?.pageContentDataSSR?.contents ? 'justify-content-between' : 'justify-content-center'}`}>
-                {props?.pageContentDataSSR?.contents ? (
-                    <div className='pageText d-flex justify-content-center aling-items-start'>
-                        <RenderPageContent pageContentDataSSR={props?.pageContentDataSSR} />
+        <div className={`custom-display-page custom-display-public-page overflow-auto`}>
+            <div className={`page-wrapper d-flex flex-column ${modifiedContent ? 'justify-content-between' : 'justify-content-center'}`}>
+                {modifiedContent ? (
+                    <div className='pageText d-flex justify-content-center align-items-start'>
+                        <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} />
                     </div>
                 ) : (
                     <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
@@ -69,14 +55,16 @@ function PublicPage(props) {
                         </span>
                     </div>
                 )}
-                {props?.pageContentDataSSR?.contents && <div className='my-5'>
-                    <Providers>
-                        <ApiDocReview />
-                    </Providers>
-                </div>}
+                {modifiedContent && (
+                    <div className='my-5'>
+                        <Providers>
+                            <ApiDocReview />
+                        </Providers>
+                    </div>
+                )}
             </div>
         </div>
-    )
+    );
 }
 
-export default PublicPage
+export default PublicPage;

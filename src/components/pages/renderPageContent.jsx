@@ -1,33 +1,12 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import './renderPageContent.scss'
 import HoverBox from './hoverBox/hoverBox';
-import { getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility';
 
 export default function RenderPageContent(props) {
 
     const [htmlWithIds, setHtmlWithIds] = useState('')
-    const { pages } = useSelector((state) => ({
-        pages: state.pages,
-    }))
-
-    const navigate = useNavigate();
     const [headings, setHeadings] = useState([]);
-
-    function handleBreadcrumbClick(event) {
-        const breadcrumbSegmentId = event.target.getAttribute('id');
-        let id = breadcrumbSegmentId.split('/');
-        if(id[0] === 'collection'){
-            return;
-        }
-        id = id[1];
-        sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-        let pathName = getUrlPathById(id, pages)
-        pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-        navigate(pathName)
-    }
 
     const addIdsToHeadings = (html) => {
         const parser = new DOMParser();
@@ -46,15 +25,6 @@ export default function RenderPageContent(props) {
         const html = addIdsToHeadings(props?.pageContentDataSSR?.contents);
         setHtmlWithIds(html);
     }, [props?.pageContentDataSSR?.contents]);
-
-     useEffect(() => {
-        setTimeout(() => {
-                const getBtn = document.querySelectorAll('.breadcrumb-segment');
-                getBtn.forEach(button => {
-                   button.addEventListener('click', (e) => handleBreadcrumbClick(e));
-                });
-        },10);
-    }, [htmlWithIds])
 
     const scrollToHeading = (headingId) => {
         document.getElementById(headingId).scrollIntoView({ behavior: "smooth" });

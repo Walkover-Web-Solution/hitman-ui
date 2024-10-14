@@ -128,7 +128,7 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
                 setFileSizeVal(true);
                 setTimeout(() => {
                     setFileSizeVal(false); 
-                }, 1500);
+                }, 2000);
                 e.target.value = ''; 
                 break;
             }

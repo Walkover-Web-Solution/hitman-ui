@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef, useState } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
@@ -42,8 +43,6 @@ import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
 import { Node } from '@tiptap/core';
-import { useNavigate } from 'react-router'
-import { getOrgId } from '../common/utility'
 
 export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData, pathName }) {
 
@@ -51,7 +50,6 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     currentUser: state.users.currentUser,
   }));
 
-  const navigate = useNavigate();
 
   const Breadcrumb = Node.create({
     name: 'breadcrumb',
@@ -215,20 +213,20 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     },
   });
 
-  function handleBreadcrumbClick(event) {
+  /* function handleBreadcrumbClick(event) {
     const orgID = getOrgId();
     const breadcrumbSegmentId = event.target.getAttribute('id');
     const Id = breadcrumbSegmentId.split('/');
     if (Id[1] === 'undefined') {
-      navigate(`/orgs/${orgID}/dashboard/page/new`);
+      router.push(`/orgs/${orgID}/dashboard/page/new`);
     } else {
       if (Id[0] === 'collection') {
-        navigate(`/orgs/${orgID}/dashboard/collection/${Id[1]}/settings`);
+        router.push(`/orgs/${orgID}/dashboard/collection/${Id[1]}/settings`);
       } else {
-        navigate(`/orgs/${orgID}/dashboard/page/${Id[1]}`);
+        router.push(`/orgs/${orgID}/dashboard/page/${Id[1]}`);
       }
     }
-  }
+  } */
 
   const getRandomColor = () => {
     const colors = [
@@ -238,7 +236,6 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  const [alignment, setAlignment] = useState('left');
   const [showSlashMenu, setShowSlashMenu] = useState(false);
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const [activeSlashMenuIndex, setActiveSlashMenuIndex] = useState(0);
@@ -548,28 +545,28 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
                 <span className="menu-description mt-1 font-12">Create a list with numbering</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => { setAlignment('left'), insertBlock('left') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => {  insertBlock('left') }} >
               <FaAlignLeft className='mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Left</span>
                 <span className="menu-description mt-1 font-12">Align your content to the left</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => { setAlignment('right'), insertBlock('right') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => {  insertBlock('right') }} >
               <FaAlignRight className='mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Right</span>
                 <span className="menu-description mt-1 font-12">Align your content to the right</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => { setAlignment('center'), insertBlock('center') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => {  insertBlock('center') }} >
               <FaAlignCenter className=' mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Center</span>
                 <span className="menu-description mt-1 font-12">Align your content to the center</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => { setAlignment('justify'), insertBlock('justify') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => {  insertBlock('justify') }} >
               <FaAlignJustify className=' mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Justify</span>
