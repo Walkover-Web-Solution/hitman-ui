@@ -64,7 +64,7 @@ const ShowCaseSaveAsModal = (props) => {
             <div className='d-flex justify-content-start align-items-center' key={index}>
               {index !== 0 && <span className='ml-1'>/</span>}
               <div onClick={() => handleGoBack(index)} className='ml-1 tab-line'>
-                {index === 0 ? currentOrg?.name : getName(singleId)}
+                {index === 0 ? (currentOrg?.is_readable ? currentOrg.meta.companyName : currentOrg?.name) : getName(singleId)}
               </div>
             </div>
           )

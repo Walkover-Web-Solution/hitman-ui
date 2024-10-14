@@ -14,7 +14,7 @@ import OnlineStatus from '../onlineStatus/onlineStatus'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
 import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
-import  NoCollectionIcon  from '@/assets/icons/collection.svg'
+import NoCollectionIcon from '@/assets/icons/collection.svg'
 import 'react-toastify/dist/ReactToastify.css'
 import './main.scss'
 import { useRouter } from 'next/navigation'
@@ -22,6 +22,7 @@ import CollectionForm from '../collections/collectionForm'
 import CustomModal from '../customModal/customModal'
 import ShortcutModal from '../shortcutModal/shortcutModal'
 import Protected from '../common/Protected'
+import { updateMode } from '../../store/clientData/clientDataActions'
 
 const MainV2 = () => {
   const params = useParams()
@@ -35,13 +36,19 @@ const MainV2 = () => {
   const [showShortcutModal, setShowShortcutModal] = useState(false)
 
   useEffect(() => {
+    const checkSessionToken = sessionStorage.getItem('sessionToken');
+    if (!checkSessionToken) {
+      dispatch((updateMode({ mode: false })));
+    }
+    else {
+      dispatch((updateMode({ mode: true })));
+    }
     const initialize = async () => {
-      const token = getProxyToken()
+      const token = checkSessionToken || getProxyToken();
       if (!token) {
         setLoading(false)
         return
       }
-
       let users = await getUserData(token)
       if (users) dispatch(addUserData(users))
       const isUser = getCurrentUser();

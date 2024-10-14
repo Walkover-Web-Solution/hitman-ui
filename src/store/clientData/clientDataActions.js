@@ -34,3 +34,10 @@ export const updateAllEndpointCheckStatus = (payload) => {
     payload
   }
 }
+
+export const updateMode = (payload) => {
+  return {
+    type: clientDataActionTypes.UPDATE_MODE,
+    payload
+  }
+}

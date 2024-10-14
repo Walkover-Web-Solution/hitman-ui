@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useRouter,  } from 'next/navigation'
+import { useParams, useRouter, } from 'next/navigation'
 import { Tab, Nav } from 'react-bootstrap'
 
 import TabContent from '../tabs/tabContent'
@@ -34,7 +34,7 @@ const ContentPanel = () => {
   const [savePageFlag, setSavePageFlag] = useState(false)
   const [selectedTabId, setSelectedTabId] = useState(null)
 
-  const { endpoints, collections, pages, tabs, historySnapshots, curlSlider } = useSelector((state) => ({
+  const { endpoints, collections, pages, tabs, historySnapshots, curlSlider, activeTabId } = useSelector((state) => ({
     endpoints: state.pages,
     collections: state.collections,
     groups: state.groups,
@@ -42,7 +42,8 @@ const ContentPanel = () => {
     pages: state.pages,
     tabs: state.tabs,
     historySnapshots: state.history,
-    curlSlider: state.modals?.curlSlider || false
+    curlSlider: state.modals?.curlSlider || false,
+    activeTabId: state.tabs.activeTabId
   }))
 
   useEffect(() => {
@@ -50,39 +51,28 @@ const ContentPanel = () => {
   }, [dispatch])
 
   useEffect(() => {
-    
     const { endpointId, pageId, historyId, collectionId, runId } = params
-    if (tabs.loaded) {
-      if (endpointId && endpointId !== 'new') {
-        if (tabs.tabs[endpointId]) {
-          if (tabs.activeTabId !== endpointId) {
-            dispatch(setActiveTabId(endpointId))
-          }
-        } else if (endpoints && endpoints[endpointId]) {
-          dispatch(openInNewTab({
-            id: endpointId,
-            type: 'endpoint',
-            status: tabStatusTypes.SAVED,
-            previewMode: false,
-            isModified: false,
-            state: {},
-          }))
+    if (endpointId && endpointId !== 'new') {
+      if (tabs.tabs[endpointId]) {
+        if (tabs.activeTabId !== endpointId) {
+          dispatch(setActiveTabId(endpointId))
         }
+      } else if (endpoints && endpoints[endpointId]) {
+        dispatch(openInNewTab({
+          id: endpointId,
+          type: 'endpoint',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false,
+          state: {},
+        }))
       }
+    }
 
-      if (pageId && pageId !== 'new') {
-        if (tabs.tabs[pageId]) {
-          if (tabs.activeTabId !== pageId) {
-            dispatch(setActiveTabId(pageId))
-          }
-        } else if (pages && pages[pageId]) {
-          dispatch(openInNewTab({
-            id: pageId,
-            type: 'page',
-            status: tabStatusTypes.SAVED,
-            previewMode: false,
-            isModified: false,
-          }))
+    if (pageId && pageId !== 'new') {
+      if (tabs.tabs[pageId]) {
+        if (tabs.activeTabId !== pageId) {
+          dispatch(setActiveTabId(pageId))
         }
       } else if (pages && pages[pageId]) {
         dispatch(openInNewTab({
@@ -91,98 +81,106 @@ const ContentPanel = () => {
           status: tabStatusTypes.SAVED,
           previewMode: false,
           isModified: false,
-          state: {},
         }))
       }
+    } else if (pages && pages[pageId]) {
+      dispatch(openInNewTab({
+        id: pageId,
+        type: 'page',
+        status: tabStatusTypes.SAVED,
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
+    }
 
-      if (historyId) {
-        if (tabs.tabs[historyId]) {
-          if (tabs.activeTabId !== historyId) {
-            dispatch(setActiveTabId(historyId))
-          }
-        } else if (historySnapshots && historySnapshots[historyId]) {
-          dispatch(openInNewTab({
-            id: historyId,
-            type: 'history',
-            status: tabStatusTypes.SAVED,
-            previewMode: false,
-            isModified: false,
-            state: {}
-          }))
+    if (historyId) {
+      if (tabs.tabs[historyId]) {
+        if (tabs.activeTabId !== historyId) {
+          dispatch(setActiveTabId(historyId))
+        }
+      } else if (historySnapshots && historySnapshots[historyId]) {
+        dispatch(openInNewTab({
+          id: historyId,
+          type: 'history',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false,
+          state: {}
+        }))
+      }
+    }
+
+    if (collectionId && runId) {
+      if (tabs.tabs[runId]) {
+        if (tabs.activeTabId !== runId) {
+          dispatch(setActiveTabId(runId))
+        }
+      } else if (runId) {
+        dispatch(openInNewTab({
+          id: runId,
+          type: 'manual-runs',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false,
+          state: {}
+        }))
+      }
+    }
+
+    if (collectionId && !runId) {
+      if (tabs.tabs[collectionId]) {
+        if (tabs.activeTabId !== collectionId) {
+          dispatch(setActiveTabId(collectionId))
+        }
+      } else if (collections && collections[collectionId]) {
+        let pageType
+        if (location.pathname.split('/')[6] === 'settings') {
+          pageType = 'SETTINGS'
+        } else if (location.pathname.split('/')[6] === 'runs') {
+          pageType = 'RUNS'
+        } else if (location.pathname.split('/')[6] === 'runner') {
+          pageType = 'RUNNER'
+        }
+        dispatch(openInNewTab({
+          id: collectionId,
+          type: 'collection',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false,
+          state: { pageType }
+        }))
+      }
+    }
+
+    if (router.pathname === `/orgs/${params.orgId}/dashboard`) {
+      const { orgId } = params;
+      if (tabs?.tabsOrder?.length) {
+        const { tabs: tabsData, activeTabId, tabsOrder } = tabs;
+
+        let tabId = activeTabId;
+        if (!tabsData[tabId]) tabId = tabsOrder[0];
+
+        const tab = tabsData[tabId];
+        if (tabId !== activeTabId) dispatch(setActiveTabId(tabId));
+
+        const collectionLength = Object.keys(collections).length;
+        if (tab?.type === 'manual-runs') {
+          router.push(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`);
+          return;
+        }
+        if (collectionLength > 0) {
+          router.push(
+            tab.type !== 'collection'
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? tabId : tabId}`
+              : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+          );
+        } else {
+          dispatch(addNewTab());
         }
       }
-
-      if (collectionId && runId) {
-        if (tabs.tabs[runId]) {
-          if (tabs.activeTabId !== runId) {
-            dispatch(setActiveTabId(runId))
-          }
-        } else if (runId) {
-          dispatch(openInNewTab({
-            id: runId,
-            type: 'manual-runs',
-            status: tabStatusTypes.SAVED,
-            previewMode: false,
-            isModified: false,
-            state: {}
-          }))
-        }
-      }
-
-      if (collectionId && !runId) {
-        if (tabs.tabs[collectionId]) {
-          if (tabs.activeTabId !== collectionId) {
-            dispatch(setActiveTabId(collectionId))
-          }
-        } else if (collections && collections[collectionId]) {
-          let pageType
-          if (location.pathname.split('/')[6] === 'settings') {
-            pageType = 'SETTINGS'
-          } else if (location.pathname.split('/')[6] === 'runs') {
-            pageType = 'RUNS'
-          } else if (location.pathname.split('/')[6] === 'runner') {
-            pageType = 'RUNNER'
-          }
-          dispatch(openInNewTab({
-            id: collectionId,
-            type: 'collection',
-            status: tabStatusTypes.SAVED,
-            previewMode: false,
-            isModified: false,
-            state: { pageType }
-          }))
-        }
-      }
-
     }
-if (router.pathname === `/orgs/${params.orgId}/dashboard`) {
-  const { orgId } = params;
-  if (tabs?.tabsOrder?.length) {
-    const { tabs: tabsData, activeTabId, tabsOrder } = tabs;
-
-    let tabId = activeTabId;
-    if (!tabsData[tabId]) tabId = tabsOrder[0];
-
-    const tab = tabsData[tabId];
-    if (tabId !== activeTabId) dispatch(setActiveTabId(tabId));
-
-    const collectionLength = Object.keys(collections).length;
-    if (tab?.type === 'manual-runs') {
-      router.push(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`);
-      return;
-    }
-    if (collectionLength > 0) {
-      router.push(
-        tab.type !== 'collection'
-          ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? tabId : tabId}`
-          : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-      );
-    } else {
-      dispatch(addNewTab());
-    }
-  }
-}
-  }, [tabs, endpoints, pages, historySnapshots, collections, params])
+  }, [params, activeTabId])
 
   const handleSaveEndpoint = (flag, tabId) => {
     setSaveEndpointFlag(flag)

@@ -24,9 +24,9 @@ const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
   const tabs = useSelector((state) => state.tabs)
   const organizationList = useSelector((state) => state.organizations.orgList)
+  const mode = useSelector((state) => state?.clientData?.mode || false)
   const dispatch = useDispatch()
   const router = useRouter();
-
   const [showModal, setShowModal] = useState(false)
   const [modalForTabs, setModalForTabs] = useState(false)
   const [showNewCollectionModal, setShowNewCollectionModal] = useState(false)
@@ -59,7 +59,8 @@ const UserProfile = () => {
   }
 
   const renderAvatarWithOrg = (onClick, ref1) => {
-    const firstLetterCapital = getCurrentOrg()?.name?.[0].toUpperCase();
+    const currentOrg = getCurrentOrg()
+    const firstLetterCapital = currentOrg.is_readable ? currentOrg?.meta?.companyName?.[0].toUpperCase() : currentOrg?.name?.[0].toUpperCase();
     return (
       <div className='menu-trigger-box d-flex align-items-center justify-content-between w-100 rounded gap-1 px-1 py-1'>
         <div
@@ -71,7 +72,7 @@ const UserProfile = () => {
           }}
         >
           <div className="mr-2 avatar-org px-2 rounded" size={15}>{firstLetterCapital}</div>
-          <div className='org-name text-secondary'>{getCurrentOrg()?.name || null}</div>
+          <div className='org-name text-secondary'>{currentOrg.is_readable ? currentOrg?.meta?.companyName : currentOrg?.name || null}</div>
           <IoIosArrowDown size={16} className='text-secondary' />
         </div>
         <div className='add-button d-flex align-items-center'>
@@ -179,24 +180,35 @@ const UserProfile = () => {
     return (
       <div className='org-listing-container'>
         <div className='org-listing-column d-flex flex-column gap-1 w-100'>
-          {organizations.map((org, key) => (
+          {!mode ? organizations.map((org, key) => (
             <div key={key} className='d-flex name-list cursor-pointer'>
               <div className='org-collection-name d-flex'
                 onClick={() => handleOrgClick(org, selectedOrg)}>
-                <Avatar className='mr-2 avatar-org' name={org.name} size={32} />
+                <Avatar className='mr-2 avatar-org' name={org.is_readable ? org.meta.companyName : org.name} size={32} />
                 <span
                   className={`org-listing-button mr-1 ${org.id === selectedOrg?.id ? 'selected-org' : ''}`}>
-                  {org.name}
+                  {org?.is_readable ? org.meta.companyName : org.name}
                 </span>
               </div>
-              {org?.id !== selectedOrg?.id && (
+              {org?.id !== selectedOrg?.id && !org?.is_readable && (
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
                   <span className='leave-icon' onClick={() => leaveOrg(org.id)}><IoExit size={20} /></span>
                 </OverlayTrigger>
               )}
               {org.id === selectedOrg?.id && <span className='check' ><FaCheck /></span>}
             </div>
-          ))}
+          )) :
+            <div className='d-flex name-list cursor-pointer'>
+              <div className='org-collection-name d-flex'>
+                <Avatar className='mr-2 avatar-org' name={selectedOrg.is_readable ? selectedOrg.meta.companyName : selectedOrg.name} size={32} />
+                <span
+                  className={`org-listing-button mr-1 selected-org`}>
+                  {selectedOrg?.is_readable ? selectedOrg.meta.companyName : selectedOrg.name}
+                </span>
+              </div>
+              <span className='check' ><FaCheck /></span>
+            </div>
+          }
         </div>
       </div>
     )
@@ -301,12 +313,14 @@ const UserProfile = () => {
                 <div className='pt-2 pb-2'>{renderOrgListDropdown()}</div>
               </div>
               <div className=' py-2'>
-                <div>{renderAddWorkspace()}</div>
-                <hr className='p-0 m-0' />
-                <div>{renderInviteTeam()}</div>
+                {!mode && <>
+                  <div>{renderAddWorkspace()}</div>
+                  <hr className='p-0 m-0' />
+                </>}
+                {!getCurrentOrg()?.is_readable && <div>{renderInviteTeam()}</div>}
                 <div>{renderTrash()}</div>
                 <div>{renderAddCollection()}</div>
-                <div>{renderLogout()}</div>
+                {!mode && <div>{renderLogout()}</div>}
               </div>
             </div>
           </Dropdown.Menu>

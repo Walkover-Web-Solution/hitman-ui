@@ -100,12 +100,12 @@ function getOrgList() {
 }
 
 function getProxyToken() {
+  const sessionTokenKey = 'sessionToken'
   const tokenKey = "token";
-  // Check if running in a browser environment
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(tokenKey) || "";
+    return sessionStorage.getItem(sessionTokenKey) || localStorage.getItem(tokenKey) || "";
   }
-  return null; // Return null if not in a browser
+  return null;
 }
 
 async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, redirect) {
@@ -148,7 +148,7 @@ function AuthServiceV2() {
       try {
         const proxyAuthToken = searchParams.get('proxy_auth_token');
         if (proxyAuthToken) {
-          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken , true);
+          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken, true);
         }
       } catch (err) {
         router.push("/logout");

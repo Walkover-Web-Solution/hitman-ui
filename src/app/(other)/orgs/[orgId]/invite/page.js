@@ -5,13 +5,13 @@ import { getCurrentOrg, getCurrentUser, getProxyToken } from '@/components/auth/
 import { toast } from 'react-toastify'
 import { inviteMembers, removeUser } from '@/services/orgApiService'
 import { useSelector, useDispatch } from 'react-redux'
-import { addNewUserData, removeUserData } from '@/components/auth/redux/usersRedux/userAction'  
+import { addNewUserData, removeUserData } from '@/components/auth/redux/usersRedux/userAction'
 import { inviteuserMail } from '@/components/common/apiUtility'
 import GenericModal from '@/components/main/GenericModal'
 import './inviteTeam.scss'
 
 function InviteTeam() {
-  const dispatch = useDispatch()       
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
@@ -24,6 +24,7 @@ function InviteTeam() {
   })
 
   useEffect(() => {
+    if (getCurrentOrg()?.is_readable) router.push(`/orgs/${orgId}/dashboard`)
     if (typeof window.SendDataToChatbot === 'function') {
       const userId = getCurrentUser()?.id
       window.SendDataToChatbot({

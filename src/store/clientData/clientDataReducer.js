@@ -38,6 +38,9 @@ const clientDataReducer = (state = initialState, action) => {
         state[endpointId] = { ...state[endpointId], automationCheck: action.payload.isSelectAll ? true : false }
       })
       return { ...state }
+    case clientDataActionTypes.UPDATE_MODE:
+      state.mode = action?.payload?.mode; // mode=true --> the user is sso user from MSG91
+      return { ...state }
 
     default:
       return state
