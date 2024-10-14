@@ -184,7 +184,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       return {
         setVideo: (url) => ({ commands }) => {
           let isEmbed = false;
-          const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\/.+\/))([a-zA-Z0-9_-]{11})(?:&.*)?/);
+          const youtubeMatch = url.match(/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S+)?$/);
           const vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/);
 
           if (youtubeMatch) {
