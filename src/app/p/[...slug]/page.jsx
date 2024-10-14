@@ -97,6 +97,7 @@ export async function generateMetadata({ params, searchParams, customDomain }) {
     return {
         title: data?.publishedContent?.name || '',
         description: data?.publishedContent?.description || '',
+        tags: data?.publishedContent?.meta?.tags || ''
     };
 }
 
@@ -120,7 +121,7 @@ export default async function Page({ params, searchParams, customDomain }) {
             {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
                 <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
             </div>}
-            {!data.error ? <div className="main-public-container d-flex max-width-container">
+            {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto">
                 <Providers>
                     <PublicEndpoint />
                 </Providers>

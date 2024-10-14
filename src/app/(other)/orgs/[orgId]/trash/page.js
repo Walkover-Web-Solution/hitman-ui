@@ -12,6 +12,7 @@ import { getCurrentOrg } from '@/components/auth/authServiceV2'
 import { getAllDeletedCollections, restoreCollection } from '@/components/collections/collectionsApiService'
 import trashImage from '@/assets/icons/trash.webp'
 import './trash.scss'
+import Protected from '@/components/common/Protected';
 
 const TrashPage = () => {
   const [collections, setCollections] = useState([])
@@ -144,4 +145,4 @@ const TrashPage = () => {
   )
 }
 
-export default TrashPage
+export default Protected(TrashPage)

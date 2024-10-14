@@ -106,13 +106,8 @@ export function isDashboardRoute(props, sidebar = false) {
   } else return false
 }
 
-export function redirectToDashboard(orgId) {
-  if (isElectron()) {
-    window.location.hash = `/orgs/${orgId}/dashboard`
-    window.location.reload()
-  } else {
-    window.location = `/orgs/${orgId}/dashboard`
-  }
+export function redirectToDashboard(orgId,router) {
+    window.location= `/orgs/${orgId}/dashboard`
 }
 
 export function isElectron() {

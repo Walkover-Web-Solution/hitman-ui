@@ -6,6 +6,7 @@ import  EmptyHistory  from '@/assets/icons/emptyHistroy.svg'
 import { Dropdown } from 'react-bootstrap'
 import { GrGraphQl } from 'react-icons/gr'
 import './history.scss'
+import Protected from '../common/Protected'
 
 function compareByCreatedAt(a, b) {
   const t1 = a?.createdAt
@@ -144,4 +145,5 @@ const History = () => {
   return renderHistoryList()
 }
 
-export default History
+
+export default Protected(History)

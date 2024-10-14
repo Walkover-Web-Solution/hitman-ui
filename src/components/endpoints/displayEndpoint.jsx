@@ -2140,13 +2140,8 @@ class DisplayEndpoint extends Component {
   }
 
   handleCancel() {
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.invoke('request-cancel', this.state.requestKey)
-    } else {
-      const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
-      this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
-    }
+    const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
+    this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
     this.setState({
       loader: false,
       runSendRequest: null,

@@ -1,10 +1,9 @@
 import React, { Component, createRef } from 'react'
-import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, isDashboardAndTestingView, hexToRgb, isOnPublishedPage } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
 import _ from 'lodash'
-import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
@@ -12,7 +11,6 @@ import { RiDeleteBinLine } from 'react-icons/ri'
 import { connect } from 'react-redux'
 import GenericTableAutoSuggest from './genericTableAutoSuggest.jsx'
 import { convertToHTML, getInnerText } from '../../utilities/htmlConverter.js'
-import AutoSuggest from 'env-autosuggest'
 import IconButton from '../common/iconButton.jsx'
 
 const mapStateToProps = (state) => {
@@ -24,12 +22,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {}
-}
-
-const autoCompleterDefaultProps = {
-  Component: 'input',
-  autoComplete: 'off',
-  trigger: ['{{']
 }
 
 

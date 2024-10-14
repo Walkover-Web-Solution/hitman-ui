@@ -21,6 +21,7 @@ import { useRouter } from 'next/navigation'
 import CollectionForm from '../collections/collectionForm'
 import CustomModal from '../customModal/customModal'
 import ShortcutModal from '../shortcutModal/shortcutModal'
+import Protected from '../common/Protected'
 
 const MainV2 = () => {
   const params = useParams()
@@ -161,4 +162,4 @@ const MainV2 = () => {
   )
 }
 
-export default MainV2
+export default Protected(MainV2)

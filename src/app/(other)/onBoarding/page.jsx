@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 import { IoHomeSharp, IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineApi } from "react-icons/md";
 import { FaLongArrowAltLeft, FaPlus } from "react-icons/fa";
-import { navigation } from 'next/navigation';
-import { createOrg, switchOrg } from '@/services/orgApiService'
+import { useRouter } from 'next/navigation';
+import { createOrg } from '@/services/orgApiService'
 import { addIsExpandedAction } from '@/store/clientData/clientDataActions';
 import './onBoarding.scss' 
 import { getOrgId, redirectToDashboard } from '@/components/common/utility';
@@ -19,7 +19,7 @@ import { closeAllTabs } from '@/components/tabs/redux/tabsActions'
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
-    // const router = navigation()
+    const router = useRouter()
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [isContinueEnabled, setIsContinueEnabled] = useState(false);
     const [showInput, setShowInput] = useState(false);
@@ -116,7 +116,7 @@ const OnBoarding = () => {
 
     return (
         <>
-            <button className='btn home-button position-absolute btn-dark btn-sm'onClick={() => redirectToDashboard(getOrgId())}>
+            <button className='btn home-button position-absolute btn-dark btn-sm'onClick={() => redirectToDashboard(getOrgId(), router)}>
                 <IconButton>
                     <IoHomeSharp size={18} />
                 </IconButton>
