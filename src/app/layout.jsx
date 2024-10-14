@@ -27,38 +27,6 @@ export default function RootLayout({ children }) {
                 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
                 <script src="https://unpkg.com/react-jsonschema-form/dist/react-jsonschema-form.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                        (function(c,l,a,r,i,t,y){
-                            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
-                            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                        })(window, document, "clarity", "script", "k6owas5pe9");
-                    `,
-                    }}
-                />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                        if (typeof module === 'object') {
-                            window.module = module;
-                            module = undefined;
-                        }
-                    `,
-                    }}
-                />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                        if (typeof window !== 'undefined') {
-                            import('jquery').then(() => {
-                                import('bootstrap/dist/js/bootstrap.js');
-                            });
-                        }
-                    `,
-                    }}
-                />
             </head>
             <body>
                 <div id="root">
