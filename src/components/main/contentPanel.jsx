@@ -223,12 +223,6 @@ if (router.pathname === `/orgs/${params.orgId}/dashboard`) {
         <>
           <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
             <SiCloudflarepages size={100} className='mb-4 text-secondary' />
-            <p className='mb-4 text-secondary'>Create a new page:</p>
-            <div>
-              <button onClick={() => dispatch(addNewTab())} className='btn text-secondary'>
-                <IoDocumentTextOutline size={22} />
-              </button>
-            </div>
           </div>
         </>
       );

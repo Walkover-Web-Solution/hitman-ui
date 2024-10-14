@@ -448,11 +448,13 @@ const CustomTabs = (props) => {
             </div>
           ))}
         </Nav>
-        <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
-          <button className='btn' onClick={() => handleAddTab()}>
-            <LuPlus />
-          </button>
-        </Nav.Item>
+        {organizations?.currentOrg?.meta?.type !== 0 && (
+          <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
+            <button className='btn' onClick={() => handleAddTab()}>
+              <LuPlus />
+            </button>
+          </Nav.Item>
+        )}
         <div className='d-flex'>
           <Nav.Item className='tab-buttons' id='options-tab-button'>
             {

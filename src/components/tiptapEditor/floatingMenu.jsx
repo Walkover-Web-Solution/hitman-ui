@@ -4,15 +4,17 @@ import { Dropdown } from 'react-bootstrap';
 import { BiPlus } from 'react-icons/bi';
 import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from 'react-icons/lu';
 import { FaListUl, FaListOl,  FaImage, } from 'react-icons/fa';
+import { FaVideo } from "react-icons/fa6";
+import { LuFiles } from "react-icons/lu";
 import { GoTasklist } from 'react-icons/go';
 import '../styles.scss'
 import './tiptap.scss'
 
-export default function FloatingMenuComponent({ editor , showImage , setShowImage }) {
+export default function FloatingMenuComponent({ editor , showImage , setShowImage , pathData , pathName , showVideo , setShowVideo , showFiles , setShowFiles }) {
     return (
         <FloatingMenu className="floating-menu" tippyOptions={{ duration: 100 }} editor={editor}>
             <Dropdown>
-                {(!showImage) ? <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
+                {(!showImage && !showVideo && !showFiles) ? <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
                   <BiPlus size={18} />
                 </Dropdown.Toggle> : ''}
                 <Dropdown.Menu>
@@ -38,7 +40,13 @@ export default function FloatingMenuComponent({ editor , showImage , setShowImag
                         <LuTextQuote /> Quote
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => setShowImage(true)}>
-                        <FaImage /> Files
+                        <FaImage /> Images
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setShowVideo(true)}>
+                        <FaVideo /> Videos
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setShowFiles(true)}>
+                        <LuFiles /> Files
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>

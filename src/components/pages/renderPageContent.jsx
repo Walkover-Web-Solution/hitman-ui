@@ -22,7 +22,8 @@ export default function RenderPageContent(props) {
     };
 
     useEffect(() => {
-        setHtmlWithIds(addIdsToHeadings(props?.pageContentDataSSR?.contents));
+        const html = addIdsToHeadings(props?.pageContentDataSSR?.contents);
+        setHtmlWithIds(html);
     }, [props?.pageContentDataSSR?.contents]);
 
     const scrollToHeading = (headingId) => {

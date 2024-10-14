@@ -12,16 +12,19 @@ import pageApiService from '../pages/pageApiService'
 import '../styles.scss'
 import './tiptap.scss'
 
-export default function BubbleMenuComponent({ editor,pathData,loading,setLoading , showImage , setShowImage }) {
+export default function BubbleMenuComponent({ editor , pathData , loading , setLoading , showImage , setShowImage , showVideo , setShowVideo , showFiles , setShowFiles }) {
     const [alignment, setAlignment] = useState('left');
     const [color, setColor] = useState("");
     const [showTable, setShowTable] = useState(false)
     const [showLink, setShowLink] = useState(false)
     const [linkUrl, setLinkUrl] = useState('')
     const [ImageUrl, setImageUrl] = useState('')
+    const [VideoUrl, setVideoUrl] = useState('')
+    const [FileUrl, setFileUrl] = useState('')
     const [row, setRow] = useState('3')
     const [column, setColumn] = useState('3')
     const [activeHeading, setActiveHeading] = useState(0);
+    const [fileSizeVal , setFileSizeVal] = useState(false);
     const activeFontFamily = () => {
         const fontFamilies = ['Inter', 'Comic Sans', 'serif', 'monospace', 'cursive', 'var(--title-font-family)'];
         const activeFont = fontFamilies.find(font => editor.isActive('textStyle', { fontFamily: font }));
@@ -43,6 +46,8 @@ export default function BubbleMenuComponent({ editor,pathData,loading,setLoading
     };
     function onHide() {
         if (showImage) setShowImage(false)
+        else if (showVideo) setShowVideo(false)
+        else if (showFiles) setShowFiles(false);        
         else if (showLink) setShowLink(false)
         else setShowTable(false)
     }
@@ -71,40 +76,65 @@ export default function BubbleMenuComponent({ editor,pathData,loading,setLoading
     const handleFileUpload = async (files) => {
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
+           formData.append('files', files[i]);
         }
         formData.append('pathData', pathData);
         setLoading(true);
         try {
         const result = await pageApiService.uploadFiles(formData);
         result.data.files.forEach((item) => {
-            if (item.type.startsWith('image')) {
-            editor.chain().focus().insertContent(`<div><img src="${item.url}" alt="${item.originalName}" /><p></p></div>`).run();
+            if (showImage) {
+                editor.chain().focus().insertContent(`<div><img src="${item.url}" alt="${item.originalName}" /><p></p></div>`).run();
+            }
+            else if(showVideo){
+                editor.commands.setVideo(item.url);
             } 
             else {
-            editor.chain().focus().insertContent(`
-                <div>
-                <a href="${item.url}" target="_blank">
-                    <strong>Download File: ${item.originalName}</strong>
-                </a>
-                <p></p>
-                </div>
-            `).run();
+                editor.chain().focus().insertContent(`
+                    <div>
+                        <a href="${item.url}" target="_blank">
+                            <strong>Download File: ${item.originalName}</strong>
+                        </a>
+                    </div>
+                `).run();
             }
             editor.commands.setTextSelection(editor.state.doc.content.size);
         });
-        setLoading(false);
-        setShowImage(false);
+
+            if(showImage) setShowImage(false);
+            else if(showVideo) setShowVideo(false);
+            else setShowFiles(false);
+
+            setLoading(false);
+
         } catch (error) {
-        setLoading(false);
-        console.error('Error uploading files:', error);
+            setLoading(false);
+            onHide();
+            console.error('Error uploading files:', error);
         }
     };
 
     const onFileChange = (e) => {
         const selectedFiles = e.target.files;
-        if (selectedFiles.length > 0) {
-            handleFileUpload(selectedFiles); 
+        let valid = true;
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            const isVideo = file.type.startsWith('video/');
+            const maxSize = isVideo ? 20 * 1024 * 1024 : 5 * 1024 * 1024; // 20MB for videos, 5MB for other files
+
+            if (file.size > maxSize) {
+                valid = false;
+                setFileSizeVal(true);
+                setTimeout(() => {
+                    setFileSizeVal(false); 
+                }, 2000);
+                e.target.value = ''; 
+                break;
+            }
+        }
+        if (valid && selectedFiles.length > 0) {
+            handleFileUpload(selectedFiles);
         }
     };
 
@@ -122,33 +152,21 @@ export default function BubbleMenuComponent({ editor,pathData,loading,setLoading
                     disabled={disabled}
                     style={{ display: 'none' }}
                     multiple 
+                    accept={showImage ? 'image/*' : showVideo ? 'video/*' : '.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.csv,.ppt,.pptx'}
                     onChange={(e) => onFileChange(e)} 
                 />
             </div>
         </>
     );
 
-    const checkUrlFileType = async (url) => {
-        try {
-        const response = await fetch(url, { method: 'HEAD' });
-        const contentType = response.headers.get('Content-Type');
-
-        if (contentType && contentType.startsWith('image')) {
-            return true;
-        } else {
-            return false; 
-        }
-        } catch (error) {
-        console.error('Error checking URL:', error);
-        return false; 
-        }
-    };
     function showModal() {
         return (
-            <Modal show={showImage || showLink || showTable} onHide={onHide}>
+            <Modal show={showImage || showVideo || showFiles || showLink || showTable} onHide={onHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         {showImage && 'Set Image URL'}
+                        {showVideo && 'Set Video URL'}
+                        {showFiles && 'Set File URL'}
                         {showLink && 'Set Link'}
                         {showTable && 'Add Number of rows and columns'}
                     </Modal.Title>
@@ -162,18 +180,33 @@ export default function BubbleMenuComponent({ editor,pathData,loading,setLoading
                     </div>
                     ) : (
                     <>
-                        {(showImage || showLink) && (
+                        {(showImage || showVideo || showFiles || showLink) && (
                             <div className='form-group upload-modal mt-3'>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <div className='favicon-uploader mr-3'>{renderUploadModule()}</div>
                                     <div className="mr-4 text-muted font-weight-bold">OR</div>
                                     <input
-                                    type='text'
-                                    className='form-control'
-                                    value={showImage ? ImageUrl : linkUrl}
-                                    onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
+                                        type='text'
+                                        className='form-control'
+                                        value={showImage ? ImageUrl : showFiles ? FileUrl : showVideo ? VideoUrl : showLink}
+                                        onChange={(e) => {
+                                            if (showImage) {
+                                               setImageUrl(e.target.value);
+                                            } else if (showFiles) {
+                                               setFileUrl(e.target.value);
+                                            } else if (showVideo) {
+                                               setVideoUrl(e.target.value);
+                                            } else {
+                                               setLinkUrl(e.target.value);
+                                            }
+                                        }}
                                     />
                                 </div>
+                                {
+                                    (fileSizeVal) ? <div style={{ color: 'red', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}>
+                                        Your files exceeds the maximum file size limit.
+                                    </div> : <div style={{ color: 'black', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}> *File Size Limit 20MB for videos and 5MB for all other file types.</div>  
+                                }
                             </div>
                         )}
                         {showTable && (
@@ -213,32 +246,38 @@ export default function BubbleMenuComponent({ editor,pathData,loading,setLoading
                     <button
                         className='btn btn-primary'
                         onClick={() => {
-                        setLoading(true);
-                        if (showTable) {
-                            editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run();
-                            setShowTable(false);
-                        }
-                        if (showLink && linkUrl) {
-                            editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
-                            setShowLink(false);
-                        }
-                        if (showImage && ImageUrl) {
-                            checkUrlFileType(ImageUrl).then(isImage => {
-                            if (isImage) {
+                            setLoading(true);
+                            if (showTable) {
+                                editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run();
+                                setShowTable(false);
+                            }
+                            if (showLink && linkUrl) {
+                                editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+                                setShowLink(false);
+                            }
+                            if(showVideo && VideoUrl){
+                                editor.commands.setVideo(VideoUrl);
+                                setLoading(false); 
+                                setShowVideo(false);
+                                setVideoUrl('');
+                            }
+                            if (showImage && ImageUrl) {
                                 editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
-                            } else {
+                                setLoading(false); 
+                                setShowImage(false);
+                                setImageUrl('');
+                            }
+                            if(showFiles && FileUrl){
                                 editor.chain().focus().insertContent(`
-                                <a href="${ImageUrl}" target="_blank">
-                                    <strong>Download File: ${ImageUrl.split('/').pop()}</strong>
+                                <a href="${FileUrl}" target="_blank">
+                                    <strong>Download File: ${FileUrl.split('/').pop()}</strong>
                                 </a>
                                 <p></p>
                                 `).run();
+                                setLoading(false); 
+                                setShowFiles(false);
+                                setFileUrl('');
                             }
-                            setImageUrl('');
-                            setShowImage(false);
-                            });
-                        }
-                        setLoading(false); 
                         }}
                     >
                         Save

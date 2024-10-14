@@ -221,4 +221,35 @@ $scrollbar-color: #f1f1f1;
             }
         }
     }
+    .breadcrumb-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+        background: #f1f1f1;
+        border-radius: 5px;
+    }
+    .breadcrumb-segment {
+        color: #333;
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 4px 6px; 
+        transition: opacity 0.3s ease, border-radius 0.3s ease;
+        border-radius: 4px; 
+        opacity: 1; 
+    }
+    .breadcrumb-segment + .breadcrumb-segment::before {
+        content: '/';
+        margin: 0 5px;
+        color: #333; 
+    }
+    .breadcrumb-segment:hover {
+        opacity: 0.5; 
+        border-radius: 4px; 
+    }
+    .breadcrumb-separator {
+        padding: 0 5px; 
+        color: #333;
+    }
 }

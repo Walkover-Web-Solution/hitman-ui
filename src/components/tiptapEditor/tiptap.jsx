@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef, useState } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
@@ -32,23 +33,186 @@ import {
   FaAlignCenter,
   FaAlignRight,
   FaAlignJustify,
-  FaHeading,
   FaCode,
 } from 'react-icons/fa'
-import {LuFileSymlink, LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from "react-icons/lu";
+import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from "react-icons/lu";
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
+import { Node } from '@tiptap/core';
 
-export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData }) {
+export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData, pathName }) {
 
   const { currentUser } = useSelector((state) => ({
-    currentUser: state.users.currentUser
+    currentUser: state.users.currentUser,
   }));
 
+
+  const Breadcrumb = Node.create({
+    name: 'breadcrumb',
+    group: 'block',
+    atom: true,
+
+    addAttributes() {
+      return {
+        path: {
+          default: [],
+        },
+        pathName: {
+          default: [],
+        },
+      };
+    },
+
+    parseHTML() {
+      return [
+        {
+          tag: 'div[data-breadcrumb]',
+        },
+      ];
+    },
+
+    renderHTML({ HTMLAttributes }) {
+      const { path, pathName } = HTMLAttributes;
+      if (!Array.isArray(path) || !Array.isArray(pathName)) {
+        return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }];
+      }
+      const breadcrumbElements = [];
+      path.forEach((segment, index) => {
+        let segmentName;
+        if (segment === 'undefined') {
+          segmentName = 'untitled'; 
+        } else {
+          segmentName = pathName[index] || segment;
+        }
+
+        breadcrumbElements.push([
+          'button',
+          {  
+            class: 'breadcrumb-segment',
+            id: index === 0 ? `collection/${segment}` : `pages/${segment}`,
+          }, 
+          segmentName
+        ]);
+
+        if (index < path.length - 1) {
+          breadcrumbElements.push(['span', { class: 'breadcrumb-separator' }, ' / ']);
+        }
+      });
+
+      return ['div', { 'data-breadcrumb': '', class: 'breadcrumb-container' }, ...breadcrumbElements];
+    },
+
+    addCommands() {
+      return {
+        setBreadcrumb: (pathData, pathName) => ({ commands }) => {
+          const breadcrumbSegments = Array.isArray(pathData) ? pathData : pathData.split('/');
+          const breadcrumbNames = Array.isArray(pathName) ? pathName : pathName.split('/');
+          return commands.insertContent({
+            type: this.name,
+            attrs: {
+              path: breadcrumbSegments,
+              pathName: breadcrumbNames,
+            },
+          });
+        },
+      };
+    },
+  });
+
+  const Video = Node.create({
+    name: 'video',
+    group: 'block',
+    atom: true,
+
+    addAttributes() {
+      return {
+        src: {
+          default: null,
+        },
+        isEmbed: {
+          default: false, 
+        },
+      };
+    },
+
+    parseHTML() {
+      return [
+        {
+          tag: 'iframe',
+        },
+        {
+          tag: 'video',
+        },
+      ];
+    },
+
+    renderHTML({ HTMLAttributes }) {
+      const { src, isEmbed } = HTMLAttributes;
+
+      if (isEmbed) {
+        return [
+          'iframe',
+          {
+            src,
+            width: '560',
+            height: '315',
+            frameborder: '0',
+            allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+            allowfullscreen: 'true',
+          },
+        ];
+      }
+
+      return [
+        'video',
+        {
+          controls: true,
+          width: '560',
+          height: '315',
+          ...HTMLAttributes,
+        },
+      ];
+    },
+
+    addCommands() {
+      return {
+        setVideo: (url) => ({ commands }) => {
+          let isEmbed = false;
+          const youtubeMatch = url.match(/^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S+)?$/);
+          const vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/);
+
+          if (youtubeMatch) {
+            isEmbed = true;
+            url = `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+          } else if (vimeoMatch) {
+            isEmbed = true;
+            url = `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+          } else {
+            const videoExtensions = ['.mp4', '.webm', '.ogg'];
+            const isVideoFile = videoExtensions.some(ext => url.endsWith(ext));
+
+            if (!isVideoFile) {
+              alert("Unsupported video format. Please provide a valid video URL.");
+              return false;
+            }
+          }
+
+          return commands.insertContent({
+            type: this.name,
+            attrs: {
+              src: url,
+              isEmbed,
+            },
+          });
+        },
+      };
+    },
+  });
+  
   const getRandomColor = () => {
     const colors = [
       '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',
@@ -57,12 +221,13 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  const [alignment, setAlignment] = useState('left');
   const [showSlashMenu, setShowSlashMenu] = useState(false);
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const [activeSlashMenuIndex, setActiveSlashMenuIndex] = useState(0);
-  const [loading,setLoading] = useState(false);
-  const [showImage, setShowImage] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [showFiles, setShowFiles] = useState(false);
 
   const NonEditableLink = Link.extend({
   addAttributes() {
@@ -84,7 +249,15 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: 'textEditor'
+        class: 'textEditor',
+      },
+      handleClick(view, pos, event) {
+        const target = event.target;
+        if (target.classList.contains('breadcrumb-segment')) {
+          handleBreadcrumbClick(event);  
+          return true;
+        }
+        return false;
       },
       handleKeyDown(view, event) {
         if (event.key === '/') {
@@ -131,7 +304,9 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       },
     },
     extensions: [
+      Video,
       StarterKit,
+      Breadcrumb,
       Blockquote,
       Underline,
       Highlight,
@@ -303,9 +478,9 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
 
-      {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} />}
+      {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles} />}
 
-      {editor && <FloatingMenuComponent editor={editor} showImage={showImage} setShowImage={setShowImage} />}
+      {editor && <FloatingMenuComponent editor={editor} pathData={pathData} pathName={pathName} showImage={showImage} setShowImage={setShowImage}  showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles}  />}
 
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{
@@ -355,28 +530,28 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
                 <span className="menu-description mt-1 font-12">Create a list with numbering</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => { setAlignment('left'), insertBlock('left') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => {  insertBlock('left') }} >
               <FaAlignLeft className='mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Left</span>
                 <span className="menu-description mt-1 font-12">Align your content to the left</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => { setAlignment('right'), insertBlock('right') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => {  insertBlock('right') }} >
               <FaAlignRight className='mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Right</span>
                 <span className="menu-description mt-1 font-12">Align your content to the right</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => { setAlignment('center'), insertBlock('center') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => {  insertBlock('center') }} >
               <FaAlignCenter className=' mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Center</span>
                 <span className="menu-description mt-1 font-12">Align your content to the center</span>
               </div>
             </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => { setAlignment('justify'), insertBlock('justify') }} >
+            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => {  insertBlock('justify') }} >
               <FaAlignJustify className=' mr-4 ml-2' size={30} />
               <div>
                 <span className="d-flex font-14 fw-500">Justify</span>
