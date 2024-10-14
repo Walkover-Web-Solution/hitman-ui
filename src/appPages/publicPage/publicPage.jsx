@@ -8,33 +8,7 @@ import Providers from '../../app/providers/providers';
 import './publicPage.scss';
 
 function PublicPage(props) {
-   /*  const removeBreadCollections = (html) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const breadcrumbContainers = doc.querySelectorAll('.breadcrumb-container');
-
-        breadcrumbContainers.forEach(container => {
-            const breadcrumbSegments = container.querySelectorAll('.breadcrumb-segment');
-
-            breadcrumbSegments.forEach(button => {
-                if (button.id.startsWith('collection/')) {
-                    const nextElement = button.nextElementSibling;
-                    button.remove();
-                    if (nextElement && nextElement.classList.contains('breadcrumb-separator')) {
-                        nextElement.remove();
-                    }
-                }
-            });
-        });
-
-        return doc.body.innerHTML;
-    }; */
-
-    // Create a new variable for the modified content
     const modifiedContent = props?.pageContentDataSSR?.contents
-        /* ? removeBreadCollections(props.pageContentDataSSR.contents)
-        : null; */
-
     return (
         <div className={`custom-display-page custom-display-public-page overflow-auto`}>
             <div className={`page-wrapper d-flex flex-column ${modifiedContent ? 'justify-content-between' : 'justify-content-center'}`}>

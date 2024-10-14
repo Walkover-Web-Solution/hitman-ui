@@ -212,22 +212,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       };
     },
   });
-
-  /* function handleBreadcrumbClick(event) {
-    const orgID = getOrgId();
-    const breadcrumbSegmentId = event.target.getAttribute('id');
-    const Id = breadcrumbSegmentId.split('/');
-    if (Id[1] === 'undefined') {
-      router.push(`/orgs/${orgID}/dashboard/page/new`);
-    } else {
-      if (Id[0] === 'collection') {
-        router.push(`/orgs/${orgID}/dashboard/collection/${Id[1]}/settings`);
-      } else {
-        router.push(`/orgs/${orgID}/dashboard/page/${Id[1]}`);
-      }
-    }
-  } */
-
+  
   const getRandomColor = () => {
     const colors = [
       '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',

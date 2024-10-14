@@ -6,7 +6,6 @@ import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from 'react-icons/lu'
 import { FaListUl, FaListOl,  FaImage, } from 'react-icons/fa';
 import { FaVideo } from "react-icons/fa6";
 import { LuFiles } from "react-icons/lu";
-import { MdOutlineDoubleArrow } from "react-icons/md";
 import { GoTasklist } from 'react-icons/go';
 import '../styles.scss'
 import './tiptap.scss'
