@@ -24,6 +24,7 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
     const [row, setRow] = useState('3')
     const [column, setColumn] = useState('3')
     const [activeHeading, setActiveHeading] = useState(0);
+    const [fileSizeVal , setFileSizeVal] = useState(false);
     const activeFontFamily = () => {
         const fontFamilies = ['Inter', 'Comic Sans', 'serif', 'monospace', 'cursive', 'var(--title-font-family)'];
         const activeFont = fontFamilies.find(font => editor.isActive('textStyle', { fontFamily: font }));
@@ -91,10 +92,9 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
             else {
                 editor.chain().focus().insertContent(`
                     <div>
-                    <a href="${item.url}" target="_blank">
-                        <strong>Download File: ${item.originalName}</strong>
-                    </a>
-                    <p></p>
+                        <a href="${item.url}" target="_blank">
+                            <strong>Download File: ${item.originalName}</strong>
+                        </a>
                     </div>
                 `).run();
             }
@@ -116,8 +116,25 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
 
     const onFileChange = (e) => {
         const selectedFiles = e.target.files;
-        if (selectedFiles.length > 0) {
-            handleFileUpload(selectedFiles); 
+        let valid = true;
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            const isVideo = file.type.startsWith('video/');
+            const maxSize = isVideo ? 20 * 1024 * 1024 : 5 * 1024 * 1024; // 20MB for videos, 5MB for other files
+
+            if (file.size > maxSize) {
+                valid = false;
+                setFileSizeVal(true);
+                setTimeout(() => {
+                    setFileSizeVal(false); 
+                }, 1500);
+                e.target.value = ''; 
+                break;
+            }
+        }
+        if (valid && selectedFiles.length > 0) {
+            handleFileUpload(selectedFiles);
         }
     };
 
@@ -185,6 +202,11 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
                                         }}
                                     />
                                 </div>
+                                {
+                                    (fileSizeVal) ? <div style={{ color: 'red', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}>
+                                        Your files exceeds the maximum file size limit.
+                                    </div> : <div style={{ color: 'black', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}> *File Size Limit 20MB for videos and 5MB for all other file types.</div>  
+                                }
                             </div>
                         )}
                         {showTable && (
