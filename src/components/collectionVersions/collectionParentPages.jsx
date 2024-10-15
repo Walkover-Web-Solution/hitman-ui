@@ -26,12 +26,13 @@ import { RiDeleteBin6Line } from 'react-icons/ri'
 import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const CollectionParentPages = (props) => {
-  const { pages, clientData, collections, organizations } = useSelector((state) => {
+  const { pages, clientData, collections, organizations, pathSlug } = useSelector((state) => {
     return {
       pages: state.pages,
       clientData: state.clientData,
       collections: state.collections,
-      organizations: state.organizations
+      organizations: state.organizations,
+      pathSlug: state.collections?.[Object.keys(state.collections)?.[0]]?.path || ''
     }
   })
 
@@ -131,7 +132,7 @@ const CollectionParentPages = (props) => {
     if (isDashboardRoute({ location })) return router.push(`/orgs/${params.orgId}/dashboard/page/${id}`)
     sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
     let pathName = getUrlPathById(id, pages)
-    pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+    pathName = isTechdocOwnDomain() ? `/p/${pathName}` : pathSlug ? `/${pathSlug}/${pathName}` : `/${pathName}`
     router.push(pathName)
   }
 
@@ -204,7 +205,7 @@ const CollectionParentPages = (props) => {
     dispatch(setDefaultversionId(payload))
   }
 
-  const renderBody = (pageId) => { 
+  const renderBody = (pageId) => {
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId

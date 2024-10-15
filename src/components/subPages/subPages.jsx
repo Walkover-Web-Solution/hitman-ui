@@ -21,11 +21,12 @@ import { RiDeleteBin6Line } from 'react-icons/ri'
 import customPathnameHook from '../../customHook/customPathnameHook.js'
 
 const SubPage = (props) => {
-  const { pages, clientData, collections, organizations } = useSelector((state) => ({
+  const { pages, clientData, collections, organizations, pathSlug } = useSelector((state) => ({
     pages: state.pages,
     clientData: state.clientData,
     collections: state.collections,
     organizations: state.organizations,
+    pathSlug: state.collections?.[Object.keys(state.collections)?.[0]]?.path || ''
   }))
 
   const dispatch = useDispatch()
@@ -131,21 +132,8 @@ const SubPage = (props) => {
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage:
-        (isHovered || isSelected) && isOnPublishedPage()
-          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})`
-          : ''
+      backgroundImage: (isHovered || isSelected) && isOnPublishedPage() ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
     }
-
-    const dynamicColors = hexToRgb(collectionTheme, 0.3)
-    const staticColors = background['background_hover']
-
-    const backgroundStyles = {
-      backgroundImage: isHover
-        ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}), linear-gradient(to right, ${staticColors}, ${staticColors})`
-        : ''
-    }
-
 
     return (
       <div className='sidebar-accordion accordion ' id='child-accordion'>
@@ -225,7 +213,7 @@ const SubPage = (props) => {
     else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
-      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : pathSlug ? `/${pathSlug}/${pathName}` : `/${pathName}`
       router.push(pathName)
     }
   }
