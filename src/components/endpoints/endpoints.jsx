@@ -31,12 +31,13 @@ const Endpoints = (props) => {
   const location = customPathnameHook();
   const dispatch = useDispatch()
 
-  const { endpoints, tabs, pages, collections } = useSelector((state) => ({
+  const { endpoints, tabs, pages, collections, pathSlug } = useSelector((state) => ({
     endpoints: state.pages,
     tabs: state.tabs,
     clientData: state.clientData,
     pages: state.pages,
-    collections: state.collections
+    collections: state.collections,
+    pathSlug: state.collections?.[Object.keys(state.collections)?.[0]]?.path || ''
   }))
 
   const handleDelete = (endpoint) => {
@@ -77,7 +78,7 @@ const Endpoints = (props) => {
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, endpoint?.id)
       let pathName = getUrlPathById(endpoint?.id, pages)
-      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : pathSlug ? `/${pathSlug}/${pathName}` : `/${pathName}`
       router.push(pathName)
     }
   }
