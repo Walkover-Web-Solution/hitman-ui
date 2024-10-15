@@ -1,6 +1,6 @@
 "use client"
 import { applyMiddleware, combineReducers, createStore } from 'redux'
-import {thunk} from 'redux-thunk'
+import { thunk } from 'redux-thunk'
 import collectionsReducer from '@/components/collections/redux/collectionsReducer'
 import environmentsReducer from '@/components/environments/redux/environmentsReducer'
 import tabsReducer from '@/components/tabs/redux/tabsReducer'
@@ -18,7 +18,7 @@ import organizationReducer from '@/components/auth/redux/organizationRedux/organ
 import automationReducer from '@/components/collections/runAutomation/redux/runAutomationReducer'
 import createNewPublicEnvReducer from '@/components/publishDocs/redux/publicEnvReducer'
 
-const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+// const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const rootReducer = combineReducers({
   collections: collectionsReducer,
@@ -32,15 +32,15 @@ const rootReducer = combineReducers({
   clientData: clientDataReducer,
   tokenData: tokenDataReducer,
   users: userReducer,
-  organizations : organizationReducer,
-  automation : automationReducer,
-  publicEnv : createNewPublicEnvReducer
+  organizations: organizationReducer,
+  automation: automationReducer,
+  publicEnv: createNewPublicEnvReducer
 })
 const persistConfig = {
   key: 'root',
   storage
 }
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-const store = createStore(persistedReducer, storeEnhancers(applyMiddleware(thunk)))
+const store = createStore(persistedReducer, applyMiddleware(thunk))
 const persistor = persistStore(store)
 export { store, persistor }
