@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './tagInput.scss';
+import { updateEndpoint, updatePage } from '../pages/redux/pagesActions';
+import { useDispatch, useSelector } from 'react-redux';
 
-const TagInput = () => {
+const TagInput = (props) => {
+  const { pages, page, activeTabId } = useSelector((state) => ({
+    pages: state.pages,
+    page: state?.pages[state.tabs.activeTabId],
+    activeTabId: state.tabs.activeTabId,
+  }));
   const [tags, setTags] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setTags(page?.meta?.tags || []);
+  }, [activeTabId, page]);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
   const handleInputBlur = () => {
+    // debugger
     if (inputValue.trim()) {
-      setTags([...tags, inputValue.trim()]);
+      const newTags = [...tags, inputValue];
+      setTags(newTags);
+      console.log(tags, "tags")
+      console.log(inputValue, "input")
       setInputValue('');
       setIsExpanded(true);
+        const updatedMeta = { ...page.meta, tags: newTags }
+        const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
+        dispatch(updatePage(editedPage));
     }
     setIsFocused(false);
   };
@@ -24,7 +44,7 @@ const TagInput = () => {
     if (e.key === 'Enter' && inputValue.trim()) {
       setTags([...tags, inputValue.trim()]);
       setInputValue('');
-      setIsExpanded(true); 
+      setIsExpanded(true);
     }
   };
 
@@ -33,7 +53,10 @@ const TagInput = () => {
     setTags(updatedTags);
     if (updatedTags.length === 0) {
       setIsExpanded(false);
-    }
+      const updatedMeta = { ...page.meta, tags: updatedTags };
+      const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
+      dispatch(updatePage(editedPage));
+    } 
   };
 
   const handleFocus = () => {
