@@ -47,7 +47,7 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
     };
-
+    console.log(slug, 'path')
     if (slug) {
         queryParamApi.path = slug.join('/');
     } else {
@@ -69,6 +69,7 @@ async function fetchPageData({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
+    console.log(queryParamsString, 'queryparams')
     let response;
     try {
         response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
