@@ -139,7 +139,7 @@ class PublicEndpoint extends Component {
     } else if (!isTechdocOwnDomain()) {
       queryParamApi2.custom_domain = window.location.hostname
       queryParamApi2.path = url.pathname.slice(1)
-      this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname })
+      this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname, path: queryParamApi2.path })
     }
 
     if (queryParams?.has('version')) {

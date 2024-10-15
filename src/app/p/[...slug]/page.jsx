@@ -43,6 +43,7 @@ export async function headerFooter({ params, searchParams, customDomain }) {
 };
 
 async function fetchPageData({ params, searchParams, customDomain }) {
+    // debugger
     const slug = params.slug;
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
@@ -72,6 +73,8 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     console.log(queryParamsString, 'queryparams')
     let response;
     try {
+        // debugger
+        if (queryParamsString.includes('_next')) return
         response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
     }
     catch (error) {
@@ -134,7 +137,7 @@ export default async function Page({ params, searchParams, customDomain }) {
                 :
                 <div className="d-flex h-100vh w-100vw justify-content-center align-items-center w-100">
                     <div>
-                        <p>404 | Not Found</p>
+                        <p>404 | Not Found | Try Again</p>
                     </div>
                 </div>
             }

@@ -3,7 +3,10 @@ import http from './httpService'
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 export async function getCollectionsAndPages(orgId, queryParamsString = '') {
-  return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
+  debugger
+  // queryParamsString = queryParamsString["1"].replace('path=/', 'path=');
+  const res =  await http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString["1"]}`)
+  console.log(34234)
 }
 
 export async function moveCollectionsAndPages(moveToOrgId, collection, flag = true) {
