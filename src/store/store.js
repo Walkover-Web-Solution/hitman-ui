@@ -18,7 +18,8 @@ import organizationReducer from '@/components/auth/redux/organizationRedux/organ
 import automationReducer from '@/components/collections/runAutomation/redux/runAutomationReducer'
 import createNewPublicEnvReducer from '@/components/publishDocs/redux/publicEnvReducer'
 
-// const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composeEnhancers = 
+  (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 const rootReducer = combineReducers({
   collections: collectionsReducer,
@@ -41,6 +42,10 @@ const persistConfig = {
   storage
 }
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-const store = createStore(persistedReducer, applyMiddleware(thunk))
+const store = createStore(
+  persistedReducer,
+  composeEnhancers(applyMiddleware(thunk))
+);
+
 const persistor = persistStore(store)
 export { store, persistor }
