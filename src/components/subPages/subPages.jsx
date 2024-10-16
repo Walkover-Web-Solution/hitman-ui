@@ -162,10 +162,18 @@ const SubPage = (props) => {
             >
               <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, subPageId)}>
                 <IconButtons variant='sm'>
-                  <MdExpandMore
+                  {isOnPublishedPage() ?
+                    pages[props.rootParentId].child?.length > 0 && <MdExpandMore
                     size={13}
                     className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
-                  /></IconButtons>
+                  />
+                  :
+                    <MdExpandMore
+                    size={13}
+                    className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
+                  />
+                  }
+                  </IconButtons>
                 <IoDocumentTextOutline size={18} className='collection-icons d-inline' />
               </span>
               <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
@@ -199,8 +207,10 @@ const SubPage = (props) => {
         {expanded &&
           <div className='linkWrapper versionPages'>
             <Card.Body>
-              {pages[props.rootParentId].child?.length > 0 ? <CombinedCollections level={props?.level} {...props} /> : (
-                !isOnPublishedPage() && (<span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>No pages inside</span>))}
+              {pages[props.rootParentId].child?.length > 0 ? <CombinedCollections level={props?.level} {...props} /> :
+              (
+                !isOnPublishedPage() && (<span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>No pages inside</span>)
+              ) }
             </Card.Body>
           </div>
         }

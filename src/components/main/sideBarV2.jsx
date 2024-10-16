@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link, useRouter, useParams, usePathname } from 'next/navigation'
+import { Link, useRouter, useParams, useSearchParams, usePathname } from 'next/navigation'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
@@ -37,6 +37,7 @@ const SideBar = () => {
   const router = useRouter()
   const location = customPathnameHook()
   const params = useParams()
+  const searchParams = useSearchParams()
 
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
   const [searchData, setSearchData] = useState({ filter: '' })
@@ -119,9 +120,9 @@ const SideBar = () => {
   }
 
   const debouncedSearch = useCallback(
-    debounce(async (searchTerm) => {
+    debounce(async (searchTerm, isPublished, collectionId, customDomain) => {
       setIsLoading(true)
-      const result = await globalSearch(searchTerm)
+      const result = await globalSearch(searchTerm, isPublished, collectionId, customDomain)
       setFilteredPages(result.data.results)
       setIsLoading(false)
     }, 1000),
@@ -129,6 +130,10 @@ const SideBar = () => {
   )
 
   const handleOnChange = async (e) => {
+    const isPublished = isOnPublishedPage() ? true: false
+    const urlCollectionId = isOnPublishedPage() ? searchParams.get('collectionId') : null
+    const collectionId = urlCollectionId ? urlCollectionId : null
+    const customDomain = isOnPublishedPage() ? urlCollectionId ? null :window.location.hostname : null
     const searchTerm = e.target.value.toLowerCase()
     const newData = { ...searchData, filter: e.target.value }
 
@@ -158,7 +163,7 @@ const SideBar = () => {
           filteredEndpoints.push(sideBarData[key])
         }
       } else {
-        debouncedSearch(searchTerm)
+        debouncedSearch(searchTerm, isPublished, collectionId, customDomain)
       }
     }
     setSearchData(newData)
