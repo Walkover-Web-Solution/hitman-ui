@@ -34,7 +34,6 @@ const TagInput = (props) => {
   };
 
   const handleInputBlur = () => {
-    // debugger
     if (inputValue.trim()) {
       addTag();
     }
