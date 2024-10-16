@@ -105,9 +105,14 @@ export async function generateMetadata({ params, searchParams, customDomain }) {
 export default async function Page({ params, searchParams, customDomain }) {
     let data = {}, content = {}
     try {
+        console.log('params === ', params ?? '');
+        console.log('searchParams === ', searchParams ?? '');
+        console.log('customDomain === ', customDomain ?? '');
         data = await fetchPageData({ params, searchParams, customDomain });
+        console.log('response from backend === ', JSON.stringify(data));
     }
     catch (error) {
+        console.log('didn"t get data from backend === ');
         data.error = true;
     }
     try {
