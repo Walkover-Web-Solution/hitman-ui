@@ -129,7 +129,6 @@ const SideBar = () => {
   )
 
   const handleOnChange = async (e) => {
-    debugger
     const isPublished = isOnPublishedPage() ? true: false
     const urlCollectionId = isOnPublishedPage() ? searchParams.get('collectionId') : null
     const collectionId = urlCollectionId ? urlCollectionId : null
