@@ -29,22 +29,24 @@ const TagInput = (props) => {
     if (inputValue.trim()) {
       const newTags = [...tags, inputValue];
       setTags(newTags);
-      console.log(tags, "tags")
-      console.log(inputValue, "input")
       setInputValue('');
       setIsExpanded(true);
-        const updatedMeta = { ...page.meta, tags: newTags }
-        const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
-        dispatch(updatePage(editedPage));
+      const updatedMeta = { ...page.meta, tags: newTags }
+      const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
+      dispatch(updatePage(editedPage));
     }
     setIsFocused(false);
   };
 
   const handleInputKeyDown = (e) => {
     if (e.key === 'Enter' && inputValue.trim()) {
-      setTags([...tags, inputValue.trim()]);
+      const newTags = [...tags, inputValue];
+      setTags(newTags);
       setInputValue('');
       setIsExpanded(true);
+      const updatedMeta = { ...page.meta, tags: newTags }
+      const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
+      dispatch(updatePage(editedPage));
     }
   };
 
@@ -56,7 +58,7 @@ const TagInput = (props) => {
       const updatedMeta = { ...page.meta, tags: updatedTags };
       const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
       dispatch(updatePage(editedPage));
-    } 
+    }
   };
 
   const handleFocus = () => {
