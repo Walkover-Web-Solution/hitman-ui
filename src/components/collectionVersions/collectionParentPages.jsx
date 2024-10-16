@@ -233,7 +233,9 @@ const CollectionParentPages = (props) => {
               <div className={`d-flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex td-name ml-1 align-items-center'>
                   <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
-                    <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
+                    <IconButtons variant='sm'>
+                      {(pages[pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0) && <MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} />}
+                    </IconButtons>
                     <IoDocumentTextOutline size={18} className='collection-icons' />
                   </span>
                   <div
@@ -288,15 +290,9 @@ const CollectionParentPages = (props) => {
             <div className='version-collapse'>
               <Card.Body>
                 <div className='linkWrapper versionPages'>
-                  {(pages[pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0) ?
+                  {(pages[pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0) &&
                     <CombinedCollections {...props} level={0} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
-                    : (
-                      !isOnPublishedPage() && (
-                        <span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>
-                          No pages inside
-                        </span>
-                      )
-                    )}
+                  }
                 </div>
               </Card.Body>
             </div>
