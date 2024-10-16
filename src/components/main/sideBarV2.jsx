@@ -119,9 +119,9 @@ const SideBar = () => {
   }
 
   const debouncedSearch = useCallback(
-    debounce(async (searchTerm) => {
+    debounce(async (searchTerm, isPublished = false, collectionId, custom_domain) => {
       setIsLoading(true)
-      const result = await globalSearch(searchTerm)
+      const result = await globalSearch(searchTerm, isPublished, collectionId, custom_domain)
       setFilteredPages(result.data.results)
       setIsLoading(false)
     }, 1000),
@@ -158,7 +158,7 @@ const SideBar = () => {
           filteredEndpoints.push(sideBarData[key])
         }
       } else {
-        debouncedSearch(searchTerm)
+        debouncedSearch(searchTerm, isPublished ? true : false, collectionId, custom_domain = null)
       }
     }
     setSearchData(newData)
