@@ -34,10 +34,12 @@ export default function RenderPageContent(props) {
 
     return (
         <>
-            <head>
+           <head>
                 <link id="favicon" rel="icon" href={docFaviconLink ? docFaviconLink : "/favicon.svg"} />
                 <title>{props?.pageContentDataSSR?.name}</title>
+                <meta property="og:title" content={props?.pageContentDataSSR?.name} key="og-title" />
                 <meta name="description" content={props?.pageContentDataSSR?.meta?.description} />
+                <meta property="og:description" content={props?.pageContentDataSSR?.meta?.description} />
                 {props?.pageContentDataSSR?.meta?.tags.length > 0 && <meta name="keywords" content={props?.pageContentDataSSR?.meta?.tags.join(',')} />}
             </head>
             {props?.pageContentDataSSR?.contents &&

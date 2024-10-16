@@ -8,7 +8,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
 import TagInput from './tagInput';
 
-function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged,queryData}) {
+function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged}) {
 
     const [disabledValue, setDisabledValue] = useState(null);
     const [save, setSave] = useState(true)
