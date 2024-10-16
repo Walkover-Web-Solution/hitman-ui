@@ -44,7 +44,7 @@ import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
 import { Node } from '@tiptap/core';
 
-export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false, pathData, pathName }) {
+export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint = false, pathData, pathName }) {
 
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser,
@@ -84,17 +84,17 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       path.forEach((segment, index) => {
         let segmentName;
         if (segment === 'undefined') {
-          segmentName = 'untitled'; 
+          segmentName = 'untitled';
         } else {
           segmentName = pathName[index] || segment;
         }
 
         breadcrumbElements.push([
           'button',
-          {  
+          {
             class: 'breadcrumb-segment',
             id: index === 0 ? `collection/${segment}` : `pages/${segment}`,
-          }, 
+          },
           segmentName
         ]);
 
@@ -134,7 +134,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           default: null,
         },
         isEmbed: {
-          default: false, 
+          default: false,
         },
       };
     },
@@ -212,7 +212,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       };
     },
   });
-  
+
   const getRandomColor = () => {
     const colors = [
       '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',
@@ -224,28 +224,46 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const [showSlashMenu, setShowSlashMenu] = useState(false);
   const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
   const [activeSlashMenuIndex, setActiveSlashMenuIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
 
   const NonEditableLink = Link.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      contenteditable: {
-        default: 'false',
-        parseHTML: () => 'false',
-        renderHTML: () => {
-          return {
-            contenteditable: 'false',
-          }
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        contenteditable: {
+          default: 'false',
+          parseHTML: () => 'false',
+          renderHTML: () => {
+            return {
+              contenteditable: 'false',
+            }
+          },
         },
-      },
-    }
-  },
-})
+      }
+    },
+  })
   const slashMenuRefs = useRef([]);
+
+  const blockTypes = [
+    { type: 'heading-1', icon: <LuHeading1 size={30} />, label: 'Heading 1', description: 'Big section heading' },
+    { type: 'heading-2', icon: <LuHeading2 size={30} />, label: 'Heading 2', description: 'Medium section heading' },
+    { type: 'heading-3', icon: <LuHeading3 size={30} />, label: 'Heading 3', description: 'Small section heading' },
+    { type: 'task-list', icon: <GoTasklist size={30} />, label: 'Task List', description: 'Track tasks with a to-do list' },
+    { type: 'bulletList', icon: <FaListUl size={30} />, label: 'Bullet List', description: 'Create a simple bulleted list' },
+    { type: 'numberedList', icon: <FaListOl size={30} />, label: 'Numbered List', description: 'Create a list with numbering' },
+    { type: 'left', icon: <FaAlignLeft size={30} />, label: 'Left', description: 'Align your content to the left' },
+    { type: 'right', icon: <FaAlignRight size={30} />, label: 'Right', description: 'Align your content to the right' },
+    { type: 'center', icon: <FaAlignCenter size={30} />, label: 'Center', description: 'Align your content to the center' },
+    { type: 'justify', icon: <FaAlignJustify size={30} />, label: 'Justify', description: 'Align your content to justify' },
+    { type: 'codeBlock', icon: <FaCode size={30} />, label: 'Code Block', description: 'Insert a code block' },
+    { type: 'blockquote', icon: <LuTextQuote size={30} />, label: 'Blockquote', description: 'Insert a quote block' },
+    { type: 'rule', icon: <FaRulerHorizontal size={30} />, label: 'Horizontal Rule', description: 'Insert a horizontal rule' },
+  ];
+
   const editor = useEditor({
     editorProps: {
       attributes: {
@@ -254,7 +272,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       handleClick(view, pos, event) {
         const target = event.target;
         if (target.classList.contains('breadcrumb-segment')) {
-          handleBreadcrumbClick(event);  
+          handleBreadcrumbClick(event);
           return true;
         }
         return false;
@@ -343,7 +361,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       ...(isEndpoint
         ? []
         : provider && ydoc
-        ? [
+          ? [
             CollaborationCursor.configure({
               provider,
               user: {
@@ -355,7 +373,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
               document: ydoc,
             }),
           ]
-        : []),
+          : []),
       TableRow,
       TableCell,
       TableHeader,
@@ -425,6 +443,10 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
     }
   }, [showSlashMenu, activeSlashMenuIndex]);
 
+  const filteredBlockTypes = blockTypes.filter(item =>
+    item.label.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const insertBlock = (type) => {
     if (!editor) return;
     const { from } = editor.state.selection;
@@ -480,106 +502,39 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
 
       {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles} />}
 
-      {editor && <FloatingMenuComponent editor={editor} pathData={pathData} pathName={pathName} showImage={showImage} setShowImage={setShowImage}  showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles}  />}
+      {editor && <FloatingMenuComponent editor={editor} pathData={pathData} pathName={pathName} showImage={showImage} setShowImage={setShowImage} showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles} />}
 
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{
           top: `${slashMenuPosition.top}px`,
           left: `${slashMenuPosition.left}px`,
         }}>
-          <ul className='overflow-auto p-0 m-0 w-100'>
-            <li className='align-items-center d-flex cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[0] = el} onClick={() => insertBlock('heading-1')} >
-              <LuHeading1 className='mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Heading 1</span>
-                <span className="menu-description mt-1 font-12">Big section heading</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[1] = el} onClick={() => insertBlock('heading-2')}>
-              <LuHeading2 className='mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Heading 2</span>
-                <span className="menu-description mt-1 font-12">Medium section heading</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[2] = el} onClick={() => insertBlock('heading-3')} >
-              <LuHeading3 className='mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Heading 3</span>
-                <span className="menu-description mt-1 font-12">Small section heading</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[3] = el} onClick={() => insertBlock('task-list')} >
-              <GoTasklist className='mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Task List</span>
-                <span className="menu-description mt-1 font-12">Track tasks with a to-do list</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[4] = el} onClick={() => insertBlock('bulletList')} >
-              <FaListUl className=' mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Bullet List</span>
-                <span className="menu-description mt-1 font-12">Create a simple bulleted list</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[5] = el} onClick={() => insertBlock('numberedList')} >
-              <FaListOl className=' mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Numbered List</span>
-                <span className="menu-description mt-1 font-12">Create a list with numbering</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[6] = el} onClick={() => {  insertBlock('left') }} >
-              <FaAlignLeft className='mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Left</span>
-                <span className="menu-description mt-1 font-12">Align your content to the left</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[7] = el} onClick={() => {  insertBlock('right') }} >
-              <FaAlignRight className='mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Right</span>
-                <span className="menu-description mt-1 font-12">Align your content to the right</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[8] = el} onClick={() => {  insertBlock('center') }} >
-              <FaAlignCenter className=' mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Center</span>
-                <span className="menu-description mt-1 font-12">Align your content to the center</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[9] = el} onClick={() => {  insertBlock('justify') }} >
-              <FaAlignJustify className=' mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Justify</span>
-                <span className="menu-description mt-1 font-12">Justify your content.</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[10] = el} onClick={() => insertBlock('codeBlock')} >
-              <FaCode className=' mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Code Block</span>
-                <span className="menu-description mt-1 font-12">Write a block of code</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[11] = el} onClick={() => insertBlock('blockquote')} >
-              <LuTextQuote className='mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Quote</span>
-                <span className="menu-description mt-1 font-12">Highlight a quote</span>
-              </div>
-            </li>
-            <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" ref={el => slashMenuRefs.current[12] = el} onClick={() => insertBlock('rule')} >
-              <FaRulerHorizontal className=' mr-4 ml-2' size={30} />
-              <div>
-                <span className="d-flex font-14 fw-500">Horizontal Rule</span>
-                <span className="menu-description mt-1 font-12">Visually divide blocks</span>
-              </div>
-            </li>
-          </ul>
+          <div className="slash-menu-container">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="slash-menu-search-bar mb-1 w-100 m-2"
+            />
+              <ul className='overflow-auto p-0 m-0 w-100'>
+              {filteredBlockTypes.map((block, index) => (
+                <li
+                  key={block.type}
+                  className={`align-items-center d-flex cursor-pointer px-2 py-2 w-100 ${index === activeSlashMenuIndex ? 'active' : ''}`}
+                  tabIndex="0"
+                  ref={el => slashMenuRefs.current[index] = el}
+                  onClick={() => insertBlock(block.type)}
+                >
+                  <div className='mr-4 ml-2'>{block.icon}</div>
+                  <div>
+                    <span className="d-flex font-14 fw-500">{block.label}</span>
+                    <span className="menu-description mt-1 font-12">{block.description}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
       <EditorContent editor={editor} />
