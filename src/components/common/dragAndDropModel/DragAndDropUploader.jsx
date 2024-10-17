@@ -28,8 +28,10 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
     if (importType === 'collection') {
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', file, fileName)
-       const {collection} = await dispatch(importCollection(uploadedFile, view, onClose, 'testing'));
-      dispatch(addIsExpandedAction({value:true, id:collection.id}))
+       const result = await dispatch(importCollection(uploadedFile, view, onClose, 'testing'));
+       if (result && result.collection) {
+        dispatch(addIsExpandedAction({value: true, id: result.collection.id}))
+      }
     }
   };
 

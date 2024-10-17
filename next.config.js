@@ -2,7 +2,7 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
-
+console.log(process.env.NEXT_PUBLIC_UI_URL, '123456')
 module.exports = withBundleAnalyzer({
   output: 'standalone',
   eslint: {

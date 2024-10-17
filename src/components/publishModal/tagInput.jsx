@@ -1,30 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './tagInput.scss';
+import { updateEndpoint, updatePage } from '../pages/redux/pagesActions';
+import { useDispatch, useSelector } from 'react-redux';
 
-const TagInput = () => {
+const TagInput = (props) => {
+  const { pages, page, activeTabId } = useSelector((state) => ({
+    pages: state.pages,
+    page: state?.pages[state.tabs.activeTabId],
+    activeTabId: state.tabs.activeTabId,
+  }));
   const [tags, setTags] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setTags(page?.meta?.tags || []);
+  }, [activeTabId, page]);
+
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  const handleInputBlur = () => {
+  const addTag = () => {
     if (inputValue.trim()) {
-      setTags([...tags, inputValue.trim()]);
+      const newTags = [...tags, inputValue.trim()];
+      setTags(newTags);
       setInputValue('');
       setIsExpanded(true);
     }
+  };
+
+  const handleInputBlur = () => {
+    if (inputValue.trim()) {
+      addTag();
+    }
+    const updatedMeta = { ...page.meta, tags };
+    const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
+    dispatch(updatePage(editedPage));
     setIsFocused(false);
   };
 
   const handleInputKeyDown = (e) => {
     if (e.key === 'Enter' && inputValue.trim()) {
-      setTags([...tags, inputValue.trim()]);
-      setInputValue('');
-      setIsExpanded(true); 
+      addTag();
     }
   };
 
@@ -34,6 +55,9 @@ const TagInput = () => {
     if (updatedTags.length === 0) {
       setIsExpanded(false);
     }
+    const updatedMeta = { ...page.meta, tags: updatedTags };
+    const editedPage = { ...pages?.[props.pageId], meta: updatedMeta };
+    dispatch(updatePage(editedPage));
   };
 
   const handleFocus = () => {
