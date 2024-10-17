@@ -459,13 +459,12 @@ class PublicEndpoint extends Component {
             </IconButton>
           </span>
         </div>
-        <div split='vertical' className={'split-sidebar-public max-width-container mx-auto d-flex border-bottom pb-5'}>
-          <div className='hm-sidebar border-right pt-3'
-          // style={backgroundStyle}
-          >
+        <div split='vertical' className={'split-sidebar-public max-width-container mx-auto border-bottom'}>
+          <div className='hm-sidebar border-right'>
+          {/* style={backgroundStyle} */}
             {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
           </div>
-          <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content overflow-auto'}>
+          <div className={ `hm-right-content ${isCTAandLinksPresent ? 'hasPublicNavbar' : 'w-100'}`}>
             {idToRender ? (
               <div>
                 {(type == 4 || type == 5) && (

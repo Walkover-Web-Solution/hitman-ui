@@ -82,6 +82,7 @@ import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
 import PublishModal from '../publishModal/publishModal.jsx'
 import Example from '@/assets/icons/example.svg';
+import Footer from '../main/Footer';
 
 
 const shortid = require('shortid')
@@ -3180,8 +3181,8 @@ class DisplayEndpoint extends Component {
     if (this.props?.endpointContentLoading) {
       return (
         <>
-          <div>
-            <div className='loading'>
+          <div className='w-100'>
+            <div className='loading w-100'>
               <div className='box bg'></div>
               <div className='d-flex align-items-center justify-content-between mt-3'>
                 <div>
@@ -3244,7 +3245,7 @@ class DisplayEndpoint extends Component {
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0 px-3'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              className={`hm-endpoint-container mid-part endpoint-container ${!isOnPublishedPage() ? 'px-3' : ''} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
                 }`}
             >
               {this.renderCookiesModal()}
@@ -3876,14 +3877,15 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {isOnPublishedPage() && (
-                <div className='w-100'>
-                  <span className='footer-upper mt-5'>
+                <div className='w-100 d-flex flex-column gap-4 my-4'>
+                  <span className='footer-upper'>
                     <>
-                      <div className='w-100 d-flex justify-content-center mb-4'>
+                      <div className='w-100 d-flex justify-content-center'>
                         <ApiDocReview {...this.props} />
                       </div>
                     </>
                   </span>
+                  {isOnPublishedPage() && <Footer />}
                 </div>
               )}
             </div>
