@@ -133,7 +133,7 @@ const CodeTemplate = (props) => {
   }, [codeSnippet])
 
   const getClassForLanguages = (key) => {
-    const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
+    const commonClass = 'd-flex d-md-flex flex-column justify-content-center align-items-center'
     let classToReturn = key === selectedLanguage ? 'active ' + commonClass : commonClass
     return props.theme !== 'light' ? classToReturn + ' ' : classToReturn
   }
@@ -153,9 +153,9 @@ const CodeTemplate = (props) => {
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')
           }}
         >
-          <div className='inner-editor pt-3'>
-            <Col id='code-window-sidebar' xs={12} className='px-3 pt-3 pb-1'>
-              <div className='code-heading mb-3 d-flex align-items-center'>
+          <div className='inner-editor'>
+            <Col id='code-window-sidebar' xs={12} className='px-3 pt-5 pb-1 d-flex flex-column gap-4'>
+              <div className='code-heading d-flex align-items-center'>
                 <span className={props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
                 {props.showClosebtn && (
                   <div className='d-flex justify-content-end flex-grow-1'>
@@ -171,7 +171,7 @@ const CodeTemplate = (props) => {
                   </div>
                 )}
               </div>
-              <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
+              <div className='select-code-wrapper d-flex align-items-center gap-3 mb-3 img'>
                 {primaryLanguages.map((key) => {
                   const LanguageIcon = languages[key].imagePath
                   return (

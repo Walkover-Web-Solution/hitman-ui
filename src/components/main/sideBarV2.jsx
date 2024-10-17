@@ -21,7 +21,6 @@ import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import './sidebar.scss'
-import Footer from './Footer'
 import customPathnameHook from '../../customHook/customPathnameHook'
 import { globalSearch } from '../pages/pageApiService'
 import { debounce } from 'lodash'
@@ -473,7 +472,7 @@ const SideBar = () => {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
-        <div className={`px-2 mx-1 ${isOnPublishedPage() ? 'pt-3' : ''}`}>
+        <div className={`px-2 mx-1 ${isOnPublishedPage() ? 'pt-5' : ''}`}>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
           {/* {isOnDashboardPage && renderGlobalAddButton()} */}
@@ -481,8 +480,7 @@ const SideBar = () => {
         <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1' : ''}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
-          {isOnPublishedPage() && <Footer />}
-        </div>
+             </div>
       </>
     )
   }
@@ -491,7 +489,7 @@ const SideBar = () => {
     <>
       {
         <nav className='sidebar'>
-          <div className='primary-sidebar'>{renderDashboardSidebar()}</div>
+          <div className='primary-sidebar gap-2'>{renderDashboardSidebar()}</div>
         </nav>
       }
     </>
