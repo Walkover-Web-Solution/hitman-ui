@@ -232,6 +232,15 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const [showVideo, setShowVideo] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
 
+  useEffect(() => {
+    if (!showSlashMenu) {
+      setSearchQuery("");
+    }
+    else{
+      setActiveSlashMenuIndex(-1)
+    }
+  }, [showSlashMenu]);
+
   const NonEditableLink = Link.extend({
     addAttributes() {
       return {
@@ -309,6 +318,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
         }
         if (event.key === 'Escape') {
           setShowSlashMenu(false);
+          setSearchQuery("");
         }
         return false;
       },
@@ -413,25 +423,26 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
         }
       };
       const handleArrowNavigation = (e) => {
-        // const totalMenuItems = slashMenuRefs.current.length;
-        if (e.key === 'ArrowDown') {
+        const totalMenuItems = filteredBlockTypes.length;
+        if (totalMenuItems > 1 && e.key === 'ArrowDown') {
           e.preventDefault();
-          const nextIndex = (activeSlashMenuIndex + 1) % 13;
+          const nextIndex = (activeSlashMenuIndex + 1) % totalMenuItems;
           setActiveSlashMenuIndex(nextIndex);
           slashMenuRefs.current[nextIndex]?.focus();
-        } else if (e.key === 'ArrowUp') {
+        } else if (totalMenuItems > 1 && e.key === 'ArrowUp') {
           e.preventDefault();
-          const prevIndex = (activeSlashMenuIndex - 1 + 13) % 13;
+          const prevIndex = (activeSlashMenuIndex - 1 + totalMenuItems) % totalMenuItems;
           setActiveSlashMenuIndex(prevIndex);
           slashMenuRefs.current[prevIndex]?.focus();
         } else if (e.key === 'Enter') {
           e.preventDefault();
-          const blockTypes = [
-            'heading-1', 'heading-2', 'heading-3', 'task-list',
-            'bulletList', 'numberedList', 'left', 'right',
-            'center', 'justify', 'codeBlock', 'blockquote', 'rule'
-          ];
-          insertBlock(blockTypes[activeSlashMenuIndex]);
+        if (totalMenuItems === 1) {
+          insertBlock(filteredBlockTypes[0].type);
+        } else {
+          insertBlock(filteredBlockTypes[activeSlashMenuIndex].type);
+        }
+        setShowSlashMenu(false);
+        setActiveSlashMenuIndex(-1);
         }
       };
 
@@ -448,6 +459,14 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
   const filteredBlockTypes = blockTypes.filter(item =>
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  useEffect(() => {
+    if (filteredBlockTypes.length === 1) {
+      setActiveSlashMenuIndex(0); 
+    } 
+  }, [filteredBlockTypes]);
+  
+  
 
   const insertBlock = (type) => {
     if (!editor) return;
@@ -513,10 +532,10 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
         }}>
           <div className="slash-menu-container">
             <div className="search-bar d-flex align-items-center p-16  m-2">
-            <span className='search-icon mr-2 ml-2 align-items-center justify-content-between'><BsSearch size={16} /></span>
+              <span className='search-icon mr-2 ml-2 align-items-center justify-content-between'><BsSearch size={16} /></span>
               <input
                 type="text"
-                placeholder= "Search..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
