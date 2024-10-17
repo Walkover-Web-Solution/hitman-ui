@@ -101,11 +101,11 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <>
-            <div>
-                {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
+           <div className="top-container">
+                {content?.defaultHeader !== '' && <div className='navbar-public'>
                     <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
                 </div>}
-                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto">
+                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto min-h-100vh">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>
