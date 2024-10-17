@@ -43,6 +43,8 @@ import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
 import { Node } from '@tiptap/core';
+import { BsSearch } from "react-icons/bs";
+
 
 export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint = false, pathData, pathName }) {
 
@@ -510,14 +512,16 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           left: `${slashMenuPosition.left}px`,
         }}>
           <div className="slash-menu-container">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="slash-menu-search-bar mb-1 w-100 m-2"
-            />
-              <ul className='overflow-auto p-0 m-0 w-100'>
+            <div className="search-bar d-flex align-items-center p-16  m-2">
+            <span className='search-icon mr-2 ml-2 align-items-center justify-content-between'><BsSearch size={16} /></span>
+              <input
+                type="text"
+                placeholder= "Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <ul className='overflow-auto p-0 m-0 w-100'>
               {filteredBlockTypes.map((block, index) => (
                 <li
                   key={block.type}
