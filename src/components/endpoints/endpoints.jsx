@@ -167,7 +167,7 @@ const Endpoints = (props) => {
           <div className='sidebar-toggle d-flex justify-content-between'>
             <button className='pl-0'>
               <div 
-                className={`side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} 
+                className={`w-100 side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} 
                 style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} 
                 onMouseLeave={() => setIsHovered(false)}
               >

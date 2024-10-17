@@ -472,7 +472,7 @@ const SideBar = () => {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
-        <div className={`px-2 mx-1 ${isOnPublishedPage() ? 'pt-3' : ''}`}>
+        <div className={`px-2 mx-1 ${isOnPublishedPage() ? 'pt-5' : ''}`}>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
           {/* {isOnDashboardPage && renderGlobalAddButton()} */}
