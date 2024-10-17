@@ -123,7 +123,7 @@ export default async function Page({ params, searchParams, customDomain }) {
     }
 
     return (
-        <div className="top-container">
+        <div className="top-container w-100">
             {content?.defaultHeader !== '' && <div className='navbar-public'>
                 <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
             </div>}

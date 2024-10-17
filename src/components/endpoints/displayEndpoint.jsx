@@ -82,7 +82,7 @@ import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 import { IoIosArrowUp } from "react-icons/io";
 import PublishModal from '../publishModal/publishModal.jsx'
 import Example from '@/assets/icons/example.svg';
-import Footer from '../main/Footer';
+
 
 
 const shortid = require('shortid')
@@ -3245,7 +3245,7 @@ class DisplayEndpoint extends Component {
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${!isOnPublishedPage() ? 'px-3' : ''} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              className={`hm-endpoint-container mid-part endpoint-container pt-5 ${!isOnPublishedPage() ? 'px-3' : ''} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
                 }`}
             >
               {this.renderCookiesModal()}
@@ -3885,7 +3885,7 @@ class DisplayEndpoint extends Component {
                       </div>
                     </>
                   </span>
-                  {isOnPublishedPage() && <Footer />}
+
                 </div>
               )}
             </div>

@@ -154,7 +154,7 @@ const CodeTemplate = (props) => {
           }}
         >
           <div className='inner-editor'>
-            <Col id='code-window-sidebar' xs={12} className='px-3 pt-3 pb-1 d-flex flex-column gap-4'>
+            <Col id='code-window-sidebar' xs={12} className='px-3 pt-5 pb-1 d-flex flex-column gap-4'>
               <div className='code-heading d-flex align-items-center'>
                 <span className={props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
                 {props.showClosebtn && (

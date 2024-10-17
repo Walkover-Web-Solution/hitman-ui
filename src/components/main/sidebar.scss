@@ -844,7 +844,7 @@ input[type='text']:focus {
 
     .side-bar {
       width: 100%;
-      height: 28px;
+         height: 28px;
 
       .endpoint-icons {
         display: none;
@@ -854,7 +854,7 @@ input[type='text']:focus {
         background: $grey;
 
         .endpoint-name-td {
-          width: 87%;
+          width: calc(100% - 38px);
         }
 
         .endpoint-icons {
@@ -864,7 +864,9 @@ input[type='text']:focus {
     }
   }
 }
-
+.endpoint-name-td {
+  width: calc(100% - 26px);
+}
 .secondary-sidebar {
   font-size: 14px;
   color: #999;
