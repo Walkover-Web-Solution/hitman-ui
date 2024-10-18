@@ -245,7 +245,6 @@ form.add-new-domain-form {
 // Overall layout
 .hm-wrapper {
   &:has(.mainContentWrapperPublic) {
-    width: 100vw;
     font-size: 14px;
   }
 }
@@ -967,11 +966,5 @@ $loader-dot-color: #2196f3;
   100% {
     background-size: 400% 100%;
     background-position: left -102% top 0%;
-  }
-}
-
-.main-public-container {
-  &:has(.custom-display-page) {
-    margin-inline: auto;
   }
 }

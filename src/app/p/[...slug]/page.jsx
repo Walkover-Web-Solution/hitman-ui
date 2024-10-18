@@ -2,6 +2,7 @@ import PublicEndpoint from "@/components/publicEndpoint/publicEndpoint";
 import axios from "axios";
 import Providers from "src/app/providers/providers";
 import PublicPage from 'src/appPages/publicPage/publicPage';
+import PublicSidebar from "../../../components/publicSidebar/publicSidebar";
 
 let apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -118,29 +119,24 @@ export default async function Page({ params, searchParams, customDomain }) {
     }
 
     return (
-        <>
-           <div className="top-container">
-                {content?.defaultHeader !== '' && <div className='navbar-public'>
-                    <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
-                </div>}
-                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto min-h-100vh">
+        <div>
+            {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
+                <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
+            </div>}
+            <div className="d-flex justify-content-center">
+                <PublicSidebar params={params} customDomain={customDomain} searchParams={searchParams} />
+                <div className="main-public-container d-flex justify-content-center">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>
                     {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) &&
                         <div className="hm-right-content w-100">
-                            <PublicPage collectionData={content} pageContentDataSSR={data?.publishedContent || ''} />
-                        </div>}
-                </div>
-                    :
-                    <div className="d-flex h-100vh w-100vw justify-content-center align-items-center w-100">
-                        <div>
-                            <p>404 | Not Found</p>
+                            <PublicPage pageContentDataSSR={data?.publishedContent || ''} />
                         </div>
-                    </div>
-                }
-                {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
+                    }
+                </div>
             </div>
-            </>
+            {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
+        </div>
     );
 }
