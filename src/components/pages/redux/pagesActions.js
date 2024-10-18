@@ -84,7 +84,7 @@ export const updatePage = (editedPage) => {
       collectionId: editedPage.collectionId,
       urlMappingFlag: editedPage.urlMappingFlag,
       prevUrlName: editedPage.prevUrlName,
-      meta: editedPage.meta,
+      meta: editedPage.meta
     }
     pageApiService
       .updatePage(editedPage.id, dataToSend)
