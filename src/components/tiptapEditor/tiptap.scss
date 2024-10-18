@@ -1,3 +1,5 @@
+@import '../main/variables.scss';
+
 $border-color: #e0e0e0;
 $background-color : #f4f4f4;
 $scrollbar-color: #f1f1f1;
@@ -30,19 +32,17 @@ $scrollbar-color: #f1f1f1;
 .slash-menu {
     border: 1px solid $border-color ;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    border-radius: $border-radius;
     z-index: 1;
 
     .search-bar {
-        flex-direction: column;
         border-radius: 50px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(128, 128, 128, 0.7);
+        border: 1px solid $border-color;
 
         span {
-            position: absolute;
             left: 15px;
-            color: #a0a0a0;
+            color: $footer-color;
             top: 18px;
         }
 
@@ -50,12 +50,12 @@ $scrollbar-color: #f1f1f1;
             flex: 1;
             border: none;
             outline: none;
-            font-size: 16px;
+            font-size: $font-large;
             border-radius: 50px;
             margin-left: 40px;
 
             &::placeholder {
-                color: #a0a0a0;
+                color: $footer-color;
               }
         }
     }
