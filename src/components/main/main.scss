@@ -4337,3 +4337,9 @@ body .tox {
     }
   }
 }
+
+a {
+  &:hover{
+    color: unset;
+  }
+}

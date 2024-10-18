@@ -251,12 +251,14 @@ const CollectionParentPages = (props) => {
                     onDragEnd={(e) => props.onDragEnd(e)}
                     style={props.draggingOverId === pageId ? { border: '3px solid red' } : null}
                   >
+                     <a href={pages[pageId]?.urlName} className={`text-decoration-none ${isOnPublishedPage() ? 'text-black' : ''}`} id={pageId} onClick={(e) => e.preventDefault()}>
                     <div className={`text-truncate d-inline ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[pageId]?.name}</div>
                     {!isUserOnPublishedPage ? (
                       versionDropDown(rootId)
                     ) : (
                       <PublishedVersionDropDown handleDropdownItemClick={handleDropdownItemClick} rootParentId={props?.rootParentId} defaultVersionName={defaultVersionName} selectedVersionName={selectedVersionName} />
                     )}
+                    </a>
                   </div>
                 </div>
               </div>
