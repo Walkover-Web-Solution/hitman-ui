@@ -123,27 +123,29 @@ export default async function Page({ params, searchParams, customDomain }) {
     }
 
     return (
-        <div>
-            {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
-                <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
-            </div>}
-            {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto">
-                <Providers>
-                    <PublicEndpoint />
-                </Providers>
-                {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) &&
-                    <div className="hm-right-content w-100">
-                        <PublicPage pageContentDataSSR={data?.publishedContent || ''} />
-                    </div>}
-            </div>
-                :
-                <div className="d-flex h-100vh w-100vw justify-content-center align-items-center w-100">
-                    <div>
-                        <p>404 | Not Found</p>
-                    </div>
+        <>
+           <div className="top-container">
+                {content?.defaultHeader !== '' && <div className='navbar-public'>
+                    <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
+                </div>}
+                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto min-h-100vh">
+                    <Providers>
+                        <PublicEndpoint />
+                    </Providers>
+                    {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) &&
+                        <div className="hm-right-content w-100">
+                            <PublicPage collectionData={content} pageContentDataSSR={data?.publishedContent || ''} />
+                        </div>}
                 </div>
-            }
-            {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
-        </div>
+                    :
+                    <div className="d-flex h-100vh w-100vw justify-content-center align-items-center w-100">
+                        <div>
+                            <p>404 | Not Found</p>
+                        </div>
+                    </div>
+                }
+                {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
+            </div>
+            </>
     );
 }
