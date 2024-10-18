@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { isDashboardRoute, isOnPublishedPage, SESSION_STORAGE_KEY } from '../common/utility'
+import { isDashboardRoute, SESSION_STORAGE_KEY } from '../common/utility'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
@@ -11,7 +11,6 @@ import { dislike, like } from '../../services/feedbackService'
 import { VscStarFull } from "react-icons/vsc";
 import { useParams, usePathname, useRouter} from 'next/navigation'
 import customPathnameHook from '../../customHook/customPathnameHook'
-import Footer from '../main/Footer'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -206,7 +205,7 @@ const ApiDocReview = (props) => {
   return (
     !isDashboardRoute({ location }) && (
       <>
-        <div className='position-relative d-flex m-auto flex-column gap-4 enpoint-title'>
+        <div className='position-relative d-flex justify-content-center'>
           <div className='d-inline-flex justify-content-center align-items-center gap-2 border px-2 rounded'>
           <p className='d-flex justify-content-center Modified-at mb-0'>Was this page helpful?</p>
           <div className='d-flex justify-content-center gap-2 like-unline font-18'>
@@ -232,7 +231,6 @@ const ApiDocReview = (props) => {
             </OverlayTrigger>
           </div>
           </div>
-          {isOnPublishedPage() && <Footer />}
           {feedbackGiven && renderFeedbackResponse()}
         </div>
       </>

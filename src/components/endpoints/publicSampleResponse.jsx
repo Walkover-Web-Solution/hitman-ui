@@ -72,6 +72,9 @@ class PublicSampleResponse extends Component {
   render() {
     const { maxHeight } = this.state;
     const groupedResponses = this.groupByStatus();
+    const contentStyle = {
+      maxHeight: `${maxHeight}px`,
+    };
     return (
       <>
         <Style>
@@ -109,6 +112,7 @@ class PublicSampleResponse extends Component {
                     )
                   }
                 >
+                  <div style={contentStyle} className="overflow-auto">
                     {groupedResponses[status].map((sampleResponse, idx) => (
                       <div key={idx}>
                         <div>{sampleResponse.description}</div>
@@ -116,6 +120,7 @@ class PublicSampleResponse extends Component {
                         {idx < groupedResponses[status].length - 1 && <hr />}
                       </div>
                     ))}
+                  </div>
                 </Tab>
               ))}
             </Tabs>

@@ -1,7 +1,7 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
 $border-color: rgba(227, 228, 230, 0.7);
-$alert-color: #cc0000;
+$alert-color: #CC0000;
 
 .add-collection-btn-wrap {
   padding: 0;
@@ -254,17 +254,8 @@ div.fixed {
 .split-sidebar-public {
   &:has(.mainContentWrapperPublic) {
     flex: 1 1 0%;
-    display: flex;
     .hm-right-content {
       flex: inherit;
-    }
-  }
-}
-.mainpublic-endpoint-main {
-  &:has(.loading) {
-    width: 100%;
-    .split-sidebar-public {
-      display: flex;
     }
   }
 }
