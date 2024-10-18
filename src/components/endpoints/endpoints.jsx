@@ -57,13 +57,6 @@ const Endpoints = (props) => {
     setShowEndpointForm((prev) => ({ ...prev, delete: false }))
   }
 
-  const scrollToEndPoint = (id) => {
-    const scrollUptoElement = document.getElementById(id);
-    if (scrollUptoElement) {
-        scrollUptoElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
   const handleDisplay = (endpoint, groupId, collectionId, previewMode) => {
     window.scroll(0, 0)
     if (isDashboardRoute({ location, router }, true)) {
@@ -88,9 +81,6 @@ const Endpoints = (props) => {
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : pathSlug ? `/${pathSlug}/${pathName}` : `/${pathName}`
       router.push(pathName)
     }
-    setTimeout(()=> {
-        scrollToEndPoint(endpoint.id) // NEED TO WRITE THIS CODE AFTER API RESPONSE
-    }, 600);
   }
 
   const displayEndpointName = (endpointId) => {
@@ -163,29 +153,18 @@ const Endpoints = (props) => {
           onDragEnd={(e) => props.onDragEnd(e)}
           style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
-          <a href={endpoints[endpointId]?.urlName} className='text-decoration-none' id={endpointId} onClick={(e) => e.preventDefault()}>
           <div className='sidebar-toggle d-flex justify-content-between'>
             <button className='pl-0'>
-              <div 
-                className={`w-100 side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} 
-                style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} 
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                <span 
-                    className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} 
-                    tabIndex={-1} 
-                    onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} 
-                    onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}
-                >
+              <div className={`side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                <button className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
                   {displayEndpointName(endpointId)}
-                </span>
+                </button>
                 <div className='endpoint-icons align-items-center'>
                   {isDashboardRoute({ router, location }, true) && displayEndpointOptions(endpointId)}
                 </div>
               </div>
             </button>
           </div>
-          </a>
         </div>
         <div>
           <CombinedCollections level={props.level} collectionId={props?.collectionId} rootParentId={props?.endpointId} />

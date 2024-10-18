@@ -261,7 +261,6 @@ form.add-new-domain-form {
   flex: 20%;
   z-index: 999;
   border-right: 1px solid rgba(66, 9, 9, 0.02);
-  width: 330px;
   min-width: 230px;
   max-width: 330px;
 
@@ -687,6 +686,7 @@ button.toggleButton {
 }
 
 .hm-right-content {
+  height: 100vh;
 
   &.hasPublicNavbar {
     .hideCodeEditor {
@@ -841,7 +841,7 @@ button.toggleButton {
 }
 
 .copy-button-dark {
-  border-radius: 4px 4px 0px 0px;
+  border-radius: 16px 16px 0px 0px;
   background-color: #2e3440;
 }
 
@@ -853,7 +853,7 @@ button.toggleButton {
 
 .empty-div-dark {
   padding: 10px;
-  border-radius: 0px 0px 4px 4px;
+  border-radius: 0px 0px 16px 16px;
   background-color: #2e3440;
 }
 

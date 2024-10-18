@@ -68,7 +68,6 @@ async function fetchPageData({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
-    console.log(queryParamsString, 'queryparams')
     let response;
     try {
         response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
@@ -88,14 +87,9 @@ async function fetchPageData({ params, searchParams, customDomain }) {
 export default async function Page({ params, searchParams, customDomain }) {
     let data = {}, content = {}
     try {
-        console.log('params === ', params ?? '');
-        console.log('searchParams === ', searchParams ?? '');
-        console.log('customDomain === ', customDomain ?? '');
         data = await fetchPageData({ params, searchParams, customDomain });
-        console.log('response from backend === ', JSON.stringify(data));
     }
     catch (error) {
-        console.log('didn"t get data from backend === ');
         data.error = true;
     }
     try {
@@ -107,11 +101,11 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <>
-        <div className="top-container w-100">
-                {content?.defaultHeader !== '' && <div className='navbar-public'>
+            <div>
+                {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
                     <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
                 </div>}
-                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto min-h-100vh">
+                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>

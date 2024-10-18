@@ -6,5 +6,5 @@ EXPOSE 3000
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install 
 COPY . .
-RUN npm run build:prod
+RUN npm run build:test
 ENTRYPOINT ["npm","start"]
