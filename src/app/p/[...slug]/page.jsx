@@ -47,7 +47,6 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
     };
-    console.log(slug, 'path')
     if (slug) {
         queryParamApi.path = slug.join('/');
     } else {
@@ -69,7 +68,6 @@ async function fetchPageData({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
-    console.log(queryParamsString, 'queryparams')
     let response;
     try {
         response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
@@ -105,21 +103,18 @@ export async function generateMetadata({ params, searchParams, customDomain }) {
 export default async function Page({ params, searchParams, customDomain }) {
     let data = {}, content = {}
     try {
-        console.log('params === ', params ?? '');
-        console.log('searchParams === ', searchParams ?? '');
-        console.log('customDomain === ', customDomain ?? '');
         data = await fetchPageData({ params, searchParams, customDomain });
-        console.log('response from backend === ', JSON.stringify(data));
     }
     catch (error) {
-        console.log('didn"t get data from backend === ');
         data.error = true;
+        console.error(error)
     }
     try {
         content = await headerFooter({ params, searchParams, customDomain });
     }
     catch (error) {
         content.error = true
+        console.error(error)
     }
 
     return (
