@@ -3245,7 +3245,7 @@ class DisplayEndpoint extends Component {
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container pt-5 ${!isOnPublishedPage() ? 'px-3' : ''} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              className={`hm-endpoint-container mid-part endpoint-container pt-4 ${!isOnPublishedPage() ? 'px-3' : ''} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
                 }`}
             >
               {this.renderCookiesModal()}
