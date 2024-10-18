@@ -531,8 +531,8 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
           left: `${slashMenuPosition.left}px`,
         }}>
           <div className="slash-menu-container">
-            <div className="search-bar d-flex align-items-center m-2">
-              <span className='search-icon mr-2 ml-2'><BsSearch size={16} /></span>
+            <div className="search-bar flex-direction-column d-flex align-items-center m-2">
+              <span className='search-icon position-absolute mr-2 ml-2'><BsSearch size={16} /></span>
               <input
                 type="text"
                 placeholder="Search..."
