@@ -421,7 +421,7 @@ class PublicEndpoint extends Component {
         : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
       const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
       // setTitle(docTitle)
-      // setFavicon(docFaviconLink)
+      setFavicon(docFaviconLink)
       var collectionName = this.props.collections[collectionId]?.name
       var collectionTheme = this.props.collections[collectionId]?.theme
     }

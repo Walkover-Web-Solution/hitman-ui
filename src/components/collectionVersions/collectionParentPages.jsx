@@ -233,12 +233,7 @@ const CollectionParentPages = (props) => {
               <div className={`d-flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex td-name ml-1 align-items-center'>
                   <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
-                    <IconButtons variant='sm'>
-                      {isOnPublishedPage() ?
-                        (pages[pages[props.rootParentId]?.child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0)
-                        && <MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} />
-                        : <MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} />}
-                    </IconButtons>
+                    <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
                     <IoDocumentTextOutline size={18} className='collection-icons' />
                   </span>
                   <div

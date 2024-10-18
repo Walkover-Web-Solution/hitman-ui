@@ -24,7 +24,7 @@ import { useRouter, useParams } from "next/navigation";
 import { navigateTo } from "src/navigationService";
 import { setPagesPath } from "../../components/pages/redux/pagesActions";
 import TagInput from "@/components/publishModal/tagInput";
-import { updatePage } from "../../components/pages/redux/pagesActions";
+import { updatePage } from "@/components/pages/pageApiService";
 
 
 const Page = () => {
@@ -51,7 +51,8 @@ const Page = () => {
     const [loading, setLoading] = useState(false);
     const [hovered, setHovered] = useState(false);
     const [showInput, setShowInput] = useState(false);
-    const [description, setDescription] = useState(page?.meta?.description || "");
+    const [description, setDescription] = useState("");
+    const [tags, setTags] = useState("");
     const [showTags, setShowTags] = useState(false)
 
     const updatedById = pages?.[pageId]?.updatedBy;
@@ -83,10 +84,7 @@ const Page = () => {
 
     useEffect(() => {
         setHovered(false);
-        if(description=== "")
-        {
-            setShowInput(false);
-        }
+        setShowInput(false);
         setShowTags(false)
     }, [activeTabId]);
 
@@ -95,11 +93,6 @@ const Page = () => {
         if (tabs[activeTabId].status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
         setPageName(page?.name || 'Untitled');
     }, [page?.name, tabs?.activeTabId?.name, pageId])
-
-    useEffect(() => {
-        setDescription(page?.meta?.description || "");
-    }, [activeTabId, page]); 
-    
 
     const mapping = {
         local: process.env.NEXT_PUBLIC_RTC_URL_LOCAL,
@@ -196,6 +189,10 @@ const Page = () => {
         }
     }
 
+    const handleTagsChange = (event) => {
+        setTags(event.target.value);
+    }
+
     const handleAddTagsClick = () => {
         setShowTags(true);
     };
@@ -208,10 +205,16 @@ const Page = () => {
         setDescription(event.target.value);
     };
 
-    const handleSaveDescription = (id) => {
-        const updatedMeta = {...page.meta, description: description}
-        const editedPage = { ...pages?.[id], meta: updatedMeta };
-        dispatch(updatePage( editedPage));
+    const handleSaveDescription = () => {
+        const updatedPageData = {
+            ...page[page.id],
+            id: page.id,
+            meta: {
+                description: description
+            }
+        };
+
+        dispatch(updatePage({ updatedPageData }));
     };
 
     const handleMouseEnter = () => {
@@ -498,11 +501,11 @@ const Page = () => {
                             placeholder='About your Doc'
                             value={description}
                             onChange={handleDescriptionChange}
-                            onBlur={() => handleSaveDescription(page.id)}
+                            onBlur={handleSaveDescription}
                         />
                     </div>
                 )}
-                {showTags && <TagInput pageId={page.id} />}
+                {showTags && <TagInput />}
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
                         provider={provider}

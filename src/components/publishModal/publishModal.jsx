@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import './publishModal.scss'
+import { useParams } from 'react-router';
 import { getUrlPathById, SESSION_STORAGE_KEY } from '../common/utility';
 import { useSelector } from 'react-redux';
 import { GoLink } from "react-icons/go";
@@ -8,7 +9,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
 import TagInput from './tagInput';
 
-function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged}) {
+function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChanged }) {
 
     const [disabledValue, setDisabledValue] = useState(null);
     const [save, setSave] = useState(true)
@@ -147,7 +148,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
                         </div>
                     </div>
                 )}
-               {isPublished && <TagInput pageId={id}/> } 
+               {isPublished && <TagInput /> } 
             </div>
             <div className='d-flex align-items-center justify-content-end gap-2 mt-4 '>
                 {!isPublished ? <Button className="cursor-pointer btn-sm font-12" onClick={handlePublishClick}>

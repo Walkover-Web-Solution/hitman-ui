@@ -5,7 +5,7 @@ import PublicPage from 'src/appPages/publicPage/publicPage';
 
 let apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export async function getCollectionData({ params, searchParams, customDomain }) {
+export async function headerFooter({ params, searchParams, customDomain }) {
     const slug = params.slug;
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
@@ -47,6 +47,7 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
     };
+    console.log(slug, 'path')
     if (slug) {
         queryParamApi.path = slug.join('/');
     } else {
@@ -85,6 +86,22 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     }
 }
 
+export async function generateMetadata({ params, searchParams, customDomain }) {
+    let data = {}
+    try {
+        data = await fetchPageData({ params, searchParams, customDomain });
+    }
+    catch {
+        data.error = true
+    }
+    if (data.error) return null;
+    return {
+        title: data?.publishedContent?.name || '',
+        description: data?.publishedContent?.description || '',
+        tags: data?.publishedContent?.meta?.tags || ''
+    };
+}
+
 export default async function Page({ params, searchParams, customDomain }) {
     let data = {}, content = {}
     try {
@@ -99,7 +116,7 @@ export default async function Page({ params, searchParams, customDomain }) {
         data.error = true;
     }
     try {
-        content = await getCollectionData({ params, searchParams, customDomain });
+        content = await headerFooter({ params, searchParams, customDomain });
     }
     catch (error) {
         content.error = true
@@ -107,11 +124,11 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <>
-            <div>
-                {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
+           <div className="top-container">
+                {content?.defaultHeader !== '' && <div className='navbar-public'>
                     <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
                 </div>}
-                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto">
+                {!data.error ? <div className="main-public-container d-flex max-width-container mx-auto min-h-100vh">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>
@@ -129,6 +146,6 @@ export default async function Page({ params, searchParams, customDomain }) {
                 }
                 {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
             </div>
-        </>
+            </>
     );
 }

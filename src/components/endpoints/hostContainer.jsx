@@ -43,7 +43,7 @@ class HostContainer extends Component {
   componentDidMount() {
     this.setHosts();
     this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
-
+    
 
     if (this.hostcontainerRef.current) {
       this.observer = new MutationObserver((mutationsList) => {
@@ -154,9 +154,9 @@ class HostContainer extends Component {
       try {
         parsedData.data = JSON.parse(parsedData.data)
       } catch (e) { }
-      let contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase()
+      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase()
       if (contentType.includes('application/json')) {
-        contentType = 'application/json'
+        /* contentType = 'application/json' */
         untitledEndpointData.data.body.type = contentTypesEnums[contentType]
         untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
         untitledEndpointData.data.body.raw.value = typeof parsedData.data === 'object' ? JSON.stringify(parsedData.data) : parsedData.data

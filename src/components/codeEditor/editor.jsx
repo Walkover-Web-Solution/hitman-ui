@@ -20,8 +20,8 @@ const Editor = ({ header, setHeader, footer, setFooter }) => {
   const [code2, setCode2] = useState(null);
 
   useEffect(() => {
-    setCode(headerFromRedux ? headerFromRedux : defaultHeader)
-    setCode2(footerFromRedux ? footerFromRedux : defaultFooter)
+    setCode(headerFromRedux !== "" ? headerFromRedux : defaultHeader)
+    setCode2(footerFromRedux !== "" ? footerFromRedux : defaultFooter)
   }, [headerFromRedux, footerFromRedux])
 
 
