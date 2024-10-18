@@ -4332,7 +4332,8 @@ body .tox {
 
 .top-container {
   &:has(.navbar-public) {
-    .hm-sidebar-title {
+    .hm-sidebar-title,
+    .hm-sidebar-logo {
       display: none;
     }
   }
