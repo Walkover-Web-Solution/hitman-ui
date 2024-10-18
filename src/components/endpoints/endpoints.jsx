@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useRouter, useParams, usePathname, } from 'next/navigation'
+import { useRouter, useParams, usePathname } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import { addExampleRequest, deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
@@ -163,28 +163,35 @@ const Endpoints = (props) => {
           onDragEnd={(e) => props.onDragEnd(e)}
           style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
-          <a href={endpoints[endpointId]?.urlName} className='text-decoration-none' id={endpointId} onClick={(e) => e.preventDefault()}>
-          <div className='sidebar-toggle d-flex justify-content-between'>
-            <button className='pl-0'>
-              <div 
-                className={`w-100 side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} 
-                style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} 
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                <span 
-                    className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} 
-                    tabIndex={-1} 
-                    onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} 
-                    onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}
+          <a
+            href={endpoints[endpointId]?.urlName}
+            title={endpoints[endpointId]?.urlName}
+            className='text-decoration-none'
+            id={endpointId}
+            onClick={(e) => e.preventDefault()}
+          >
+            <div className='sidebar-toggle d-flex justify-content-between'>
+              <button className='pl-0'>
+                <div
+                  className={`w-100 side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`}
+                  style={backgroundStyle}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
                 >
-                  {displayEndpointName(endpointId)}
-                </span>
-                <div className='endpoint-icons align-items-center'>
-                  {isDashboardRoute({ router, location }, true) && displayEndpointOptions(endpointId)}
+                  <span
+                    className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`}
+                    tabIndex={-1}
+                    onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)}
+                    onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}
+                  >
+                    {displayEndpointName(endpointId)}
+                  </span>
+                  <div className='endpoint-icons align-items-center'>
+                    {isDashboardRoute({ router, location }, true) && displayEndpointOptions(endpointId)}
+                  </div>
                 </div>
-              </div>
-            </button>
-          </div>
+              </button>
+            </div>
           </a>
         </div>
         <div>
@@ -209,7 +216,15 @@ const Endpoints = (props) => {
           selectedPage={selectedEndpoint?.id}
         />
       )}
-      {showEndpointForm.delete && endpointService.showDeleteEndpointModal({ tabs, dispatch }, handleDelete, closeDeleteEndpointModal, 'Delete Endpoint', `Are you sure you want to delete this endpoint?`, selectedEndpoint)}
+      {showEndpointForm.delete &&
+        endpointService.showDeleteEndpointModal(
+          { tabs, dispatch },
+          handleDelete,
+          closeDeleteEndpointModal,
+          'Delete Endpoint',
+          `Are you sure you want to delete this endpoint?`,
+          selectedEndpoint
+        )}
       {displaySingleEndpoint(props.endpointId)}
     </React.Fragment>
   )
