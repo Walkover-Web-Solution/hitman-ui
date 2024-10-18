@@ -144,6 +144,8 @@ const SubPage = (props) => {
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}
           >
+              <a href={pages[subPageId]?.urlName} className={`text-decoration-none ${isOnPublishedPage() ? 'text-black' : ''}`} id={subPageId} onClick={(e) => e.preventDefault()}>
+
             <div
               draggable={!isUserOnPublishedPage}
               onDragOver={props.handleOnDragOver}
@@ -157,8 +159,8 @@ const SubPage = (props) => {
                 handleRedirect(subPageId)
                 if (!expanded) {
                   handleToggle(e, subPageId)
-                }
-              }}
+                }}
+              }
             >
               <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, subPageId)}>
                 <IconButtons variant='sm'>
@@ -178,6 +180,7 @@ const SubPage = (props) => {
               </span>
               <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
             </div>
+              </a>
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action align-items-center'>
