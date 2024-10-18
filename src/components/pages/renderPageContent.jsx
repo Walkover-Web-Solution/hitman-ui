@@ -44,10 +44,10 @@ export default function RenderPageContent(props) {
             </head>
             {props?.pageContentDataSSR?.contents &&
                 <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-75 tiptap'>
-                    <div className='mb-4 page-text-render w-100 d-flex justify-content-between align-items-center'>
-                        <span className='page-name font-weight-bold mt-5 border-0 w-100 d-flex align-items-center'>{props?.pageContentDataSSR?.name}</span>
+                    <div className='page-text-render w-100 d-flex justify-content-between align-items-center pt-2'>
+                        <h1 className='font-weight-bold border-0 w-100 d-flex align-items-center'>{props?.pageContentDataSSR?.name}</h1>
                     </div>
-                    <div className="page-text-render w-100 d-flex justify-content-center">
+                    <div className="page-text-render w-100 d-flex justify-content-center mt-3">
                         <div className='w-100'><div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds || props?.pageContentDataSSR?.contents }} /></div>
                         <HoverBox scrollToHeading={scrollToHeading} headings={headings} />
                     </div>

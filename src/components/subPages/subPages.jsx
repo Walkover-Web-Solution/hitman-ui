@@ -152,7 +152,7 @@ const SubPage = (props) => {
               onDragEnter={(e) => props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => props.onDragEnd(e)}
               style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : { paddingLeft: `${props?.level * 8}px` }}
-              className={`d-flex justify-content-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
+              className={`d-flex cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
               onClick={(e) => {
                 handleRedirect(subPageId)
                 if (!expanded) {
