@@ -63,9 +63,9 @@ export function uploadFiles(formData) {
   return http.post(`${apiUrl}/upload/file`, formData);
 }
 
-export function globalSearch(searchTerm, collectionId) {
+export function globalSearch(searchTerm, isPublished, collectionId, customDomain) {
   const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/global-search`, { searchTerm, collectionId })
+  return http.post(`${apiUrl}/global-search`, { searchTerm, isPublished, collectionId, customDomain })
 }
 
 export default {

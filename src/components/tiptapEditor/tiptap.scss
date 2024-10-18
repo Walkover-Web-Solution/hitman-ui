@@ -1,3 +1,5 @@
+@import '../main/variables.scss';
+
 $border-color: #e0e0e0;
 $background-color : #f4f4f4;
 $scrollbar-color: #f1f1f1;
@@ -28,11 +30,35 @@ $scrollbar-color: #f1f1f1;
 }
 
 .slash-menu {
-    width: 260px;
     border: 1px solid $border-color ;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    border-radius: $border-radius;
     z-index: 1;
+
+    .search-bar {
+        border-radius: 50px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid $border-color;
+
+        span {
+            left: 15px;
+            color: $footer-color;
+            top: 18px;
+        }
+
+        input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: $font-large;
+            border-radius: 50px;
+            margin-left: 40px;
+
+            &::placeholder {
+                color: $footer-color;
+              }
+        }
+    }
 
     ul {
         list-style: none;
@@ -41,11 +67,14 @@ $scrollbar-color: #f1f1f1;
         li {
             &:focus {
                 outline: none;
-                background-color:$background-color;
-            }
-            &:hover {
                 background-color: $background-color;
             }
+
+            &:hover {
+                background-color: $background-color;
+                width: 100%;
+            }
+
             .menu-description {
                 color: #888;
             }
@@ -221,6 +250,7 @@ $scrollbar-color: #f1f1f1;
             }
         }
     }
+
     .breadcrumb-container {
         display: flex;
         justify-content: center;
@@ -229,27 +259,31 @@ $scrollbar-color: #f1f1f1;
         background: #f1f1f1;
         border-radius: 5px;
     }
+
     .breadcrumb-segment {
         color: #333;
         border: none;
         background: none;
         cursor: pointer;
-        padding: 4px 6px; 
+        padding: 4px 6px;
         transition: opacity 0.3s ease, border-radius 0.3s ease;
-        border-radius: 4px; 
-        opacity: 1; 
+        border-radius: 4px;
+        opacity: 1;
     }
-    .breadcrumb-segment + .breadcrumb-segment::before {
+
+    .breadcrumb-segment+.breadcrumb-segment::before {
         content: '/';
         margin: 0 5px;
-        color: #333; 
+        color: #333;
     }
+
     .breadcrumb-segment:hover {
-        opacity: 0.5; 
-        border-radius: 4px; 
+        opacity: 0.5;
+        border-radius: 4px;
     }
+
     .breadcrumb-separator {
-        padding: 0 5px; 
+        padding: 0 5px;
         color: #333;
     }
 }

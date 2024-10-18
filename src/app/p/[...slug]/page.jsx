@@ -5,7 +5,7 @@ import PublicPage from 'src/appPages/publicPage/publicPage';
 
 let apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export async function headerFooter({ params, searchParams, customDomain }) {
+export async function getCollectionData({ params, searchParams, customDomain }) {
     const slug = params.slug;
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
@@ -47,7 +47,6 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
     };
-    console.log(slug, 'path')
     if (slug) {
         queryParamApi.path = slug.join('/');
     } else {
@@ -69,7 +68,6 @@ async function fetchPageData({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
-    console.log(queryParamsString, 'queryparams')
     let response;
     try {
         response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
@@ -86,37 +84,16 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     }
 }
 
-export async function generateMetadata({ params, searchParams, customDomain }) {
-    let data = {}
-    try {
-        data = await fetchPageData({ params, searchParams, customDomain });
-    }
-    catch {
-        data.error = true
-    }
-    if (data.error) return null;
-    return {
-        title: data?.publishedContent?.name || '',
-        description: data?.publishedContent?.description || '',
-        tags: data?.publishedContent?.meta?.tags || ''
-    };
-}
-
 export default async function Page({ params, searchParams, customDomain }) {
     let data = {}, content = {}
     try {
-        console.log('params === ', params ?? '');
-        console.log('searchParams === ', searchParams ?? '');
-        console.log('customDomain === ', customDomain ?? '');
         data = await fetchPageData({ params, searchParams, customDomain });
-        console.log('response from backend === ', JSON.stringify(data));
     }
     catch (error) {
-        console.log('didn"t get data from backend === ');
         data.error = true;
     }
     try {
-        content = await headerFooter({ params, searchParams, customDomain });
+        content = await getCollectionData({ params, searchParams, customDomain });
     }
     catch (error) {
         content.error = true
@@ -146,6 +123,6 @@ export default async function Page({ params, searchParams, customDomain }) {
                 }
                 {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
             </div>
-            </>
+        </>
     );
 }
