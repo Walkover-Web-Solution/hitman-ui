@@ -8,9 +8,9 @@ function Footer({ theme }) {
 
   return (
       <div className='footerWrapper'>
-        <p className='for-public-view' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <p className='for-public-view d-flex justify-content-center align-items-center'>
           <span className='poweredByText'>
-            Powered by{' '}
+            Powered by
           </span>
           <a
             className='hitmanLink'
@@ -20,7 +20,7 @@ function Footer({ theme }) {
             style={{ backgroundColor: hexToRgb(theme, '1') }}
             aria-label="hitman-link"
           >
-            <TECHDOCPUBLISH className='techdoc-svg' />
+            <TECHDOCPUBLISH className='TECHDOC-svg' />
           </a>
         </p>
       </div>
