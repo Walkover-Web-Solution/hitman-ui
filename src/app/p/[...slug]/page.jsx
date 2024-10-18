@@ -113,16 +113,16 @@ export default async function Page({ params, searchParams, customDomain }) {
                         <div className="hm-right-content w-100">
                             <PublicPage collectionData={content} pageContentDataSSR={data?.publishedContent || ''} />
                         </div>}
-                </div>
-                    :
-                    <div className="d-flex h-100vh w-100vw justify-content-center align-items-center w-100">
-                        <div>
-                            <p>404 | Not Found</p>
-                        </div>
                     </div>
-                }
-                {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
+            :
+            <div className="d-flex h-100vh w-100vw justify-content-center align-items-center w-100">
+                <div>
+                    <p>404 | Not Found</p>
+                </div>
             </div>
-        </>
+        }
+        {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
+    </div>
+    </>
     );
 }
