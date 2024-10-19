@@ -3,7 +3,14 @@ import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter, useParams, usePathname } from 'next/navigation'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility'
+import {
+  isDashboardRoute,
+  getUrlPathById,
+  isTechdocOwnDomain,
+  SESSION_STORAGE_KEY,
+  isOnPublishedPage,
+  isOrgDocType
+} from '../common/utility'
 import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
 import SubPageForm from '../subPages/subPageForm'
@@ -21,7 +28,7 @@ import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
-import { SlSettings } from "react-icons/sl";
+import { SlSettings } from 'react-icons/sl'
 import { RiDeleteBin6Line } from 'react-icons/ri'
 import customPathnameHook from '../../customHook/customPathnameHook.js'
 
@@ -37,8 +44,8 @@ const CollectionParentPages = (props) => {
   })
 
   const params = useParams()
-  const router = useRouter();
-  const location = customPathnameHook();
+  const router = useRouter()
+  const location = customPathnameHook()
   const versionDropDownRef = useRef(null)
   const dispatch = useDispatch()
 
@@ -152,14 +159,20 @@ const CollectionParentPages = (props) => {
     return pages?.[props.rootParentId]?.child?.length === 1
       ? versionName
       : selectedVersionName?.length > 10
-        ? `${selectedVersionName.substring(0, 7)} ... `
-        : selectedVersionName
+      ? `${selectedVersionName.substring(0, 7)} ... `
+      : selectedVersionName
   }
 
   const versionDropDown = (rootId) => {
     if (isOrgDocType()) {
       return (
-        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()} onClick={(e) => e.stopPropagation()}>
+        <DropdownButton
+          className='version-dropdown'
+          ref={versionDropDownRef}
+          id='dropdown-basic-button'
+          title={versionName()}
+          onClick={(e) => e.stopPropagation()}
+        >
           {pages[rootId].child.map((childId, index) => (
             <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
               {pages[childId]?.name}
@@ -171,7 +184,7 @@ const CollectionParentPages = (props) => {
   }
 
   const openAddPageEndpointModal = async (pageId) => {
-    const newPage = { name: 'untitled', pageType: 3 };
+    const newPage = { name: 'untitled', pageType: 3 }
     if (!isOrgDocType()) {
       dispatch(addPage(pages[pageId].versionId, newPage))
       dispatch(addIsExpandedAction({ value: true, id: pageId }))
@@ -209,7 +222,12 @@ const CollectionParentPages = (props) => {
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : isDashboardRoute && params.pageId === pageId ? 'selected' : ''
+    const isSelected =
+      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
+        ? 'selected'
+        : isDashboardRoute && params.pageId === pageId
+        ? 'selected'
+        : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let collectionId = pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = collections[collectionId]?.theme
@@ -217,96 +235,124 @@ const CollectionParentPages = (props) => {
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: (isHovered || isSelected) && isOnPublishedPage() ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
+      backgroundImage:
+        (isHovered || isSelected) && isOnPublishedPage()
+          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})`
+          : ''
     }
 
     return (
       <div className={'hm-sidebar-outer-block my-1'} key={pageId}>
-        <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-          <button tabIndex={-1} className={`px-0 ${expanded ? 'expanded' : ''}`}>
-            <div
-              className={`active-select d-flex align-items-center justify-content-between rounded my-1 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
-              style={backgroundStyle}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              <div className={`d-flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
-                <div className='d-flex td-name ml-1 align-items-center'>
-                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
-                    <IconButtons variant='sm'>
-                      {isOnPublishedPage() ?
-                        (pages[pages[props.rootParentId]?.child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0)
-                        && <MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} />
-                        : <MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} />}
-                    </IconButtons>
-                    <IoDocumentTextOutline size={18} className='collection-icons' />
-                  </span>
-                  <div
-                    className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? '' : ''}`}
-                    draggable={!isUserOnPublishedPage}
-                    onDragOver={props.handleOnDragOver}
-                    onDragStart={() => props.onDragStart(pageId)}
-                    onDrop={(e) => props.onDrop(e, pageId)}
-                    onDragEnter={(e) => props.onDragEnter(e, pageId)}
-                    onDragEnd={(e) => props.onDragEnd(e)}
-                    style={props.draggingOverId === pageId ? { border: '3px solid red' } : null}
-                  >
-                    <div className={`text-truncate d-inline ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[pageId]?.name}</div>
-                    {!isUserOnPublishedPage ? (
-                      versionDropDown(rootId)
-                    ) : (
-                      <PublishedVersionDropDown handleDropdownItemClick={handleDropdownItemClick} rootParentId={props?.rootParentId} defaultVersionName={defaultVersionName} selectedVersionName={selectedVersionName} />
-                    )}
+        <a
+          href={pages[pageId]?.urlName}
+          className={`text-decoration-none ${isOnPublishedPage() ? 'text-black' : ''}`}
+          id={pageId}
+          onClick={(e) => e.preventDefault()}
+        >
+          <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
+            <button tabIndex={-1} className={`px-0 ${expanded ? 'expanded' : ''}`}>
+              <div
+                className={`active-select d-flex align-items-center justify-content-between rounded my-1 ${
+                  isSelected ? ' selected text-dark' : ''
+                } ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
+                style={backgroundStyle}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <div
+                  className={`d-flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `}
+                  onClick={(e) => handleParentPageClick(e, expanded)}
+                >
+                  <div className='d-flex td-name ml-1 align-items-center'>
+                    <span
+                      className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`}
+                      onClick={(e) => handleToggle(e, props.rootParentId)}
+                    >
+                      <IconButtons variant='sm'>
+                        <MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} />
+                      </IconButtons>
+                      <IoDocumentTextOutline size={18} className='collection-icons' />
+                    </span>
+                    <div
+                      className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? '' : ''}`}
+                      draggable={!isUserOnPublishedPage}
+                      onDragOver={props.handleOnDragOver}
+                      onDragStart={() => props.onDragStart(pageId)}
+                      onDrop={(e) => props.onDrop(e, pageId)}
+                      onDragEnter={(e) => props.onDragEnter(e, pageId)}
+                      onDragEnd={(e) => props.onDragEnd(e)}
+                      style={props.draggingOverId === pageId ? { border: '3px solid red' } : null}
+                    >
+                      <div className={`text-truncate d-inline ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[pageId]?.name}</div>
+                      {!isUserOnPublishedPage ? (
+                        versionDropDown(rootId)
+                      ) : (
+                        <PublishedVersionDropDown
+                          handleDropdownItemClick={handleDropdownItemClick}
+                          rootParentId={props?.rootParentId}
+                          defaultVersionName={defaultVersionName}
+                          selectedVersionName={selectedVersionName}
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-                <div className='sidebar-item-action align-items-center'>
-                  <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
-                    <IconButtons>
-                      <FiPlus />
-                    </IconButtons>
-                  </div>
-                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <IconButtons>
-                      <BsThreeDots />
-                    </IconButtons>
-                  </div>
-                  <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item d-flex align-items-center' onClick={() => openEditPageForm(pageId)}>
-                      <FiEdit2 color='gray' /> Rename
+                {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
+                  <div className='sidebar-item-action align-items-center'>
+                    <div
+                      className='d-flex align-items-center'
+                      onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}
+                    >
+                      <IconButtons>
+                        <FiPlus />
+                      </IconButtons>
                     </div>
-                    {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
-                      <SlSettings color='gray' /> Manage Version
-                    </div>}
-                    <div className='dropdown-item d-flex align-items-center text-danger delete-parent-btn'
-                      onClick={() => openDeletePageModal(pageId)}>
-                      <RiDeleteBin6Line size={15} /> Delete
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                      <IconButtons>
+                        <BsThreeDots />
+                      </IconButtons>
+                    </div>
+                    <div className='dropdown-menu dropdown-menu-right'>
+                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditPageForm(pageId)}>
+                        <FiEdit2 color='gray' /> Rename
+                      </div>
+                      {isOrgDocType() && (
+                        <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
+                          <SlSettings color='gray' /> Manage Version
+                        </div>
+                      )}
+                      <div
+                        className='dropdown-item d-flex align-items-center text-danger delete-parent-btn'
+                        onClick={() => openDeletePageModal(pageId)}
+                      >
+                        <RiDeleteBin6Line size={15} /> Delete
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : null}
-            </div>
-          </button>
-          {expanded ? (
-            <div className='version-collapse'>
-              <Card.Body>
-                <div className='linkWrapper versionPages'>
-                  {(pages[pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0) ?
-                    <CombinedCollections {...props} level={0} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
-                    : (
-                      !isOnPublishedPage() && (
-                        <span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>
-                          No pages inside
-                        </span>
-                      )
+                ) : null}
+              </div>
+            </button>
+            {expanded ? (
+              <div className='version-collapse'>
+                <Card.Body>
+                  <div className='linkWrapper versionPages'>
+                    {pages[pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0 ? (
+                      <CombinedCollections
+                        {...props}
+                        level={0}
+                        page_id={pageId}
+                        rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId}
+                      />
+                    ) : (
+                      !isOnPublishedPage() && <span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>No pages inside</span>
                     )}
-                </div>
-              </Card.Body>
-            </div>
-          ) : null}
-        </div>
+                  </div>
+                </Card.Body>
+              </div>
+            ) : null}
+          </div>
+        </a>
       </div>
     )
   }
@@ -316,8 +362,21 @@ const CollectionParentPages = (props) => {
       {showAddPageEndpointModal()}
       {showEditPageModal()}
       {showVersionForm && openManageVersionModal()}
-      {showDeleteModal && pageService.showDeletePageModal(props, closeDeleteVersionModal, 'Delete Version', `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`)}
-      {showDeleteModal && pageService.showDeletePageModal(props, closeDeletePageModal, 'Delete Page', `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`, selectedPage)}
+      {showDeleteModal &&
+        pageService.showDeletePageModal(
+          props,
+          closeDeleteVersionModal,
+          'Delete Version',
+          `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`
+        )}
+      {showDeleteModal &&
+        pageService.showDeletePageModal(
+          props,
+          closeDeletePageModal,
+          'Delete Page',
+          `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`,
+          selectedPage
+        )}
       {renderBody(props.rootParentId)}
     </React.Fragment>
   )
