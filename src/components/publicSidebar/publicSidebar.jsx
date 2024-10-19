@@ -3,7 +3,7 @@ import axios from 'axios';
 import Combination from './combination/combination';
 import PublicSearchBar from './publicSearchBar/publicSearchBar';
 import CollectionDetails from './collectionDetails/collectionDetails';
-import Providers from 'src/app/providers/providers';
+import './publicSidebar.scss';
 
 let apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -40,11 +40,9 @@ export default async function PublicSidebar({ searchParams, customDomain }) {
     const invisiblePageId = collectionDetails.rootParentId || '';
     const pages = sidebarData?.data?.pages || {}
     return (
-        <div className='p-5 h-100vh overflow-scroll'>
-            <CollectionDetails collectionDetails={sidebarData.data.collections[Object.keys(sidebarData?.data?.collections)[0]]} />
-            <Providers>
-                <PublicSearchBar />
-            </Providers>
+        <div className='public-sidebar-container overflow-auto px-3 mt-3 mr-5'>
+            {!collectionDetails?.docProperties?.defaultHeader && <CollectionDetails collectionDetails={sidebarData.data.collections[Object.keys(sidebarData?.data?.collections)[0]]} />}
+            {/* <PublicSearchBar /> */}
             <Combination pages={pages} invisiblePageId={invisiblePageId} />
         </div>
     )

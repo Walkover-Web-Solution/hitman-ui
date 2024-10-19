@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import './renderPageContent.scss'
 import HoverBox from './hoverBox/hoverBox';
+import './renderPageContent.scss'
 
 export default function RenderPageContent(props) {
 
@@ -33,7 +33,7 @@ export default function RenderPageContent(props) {
     return (
         <>
             {props?.pageContentDataSSR?.contents &&
-                <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-75 tiptap'>
+                <div className='main-page-content d-flex flex-column justify-content-start align-items-start tiptap'>
                     <div className='page-text-render w-100 d-flex justify-content-between align-items-center pt-2'>
                         <h1 className='font-weight-bold border-0 w-100 d-flex align-items-center'>{props?.pageContentDataSSR?.name}</h1>
                     </div>
