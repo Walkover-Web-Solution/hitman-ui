@@ -17,6 +17,7 @@ export default async function PublicSidebar({ searchParams, customDomain }) {
         else {
             queryString = `?collectionId=${searchParams.collectionId}`
         }
+        queryString += '&public=true'
         try {
             const sidebarData = await axios.get(apiUrl + `/orgs/${null}/getSideBarData${queryString}`)
             return sidebarData;
