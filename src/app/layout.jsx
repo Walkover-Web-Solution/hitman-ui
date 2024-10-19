@@ -1,5 +1,6 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
+import "./globals.css";
 import 'react-toastify/dist/ReactToastify.css'
 import '../index.scss'
 import "../components/auth/auth.scss";

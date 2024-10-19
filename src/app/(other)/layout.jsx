@@ -1,5 +1,6 @@
 import NavigationSetter from "src/history";
 import Providers from "../providers/providers";
+import '../../app/globals.css'
 
 export const metadata = {
     title: 'Techdoc',
