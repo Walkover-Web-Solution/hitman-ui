@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, usePathname, useRouter } from 'next/navigation'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility.js'
+import {
+  isDashboardRoute,
+  getUrlPathById,
+  isTechdocOwnDomain,
+  SESSION_STORAGE_KEY,
+  isOnPublishedPage,
+  isOrgDocType
+} from '../common/utility.js'
 import groupsService from './subPageService.jsx'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
@@ -31,9 +38,9 @@ const SubPage = (props) => {
 
   const dispatch = useDispatch()
 
-  const router = useRouter();
+  const router = useRouter()
   const params = useParams()
-  const location = customPathnameHook();
+  const location = customPathnameHook()
 
   const [showSubPageForm, setShowSubPageForm] = useState({ addPage: false, edit: false, share: false })
   const [theme, setTheme] = useState('')
@@ -88,15 +95,13 @@ const SubPage = (props) => {
   }
 
   const openAddSubPageModal = async (subPageId) => {
-    const newPage = { name: 'untitled', pageType: 3 };
+    const newPage = { name: 'untitled', pageType: 3 }
     if (!isOrgDocType()) {
       dispatch(addPage(pages[subPageId].id, newPage))
       dispatch(addIsExpandedAction({ value: true, id: subPageId }))
-    }
-    else {
+    } else {
       setShowAddCollectionModal(true)
     }
-
   }
 
   const showAddPageEndpointModal = () => {
@@ -123,8 +128,8 @@ const SubPage = (props) => {
       isUserOnPublishedPage && isUserOnTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId
         ? 'selected'
         : isDashboardRoute && params.pageId === subPageId
-          ? 'selected'
-          : ''
+        ? 'selected'
+        : ''
     const idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const collectionId = pages?.[idToRender]?.collectionId ?? null
     const collectionTheme = collections[collectionId]?.theme
@@ -132,89 +137,103 @@ const SubPage = (props) => {
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: (isHovered || isSelected) && isOnPublishedPage() ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
+      backgroundImage:
+        (isHovered || isSelected) && isOnPublishedPage()
+          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})`
+          : ''
     }
 
     return (
-      <div className='sidebar-accordion accordion ' id='child-accordion'>
-        <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
-          <div
-            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
-            style={backgroundStyle}
-            onMouseEnter={() => handleHover(true)}
-            onMouseLeave={() => handleHover(false)}
-          >
+      <a
+        href={pages[subPageId]?.urlName}
+        className={`text-decoration-none ${isOnPublishedPage() ? 'text-black' : ''}`}
+        id={subPageId}
+        onClick={(e) => e.preventDefault()}
+      >
+        <div className='sidebar-accordion accordion ' id='child-accordion'>
+          <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
             <div
-              draggable={!isUserOnPublishedPage}
-              onDragOver={props.handleOnDragOver}
-              onDragStart={() => props.onDragStart(subPageId)}
-              onDrop={(e) => props.onDrop(e, subPageId)}
-              onDragEnter={(e) => props.onDragEnter(e, subPageId)}
-              onDragEnd={(e) => props.onDragEnd(e)}
-              style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : { paddingLeft: `${props?.level * 8}px` }}
-              className={`d-flex cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
-              onClick={(e) => {
-                handleRedirect(subPageId)
-                if (!expanded) {
-                  handleToggle(e, subPageId)
-                }
-              }}
+              className={`active-selected d-flex justify-content-between align-items-center rounded ${
+                isSelected ? ' selected text-dark' : ''
+              } ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`}
+              style={backgroundStyle}
+              onMouseEnter={() => handleHover(true)}
+              onMouseLeave={() => handleHover(false)}
             >
-              <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, subPageId)}>
-                <IconButtons variant='sm'>
-                  {isOnPublishedPage() ?
-                    pages[props.rootParentId].child?.length > 0 && <MdExpandMore
-                    size={13}
-                    className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
-                  />
-                  :
-                    <MdExpandMore
-                    size={13}
-                    className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
-                  />
+              <div
+                draggable={!isUserOnPublishedPage}
+                onDragOver={props.handleOnDragOver}
+                onDragStart={() => props.onDragStart(subPageId)}
+                onDrop={(e) => props.onDrop(e, subPageId)}
+                onDragEnter={(e) => props.onDragEnter(e, subPageId)}
+                onDragEnd={(e) => props.onDragEnd(e)}
+                style={
+                  props.draggingOverId === subPageId
+                    ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` }
+                    : { paddingLeft: `${props?.level * 8}px` }
+                }
+                className={`d-flex justify-content-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
+                onClick={(e) => {
+                  handleRedirect(subPageId)
+                  if (!expanded) {
+                    handleToggle(e, subPageId)
                   }
+                }}
+              >
+                <span
+                  className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`}
+                  onClick={(e) => handleToggle(e, subPageId)}
+                >
+                  <IconButtons variant='sm'>
+                    <MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} />
                   </IconButtons>
-                <IoDocumentTextOutline size={18} className='collection-icons d-inline' />
-              </span>
-              <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
-            </div>
-
-            {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-              <div className='sidebar-item-action align-items-center'>
-                <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
-                  <IconButtons>
-                    <FiPlus />
-                  </IconButtons>
-                </div>
-                <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <IconButtons>
-                    <BsThreeDots />
-                  </IconButtons>
-                </div>
-                <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item d-flex align-items-center' onClick={() => openEditSubPageForm(pages[subPageId])}>
-                    <FiEdit2 color='gray' /> Rename
-                  </div>
-                  <div className='dropdown-item d-flex align-items-center text-danger delete-subpage-btn'
-                    onClick={() => openDeleteSubPageModal(subPageId)}>
-                    <RiDeleteBin6Line size={15} /> Delete
-                  </div>
+                  <IoDocumentTextOutline size={18} className='collection-icons d-inline' />
+                </span>
+                <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>
+                  {pages[subPageId]?.name}
                 </div>
               </div>
-            ) : null}
-          </div>
-        </button>
-        {expanded &&
-          <div className='linkWrapper versionPages'>
-            <Card.Body>
-              {pages[props.rootParentId]?.child?.length > 0 ? <CombinedCollections level={props?.level} {...props} /> :
-              (
-                !isOnPublishedPage() && (<span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>No pages inside</span>)
-              ) }
-            </Card.Body>
-          </div>
-        }
-      </div>
+
+              {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
+                <div className='sidebar-item-action align-items-center'>
+                  <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
+                    <IconButtons>
+                      <FiPlus />
+                    </IconButtons>
+                  </div>
+                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <IconButtons>
+                      <BsThreeDots />
+                    </IconButtons>
+                  </div>
+                  <div className='dropdown-menu dropdown-menu-right'>
+                    <div className='dropdown-item d-flex align-items-center' onClick={() => openEditSubPageForm(pages[subPageId])}>
+                      <FiEdit2 color='gray' /> Rename
+                    </div>
+                    <div
+                      className='dropdown-item d-flex align-items-center text-danger delete-subpage-btn'
+                      onClick={() => openDeleteSubPageModal(subPageId)}
+                    >
+                      <RiDeleteBin6Line size={15} /> Delete
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </button>
+          {expanded && (
+            <div className='linkWrapper versionPages'>
+              <Card.Body>
+                {pages[props.rootParentId].child?.length > 0 ? (
+                  <CombinedCollections level={props?.level} {...props} />
+                ) : (
+                  !isOnPublishedPage() && <span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>No pages inside</span>
+                )}
+              </Card.Body>
+            </div>
+          )}
+        </div>
+      </a>
     )
   }
 
