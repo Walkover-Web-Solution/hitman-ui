@@ -9,10 +9,13 @@ import { BsThreeDots } from 'react-icons/bs';
 import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from 'react-icons/lu';
 import  UploadIcon from '@/assets/icons/uploadIcon.svg'
 import pageApiService from '../pages/pageApiService'
+import { FaImage, } from 'react-icons/fa';
+import { FaVideo } from "react-icons/fa6";
+import { LuFiles } from "react-icons/lu";
 import '../styles.scss'
 import './tiptap.scss'
 
-export default function BubbleMenuComponent({ editor , pathData , loading , setLoading , showImage , setShowImage , showVideo , setShowVideo , showFiles , setShowFiles }) {
+export default function BubbleMenuComponent({ editor , pathData , pathName , loading , setLoading , showImage , setShowImage , showVideo , setShowVideo , showFiles , setShowFiles }) {
     const [alignment, setAlignment] = useState('left');
     const [color, setColor] = useState("");
     const [showTable, setShowTable] = useState(false)
@@ -93,7 +96,7 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
                 editor.chain().focus().insertContent(`
                     <div>
                         <a href="${item.url}" target="_blank">
-                            <strong>Download File: ${item.originalName}</strong>
+                            <strong>Open File: ${item.originalName}</strong>
                         </a>
                     </div>
                 `).run();
@@ -270,7 +273,7 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
                             if(showFiles && FileUrl){
                                 editor.chain().focus().insertContent(`
                                 <a href="${FileUrl}" target="_blank">
-                                    <strong>Download File: ${FileUrl.split('/').pop()}</strong>
+                                    <strong>Open File: ${FileUrl.split('/').pop()}</strong>
                                 </a>
                                 <p></p>
                                 `).run();
@@ -461,6 +464,18 @@ export default function BubbleMenuComponent({ editor , pathData , loading , setL
                         </Dropdown.Item>
                         <Dropdown.Item onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'is-active' : ''}>
                             <LuTextQuote /> Quote
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setShowImage(true)}>
+                            <FaImage /> Images
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setShowVideo(true)}>
+                            <FaVideo /> Videos
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setShowFiles(true)}>
+                            <LuFiles /> Files
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => editor.chain().focus().setBreadcrumb(pathData,pathName).run()}>
+                            <FaImage /> BreadCrumb
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>

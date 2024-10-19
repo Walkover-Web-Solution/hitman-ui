@@ -48,6 +48,9 @@ export default function FloatingMenuComponent({ editor , showImage , setShowImag
                     <Dropdown.Item onClick={() => setShowFiles(true)}>
                         <LuFiles /> Files
                     </Dropdown.Item>
+                    <Dropdown.Item onClick={() => editor.chain().focus().setBreadcrumb(pathData,pathName).run()}>
+                        <FaImage /> BreadCrumb
+                    </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         </FloatingMenu>

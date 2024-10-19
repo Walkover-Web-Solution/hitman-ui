@@ -8,13 +8,36 @@ import Providers from '../../app/providers/providers';
 import './publicPage.scss';
 
 function PublicPage(props) {
-    const modifiedContent = props?.pageContentDataSSR?.contents
+   const removeBreadCollections = (html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const breadcrumbContainers = doc.querySelectorAll('.breadcrumb-container');
+
+        breadcrumbContainers.forEach(container => {
+            const breadcrumbSegments = container.querySelectorAll('.breadcrumb-segment');
+
+            breadcrumbSegments.forEach(button => {
+                if (button.id.startsWith('collection/')) {
+                    const nextElement = button.nextElementSibling;
+                    button.remove();
+                    if (nextElement && nextElement.classList.contains('breadcrumb-separator')) {
+                    nextElement.remove();
+                    }
+                }
+            });
+        });
+
+        return doc.body.innerHTML;
+    };
+
+    let modifiedContent = props?.pageContentDataSSR?.contents
+    modifiedContent = removeBreadCollections(modifiedContent);
     return (
         <div className={`custom-display-public-page overflow-auto`}>
             <div className={`page-wrapper d-flex flex-column ${modifiedContent ? 'justify-content-between' : 'justify-content-center'}`}>
                 {modifiedContent ? (
                     <div className='pageText d-flex justify-content-center align-items-start'>
-                        <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} />
+                        <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} pages={props?.pages} />
                     </div>
                 ) : (
                     <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
