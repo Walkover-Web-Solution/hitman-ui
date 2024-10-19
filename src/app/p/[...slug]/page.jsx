@@ -6,7 +6,7 @@ import PublicSidebar from "../../../components/publicSidebar/publicSidebar";
 
 let apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export async function headerFooter({ params, searchParams, customDomain }) {
+function getQueryParamsString({ params, searchParams, customDomain }) {
     const slug = params.slug;
     let queryParamApi = {
         collectionId: searchParams?.collectionId || '',
@@ -33,7 +33,11 @@ export async function headerFooter({ params, searchParams, customDomain }) {
         }
     }
     queryParamsString = queryParamsString.slice(0, -1);
-    let response
+    return queryParamsString;
+}
+
+export async function headerFooter({ params, searchParams, customDomain }) {
+    let response, queryParamsString = getQueryParamsString({ params, searchParams, customDomain });
     try {
         response = await axios.get(`${apiUrl}/get-collection-data${queryParamsString}`);
     }
@@ -44,32 +48,7 @@ export async function headerFooter({ params, searchParams, customDomain }) {
 };
 
 async function fetchPageData({ params, searchParams, customDomain }) {
-    const slug = params.slug;
-    let queryParamApi = {
-        collectionId: searchParams?.collectionId || '',
-    };
-    if (slug) {
-        queryParamApi.path = slug.join('/');
-    } else {
-        queryParamApi.path = '';
-    }
-
-    if (searchParams.version) {
-        queryParamApi.versionName = searchParams.version;
-    }
-
-    if (customDomain) {
-        queryParamApi.custom_domain = customDomain;
-    }
-
-    let queryParamsString = '?';
-    for (let key in queryParamApi) {
-        if (queryParamApi.hasOwnProperty(key)) {
-            queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi[key])}&`;
-        }
-    }
-    queryParamsString = queryParamsString.slice(0, -1);
-    let response;
+    let response, queryParamsString = getQueryParamsString({ params, searchParams, customDomain });
     try {
         response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
     }
@@ -101,8 +80,26 @@ export async function generateMetadata({ params, searchParams, customDomain }) {
     };
 }
 
+const getSidebarData = async ({ searchParams, customDomain }) => {
+    let queryString = '';
+    if (customDomain) {
+        queryString = `?customDomain=${customDomain}`
+    }
+    else {
+        queryString = `?collectionId=${searchParams.collectionId}`
+    }
+    queryString += '&public=true'
+    try {
+        const sidebarData = await axios.get(apiUrl + `/orgs/${null}/getSideBarData${queryString}`)
+        return sidebarData;
+    }
+    catch (error) {
+        throw error
+    }
+}
+
 export default async function Page({ params, searchParams, customDomain }) {
-    let data = {}, content = {}
+    let data = {}, content = {}, sidebarData = {};
     try {
         data = await fetchPageData({ params, searchParams, customDomain });
     }
@@ -117,6 +114,14 @@ export default async function Page({ params, searchParams, customDomain }) {
         content.error = true
         console.error(error)
     }
+    try {
+        sidebarData = await getSidebarData({ params, searchParams, customDomain });
+    }
+    catch (error) {
+        console.error(error);
+        sidebarData.error = error;
+        return null;
+    }
 
     return (
         <div>
@@ -124,14 +129,14 @@ export default async function Page({ params, searchParams, customDomain }) {
                 <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
             </div>}
             <div className="d-flex justify-content-center">
-                <PublicSidebar params={params} customDomain={customDomain} searchParams={searchParams} />
+                <PublicSidebar sidebarData={sidebarData} />
                 <div className="main-public-container d-flex justify-content-center">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>
                     {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) &&
                         <div className="hm-right-content w-100">
-                            <PublicPage pageContentDataSSR={data?.publishedContent || ''} />
+                            <PublicPage pageContentDataSSR={data?.publishedContent || ''} pages={sidebarData?.data?.pages || {}} />
                         </div>
                     }
                 </div>

@@ -7,7 +7,7 @@ import './endpoints.scss'
 
 export default function Endpoints({ endpointId, pages }) {
   return (
-    <div className='documnet-container'>
+    <div className='endpoint-container'>
       <Link scroll={false} href={``} className="flex justify-content-start align-items-center custom-link-style m-1 p-1">
         <IconButton variant="sm">
           <MdPlayArrow />
