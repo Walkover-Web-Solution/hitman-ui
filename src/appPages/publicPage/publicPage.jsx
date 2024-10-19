@@ -1,5 +1,5 @@
-"use client"
-import React, { useEffect } from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import RenderPageContent from '../../components/pages/renderPageContent';
 import DisplayUserAndModifiedData from '../../components/common/userService';
 import { IoDocumentTextOutline } from 'react-icons/io5';
@@ -9,10 +9,38 @@ import { functionTypes } from '../../components/common/functionType';
 import './publicPage.scss';
 
 function PublicPage(props) {
-    const modifiedContent = props?.pageContentDataSSR?.contents;
+    const [modifiedContent, setModifiedContent] = useState(props?.pageContentDataSSR?.contents);
+
+    const removeBreadCollections = (html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const breadcrumbContainers = doc.querySelectorAll('.breadcrumb-container');
+
+        breadcrumbContainers.forEach(container => {
+            const breadcrumbSegments = container.querySelectorAll('.breadcrumb-segment');
+
+            breadcrumbSegments.forEach(button => {
+                if (button.id.startsWith('collection/')) {
+                    const nextElement = button.nextElementSibling;
+                    button.remove();
+                    if (nextElement && nextElement.classList.contains('breadcrumb-separator')) {
+                        nextElement.remove();
+                    }
+                }
+            });
+        });
+
+        return doc.body.innerHTML;
+    };
 
     useEffect(() => {
+        if (modifiedContent) {
+            const updatedContent = removeBreadCollections(modifiedContent);
+            setModifiedContent(updatedContent);
+        }
+
         if (props?.webToken) return;
+
         const scriptId = "chatbot-main-script"
         const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
         const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"
@@ -23,7 +51,6 @@ function PublicPage(props) {
             document.head.appendChild(script);
             script.src = scriptSrc
         }
-
         if (typeof window?.SendDataToChatbot === 'function') {
             window?.SendDataToChatbot({
                 bridgeName: 'page',
@@ -34,14 +61,14 @@ function PublicPage(props) {
                 }
             })
         }
-    }, [])
+    }, [modifiedContent, props]);
 
     return (
         <div className={`custom-display-public-page overflow-auto`}>
             <div className={`page-wrapper d-flex flex-column ${modifiedContent ? 'justify-content-between' : 'justify-content-center'}`}>
                 {modifiedContent ? (
                     <div className='pageText d-flex justify-content-center align-items-start'>
-                        <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} webToken={props?.webToken} />
+                        <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} pages={props?.pages} webToken={props?.webToken} />
                     </div>
                 ) : (
                     <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
