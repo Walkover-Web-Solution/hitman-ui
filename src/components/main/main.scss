@@ -4351,11 +4351,15 @@ a {
 .custom-link-style {
   text-decoration: none;
   color: #00000099;
-
+  
   :hover {
     text-decoration: none !important;
     color: black;
     font-weight: 500;
+
+    .pubic-arrow-icon {
+      color: black;
+    }
   }
 }
 
@@ -4365,4 +4369,8 @@ a {
 
 a {
   text-decoration: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

@@ -128,7 +128,7 @@ export default async function Page({ params, searchParams, customDomain }) {
             {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
                 <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
             </div>}
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center px-3 m-auto">
                 <PublicSidebar sidebarData={sidebarData} />
                 <div className="main-public-container d-flex justify-content-center">
                     <Providers>

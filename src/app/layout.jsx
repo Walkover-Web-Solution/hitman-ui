@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
             <head>
                 <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css" />
                 <link id='favicon' rel="icon" href="/favicon.svg" />
-{/*                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" /> */}
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
                 
                 <link
                 rel="preload"

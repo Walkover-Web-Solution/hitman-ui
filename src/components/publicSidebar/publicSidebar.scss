@@ -1,5 +1,7 @@
 .public-sidebar-container {
-    max-height: 800px !important;
+    max-height: 85vh !important;
     border-right: 1px solid rgba(128, 128, 128, 0.461);
-    width: clamp(300px, 300px, 300px)
+    width: clamp(300px, 300px, 300px);
+    position: sticky;
+    top:100px
 }
