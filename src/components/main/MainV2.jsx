@@ -29,6 +29,8 @@ const MainV2 = () => {
   const dispatch = useDispatch()
   const router = useRouter();
   const collections = useSelector((state) => state.collections)
+  const tabs = useSelector((state) => state?.tabs?.tabs);
+  const activeTab = useSelector((state) => state?.tabs?.activeTabId)
 
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -70,7 +72,18 @@ const MainV2 = () => {
     }
     initialize()
     window.addEventListener('keydown', addShortCutForShortcutModal);
-
+    let orgId = params.orgId
+    if (activeTab !== null && typeof tabs[activeTab]?.type !== 'undefined') {
+      if(tabs[activeTab]?.type === 'collection'){
+        router.push(`/orgs/${orgId}/dashboard/${tabs[activeTab]?.type}/${activeTab}/settings`);
+      }
+      else{
+        router.push(`/orgs/${orgId}/dashboard/${tabs[activeTab]?.type}/${activeTab}`);
+      }
+    }
+    else{
+      router.push(`/orgs/${orgId}/dashboard`)
+    }
     return () => {
       window.removeEventListener('keydown', addShortCutForShortcutModal);
     }
