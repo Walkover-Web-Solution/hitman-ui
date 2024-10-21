@@ -1,0 +1,31 @@
+@import '../../../components/main/variables.scss';
+
+.show-doc-bold {
+    font-weight: 500;
+    color: black;
+}
+
+.show-version-dropdown {
+    display: none;
+
+    .version-dropdown-selected-name {
+        font-size: 12px;
+        color: #00000099;
+    }
+
+    .dropdown {
+        color: black;
+    }
+}
+
+.parent-doc-container {
+    >div {
+        height: fit-content;
+    }
+
+    &:hover{
+        .show-version-dropdown {
+            display: block;
+        }
+    }
+}
