@@ -163,27 +163,20 @@ const Endpoints = (props) => {
           onDragEnd={(e) => props.onDragEnd(e)}
           style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
-          <a
-            href={endpoints[endpointId]?.urlName}
-            title={endpoints[endpointId]?.urlName}
-            className='text-decoration-none'
-            id={endpointId}
-            onClick={(e) => e.preventDefault()}
-          >
-            <div className='sidebar-toggle d-flex justify-content-between'>
-              <button className='pl-0'>
-                <div
-                  className={`w-100 side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`}
-                  style={backgroundStyle}
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                >
-                  <span
-                    className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`}
-                    tabIndex={-1}
-                    onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)}
+          <a href={endpoints[endpointId]?.urlName} className='text-decoration-none' id={endpointId} onClick={(e) => e.preventDefault()}>
+          <div className='sidebar-toggle d-flex justify-content-between'>
+            <button className='pl-0'>
+              <div 
+                className={`w-100 side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} 
+                style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} 
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <span 
+                    className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100' : 'endpoint-name-td'}`} 
+                    tabIndex={-1} 
+                    onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} 
                     onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}
-                  >
+                >
                     {displayEndpointName(endpointId)}
                   </span>
                   <div className='endpoint-icons align-items-center'>
