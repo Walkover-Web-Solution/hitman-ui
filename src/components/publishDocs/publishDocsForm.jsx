@@ -83,7 +83,7 @@ const PublishDocForm = (props) => {
       if (collection && Object.keys(collection).length > 0) {
         title = collection?.docProperties?.defaultTitle || collection?.name || publishDocFormEnum.NULL_STRING
         logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.NULL_STRING
-        domain = collection?.customDomain || publishDocFormEnum.NULL_STRING
+        domain = (collection?.customDomain || collection?.path) ? (collection?.customDomain + (collection?.path ? '/' + collection?.path : '')) : publishDocFormEnum.NULL_STRING
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
         favicon = collection?.favicon || publishDocFormEnum.NULL_STRING
         setData({ title, logoUrl, domain, theme })
@@ -149,7 +149,7 @@ const PublishDocForm = (props) => {
     const collectionId = props.selected_collection_id
     const collection = { ...collections[collectionId] }
     const newData = { ...data }
-    const customDomain = newData.domain.trim()
+    const customDomain = newData.domain
     collection.customDomain = customDomain.length !== 0 ? customDomain : null
     collection.theme = newData.theme
     collection.favicon = binaryFile
@@ -159,6 +159,7 @@ const PublishDocForm = (props) => {
       defaultHeader: header,
       defaultFooter: footer
     }
+    console.log(collection)
     delete collection.isPublic
     let newErrors = validate({ ...data })
     const fileSize = Math.round(uploadedFile?.size / 1024)
