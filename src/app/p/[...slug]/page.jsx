@@ -2,6 +2,7 @@ import PublicEndpoint from "@/components/publicEndpoint/publicEndpoint";
 import axios from "axios";
 import Providers from "src/app/providers/providers";
 import PublicPage from 'src/appPages/publicPage/publicPage';
+import ChatWidget from 'src/script/ChatWidget'
 
 let apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -102,6 +103,7 @@ export default async function Page({ params, searchParams, customDomain }) {
     return (
         <>
             <div>
+                
                 {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
                     <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
                 </div>}

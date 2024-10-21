@@ -233,6 +233,7 @@ const ContentPanel = () => {
       <Tab.Container id='left-tabs-example' defaultActiveKey={tabs.activeTabId} activeKey={tabs.activeTabId}>
         {getCurrentUser() ? (
           <>
+          
             <div className='content-header'>
               <div className='tabs-container d-flex justify-content-between'>
                 <CustomTabs
