@@ -1,14 +1,37 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-export default function HoverBox(props) {
+export default function HoverBox({ html }) {
+    const [headings, setHeadings] = useState([]);
+
+    useEffect(() => {
+        addIdsToHeadings(html)
+    }, [])
+
+    const addIdsToHeadings = (html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        const headings = Array.from(headingElements).map((heading, index) => {
+            const id = `heading-${index}`;
+            heading.setAttribute('id', id);
+            return { id, text: heading.innerText, tag: heading.tagName.toLowerCase() };
+        });
+        setHeadings(headings);
+        return doc.body.innerHTML;
+    };
+
+    const scrollToHeading = (headingId) => {
+        document.getElementById(headingId).scrollIntoView({ behavior: "smooth" });
+    }
+
     return (
         <React.Fragment>
-            {props?.headings.length > 0 && (
-                <div className='heading-main position-fixed'>
-                    <div className='editor-headings p-2 rounded-sm position-fixed d-flex flex-column'>
-                        {props?.headings.map((heading) => (
-                            <span onClick={() => props.scrollToHeading(heading.id)} className='d-block w-100 p-1 cursor-pointer'>
+            {headings.length > 0 && (
+                <div className='heading-main mt-4'>
+                    <div className='editor-headings p-2 rounded-sm d-flex flex-column'>
+                        {headings.map((heading) => (
+                            <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100 p-1 cursor-pointer'>
                                 {heading.text}
                             </span>
                         ))}

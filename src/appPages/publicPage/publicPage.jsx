@@ -29,13 +29,6 @@ function PublicPage(props) {
                         </span>
                     </div>
                 )}
-                {modifiedContent && (
-                    <div className='my-5'>
-                        <Providers>
-                            <ApiDocReview />
-                        </Providers>
-                    </div>
-                )}
             </div>
         </div>
     );
