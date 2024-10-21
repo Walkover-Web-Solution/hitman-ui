@@ -3,7 +3,7 @@ import axios from "axios";
 import Providers from "src/app/providers/providers";
 import PublicPage from 'src/appPages/publicPage/publicPage';
 import PublicSidebar from "../../../components/publicSidebar/publicSidebar";
-import HoverBox from "@/components/pages/hoverBox/hoverBox"
+import HoverBox from "@/components/pages/hoverBox/hoverBox";
 
 let apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -141,7 +141,7 @@ export default async function Page({ params, searchParams, customDomain }) {
                         </div>
                     }
                 </div>
-                <HoverBox html={data?.publishedContent?.contents} />
+                {/* <HoverBox html={data?.publishedContent?.contents} /> */}
             </div>
             {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
         </div>

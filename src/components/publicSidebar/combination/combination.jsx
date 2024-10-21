@@ -1,6 +1,7 @@
 import React from 'react'
-import Documents from '../documents/documents'
+import ParentDocument from '../parentDocument/parentDocument'
 import Endpoints from '../endpoints/endpoints'
+import SubDocument from '../subDocument/subDocument';
 
 export default function Combination({ pages, invisiblePageId = '', incomingPageId = '' }) {
     let pageId = incomingPageId ? incomingPageId : invisiblePageId;
@@ -10,8 +11,9 @@ export default function Combination({ pages, invisiblePageId = '', incomingPageI
                 const type = pages?.[childId]?.type || null;
                 switch (type) {
                     case 1:
+                        return <ParentDocument pages={pages} docId={childId} />
                     case 3:
-                        return <Documents pages={pages} docId={childId} />
+                        return <SubDocument pages={pages} subDocId={childId} />
                     case 4:
                     case 5:
                         return <Endpoints pages={pages} endpointId={childId} />

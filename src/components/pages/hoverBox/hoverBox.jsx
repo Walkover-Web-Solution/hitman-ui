@@ -1,11 +1,11 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
 export default function HoverBox({ html }) {
     const [headings, setHeadings] = useState([]);
 
     useEffect(() => {
-        addIdsToHeadings(html)
+        addIdsToHeadings(html);
     }, [])
 
     const addIdsToHeadings = (html) => {
