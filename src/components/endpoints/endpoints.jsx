@@ -172,7 +172,7 @@ const Endpoints = (props) => {
                 onMouseLeave={() => setIsHovered(false)}
               >
                 <span 
-                    className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} 
+                    className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100' : 'endpoint-name-td'}`} 
                     tabIndex={-1} 
                     onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} 
                     onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}

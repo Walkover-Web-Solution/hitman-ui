@@ -16,6 +16,7 @@ const CollectionForm = (props) => {
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const collections = useSelector(state => state.collections);
+  const organizationName = useSelector(state => state.organizations?.currentOrg?.name)
 
   const schema = { name: Joi.string().min(3).max(50).trim().required().label('Collection Name') };
 
@@ -37,7 +38,13 @@ const CollectionForm = (props) => {
       props.onHide();
       return;
     }
-     const collection = await dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
+    const collectionData = {
+      name: inputRef.current.value,
+      orgDetails: {
+        orgName: organizationName
+      }
+    };
+     const collection = await dispatch(addCollection(collectionData, null, redirectToCollection))
     dispatch(addIsExpandedAction({value:true, id:collection.id}))
     props.onHide();
   }

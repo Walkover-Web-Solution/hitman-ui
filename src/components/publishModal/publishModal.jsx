@@ -27,7 +27,7 @@ function PublishModal({ onPublish, onUnpublish, id, collectionId, isContentChang
 
     const visiblePath1 = `${process.env.NEXT_PUBLIC_UI_URL}/p`;
 
-    const visiblePath2 = customDomain ? `https://${customDomain}/` : null
+    const visiblePath2 = customDomain ? `https://${customDomain}` : null
 
     const handlePublishClick = () => {
         sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
