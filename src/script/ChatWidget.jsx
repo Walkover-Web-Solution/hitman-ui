@@ -1,72 +1,70 @@
-import React, { useEffect } from 'react';
+"use client"
+import { useEffect } from 'react';
 
-const ChatWidget = () => {
+const ChatbotWidget = () => {
   useEffect(() => {
-    // Create a script element for the configuration
-    const configScript = document.createElement('script');
-    configScript.type = 'text/javascript';
-    configScript.innerHTML = `
-      var helloConfig = {
-        widgetToken: "ec5d6",
-        hide_launcher: true,
-        show_widget_form: false,
-        show_close_button: true,
-        launch_widget: false,
-        show_send_button: true,
-        unique_id: "user123",
-        name: "John Doe",
-        number: "1234567890",
-        mail: "john.doe@example.com",
-        region: "Region",
-        country: "Country",
-        city: "City",
-        hfs: "hfs",
-        dsfa: "dsfa",
-        CompanyX: "CompanyX",
-        Test: "Test",
-        "New f": "New f",
-        sdsf: "sdsf",
-        ET: "ET",
-        test: "test",
-        newfiled: "newfiled",
-        wintest: "wintest",
-        newfield: "newfield",
-        siddharath_Test: "siddharath_Test",
-        siddharth_Test: "siddharth_Test",
-        issue: "issue",
-        rgsergsr: "rgsergsr",
-        ergesrgserg: "ergesrgserg",
-        rtgsrtgsrt: "rtgsrtgsrt",
-        Newww: "Newww",
-        tiger: "tiger",
-        water: "water",
-        branches: "branches",
-        wda: "wda",
-        2534: "2534",
-        qwe: "qwe"
-      };
-    `;
-    document.body.appendChild(configScript);
+    const helloConfig = {
+      widgetToken: "ec5d6",
+      hide_launcher: false, // replace <true|false> with actual boolean value
+      show_widget_form: true, // replace <true|false> with actual boolean value
+      show_close_button: true, // replace <true|false> with actual boolean value
+      launch_widget: true, // replace <true|false> with actual boolean value
+      show_send_button: true, // replace <true|false> with actual boolean value
+      unique_id: "user123", // replace <unique_id> with actual unique identifier
+      name: "John Doe",  // replace <name> with actual name or remove if not needed
+      number: "1234567890", // replace <number> with actual number or remove if not needed
+      mail: "john.doe@example.com", // replace <mail> with actual email or remove if not needed
+      region: "North America", // replace <region> with actual region
+      country: "USA", // replace <country> with actual country
+      city: "New York", // replace <city> with actual city
+      hfs: "value", // replace <hfs> with actual value
+      dsfa: "value", // replace <dsfa> with actual value
+      CompanyX: "value", // replace <CompanyX> with actual value
+      Test: "value", // replace <Test> with actual value
+      "New f": "value", // replace <New f> with actual value
+      sdsf: "value", // replace <sdsf> with actual value
+      ET: "value", // replace <ET> with actual value
+      test: "value", // replace <test> with actual value
+      newfiled: "value", // replace <newfiled> with actual value
+      wintest: "value", // replace <wintest> with actual value
+      newfield: "value", // replace <newfield> with actual value
+      siddharath_Test: "value", // replace <siddharath_Test> with actual value
+      siddharth_Test: "value", // replace <siddharth_Test> with actual value
+      issue: "value", // replace <issue> with actual value
+      rgsergsr: "value", // replace <rgsergsr> with actual value
+      ergesrgserg: "value", // replace <ergesrgserg> with actual value
+      rtgsrtgsrt: "value", // replace <rtgsrtgsrt> with actual value
+      Newww: "value", // replace <Newww> with actual value
+      tiger: "value", // replace <tiger> with actual value
+      water: "value", // replace <water> with actual value
+      branches: "value", // replace <branches> with actual value
+      wda: "value", // replace <wda> with actual value
+      2534: "value", // replace <2534> with actual value
+      qwe: "value", // replace <qwe> with actual value,
+    };
 
-    // Create a script element for the widget
-    const widgetScript = document.createElement('script');
-    widgetScript.type = 'text/javascript';
-    widgetScript.src = 'https://control.msg91.com/app/assets/widget/chat-widget.js';
-    widgetScript.onload = () => {
-      if (typeof initChatWidget === 'function') {
-        initChatWidget(helloConfig, 5000);
+    const loadScript = (src, callback) => {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = src;
+      script.onload = callback;
+      document.body.appendChild(script);
+    };
+    loadScript('https://control.msg91.com/app/assets/widget/chat-widget.js', () => {
+      if (typeof window.initChatWidget === 'function') {
+        window.initChatWidget(helloConfig, 500);
+      } else {
+        console.error('initChatWidget is not defined');
+      }
+    });
+
+    return () => {
+      const script = document.querySelector('script[src="https://control.msg91.com/app/assets/widget/chat-widget.js"]');
+      if (script) {
+        document.body.removeChild(script);
       }
     };
-    document.body.appendChild(widgetScript);
-
-    // Cleanup function to remove scripts when component unmounts
-    return () => {
-      document.body.removeChild(configScript);
-      document.body.removeChild(widgetScript);
-    };
   }, []);
-
-  return null; // This component does not render anything visible
 };
 
-export default ChatWidget;
+export default ChatbotWidget;

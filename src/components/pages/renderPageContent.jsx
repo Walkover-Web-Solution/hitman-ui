@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import './renderPageContent.scss'
 import HoverBox from './hoverBox/hoverBox';
+import Chatbotwidget from '../../script/ChatWidget';
 
 export default function RenderPageContent(props) {
 
@@ -53,6 +54,7 @@ export default function RenderPageContent(props) {
                     </div>
                 </div>
             }
+            <Chatbotwidget/>
         </>
     )
 }
