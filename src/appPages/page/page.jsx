@@ -166,7 +166,11 @@ const Page = () => {
 
     const handleSavePageName = () => {
         if (tabs[activeTabId].status === "SAVED" && pageName !== page?.name) {
-            dispatch(updatePageName(page.id, pageName));
+            const data = {
+                pageName,
+                urlName: page?.urlName === 'untitled' ? pageName : page?.urlName
+            }
+            dispatch(updatePageName(page.id, data));
         }
     };
 

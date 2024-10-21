@@ -70,6 +70,7 @@ class SubPageForm extends Form {
       const subPage = this.props?.pages?.[this.props.selectedPage]
       const endpoint = this.props?.endpoints?.[this.props.selectedEndpoint]
       const path = this.getPrevUrlName(this.props.selectedPage)
+      urlName = urlName === 'untitled' ? name : urlName;
       const editedPage = {
         prevUrlName: path ?? prevUrlName,
         name,

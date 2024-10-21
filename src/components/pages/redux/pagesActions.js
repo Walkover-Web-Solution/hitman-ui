@@ -50,14 +50,14 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   }
 }
 
-export const updatePageName = (id, updatedName) => {
-  const dataToSend = { name: updatedName}
+export const updatePageName = (id, { pageName, urlName }) => {
+  const dataToSend = { name: pageName, urlName}
   return async (dispatch) => {
     const res = await pageApiService.updatePage(id, dataToSend)
     if (res) {
       dispatch({
         type: pagesActionTypes.ON_PAGE_RENAME,
-        payload: { id, updatedName }
+        payload: { id, pageName, urlName }
       })
     }
   }

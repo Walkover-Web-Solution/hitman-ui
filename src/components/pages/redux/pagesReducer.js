@@ -295,10 +295,13 @@ function pagesReducer(state = initialState, action) {
       delete pages[action.payload.pageId].oldUrls[action.payload.pathId]
       return pages
 
-    case pagesActionTypes.ON_PAGE_RENAME:
-      pages = { ...state }
-      pages[action.payload.id].name = action.payload.updatedName
-      return pages
+      case pagesActionTypes.ON_PAGE_RENAME:
+        pages = { ...state }
+        pages[action.payload.id].name = action.payload.pageName
+        if (action.payload.urlName) {
+            pages[action.payload.id].urlName = action.payload.urlName
+        }
+        return pages
 
     default:
       return state
