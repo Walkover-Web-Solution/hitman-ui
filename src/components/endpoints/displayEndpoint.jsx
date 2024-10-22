@@ -496,14 +496,6 @@ class DisplayEndpoint extends Component {
         variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
       })
     }
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
-    if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && this.props?.pages?.[idToRender]?.type === 4) {
-      window.SendDataToChatbot({
-        bridgeName: 'api',
-        threadId: `${userid}-${idToRender}`,
-        variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
-      })
-    }
     // window.closeChatbot()
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
