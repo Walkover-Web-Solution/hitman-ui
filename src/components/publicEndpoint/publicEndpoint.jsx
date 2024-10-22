@@ -309,7 +309,7 @@ class PublicEndpoint extends Component {
     const staticColors = background['background_mainPage']
 
     return (
-      <main role='main' className={'mainpublic-endpoint-main hm-wrapper stickyCode'}>
+      <main role='main' className={'mainpublic-endpoint-main hm-wrapper stickyCode flex-grow-1'}>
         <div className={'hm-right-content overflow-auto'}>
           {idToRender ? (
             <div>

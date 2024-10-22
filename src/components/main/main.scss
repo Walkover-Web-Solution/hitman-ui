@@ -4351,7 +4351,7 @@ a {
 .custom-link-style {
   text-decoration: none;
   color: #00000099;
-  
+
   :hover {
     text-decoration: none !important;
     color: black;
@@ -4361,10 +4361,6 @@ a {
       color: black;
     }
   }
-}
-
-.main-public-container {
-  min-width: 800px;
 }
 
 a {
@@ -4377,4 +4373,11 @@ a {
 
 .visibility-hidden {
   visibility: hidden;
+}
+
+.main-public-page-container {
+  max-width: 1400px;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
 }
