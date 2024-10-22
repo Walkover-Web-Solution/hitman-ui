@@ -40,7 +40,7 @@ function PublicPage(props) {
             <div className={`page-wrapper d-flex flex-column ${modifiedContent ? 'justify-content-between' : 'justify-content-center'}`}>
                 {modifiedContent ? (
                     <div className='pageText d-flex justify-content-center align-items-start'>
-                        <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} />
+                        <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} webToken={props.webToken} />
                     </div>
                 ) : (
                     <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>

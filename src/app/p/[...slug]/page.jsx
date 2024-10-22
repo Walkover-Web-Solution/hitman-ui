@@ -92,7 +92,8 @@ const getSidebarData = async ({ searchParams, customDomain }) => {
     queryString += '&public=true'
     try {
         const sidebarData = await axios.get(apiUrl + `/orgs/${null}/getSideBarData${queryString}`)
-        return sidebarData;
+        const webToken = Object.entries(sidebarData.data.collections)[0][1]?.docProperties?.chatbot_object;
+        return {sidebarData , webToken};
     }
     catch (error) {
         throw error
@@ -100,7 +101,7 @@ const getSidebarData = async ({ searchParams, customDomain }) => {
 }
 
 export default async function Page({ params, searchParams, customDomain }) {
-    let data = {}, content = {}, sidebarData = {};
+    let data = {}, content = {}, sidebarData = {}, webToken = {};
     try {
         data = await fetchPageData({ params, searchParams, customDomain });
     }
@@ -116,7 +117,9 @@ export default async function Page({ params, searchParams, customDomain }) {
         console.error(error)
     }
     try {
-        sidebarData = await getSidebarData({ params, searchParams, customDomain });
+        const values = await getSidebarData({ params, searchParams, customDomain });
+        sidebarData = values.sidebarData;
+        webToken = values.webToken;
     }
     catch (error) {
         console.error(error);
@@ -137,7 +140,7 @@ export default async function Page({ params, searchParams, customDomain }) {
                     </Providers>
                     {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) &&
                         <div className="hm-right-content mx-5">
-                            <PublicPage pageContentDataSSR={data?.publishedContent || ''} pages={sidebarData?.data?.pages || {}} />
+                            <PublicPage pageContentDataSSR={data?.publishedContent || ''} pages={sidebarData?.data?.pages || {}} webToken={webToken}  />
                         </div>
                     }
                 </div>

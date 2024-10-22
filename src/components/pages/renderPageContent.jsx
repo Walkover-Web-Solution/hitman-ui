@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Providers from '../../app/providers/providers'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import './renderPageContent.scss'
+import ChatbotWidget from 'src/script/ChatWidget';
 
 export default function RenderPageContent(props) {
 
@@ -46,6 +47,7 @@ export default function RenderPageContent(props) {
                         </Providers>
                     </div>
                 )}
+                <ChatbotWidget webToken={props?.webToken}/>
             </div>
         </>
     )

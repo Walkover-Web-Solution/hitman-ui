@@ -1,9 +1,9 @@
 "use client"
 import { useEffect } from 'react';
-const ChatbotWidget = () => {
+const ChatbotWidget = (props) => {
   useEffect(() => {
     const helloConfig = {
-      widgetToken: "1d31e",
+      widgetToken: props.webToken,
       widget_enabled: true,
       hide_launcher: false, // replace <true|false> with actual boolean value
       show_widget_form: true, // replace <true|false> with actual boolean value
@@ -11,7 +11,7 @@ const ChatbotWidget = () => {
       launch_widget: true, // replace <true|false> with actual boolean value
       show_send_button: true, // replace <true|false> with actual boolean value
       unique_id: "user123", // replace <unique_id> with actual unique identifier
-      name: "John Doe",  // replace <name> with actual name or remove if not needed
+      name: "test",  // replace <name> with actual name or remove if not needed
       number: "1234567890", // replace <number> with actual number or remove if not needed
       mail: "john.doe@example.com", // replace <mail> with actual email or remove if not needed
       region: "North America", // replace <region> with actual region
