@@ -93,6 +93,7 @@ class PublicEndpoint extends Component {
   }
 
   async componentDidMount() {
+    if (props?.webToken) return;
     const scriptId = "chatbot-main-script"
     const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
     const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"

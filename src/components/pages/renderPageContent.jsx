@@ -7,7 +7,7 @@ import ChatbotWidget from 'src/script/ChatWidget';
 
 export default function RenderPageContent(props) {
 
-    const [htmlWithIds, setHtmlWithIds] = useState('')
+    const [htmlWithIds, setHtmlWithIds] = useState('');
 
     const addIdsToHeadings = (html) => {
         const parser = new DOMParser();
@@ -47,7 +47,7 @@ export default function RenderPageContent(props) {
                         </Providers>
                     </div>
                 )}
-                <ChatbotWidget webToken={props?.webToken}/>
+                {props?.webToken && <ChatbotWidget webToken={props?.webToken} />}
             </div>
         </>
     )
