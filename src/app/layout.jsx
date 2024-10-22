@@ -16,7 +16,6 @@ import "../components/indexWebsite/indexWebsite.scss"
 import "../components/tabs/tabs.scss"
 
 export default function RootLayout({ children }) {
-
     return (
         <html lang="en">
             <head>
