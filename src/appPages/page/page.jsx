@@ -53,7 +53,7 @@ const Page = () => {
     const [showInput, setShowInput] = useState(false);
     const [description, setDescription] = useState(page?.meta?.description || "");
     const [showTags, setShowTags] = useState(false)
-    const [loader,setLoader] = useState(false);
+
     const updatedById = pages?.[pageId]?.updatedBy;
     const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
@@ -108,17 +108,14 @@ const Page = () => {
     };
 
     const { ydoc, provider } = useMemo(() => {
+
         if (tabs[activeTabId].status !== "SAVED") return { ydoc: null, provider: null };
-        setLoader(true);
         const ydoc = new Y.Doc();
         const baseUrl = mapping[process.env.NEXT_PUBLIC_ENV];
         const provider = new HocuspocusProvider({
             url: `${baseUrl}?orgId=${orgId}`,
             name: `${pageId}`,
             document: ydoc,
-        });
-        provider.on('synced', () => {
-            setLoader(false);
         });
         return { ydoc, provider };
     }, [orgId, pageId, tabs[activeTabId]]);
@@ -381,8 +378,8 @@ const Page = () => {
         router.push(`/${path}`, { replace: true });
     }
 
-    return(
-            <div className='parent-page-container d-flex flex-column align-items-center w-100'>
+    return (
+        <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-3 bg-white d-flex align-items-center justify-content-between w-100'>
                 <div className="d-flex justify-content-start align-items-center">
                     {tabs?.[activeTabId]?.status === 'SAVED' &&
@@ -510,50 +507,20 @@ const Page = () => {
                     </div>
                 )}
                 {showTags && <TagInput pageId={page.id} />}
-                {loader ? (
-                    <div>
-                        <div className='loading'>
-                        <div className='d-flex align-items-center justify-content-between mt-3'>
-                            <div>
-                                <div className='new bg rounded-1'></div>
-                                <div className='live bg mt-1'></div>
-                            </div>
-                            <div className='new bg rounded-1'></div>
-                        </div>
-                        <div className='d-flex align-items-center gap-3 mt-2'>
-                            <div className='api-call bg rounded-1'></div>
-                            <div className='bg send rounded-1'></div>
-                        </div>
-                            <div className='boxes mt-4 bg rounded-1'></div>
-                            <div className='bulk-edit bg mt-2 rounded-1'></div>
-                            <div className='path-var mt-2 bg rounded-1'></div>
-                            <div className='bulk-edit bg mt-2 rounded-1'></div>
-                            <div className='d-flex align-items-center justify-content-between mt-4'>
-                                <div className='response bg rounded-1'></div>
-                                <div className='d-flex align-items-center gap-2'>
-                                <div className='min-box bg rounded-1'></div>
-                                <div className='min-box bg rounded-1'></div>
-                                </div>
-                            </div>
-                            <div className='hit-send bg mt-3 rounded-1'></div>
-                        </div>
-                      </div>
-                    ) : (
-                     <div id='tiptap-editor' className='page-content '>
-                        <Tiptap
-                            provider={provider}
-                            ydoc={ydoc}
-                            isInlineEditor={false}
-                            disabled={false}
-                            initial={draftContent || false}
-                            onChange={handleContentChange || false}
-                            isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
-                            key={activeTabId}
-                            pathData={pathData}
-                            pathName={pathName}
-                        />
-                    </div>
-                )}
+                <div id='tiptap-editor' className='page-content '>
+                    <Tiptap
+                        provider={provider}
+                        ydoc={ydoc}
+                        isInlineEditor={false}
+                        disabled={false}
+                        initial={draftContent || false}
+                        onChange={handleContentChange || false}
+                        isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
+                        key={activeTabId}
+                        pathData={pathData}
+                        pathName={pathName}
+                    />
+                </div>
             </div>
             {
                 sidebar &&

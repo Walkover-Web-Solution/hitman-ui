@@ -44,15 +44,26 @@ import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BubbleMenuComponent from './bubbleMenu'
 import { Node } from '@tiptap/core';
 import { BsSearch } from "react-icons/bs";
+import PageLoader from '@/components/pages/pageLoader'
 
 
 export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint = false, pathData, pathName }) {
-
+  const [isLoading, setIsLoading] = useState(false);
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser,
   }));
 
+  useEffect(() => {
+    if (provider) {
+      setIsLoading(true);
 
+      provider.on('synced', ({ state }) => {
+        setIsLoading(false);
+        console.log('Document synced:', state);
+      });
+    }
+  }, [provider]);
+  
   const Breadcrumb = Node.create({
     name: 'breadcrumb',
     group: 'block',
@@ -518,13 +529,14 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
 
     setShowSlashMenu(false);
   };
-  return (
+  return isLoading ? (
+    <PageLoader/>
+  ) : (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
-
       {editor && <BubbleMenuComponent editor={editor} pathData={pathData} loading={loading} setLoading={setLoading} showImage={showImage} setShowImage={setShowImage} showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles} />}
-
+  
       {editor && <FloatingMenuComponent editor={editor} pathData={pathData} pathName={pathName} showImage={showImage} setShowImage={setShowImage} showVideo={showVideo} setShowVideo={setShowVideo} showFiles={showFiles} setShowFiles={setShowFiles} />}
-
+  
       {showSlashMenu && (
         <div className="slash-menu position-absolute align-items-center d-flex bg-white py-2" style={{
           top: `${slashMenuPosition.top}px`,
@@ -562,5 +574,5 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
       )}
       <EditorContent editor={editor} />
     </div>
-  )
+  );
 }
