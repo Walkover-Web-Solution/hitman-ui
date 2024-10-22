@@ -129,14 +129,14 @@ export default async function Page({ params, searchParams, customDomain }) {
             {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
                 <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
             </div>}
-            <div className="d-flex justify-content-center px-3 m-auto">
+            <div className="d-flex m-auto main-public-page-container">
                 <PublicSidebar sidebarData={sidebarData} />
-                <div className="main-public-container d-flex justify-content-center">
+                <div className="main-public-container d-flex overflow-auto py-5">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>
                     {(data?.publishedContent?.type == 1 || data?.publishedContent?.type == 3) &&
-                        <div className="hm-right-content w-100">
+                        <div className="hm-right-content mx-5">
                             <PublicPage pageContentDataSSR={data?.publishedContent || ''} pages={sidebarData?.data?.pages || {}} />
                         </div>
                     }

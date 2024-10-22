@@ -272,9 +272,9 @@ form.add-new-domain-form {
 }
 
 .hm-right-content {
-  margin: 0 auto;
-  height: 100%;
-  max-width: 750px;
+  // margin: 0 auto;
+  // height: 100%;
+  // max-width: 750px;
 
   .mid-part {
     max-width: 48rem;
@@ -301,7 +301,8 @@ form.add-new-domain-form {
   }
 
   .innerContainer {
-    height: 100vh;
+    // height: 100vh;
+    height: 100%;
     display: flex;
 
     @media screen and (max-width: 1160px) {

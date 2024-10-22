@@ -4351,7 +4351,7 @@ a {
 .custom-link-style {
   text-decoration: none;
   color: #00000099;
-  
+
   :hover {
     text-decoration: none !important;
     color: black;
@@ -4363,14 +4363,17 @@ a {
   }
 }
 
-.main-public-container {
-  min-width: 800px;
-}
-
 a {
   text-decoration: none;
 }
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.main-public-page-container {
+  max-width: 1400px;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
 }

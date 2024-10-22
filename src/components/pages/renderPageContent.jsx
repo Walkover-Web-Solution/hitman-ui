@@ -4,6 +4,7 @@ import HoverBox from './hoverBox/hoverBox';
 import Providers from '../../app/providers/providers'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import './renderPageContent.scss'
+import { isOnPublishedPage } from '../common/utility';
 
 export default function RenderPageContent(props) {
 
@@ -32,8 +33,8 @@ export default function RenderPageContent(props) {
             <div className="d-flex flex-column main-page-content-container">
                 {props?.pageContentDataSSR?.contents &&
                     <div className='main-page-content d-flex flex-column justify-content-start align-items-start tiptap'>
-                        <div className='page-text-render w-100 d-flex justify-content-between align-items-center pt-2'>
-                            <h1 className='font-weight-bold border-0 w-100 d-flex align-items-center'>{props?.pageContentDataSSR?.name}</h1>
+                        <div className='page-text-render w-100 d-flex justify-content-between align-items-center'>
+                            <h1 className={`font-weight-bold border-0 w-100 d-flex align-items-center ${isOnPublishedPage() ? 'mt-0' : 'mt-3'}`}>{props?.pageContentDataSSR?.name}</h1>
                         </div>
                         <div className="page-text-render w-100 d-flex justify-content-center mt-3">
                             <div id='__page__content' className='w-100'><div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds || props?.pageContentDataSSR?.contents }} /></div>

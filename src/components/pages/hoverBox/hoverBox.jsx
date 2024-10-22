@@ -28,12 +28,12 @@ export default function HoverBox({ html }) {
     return (
         <React.Fragment>
             {headings.length > 0 && (
-                <div className='heading-main mt-4'>
-                    <div className='editor-headings p-2 rounded-sm d-flex flex-column'>
+                <div className='heading-main'>
+                    <div className='editor-headings px-2 rounded-sm d-flex flex-column py-5'>
                         {headings.map((heading) => (
-                            <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100 p-1 cursor-pointer'>
+                            <p onClick={() => scrollToHeading(heading.id)} className=' m-0 p-1 cursor-pointer'>
                                 {heading.text}
-                            </span>
+                            </p>
                         ))}
                     </div>
                 </div>
