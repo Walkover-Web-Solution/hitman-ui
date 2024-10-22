@@ -93,6 +93,17 @@ class PublicEndpoint extends Component {
   }
 
   async componentDidMount() {
+    const scriptId = "chatbot-main-script"
+    const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
+    const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"
+    if (chatbot_token && !document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.setAttribute("embedToken", chatbot_token);
+      script.id = scriptId;
+      document.head.appendChild(script);
+      script.src = scriptSrc
+    }
+
     window.addEventListener('scroll', () => {
       let sticky = false
       if (window.scrollY > 20) {
@@ -313,7 +324,7 @@ class PublicEndpoint extends Component {
         <div className={'hm-right-content overflow-auto'}>
           {idToRender ? (
             <div>
-              {(type == 4 || type == 5) && <DisplayEndpoint {...this.props} fetch_entity_name={this.fetchEntityName.bind(this)} publicCollectionTheme={collectionTheme}/>}
+              {(type == 4 || type == 5) && <DisplayEndpoint {...this.props} fetch_entity_name={this.fetchEntityName.bind(this)} publicCollectionTheme={collectionTheme} />}
               {this.state.openReviewModal && this.reviewModal()}
             </div>
           ) : (
