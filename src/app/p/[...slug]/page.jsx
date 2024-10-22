@@ -131,7 +131,7 @@ export default async function Page({ params, searchParams, customDomain }) {
             </div>}
             <div className="d-flex m-auto main-public-page-container">
                 <PublicSidebar sidebarData={sidebarData} />
-                <div className="main-public-container d-flex overflow-auto py-5">
+                <div className="main-public-container d-flex overflow-auto py-5 flex-grow-1">
                     <Providers>
                         <PublicEndpoint />
                     </Providers>
