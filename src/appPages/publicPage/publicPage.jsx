@@ -3,7 +3,6 @@ import React from 'react';
 import RenderPageContent from '../../components/pages/renderPageContent';
 import DisplayUserAndModifiedData from '../../components/common/userService';
 import { IoDocumentTextOutline } from 'react-icons/io5';
-import ApiDocReview from '../../components/apiDocReview/apiDocReview';
 import Providers from '../../app/providers/providers';
 import './publicPage.scss';
 
