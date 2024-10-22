@@ -141,7 +141,7 @@ export default async function Page({ params, searchParams, customDomain }) {
                         </div>
                     }
                 </div>
-                {/* <HoverBox html={data?.publishedContent?.contents} /> */}
+                <HoverBox html={data?.publishedContent?.contents} />
             </div>
             {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
         </div>
