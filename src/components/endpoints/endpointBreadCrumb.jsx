@@ -1,24 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
-import { getOrgId, isElectron, trimString } from '../common/utility'
+import { getOrgId, trimString } from '../common/utility'
 import { updateNameOfPages } from '../pages/redux/pagesActions'
 import { MdHttp } from 'react-icons/md'
 import { GrGraphQl } from 'react-icons/gr'
 import { updateTab } from '../tabs/redux/tabsActions'
 import withRouter from '../common/withRouter'
-import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { GoDotFill } from 'react-icons/go'
-import { RxSlash } from "react-icons/rx";
 import { navigateTo } from 'src/navigationService'
 
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    versions: state.versions,
     pages: state.pages,
-    groups: state.groups,
     endpoints: state.pages,
     tabState: state.tabs.tabs,
     activeTabId: state.tabs.activeTabId,
@@ -43,7 +40,6 @@ class EndpointBreadCrumb extends Component {
       nameEditable: false,
       endpointTitle: 'Untitled',
       previousTitle: '',
-      groupName: null,
       versionName: null,
       collectionName: null,
       isPagePublished: false,
@@ -85,11 +81,6 @@ class EndpointBreadCrumb extends Component {
           previousTitle: 'Untitled'
         })
       }
-    }
-
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      // ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
   }
 
@@ -165,18 +156,6 @@ class EndpointBreadCrumb extends Component {
         this.props.setQueryUpdatedData(tempData)
         this.props.update_name(this.props?.params?.endpointId, 'Untitled')
       }
-      // else if (this.props.tabState[this.props.activeTabId].status === 'NEW' && trimString(event.currentTarget.textContent).length === 0) {
-      //   const tempData = this.props?.endpointContent || {}
-      //   tempData.data.name = 'Untitled'
-      //   this.props.setQueryUpdatedData(tempData)
-      //   this.props.update_name(this.props.activeTabId, 'Untitled')
-      // }
-      // else if (this.props.tabState[this.props.activeTabId].status === 'NEW') {
-      //   const tempData = this.props?.endpointContent || {}
-      //   tempData.data.name = event.currentTarget.textContent
-      //   this.props.setQueryUpdatedData(tempData)
-      //   this.props.update_name(this.props.activeTabId, event.currentTarget.textContent)
-      // }
       else {
         const tempData = this.props?.endpointContent || {}
         tempData.data.name = event.currentTarget.textContent

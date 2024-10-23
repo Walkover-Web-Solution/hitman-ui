@@ -4,7 +4,7 @@
   "description": "Techdoc App",
   "version": "0.1.0",
   "private": true,
-  "main": "public/electron.js",
+  "main": "public",
   "dependencies": {
     "@hocuspocus/provider": "^2.13.5",
     "@next/bundle-analyzer": "^14.2.14",
@@ -43,10 +43,6 @@
     "cronstrue": "^2.50.0",
     "dotenv": "^8.2.0",
     "dotenv-cli": "^7.4.1",
-    "electron-is-dev": "^2.0.0",
-    "electron-log": "^4.3.5",
-    "electron-notarize": "^1.1.1",
-    "electron-updater": "4.3.9",
     "env-autosuggest": "^0.1.21",
     "form-data": "^4.0.0",
     "hasown": "^2.0.0",
@@ -109,7 +105,6 @@
     "universal-cookie": "^4.0.4",
     "urijs": "^1.19.2",
     "validator": "^13.0.0",
-    "vite-plugin-svgr": "^4.2.0",
     "vm": "^0.1.0",
     "wait-on": "^5.3.0",
     "yjs": "^13.6.18"
@@ -136,13 +131,9 @@
     "@cloudflare/next-on-pages": "^1.13.5",
     "@svgr/webpack": "^8.1.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "electron": "^13.1.1",
-    "electron-builder": "^22.10.5",
     "husky": "^5.2.0",
     "lint-staged": "^15.2.0",
-    "react-app-rewired": "^2.1.8",
-    "redux-saga": "^1.1.3",
-    "vite-plugin-commonjs": "^0.10.1"
+    "react-app-rewired": "^2.1.8"
   },
   "husky": {
     "hooks": {

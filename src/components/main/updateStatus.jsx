@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './updateStatus.scss'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { Spinner } from 'react-bootstrap'
-import { isElectron, formatBytes } from '../common/utility'
+import { formatBytes } from '../common/utility'
 
 const type = {
   UPDATE_AVAILABLE: 'UPDATE_AVAILABLE',
@@ -23,12 +23,7 @@ class UpdateStatus extends Component {
     showSpinner: false
   }
 
-  componentDidMount() {
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.on('app-update-channel', this.handleAutoUpdateEvents.bind(this))
-    }
-  }
+  componentDidMount() {}
 
   handleAutoUpdateEvents(event, text) {
     let message = ''

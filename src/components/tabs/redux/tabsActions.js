@@ -3,7 +3,7 @@ import { store } from '@/store/store'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
 import { navigateTo } from '../../../navigationService'
-import { getOrgId, isElectron, isOrgDocType } from '@/components/common/utility'
+import { getOrgId, isOrgDocType } from '@/components/common/utility'
 import { openModal } from '@/components/modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '@/components/modals/modalTypes'
 import { getPageContent } from '@/services/pageServices'
@@ -65,7 +65,7 @@ export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
+  if (tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
 
@@ -117,7 +117,7 @@ export const closeTab = (tabId) => {
 export const openInNewTab = (tab) => {
   const tabsOrder = store.getState().tabs.tabsOrder
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
+  if (tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
   return async (dispatch) => {
@@ -174,7 +174,7 @@ export const setTabsOrder = (tabsOrder) => {
 export const replaceTab = (oldTabId, newTab) => {
   const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== oldTabId)
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) return openModal(DESKTOP_APP_DOWNLOAD)
+  if (tabsOrder.length >= 10 && !isDesktopModalOpen) return openModal(DESKTOP_APP_DOWNLOAD)
   tabsOrder.push(newTab.id)
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.REPLACE_TAB, oldTabId, newTab })

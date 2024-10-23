@@ -191,6 +191,7 @@ const SideBar = () => {
   }
 
   const openPage = (id) => {
+    debugger
     if (isDashboardRoute({ location })) {
       router.push(`/orgs/${params.orgId}/dashboard/page/${id}`)
     } else {
