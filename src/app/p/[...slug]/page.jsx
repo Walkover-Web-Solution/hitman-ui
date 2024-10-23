@@ -120,7 +120,6 @@ export default async function Page({ params, searchParams, customDomain }) {
         const values = await getSidebarData({ params, searchParams, customDomain });
         sidebarData = values.sidebarData;
         webToken = values.webToken;
-        console.log(webToken, 123)
     }
     catch (error) {
         console.error(error);

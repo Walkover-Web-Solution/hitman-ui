@@ -15,7 +15,6 @@ function SearchModal() {
   const handleSearchInputChange = async (e) => {
     e.preventDefault();
     const searchResults = await globalSearch(searchBarRef.current.value, sessionStorage.getItem('collectionId'));
-    console.log(searchResults, 123)
   }
 
   return (
