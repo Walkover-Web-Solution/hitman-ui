@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react'
 import Providers from '../../app/providers/providers'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import './renderPageContent.scss'
+import ChatbotWidget from 'src/script/ChatWidget';
 
 export default function RenderPageContent(props) {
 
-    const [htmlWithIds, setHtmlWithIds] = useState('')
+    const [htmlWithIds, setHtmlWithIds] = useState('');
 
     const addIdsToHeadings = (html) => {
         const parser = new DOMParser();
@@ -46,6 +47,7 @@ export default function RenderPageContent(props) {
                         </Providers>
                     </div>
                 )}
+                {props?.webToken && <ChatbotWidget webToken={props?.webToken} />}
             </div>
         </>
     )
