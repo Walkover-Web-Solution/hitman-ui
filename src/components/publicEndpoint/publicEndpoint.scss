@@ -686,7 +686,11 @@ button.toggleButton {
     }
   }
 }
-
+.mainpublic-endpoint-main {
+  &:has(.mainContentWrapper) {
+    flex-grow: 1;
+  }
+}
 .hm-right-content {
 
   &.hasPublicNavbar {

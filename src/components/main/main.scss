@@ -4425,7 +4425,11 @@ a {
 
 @media (min-width: 1025px) {
   .main-public-container {
-    padding: 30px;
     width: 800px;
+  }
+}
+.main-public-container{
+  &:has(.clear-both) {
+    flex-grow: 1;
   }
 }

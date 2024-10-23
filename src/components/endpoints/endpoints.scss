@@ -1673,9 +1673,9 @@ table#custom-generic-table {
   border-right: 1px solid $lightblackborder;
   transition: 300ms;
 
-  @media screen and (max-width: 1300px) {
-    min-width: 350px;
-    width: 300px;
+  @media screen and (max-width: 1536px) {
+    min-width: 380px !important;
+    width: 380px !important;
   }
 
   .select-code-wrapper {
