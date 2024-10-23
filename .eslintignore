@@ -1,5 +1,4 @@
 config-overrides.js
 notarize.js
-electron.js
 request.js
 serviceWorker.js
