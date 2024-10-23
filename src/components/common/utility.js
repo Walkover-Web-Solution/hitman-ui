@@ -110,17 +110,8 @@ export function redirectToDashboard(orgId,router) {
     window.location= `/orgs/${orgId}/dashboard`
 }
 
-export function isElectron() {
-  const userAgent = navigator.userAgent.toLowerCase()
-  return userAgent.indexOf(' electron/') !== -1
-}
-
 export function openExternalLink(link) {
-  if (isElectron()) {
-    window.require('electron').shell.openExternal(link)
-  } else {
     window.open(link, '_blank')
-  }
 }
 
 export function isSavedEndpoint(props) {
@@ -804,7 +795,6 @@ export const isOrgDocType = () => {
 
 export default {
   isDashboardRoute,
-  isElectron,
   isSavedEndpoint,
   setTitle,
   setFavicon,
