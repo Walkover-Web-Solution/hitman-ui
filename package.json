@@ -39,6 +39,7 @@
     "chai": "^4.3.4",
     "cronstrue": "^2.50.0",
     "dotenv": "^8.2.0",
+    "dotenv-cli": "^7.4.2",
     "env-autosuggest": "^0.1.21",
     "form-data": "^4.0.0",
     "hasown": "^2.0.0",
