@@ -4,6 +4,7 @@ import { Dropdown } from 'react-bootstrap';
 import { BiPlus } from 'react-icons/bi';
 import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from 'react-icons/lu';
 import { FaListUl, FaListOl,  FaImage, } from 'react-icons/fa';
+import { RxSlash } from "react-icons/rx";
 import { FaVideo } from "react-icons/fa6";
 import { LuFiles } from "react-icons/lu";
 import { GoTasklist } from 'react-icons/go';
@@ -47,6 +48,9 @@ export default function FloatingMenuComponent({ editor , showImage , setShowImag
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => setShowFiles(true)}>
                         <LuFiles /> Files
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => editor.chain().focus().setBreadcrumb(pathData,pathName).run()}>
+                        <RxSlash /> BreadCrumb
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>

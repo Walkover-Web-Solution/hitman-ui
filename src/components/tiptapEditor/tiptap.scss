@@ -222,11 +222,13 @@ $scrollbar-color: #f1f1f1;
     }
     .breadcrumb-container {
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
         padding: 5px;
-        background: #f1f1f1;
         border-radius: 5px;
+    }
+    .breadcrumb-container:hover {
+        background: #f1f1f1;
     }
     .breadcrumb-segment {
         color: #333;
@@ -244,8 +246,8 @@ $scrollbar-color: #f1f1f1;
         color: #333; 
     }
     .breadcrumb-segment:hover {
-        opacity: 0.5; 
         border-radius: 4px; 
+        background: #dbdbdb;
     }
     .breadcrumb-separator {
         padding: 0 5px; 

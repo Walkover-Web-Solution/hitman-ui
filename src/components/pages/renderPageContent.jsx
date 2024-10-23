@@ -1,13 +1,29 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import { useRouter } from "next/navigation"; 
+import './renderPageContent.scss'
+import { getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility';
 import Providers from '../../app/providers/providers'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import './renderPageContent.scss'
 import ChatbotWidget from 'src/script/ChatWidget';
 
 export default function RenderPageContent(props) {
+    const [htmlWithIds,setHtmlWithIds] = useState('');
+    const router = useRouter();
 
-    const [htmlWithIds, setHtmlWithIds] = useState('');
+    function handleBreadcrumbClick(event) {
+        const breadcrumbSegmentId = event.target.getAttribute('id');
+        let id = breadcrumbSegmentId.split('/');
+        if (id[0] === 'collection') {
+            return;
+        }
+        id = id[1];
+        sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id);
+        let pathName = getUrlPathById(id, props?.pages);
+        pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`;
+        router.push(pathName);
+    }
 
     const addIdsToHeadings = (html) => {
         const parser = new DOMParser();
@@ -26,6 +42,14 @@ export default function RenderPageContent(props) {
         setHtmlWithIds(html);
     }, [props?.pageContentDataSSR?.contents]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            const getBtn = document.querySelectorAll('.breadcrumb-segment'   );
+            getBtn.forEach(button => {
+                button.addEventListener('click', handleBreadcrumbClick);
+            });
+        }, 10);
+    },[props?.pageContentDataSSR?.contents])
 
     return (
         <>
@@ -50,5 +74,5 @@ export default function RenderPageContent(props) {
                 {props?.webToken && <ChatbotWidget webToken={props?.webToken} />}
             </div>
         </>
-    )
+    );
 }
