@@ -57,7 +57,7 @@ const Redirections = () => {
   }, [params?.collectionId])
 
   const getAllPagesAndCollection = async () => {
-    addCollectionAndPages(params.orgId, isOnPublishedPage)
+    addCollectionAndPages(params.orgId, isOnPublishedPage())
     loadUrls()
   }
 

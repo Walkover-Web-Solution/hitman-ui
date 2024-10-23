@@ -70,7 +70,7 @@ async function fetchPageData({ params, searchParams, customDomain }) {
     queryParamsString = queryParamsString.slice(0, -1);
     let response;
     try {
-        response = await axios.get(`${apiUrl}/getPublishedDataByPath${queryParamsString}`);
+        response = await axios.get(`${apiUrl}/p/getPublishedDataByPath${queryParamsString}`);
     }
     catch (error) {
         console.error(error);
