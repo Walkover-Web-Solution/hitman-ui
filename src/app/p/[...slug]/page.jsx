@@ -37,17 +37,6 @@ function getQueryParamsString({ params, searchParams, customDomain }) {
     return queryParamsString;
 }
 
-export async function headerFooter({ params, searchParams, customDomain }) {
-    let response, queryParamsString = getQueryParamsString({ params, searchParams, customDomain });
-    try {
-        response = await axios.get(`${apiUrl}/get-collection-data${queryParamsString}`);
-    }
-    catch (error) {
-        throw error
-    }
-    return response?.data?.collection;
-};
-
 async function fetchPageData({ params, searchParams, customDomain }) {
     let response, queryParamsString = getQueryParamsString({ params, searchParams, customDomain });
     try {
@@ -91,9 +80,11 @@ const getSidebarData = async ({ searchParams, customDomain }) => {
     }
     queryString += '&public=true'
     try {
-        const sidebarData = await axios.get(apiUrl + `/orgs/${null}/getSideBarData${queryString}`)
+        const sidebarData = await axios.get(apiUrl + `/getSideBarData${queryString}`)
         const webToken = Object.entries(sidebarData.data.collections)[0][1]?.docProperties?.chatbotObject;
-        return { sidebarData, webToken };
+        const headerData = Object.entries(sidebarData.data.collections)[0][1]?.docProperties?.defaultHeader;
+        const footerData = Object.entries(sidebarData.data.collections)[0][1]?.docProperties?.defaultFooter;
+        return { sidebarData, webToken ,headerData ,footerData};
     }
     catch (error) {
         throw error
@@ -101,7 +92,7 @@ const getSidebarData = async ({ searchParams, customDomain }) => {
 }
 
 export default async function Page({ params, searchParams, customDomain }) {
-    let data = {}, content = {}, sidebarData = {}, webToken = {};
+    let data = {}, content = {}, sidebarData = {}, webToken = {},headerData = {},footerData = {};
     try {
         data = await fetchPageData({ params, searchParams, customDomain });
     }
@@ -120,6 +111,8 @@ export default async function Page({ params, searchParams, customDomain }) {
         const values = await getSidebarData({ params, searchParams, customDomain });
         sidebarData = values.sidebarData;
         webToken = values.webToken;
+        headerData = values.headerData;
+        footerData = values.footerData;
     }
     catch (error) {
         console.error(error);
@@ -129,8 +122,8 @@ export default async function Page({ params, searchParams, customDomain }) {
 
     return (
         <div>
-            {content?.defaultHeader !== '' && <div className='navbar-public position-sticky top-0'>
-                <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
+            {headerData !== '' && <div className='navbar-public position-sticky top-0'>
+                <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: headerData ?? '' }} />
             </div>}
             <div className="d-flex m-auto main-public-page-container">
                 <PublicSidebar sidebarData={sidebarData} />
@@ -146,7 +139,7 @@ export default async function Page({ params, searchParams, customDomain }) {
                 </div>
                 <HoverBox html={data?.publishedContent?.contents} />
             </div>
-            {content?.defaultFooter !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultFooter ?? '' }} />}
+            {footerData !== '' && <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: footerData ?? '' }} />}
         </div>
     );
 }
