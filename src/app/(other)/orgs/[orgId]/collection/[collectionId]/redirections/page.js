@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRouter, useParams } from 'next/navigation'
 import Joi from 'joi'
 import { addUrlWithAdditionalPath, deleteMappedUrl } from '@/components/collections/redirectionApiServices'
-import { getUrlPathById } from '@/components/common/utility'
+import { getUrlPathById, isOnPublishedPage } from '@/components/common/utility'
 import { addOldUrlOfPage, deleteOldUrlOfPage } from '@/components/pages/redux/pagesActions'
 import { toast } from 'react-toastify'
 import { IoDocumentTextOutline } from 'react-icons/io5'
@@ -57,7 +57,7 @@ const Redirections = () => {
   }, [params?.collectionId])
 
   const getAllPagesAndCollection = async () => {
-    addCollectionAndPages(params.orgId)
+    addCollectionAndPages(params.orgId, isOnPublishedPage())
     loadUrls()
   }
 

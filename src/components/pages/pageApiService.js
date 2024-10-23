@@ -65,6 +65,9 @@ export function uploadFiles(formData) {
 
 export function globalSearch(searchTerm, isPublished, collectionId, customDomain) {
   const apiUrl = getApiUrl()
+  if(isPublished){
+    return http.post(`${process.env.NEXT_PUBLIC_API_URL}/p/global-search`, { searchTerm, isPublished, collectionId, customDomain })
+  }
   return http.post(`${apiUrl}/global-search`, { searchTerm, isPublished, collectionId, customDomain })
 }
 

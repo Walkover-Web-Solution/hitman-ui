@@ -79,7 +79,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>
       dispatch(fetchAllPublicEndpoints(ownProps.navigate, collectionIdentifier, domain)),
-    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
+    add_collection_and_pages: (orgId, queryParams,isPublished) => dispatch(addCollectionAndPages(orgId, queryParams, isPublished))
   }
 }
 
@@ -135,11 +135,11 @@ class PublicEndpoint extends Component {
     if (isTechdocOwnDomain()) {
       queryParamApi2.collectionId = collectionId
       queryParamApi2.path = url.pathname.slice(3)
-      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true })
+      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true },isOnPublishedPage())
     } else if (!isTechdocOwnDomain()) {
       queryParamApi2.custom_domain = window.location.hostname
       queryParamApi2.path = url.pathname.slice(1)
-      this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname })
+      this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname },isOnPublishedPage())
     }
 
     if (queryParams?.has('version')) {
@@ -179,11 +179,11 @@ class PublicEndpoint extends Component {
         if (isTechdocOwnDomain()) {
           queryParamApi2.collectionId = collectionId
           queryParamApi2.path = url.pathname.slice(3)
-          this.props.add_collection_and_pages(null, { collectionId, public: true })
+          this.props.add_collection_and_pages(null, { collectionId, public: true },isOnPublishedPage())
         } else {
           queryParamApi2.custom_domain = window.location.hostname
           queryParamApi2.path = url.pathname.slice(1)
-          this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname })
+          this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname },isOnPublishedPage())
         }
 
         if (queryParams?.has('version')) {

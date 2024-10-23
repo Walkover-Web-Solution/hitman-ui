@@ -28,7 +28,7 @@ export function apiTest(api, method, body, headers, bodyType, cancelToken) {
       data: bodyType === 'urlEncoded' ? qs.stringify({ body }) : body,
       headers
     }
-    return httpService.post(`${apiUrlEndpoint}/test-apis/run`, data, { cancelToken })
+    return httpService.post(`${apiUrlEndpoint}/p/test-apis/run`, data, { cancelToken })
   }
 }
 

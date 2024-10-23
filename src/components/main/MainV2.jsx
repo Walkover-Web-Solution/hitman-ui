@@ -23,6 +23,7 @@ import CustomModal from '../customModal/customModal'
 import ShortcutModal from '../shortcutModal/shortcutModal'
 import Protected from '../common/Protected'
 import { updateMode } from '../../store/clientData/clientDataActions'
+import { isOnPublishedPage } from '../common/utility'
 
 const MainV2 = () => {
   const params = useParams()
@@ -63,7 +64,7 @@ const MainV2 = () => {
           router.push(`/orgs/${orgId}/dashboard`)
         } else {
           await fetchAll()
-          dispatch(addCollectionAndPages(orgId))
+          dispatch(addCollectionAndPages(orgId, isOnPublishedPage()))
         }
       } else {
         router.push('/login')
