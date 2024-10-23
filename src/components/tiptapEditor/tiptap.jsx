@@ -26,6 +26,7 @@ import FloatingMenuComponent from './floatingMenu'
 import { FaImage, } from 'react-icons/fa';
 import { FaVideo } from "react-icons/fa6";
 import { LuFiles } from "react-icons/lu";
+import { RxSlash } from "react-icons/rx";
 import '../styles.scss'
 import './tiptap.scss'
 import {
@@ -620,7 +621,7 @@ export default function Tiptap({ provider, ydoc, isInlineEditor, disabled, initi
                 </div>
             </li>
             <li className='align-items-center d-flex  cursor-pointer px-2 py-2' tabIndex="0" onClick={() => {insertBlock(),editor.chain().focus().setBreadcrumb(pathData,pathName).run()}}>
-                <FaImage className=' mr-4 ml-2' size={20} /> 
+                <RxSlash className=' mr-4 ml-2' size={20} /> 
                 <div>
                   <span className="d-flex font-14 fw-500">BreadCrumb</span>
                   <span className="menu-description mt-1 font-12">Create BreadCrumb</span>

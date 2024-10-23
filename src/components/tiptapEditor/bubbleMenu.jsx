@@ -7,15 +7,16 @@ import { Dropdown, Modal } from 'react-bootstrap';
 import { BiFontColor, BiFontFamily } from 'react-icons/bi';
 import { BsThreeDots } from 'react-icons/bs';
 import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from 'react-icons/lu';
-import  UploadIcon from '@/assets/icons/uploadIcon.svg'
+import UploadIcon from '@/assets/icons/uploadIcon.svg'
 import pageApiService from '../pages/pageApiService'
 import { FaImage, } from 'react-icons/fa';
 import { FaVideo } from "react-icons/fa6";
 import { LuFiles } from "react-icons/lu";
+import { RxSlash } from "react-icons/rx";
 import '../styles.scss'
 import './tiptap.scss'
 
-export default function BubbleMenuComponent({ editor , pathData , pathName , loading , setLoading , showImage , setShowImage , showVideo , setShowVideo , showFiles , setShowFiles }) {
+export default function BubbleMenuComponent({ editor, pathData, pathName, loading, setLoading, showImage, setShowImage, showVideo, setShowVideo, showFiles, setShowFiles }) {
     const [alignment, setAlignment] = useState('left');
     const [color, setColor] = useState("");
     const [showTable, setShowTable] = useState(false)
@@ -27,7 +28,7 @@ export default function BubbleMenuComponent({ editor , pathData , pathName , loa
     const [row, setRow] = useState('3')
     const [column, setColumn] = useState('3')
     const [activeHeading, setActiveHeading] = useState(0);
-    const [fileSizeVal , setFileSizeVal] = useState(false);
+    const [fileSizeVal, setFileSizeVal] = useState(false);
     const activeFontFamily = () => {
         const fontFamilies = ['Inter', 'Comic Sans', 'serif', 'monospace', 'cursive', 'var(--title-font-family)'];
         const activeFont = fontFamilies.find(font => editor.isActive('textStyle', { fontFamily: font }));
@@ -50,7 +51,7 @@ export default function BubbleMenuComponent({ editor , pathData , pathName , loa
     function onHide() {
         if (showImage) setShowImage(false)
         else if (showVideo) setShowVideo(false)
-        else if (showFiles) setShowFiles(false);        
+        else if (showFiles) setShowFiles(false);
         else if (showLink) setShowLink(false)
         else setShowTable(false)
     }
@@ -79,33 +80,33 @@ export default function BubbleMenuComponent({ editor , pathData , pathName , loa
     const handleFileUpload = async (files) => {
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
-           formData.append('files', files[i]);
+            formData.append('files', files[i]);
         }
         formData.append('pathData', pathData);
         setLoading(true);
         try {
-        const result = await pageApiService.uploadFiles(formData);
-        result.data.files.forEach((item) => {
-            if (showImage) {
-                editor.chain().focus().insertContent(`<div><img src="${item.url}" alt="${item.originalName}" /><p></p></div>`).run();
-            }
-            else if(showVideo){
-                editor.commands.setVideo(item.url);
-            } 
-            else {
-                editor.chain().focus().insertContent(`
+            const result = await pageApiService.uploadFiles(formData);
+            result.data.files.forEach((item) => {
+                if (showImage) {
+                    editor.chain().focus().insertContent(`<div><img src="${item.url}" alt="${item.originalName}" /><p></p></div>`).run();
+                }
+                else if (showVideo) {
+                    editor.commands.setVideo(item.url);
+                }
+                else {
+                    editor.chain().focus().insertContent(`
                     <div>
                         <a href="${item.url}" target="_blank">
                             <strong>Open File: ${item.originalName}</strong>
                         </a>
                     </div>
                 `).run();
-            }
-            editor.commands.setTextSelection(editor.state.doc.content.size);
-        });
+                }
+                editor.commands.setTextSelection(editor.state.doc.content.size);
+            });
 
-            if(showImage) setShowImage(false);
-            else if(showVideo) setShowVideo(false);
+            if (showImage) setShowImage(false);
+            else if (showVideo) setShowVideo(false);
             else setShowFiles(false);
 
             setLoading(false);
@@ -130,9 +131,9 @@ export default function BubbleMenuComponent({ editor , pathData , pathName , loa
                 valid = false;
                 setFileSizeVal(true);
                 setTimeout(() => {
-                    setFileSizeVal(false); 
+                    setFileSizeVal(false);
                 }, 2000);
-                e.target.value = ''; 
+                e.target.value = '';
                 break;
             }
         }
@@ -154,9 +155,9 @@ export default function BubbleMenuComponent({ editor , pathData , pathName , loa
                     id='upload-button'
                     disabled={disabled}
                     style={{ display: 'none' }}
-                    multiple 
+                    multiple
                     accept={showImage ? 'image/*' : showVideo ? 'video/*' : '.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.csv,.ppt,.pptx'}
-                    onChange={(e) => onFileChange(e)} 
+                    onChange={(e) => onFileChange(e)}
                 />
             </div>
         </>
@@ -175,120 +176,121 @@ export default function BubbleMenuComponent({ editor , pathData , pathName , loa
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                   {loading ? (
-                    <div className="d-flex justify-content-center align-items-center" style={{ height: '25vh', flexDirection: 'column' }}>
-                        <div className="spinner-border" role="status" style={{ borderColor: '#6c757d #6c757d #6c757d transparent', width: '4rem', height: '4rem', borderWidth: '0.25rem' }}>
-                        <span className="sr-only">Loading...</span>
+                    {loading ? (
+                        <div className="d-flex justify-content-center align-items-center" style={{ height: '25vh', flexDirection: 'column' }}>
+                            <div className="spinner-border" role="status" style={{ borderColor: '#6c757d #6c757d #6c757d transparent', width: '4rem', height: '4rem', borderWidth: '0.25rem' }}>
+                                <span className="sr-only">Loading...</span>
+                            </div>
                         </div>
-                    </div>
                     ) : (
-                    <>
-                        {(showImage || showVideo || showFiles || showLink) && (
-                            <div className='form-group upload-modal mt-3'>
-                                <div className='d-flex justify-content-between align-items-center'>
-                                    <div className='favicon-uploader mr-3'>{renderUploadModule()}</div>
-                                    <div className="mr-4 text-muted font-weight-bold">OR</div>
-                                    <input
-                                        type='text'
-                                        className='form-control'
-                                        value={showImage ? ImageUrl : showFiles ? FileUrl : showVideo ? VideoUrl : showLink}
-                                        onChange={(e) => {
-                                            if (showImage) {
-                                               setImageUrl(e.target.value);
-                                            } else if (showFiles) {
-                                               setFileUrl(e.target.value);
-                                            } else if (showVideo) {
-                                               setVideoUrl(e.target.value);
-                                            } else {
-                                               setLinkUrl(e.target.value);
-                                            }
-                                        }}
-                                    />
+                        <>
+                            {(showImage || showVideo || showFiles || showLink) && (
+                                <div className='form-group upload-modal mt-3'>
+                                    <div className='d-flex justify-content-between align-items-center'>
+                                        <div className='favicon-uploader mr-3'>{renderUploadModule()}</div>
+                                        <div className="mr-4 text-muted font-weight-bold">OR</div>
+                                        <input
+                                            type='text'
+                                            className='form-control'
+                                            value={showImage ? ImageUrl : showFiles ? FileUrl : showVideo ? VideoUrl : showLink}
+                                            onChange={(e) => {
+                                                if (showImage) {
+                                                    setImageUrl(e.target.value);
+                                                } else if (showFiles) {
+                                                    setFileUrl(e.target.value);
+                                                } else if (showVideo) {
+                                                    setVideoUrl(e.target.value);
+                                                } else {
+                                                    setLinkUrl(e.target.value);
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                    {
+                                        (fileSizeVal) ? <div style={{ color: 'red', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}>
+                                            Your files exceeds the maximum file size limit.
+                                        </div> : <div style={{ color: 'black', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}> *File Size Limit 20MB for videos and 5MB for all other file types.</div>
+                                    }
                                 </div>
-                                {
-                                    (fileSizeVal) ? <div style={{ color: 'red', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}>
-                                        Your files exceeds the maximum file size limit.
-                                    </div> : <div style={{ color: 'black', fontSize: '12px', marginTop: '5px', marginLeft: '100px' }}> *File Size Limit 20MB for videos and 5MB for all other file types.</div>  
-                                }
-                            </div>
-                        )}
-                        {showTable && (
-                        <div className='row'>
-                            <div className='col-md-6'>
-                            <div className='form-group'>
-                                <label>Rows</label>
-                                <input
-                                className='form-control'
-                                type='integer'
-                                value={row}
-                                onChange={(e) => setRow(e.target.value)}
-                                />
-                            </div>
-                            </div>
-                            <div className='col-md-6'>
-                            <div className='form-group'>
-                                <label>Columns</label>
-                                <input
-                                className='form-control'
-                                type='integer'
-                                value={column}
-                                onChange={(e) => setColumn(e.target.value)}
-                                />
-                            </div>
-                            </div>
-                        </div>
-                        )}
-                    </>
+                            )}
+                            {showTable && (
+                                <div className='row'>
+                                    <div className='col-md-6'>
+                                        <div className='form-group'>
+                                            <label>Rows</label>
+                                            <input
+                                                className='form-control'
+                                                type='integer'
+                                                value={row}
+                                                onChange={(e) => setRow(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='col-md-6'>
+                                        <div className='form-group'>
+                                            <label>Columns</label>
+                                            <input
+                                                className='form-control'
+                                                type='integer'
+                                                value={column}
+                                                onChange={(e) => setColumn(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </Modal.Body>
                 {!loading ? (
                     <Modal.Footer>
-                    <button className='btn btn-secondary outline mr-2' onClick={onHide}>
-                        Close
-                    </button>
-                    <button
-                        className='btn btn-primary'
-                        onClick={() => {
-                            setLoading(true);
-                            if (showTable) {
-                                editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run();
-                                setShowTable(false);
-                            }
-                            if (showLink && linkUrl) {
-                                editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
-                                setShowLink(false);
-                            }
-                            if(showVideo && VideoUrl){
-                                editor.commands.setVideo(VideoUrl);
-                                setLoading(false); 
-                                setShowVideo(false);
-                                setVideoUrl('');
-                            }
-                            if (showImage && ImageUrl) {
-                                editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
-                                setLoading(false); 
-                                setShowImage(false);
-                                setImageUrl('');
-                            }
-                            if(showFiles && FileUrl){
-                                editor.chain().focus().insertContent(`
+                        <button className='btn btn-secondary outline mr-2' onClick={onHide}>
+                            Close
+                        </button>
+                        <button
+                            className='btn btn-primary'
+                            onClick={() => {
+                                setLoading(true);
+                                if (showTable) {
+                                    editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run();
+                                    setShowTable(false);
+                                }
+                                if (showLink && linkUrl) {
+                                    editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+                                    setShowLink(false);
+                                }
+                                if (showVideo && VideoUrl) {
+                                    editor.commands.setVideo(VideoUrl);
+                                    setLoading(false);
+                                    setShowVideo(false);
+                                    setVideoUrl('');
+                                }
+                                if (showImage && ImageUrl) {
+                                    editor.chain().focus().insertContent(`<img src="${ImageUrl}" alt="Image" />`).run();
+                                    setLoading(false);
+                                    setShowImage(false);
+                                    setImageUrl('');
+                                }
+                                if (showFiles && FileUrl) {
+                                    editor.chain().focus().insertContent(`
                                 <a href="${FileUrl}" target="_blank">
                                     <strong>Open File: ${FileUrl.split('/').pop()}</strong>
                                 </a>
                                 <p></p>
                                 `).run();
-                                setLoading(false); 
-                                setShowFiles(false);
-                                setFileUrl('');
-                            }
-                        }}
-                    >
-                        Save
-                    </button>
-                </Modal.Footer>) : (<></>)
-            }
-        </Modal>
-    )}
+                                    setLoading(false);
+                                    setShowFiles(false);
+                                    setFileUrl('');
+                                }
+                            }}
+                        >
+                            Save
+                        </button>
+                    </Modal.Footer>) : (<></>)
+                }
+            </Modal>
+        )
+    }
 
     return (
         <>
@@ -474,8 +476,8 @@ export default function BubbleMenuComponent({ editor , pathData , pathName , loa
                         <Dropdown.Item onClick={() => setShowFiles(true)}>
                             <LuFiles /> Files
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => editor.chain().focus().setBreadcrumb(pathData,pathName).run()}>
-                            <FaImage /> BreadCrumb
+                        <Dropdown.Item onClick={() => editor.chain().focus().setBreadcrumb(pathData, pathName).run()}>
+                            <RxSlash /> BreadCrumb
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
