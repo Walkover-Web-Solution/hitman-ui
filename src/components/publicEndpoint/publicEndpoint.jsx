@@ -79,7 +79,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>
       dispatch(fetchAllPublicEndpoints(ownProps.navigate, collectionIdentifier, domain)),
-    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
+    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams, isOnPublishedPage))
   }
 }
 

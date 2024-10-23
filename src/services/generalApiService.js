@@ -2,7 +2,10 @@ import http from './httpService'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-export async function getCollectionsAndPages(orgId, queryParamsString = '') {
+export async function getCollectionsAndPages(orgId, queryParamsString = '', isPublished) {
+  if(isPublished){
+    return http.get(apiUrl + `/orgs/${orgId}/p/getSideBarData${queryParamsString}`)
+  }
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
 }
 
@@ -12,11 +15,11 @@ export async function moveCollectionsAndPages(moveToOrgId, collection, flag = tr
 }
 
 export function getPublishedContentByPath(queryParamsString = '') {
-  return http.get(apiUrl + `/getPublishedDataByPath${queryParamsString}`)
+  return http.get(apiUrl + `/p/getPublishedDataByPath${queryParamsString}`)
 }
 
 export async function getPublishedContentByIdAndType(id, type) {
-  let data = await http.get(apiUrl + `/pages/${id}/getPublishedData?type=${type}`)
+  let data = await http.get(apiUrl + `/p/pages/${id}/getPublishedData?type=${type}`)
   return (type == 4 || type == 5) ? data?.data?.publishedContent || '' : data?.data?.publishedContent?.contents || ''
 }
 
