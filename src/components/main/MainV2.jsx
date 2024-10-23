@@ -62,7 +62,7 @@ const MainV2 = () => {
           router.push(`/orgs/${orgId}/dashboard`)
         } else {
           await fetchAll()
-          dispatch(addCollectionAndPages(orgId, isOnPublishedPage))
+          dispatch(addCollectionAndPages(orgId, isOnPublishedPage()))
         }
       } else {
         router.push('/login')

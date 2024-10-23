@@ -4,8 +4,8 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 export async function getCollectionsAndPages(orgId, queryParamsString = '', isPublished) {
   if(isPublished){
-    return http.get(apiUrl + `/orgs/${orgId}/p/getSideBarData${queryParamsString}`)
-  }
+    return http.get(apiUrl + `/p/getSideBarData${queryParamsString}`)
+  } 
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
 }
 
