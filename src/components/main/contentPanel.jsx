@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useRouter, } from 'next/navigation'
+import { useParams, useRouter,usePathname } from 'next/navigation'
 import { Tab, Nav } from 'react-bootstrap'
 
 import TabContent from '../tabs/tabContent'
@@ -29,7 +29,7 @@ const ContentPanel = () => {
   const router = useRouter();
   const location = customPathnameHook();
   const params = useParams()
-
+  const pathname = usePathname()
   const [saveEndpointFlag, setSaveEndpointFlag] = useState(false)
   const [savePageFlag, setSavePageFlag] = useState(false)
   const [selectedTabId, setSelectedTabId] = useState(null)
@@ -153,7 +153,7 @@ const ContentPanel = () => {
       }
     }
 
-    if (router.pathname === `/orgs/${params.orgId}/dashboard`) {
+    if (pathname === `/orgs/${params.orgId}/dashboard`) {
       const { orgId } = params;
       if (tabs?.tabsOrder?.length) {
         const { tabs: tabsData, activeTabId, tabsOrder } = tabs;
