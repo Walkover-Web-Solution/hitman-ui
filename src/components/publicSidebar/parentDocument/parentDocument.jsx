@@ -65,7 +65,7 @@ export default function ParentDocument({ docId, pages }) {
   function getDefaultVersionId() {
     const versionIds = pages[docId]?.child;
     for (let versionId of versionIds) {
-      if (pages[versionId].state == 1) return versionId;
+      if (pages[versionId]?.state == 1) return versionId;
     }
     return null;
   }

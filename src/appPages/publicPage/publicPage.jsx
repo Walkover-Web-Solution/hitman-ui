@@ -17,7 +17,7 @@ function PublicPage(props) {
                         <RenderPageContent pageContentDataSSR={{ ...props.pageContentDataSSR, contents: modifiedContent }} />
                     </div>
                 ) : (
-                    <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+                    <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page position-absolute'>
                         <IoDocumentTextOutline size={140} color='gray' />
                         <span className='empty-line'>
                             {props?.pageContentDataSSR?.name} is empty

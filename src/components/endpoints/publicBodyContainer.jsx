@@ -359,7 +359,7 @@ class PublicBodyContainer extends Component {
                 </div>
                 {this.state.showBodyCodeEditor ? (
                   <div className='body-ace-editer' onClick={this.toggleEditor}>
-                    <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
+                    <div onClick={this.expandEditor} className='custom-editor-public-page hide-scrollbar' style={this.state.theme.backgroundStyle}>
                       <AceEditor
                         className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
                         mode='json'

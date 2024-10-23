@@ -9,7 +9,7 @@ export default async function PublicSidebar({ sidebarData }) {
     const invisiblePageId = collectionDetails?.rootParentId || '';
     const pages = sidebarData?.data?.pages || {};
     return (
-        <div className='public-sidebar-container overflow-auto py-5'>
+        <div className='public-sidebar-container hide-scrollbar'>
             {!collectionDetails?.docProperties?.defaultHeader && <CollectionDetails collectionDetails={sidebarData?.data?.collections[Object.keys(sidebarData?.data?.collections)[0]]} />}
             <PublicSearchBar />
             <Combination pages={pages} invisiblePageId={invisiblePageId} />
