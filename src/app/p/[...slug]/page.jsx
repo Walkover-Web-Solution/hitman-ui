@@ -129,7 +129,7 @@ export default async function Page({ params, searchParams, customDomain }) {
       )}
       <div className='d-flex m-auto main-public-page-container p-5 gap-6 min-vh-100'>
         <PublicSidebar sidebarData={sidebarData} />
-        <div className='d-flex gap-6 public-page-flex-grow'>
+        <div className='d-flex gap-6 public-page-flex-grow flex-grow-1'>
           <div className='main-public-container d-flex h-100vh flex-grow-1 hide-scrollbar pt-0 h-100vh'>
             <Providers>
               <PublicEndpoint />
