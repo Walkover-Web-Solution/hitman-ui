@@ -62,9 +62,6 @@ typings/
 # dotenv environment variables file
 # .env
 
-#electgron-builder environemtn variables file
-electron-builder.env
-
 build/
 hitman-bundles/
 embedded.provisionprofile

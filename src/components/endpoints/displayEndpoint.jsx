@@ -7,7 +7,6 @@ import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/ut
 
 import {
   isDashboardRoute,
-  isElectron,
   isSavedEndpoint,
   isStateDraft,
   isStateReject,
@@ -454,10 +453,6 @@ class DisplayEndpoint extends Component {
     const { endpointId } = this.props.params
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()
     document.addEventListener('keydown', this.handleKeyDown)
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
-    }
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02)
     const staticColor = background['background_mainPage']
 
@@ -531,10 +526,6 @@ class DisplayEndpoint extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions)
     document.removeEventListener('keydown', this.handleKeyDown)
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
-    }
   }
 
   handleShortcuts = (event, data) => {
@@ -844,15 +835,8 @@ class DisplayEndpoint extends Component {
     const currentEndpointId = this.props.currentEndpointId !== 'new' ? this.props.activeTabId : this.props.currentEndpointId
     let responseJson = {}
     try {
-      if (isElectron()) {
-        // Handle API through Electron Channel
-        const { ipcRenderer } = window.require('electron')
-        const { sslMode } = this.state
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest, sslMode })
-      } else {
         // Handle API through Backend
         responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
-      }
 
       if (responseJson.data.success) {
         /** request creation was successfull */
@@ -2042,7 +2026,7 @@ class DisplayEndpoint extends Component {
     const formData = {}
     for (let i = 0; i < body.length; i++) {
       if (getInnerText(body[i].key).length !== 0 && body[i].checked === 'true') {
-        if (!isElectron() && body[i].type === 'file') {
+        if (body[i].type === 'file') {
           continue
         }
         formData[getInnerText(body[i].key)] = getInnerText(body[i].value)
@@ -3392,11 +3376,6 @@ class DisplayEndpoint extends Component {
                           {this.isDashboardAndTestingView() ? 'Send' : 'Try'}
                         </button>
                       </div>
-                    </div>
-                  )}
-                  {isElectron() && (
-                    <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>
-
                     </div>
                   )}
                   <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
