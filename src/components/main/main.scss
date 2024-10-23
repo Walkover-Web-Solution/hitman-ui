@@ -4381,3 +4381,13 @@ a {
   min-height: 100vh;
   max-height: 100vh;
 }
+@media screen and (max-width:599px){
+  .navbar-public{
+    display: none;
+  }
+}
+@media screen and (max-width:599px){
+  .footerWrapper {
+    display: none;
+  }
+}

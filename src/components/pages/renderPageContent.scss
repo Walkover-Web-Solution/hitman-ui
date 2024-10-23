@@ -5,3 +5,13 @@
 .main-page-content-container {
     min-width: 800px;
 }
+@media screen and (min-width : 1024px){
+    .main-page-content-container {
+        min-width:auto;
+    }
+}
+@media screen and (max-width : 1024px){
+    .main-page-content-container {
+        min-width:auto;
+    }
+}

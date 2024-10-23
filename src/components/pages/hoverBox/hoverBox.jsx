@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
+import './hoverBox.scss';
 
 export default function HoverBox({ html }) {
     const [headings, setHeadings] = useState([]);

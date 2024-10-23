@@ -1,0 +1,24 @@
+.heading-main{
+    display: flex;
+    justify-content: end;
+}
+@media screen and (max-width: 992px) {
+    .editor-headings {
+        width: 76%;
+        height: 100vh;
+        overflow: auto;
+        position: static;
+        font-size: 12px;
+    }
+}
+@media screen and (max-width:600px ){
+    .heading-main {
+        justify-content: start;
+    }
+}
+
+@media screen and (max-width: 599px) {
+    .heading-main {
+        display:none;
+    }
+}
