@@ -68,6 +68,11 @@ export function globalSearch(searchTerm, collectionId) {
   return http.post(`${apiUrl}/global-search`, { searchTerm, collectionId })
 }
 
+export function publicSearch(searchTerm, collectionId, customDomain) {
+  const apiUrl = getApiUrl()
+  return http.post(`${apiBaseUrl}/public/search`, { searchTerm, collectionId, customDomain })
+}
+
 export default {
   updatePage,
   deletePage,
@@ -77,5 +82,6 @@ export default {
   getAllPages,
   updatePageOrder,
   saveCollectionPage,
-  dragAndDropApi
+  dragAndDropApi,
+  publicSearch
 }

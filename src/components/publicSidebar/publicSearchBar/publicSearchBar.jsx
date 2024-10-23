@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { IoSearchSharp } from "react-icons/io5";
 import CustomModal from '@/components/customModal/customModal';
-import { globalSearch } from '@/components/pages/pageApiService';
+import { publicSearch } from '@/components/pages/pageApiService';
 import './publicSearchBar.scss';
 
 function SearchModal() {
@@ -14,7 +14,10 @@ function SearchModal() {
 
   const handleSearchInputChange = async (e) => {
     e.preventDefault();
-    const searchResults = await globalSearch(searchBarRef.current.value, sessionStorage.getItem('collectionId'));
+    let host = window.location.host;
+    if (process.env.NEXT_PUBLIC_UI_URLS.includes(host)) host = '';
+    if (host.includes('127.0.0.1')) host = '127.0.0.1'
+    const searchResults = await publicSearch(searchBarRef.current.value, sessionStorage.getItem('publicCollectionId'), host);
   }
 
   return (
