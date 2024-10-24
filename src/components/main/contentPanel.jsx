@@ -180,7 +180,7 @@ const ContentPanel = () => {
         }
       }
     }
-  }, [params, activeTabId])
+  }, [params])
 
   const handleSaveEndpoint = (flag, tabId) => {
     setSaveEndpointFlag(flag)
