@@ -140,7 +140,7 @@ const CodeTemplate = (props) => {
 
   return (
     <>
-      <div className={`${isOnPublishedPage() ? '' :'sample-code-inner position-sticky top-0'}`}>
+      <div className={`${isOnPublishedPage() ? 'position-sticky top-0 h-100' :'sample-code-inner position-sticky top-0'}`}>
         <div
           className={
             params.endpointId

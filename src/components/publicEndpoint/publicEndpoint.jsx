@@ -310,7 +310,7 @@ class PublicEndpoint extends Component {
 
     return (
       <main role='main' className={'mainpublic-endpoint-main hm-wrapper stickyCode'}>
-        <div className={'hm-right-content overflow-auto'}>
+        <div className={'hm-right-content'}>
           {idToRender ? (
             <div>
               {(type == 4 || type == 5) && <DisplayEndpoint {...this.props} fetch_entity_name={this.fetchEntityName.bind(this)} publicCollectionTheme={collectionTheme}/>}

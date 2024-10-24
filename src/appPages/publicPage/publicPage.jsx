@@ -10,7 +10,7 @@ import './publicPage.scss';
 function PublicPage(props) {
     const modifiedContent = props?.pageContentDataSSR?.contents
     return (
-        <div className={`custom-display-public-page pl-4 overflow-auto`}>
+        <div className={`custom-display-public-page px-4 overflow-auto`}>
             <div className={`page-wrapper d-flex flex-column ${modifiedContent ? 'justify-content-between' : 'justify-content-center'}`}>
                 {modifiedContent ? (
                     <div className='pageText d-flex justify-content-center align-items-start'>

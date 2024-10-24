@@ -1,5 +1,7 @@
 .public-sidebar-container {
   border-right: 1px solid rgba(128, 128, 128, 0.461);
   min-width: 280px;
+  width: 280px;
+  max-width: 280px;
   height: 100vh;
 }
