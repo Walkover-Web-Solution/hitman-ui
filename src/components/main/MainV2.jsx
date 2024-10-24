@@ -152,12 +152,9 @@ const MainV2 = () => {
   return (
     <>
       {loading ? (
-        <div className='custom-loading-container'>
-          <div className='loading-content'>
-            <button className='spinner-border' />
-            <p className='mt-3'>Loading</p>
-          </div>
-        </div>
+        <div className="custom-loading-container">
+        <progress className="pure-material-progress-linear w-25" />
+      </div>
       ) : (
         <div>
           <div className='custom-main-container'>

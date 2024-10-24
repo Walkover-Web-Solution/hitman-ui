@@ -272,13 +272,13 @@ export const addCustomDomain = (collectionId, domain) => {
   }
 }
 
-export const importCollection = (collection, uniqueTabId, customCallback, defaultView) => {
+export const importCollection = (collection, uniqueTabId, customCallback, defaultView, orgDetails) => {
   
   return async (dispatch) => {
     try {
       uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
   
-      const response = await collectionsApiService.importCollectionService(collection, uniqueTabId, defaultView);
+      const response = await collectionsApiService.importCollectionService(collection, uniqueTabId, defaultView, orgDetails);
       dispatch(onCollectionImported(response?.data));
       toast.success('Collection imported successfully');
 
