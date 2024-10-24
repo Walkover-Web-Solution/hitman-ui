@@ -6,12 +6,15 @@ import './dragAndDropUploader.scss';
 import { importEnvironment } from '../../environments/redux/environmentsActions';
 import { importCollection } from '../../collections/redux/collectionsActions';
 import { addIsExpandedAction } from '../../../store/clientData/clientDataActions';
+import { getCurrentOrg } from '@/components/auth/authServiceV2';
+
 
 
 const DragAndDropUploader = ({ onClose, view, importType }) => {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const dispatch = useDispatch();
+  const currentOrg = getCurrentOrg();
 
   const onDrop = useCallback((acceptedFiles) => {
     const uploadedFile = acceptedFiles[0];
@@ -26,11 +29,12 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
       dispatch(importEnvironment(uploadedFile, onClose))
     } 
     if (importType === 'collection') {
+      const orgDetails = { orgName : currentOrg?.name }
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', file, fileName)
-       const result = await dispatch(importCollection(uploadedFile, view, onClose, 'testing'));
-       if (result && result.collection) {
-        dispatch(addIsExpandedAction({value: true, id: result.collection.id}))
+      const result = await dispatch(importCollection(uploadedFile, undefined, onClose, view ? view : 'testing', orgDetails));
+      if (result?.collection) {
+        dispatch(addIsExpandedAction({ value: true, id: result?.collection?.id }))
       }
     }
   };
