@@ -3,7 +3,7 @@ import generalApiService from '../../services/generalApiService'
 import { createNewPublicEnvironment } from '../publishDocs/redux/publicEnvActions'
 import { isOnPublishedPage } from '../common/utility'
 
-export const addCollectionAndPages = (orgId, queryParams = null) => {
+export const addCollectionAndPages = (orgId, queryParams = null, isPublished) => {
 
   try {
     return (dispatch) => {
@@ -17,7 +17,7 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
         queryParamsString = queryParamsString.slice(0, -1);
       }
       generalApiService
-        .getCollectionsAndPages(orgId, queryParamsString)
+        .getCollectionsAndPages(orgId, queryParamsString, isPublished)
         .then((response) => {
           dispatch({ type: generalActionsTypes.ADD_COLLECTIONS, data: response.data.collections })
           dispatch({ type: generalActionsTypes.ADD_PAGES, data: response.data.pages })
