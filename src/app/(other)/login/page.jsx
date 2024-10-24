@@ -6,6 +6,7 @@ import './auth.scss';
 import './login.scss';
 import TECHDOC from '@/assets/icons/TECHDOC.svg';
 import TECHDOCC from "@/assets/icons/TECHDOC.svg";
+import { redirectToDashboard } from '@/components/common/utility';
 
 const LoginV2 = () => {
   const router = useRouter();
@@ -18,10 +19,9 @@ const LoginV2 = () => {
 
   useEffect(() => {
     let script;
-
     const checkIfUserAlreadyLogin = () => {
       if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-        router.push(`/orgs/${getCurrentOrg().id}/dashboard`);
+          redirectToDashboard(getCurrentOrg().id);
       } else {
         loadScript();
       }
