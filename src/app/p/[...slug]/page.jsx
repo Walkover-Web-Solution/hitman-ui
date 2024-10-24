@@ -127,7 +127,7 @@ export default async function Page({ params, searchParams, customDomain }) {
           <div className='preview-content mx-auto' dangerouslySetInnerHTML={{ __html: content?.defaultHeader ?? '' }} />
         </div>
       )}
-      <div className='d-flex m-auto main-public-page-container p-5 min-vh-100 max-width-container'>
+      <div className='d-flex m-auto main-public-page-container px-5 py-2 min-vh-100 max-width-container'>
         <PublicSidebar sidebarData={sidebarData} />
         <div className='d-flex gap-6 public-page-flex-grow flex-grow-1 position-relative'>
           <div className='main-public-container d-flex h-100vh hide-scrollbar pt-0 h-100vh'>
